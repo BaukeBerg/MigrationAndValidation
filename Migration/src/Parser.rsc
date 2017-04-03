@@ -13,25 +13,42 @@ str testFilePath = "file:///C:/Users/310283735/Desktop/MigrationAndValidation/Mi
 public int parseFile(str fileName) 
 {
   int parsingResult = 0 ;
-  try
+  try 
   {
-    if( /amb(_) := doParse(fileName))
+    if( /amb(_) := doParse(fileName)) 
     {
       println("--- AMBIGUOUS result when parsing <fileName> ---");
       parsingResult = 1;
     }
-    else
+    else 
     {
       println("--- SUCCESS when parsing <fileName> ---");      
     }
   }
-  catch:
+  catch: 
   {
     parsingResult = 2;
     println("--- ERROR while parsing <fileName> ---");
   }
-  // return parsedTree;
   return parsingResult;
+}
+
+void subRoutine()
+{
+  checkAndRender("simpleRoutine");
+}
+
+void simpleLabel()
+{
+  checkAndRender("simpleLabel"); 
+}
+
+void checkAndRender(str fileName)
+{
+  if(0 == parseFile(fileName))
+  {
+    renderFile(fileName);
+  }  
 }
 
 start [Pds] doParse(str fileName) = doParse(toLocation(testFilePath + fileName)); // parse a test file based on its file name

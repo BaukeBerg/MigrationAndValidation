@@ -1,42 +1,37 @@
 module PdsSyntax
 
+extend lang::std::Layout;
+
 start syntax Pds = Expression+;
 
-
-public layout LS = L* ;
-
-syntax L 
-  = [\ \t\n\r]
-  | Comment
-  ;
-
 syntax Expression = left RoutineCondition
-                    | Statement
-                   // | Comment
+                    | Instruction
+                    | PdsComment
                     ; 
 
-syntax Comment = "!" + [a-zA-Z0-9]+ !>> [\n];
+//public layout Comment = PdsComment+;
 
+lexical PdsComment = "!" + [a-zA-Z0-9=.\ ]+ !>> [a-zA-Z0-9=.\ ];
 syntax RoutineCondition = Label + "AND" + Address ;
-lexical Label = "L" + [0-9][0-9][0-9][0-9][0-9] ; // >> [0-9]+; // Label is an L with 5 numeric digits
 
-syntax Statement = Instruction + Identifier;
-                 
-lexical Instruction = "FTCHD" 
-                    | "COMP" 
-                    | "STRD" 
-                    | "STRB"
-                    | "JFRF"
-                    | "AND" 
-                    | "ANDNT" 
-                    | "NOP"
+lexical Label = "L" + [0-9][0-9][0-9][0-9][0-9] ; 
+                
+lexical Instruction = "FTCHD" + Identifier
+                    | "COMP" + Identifier
+                    | "STRD" + Identifier
+                    | "STRB" + Identifier
+                    | "JFRF" + Identifier
+                    | "AND" + Identifier
+                    | "ANDNT" + Identifier
+                    | "NOP" + Amount
                     ;
                     
-syntax Identifier = Address | Variable ;
-lexical Variable = [A-Z][a-zA-Z_0-9]* !>> [A-Z_0-9]+ ; 
+syntax Identifier = [\ ]+ + (Address | Variable );
+lexical Amount = [\ ]+[0-9]+ !>> [0-9];
+lexical Variable = [A-Z][A-Z_0-9]* !>> [A-Z_0-9]+ ; 
 syntax Address = WordAddress
                | BitAddress
                ;
                
-lexical BitAddress = [0-9]+ + "." + [0-7];
+lexical BitAddress = [0-9]+ !>> [0-9] + "." + [0-7];
 lexical WordAddress = [0-9][0-9][0-9][0-9] ;
