@@ -6,6 +6,8 @@ import vis::ParseTree;
 import String;
 import IO;
 
+import Ambiguity;
+
 str testFilePath = "file:///C:/Users/310283735/Desktop/MigrationAndValidation/Migration/sampleFiles/";
 
 public int parseFile(str fileName) 
@@ -38,5 +40,5 @@ start [Pds] parseText(str textLine) = parse(#start[Pds], textLine); // parse any
 bool isUnambiguous(str textToParse) = /amb(_) !:= parseText(textToParse); // validate any text for unambiguity
 void renderTree(str textToRender) = renderParsetree(parseText(textToRender));
 void renderFile(str fileToRender) = renderParsetree(doParse(fileToRender));
-
+void diagnoseFile(str fileToDiagnose) = diagnose(doParse(fileToDiagnose));
 
