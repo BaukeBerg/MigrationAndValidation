@@ -1,0 +1,38 @@
+Install procedure 'applicatie_vxx'
+Ga naar drive V en maak omgeving aan via
+  "v:\"
+  "md \'user'\temp"
+Ga naar archief en start kopieren via toolbox
+Kopieer gegevens
+  VAN
+  Bloknaam :'bloknaam'
+  Directory:[SRC]
+  Files    :*.obj
+  NAAR
+  Username :'username'
+  Password :'password'
+  PC       :V:(\\S12004\EED)
+  Directory:\'user'\temp
+Ga naar ontwikkel pc en maak een omgeving aan via
+  "c:\"
+  "md temp"
+Kopieer files via
+  "copy v:\'user'\temp\*.obj c:\temp"
+Start PDS53G
+  druk op spatie balk
+  F1 UpdSpc
+  F3 DefTxt
+    default file name 'filenaam'
+    length of symbolic names (9 to 32)  32
+    <enter>
+  F10 MenBck
+  F9  ComAll
+  F1  SendCI
+    offset program memory address       0
+    produce logbook file 'sendci.log'  off
+    communication mode                 slow
+    <enter>
+Nadat gemeld is sendci completed d.m.v.
+herhaald drukken op
+  F10 MenBck
+PDS53G verlaten
