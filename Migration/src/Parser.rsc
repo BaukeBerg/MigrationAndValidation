@@ -1,6 +1,6 @@
 module Parser
 
-import PdsSyntax;
+import PC20Parser;
 import ParseTree;
 import vis::ParseTree;
 import String;
