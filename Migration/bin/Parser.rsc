@@ -6,7 +6,7 @@ import vis::ParseTree;
 import String;
 import IO;
 
-str testFilePath = "file:///C:/Users/310283735/Desktop/MasterThesis/Migration/sampleFiles/";
+str testFilePath = "file:///C:/Users/310283735/Desktop/MigrationAndValidation/Migration/sampleFiles/";
 
 public int parseFile(str fileName) 
 {
