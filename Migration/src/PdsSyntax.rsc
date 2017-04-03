@@ -15,22 +15,28 @@ syntax Expression = left RoutineCondition
                    // | Comment
                     ; 
 
-syntax Comment = "!" + [a-zA-Z]+ !>> [\r];
+syntax Comment = "!" + [a-zA-Z0-9]+ !>> [\n];
 
-syntax RoutineCondition = Label + AND + Address ;
+syntax RoutineCondition = Label + "AND" + Address ;
 lexical Label = "L" + [0-9][0-9][0-9][0-9][0-9] ; // >> [0-9]+; // Label is an L with 5 numeric digits
-lexical AND = "AND";
-syntax Address = [0-9]+ !>> [0-9] + "." + [0-7] ;
 
-
-
-syntax Statement = Instruction + Address;
+syntax Statement = Instruction + Identifier;
                  
 lexical Instruction = "FTCHD" 
                     | "COMP" 
-                    | "STRB" 
+                    | "STRD" 
+                    | "STRB"
                     | "JFRF"
+                    | "AND" 
+                    | "ANDNT" 
+                    | "NOP"
                     ;
+                    
 syntax Identifier = Address | Variable ;
-lexical Variable = [0-9a-zA-Z]+ !>> [0-9a-zA-Z]+ ; 
-syntax Address = [0-9]+ >> "." >> [0-9];
+lexical Variable = [A-Z][a-zA-Z_0-9]* !>> [A-Z_0-9]+ ; 
+syntax Address = WordAddress
+               | BitAddress
+               ;
+               
+lexical BitAddress = [0-9]+ + "." + [0-7];
+lexical WordAddress = [0-9][0-9][0-9][0-9] ;
