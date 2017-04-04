@@ -1,17 +1,14 @@
-module PC20Parser
+module PC20Syntax
 
 
-start syntax Pds = Expression+;
-
-// How to add the Comment to the layout?
-//public layout Comment = PdsComment*;
+start syntax Pds = Expression* ; //!>> [\ \t\r\n];
 
 syntax Expression = left Label
                     | Instruction
                     ;
 public layout LS = L* ;
 
-public layout L = [\ \t\r\n]* !>> [\ \t\r\n]
+public layout L = [\ \t\r\n]+ !>> [\ \t\r\n]
                   | PdsComment
                   ;
 
