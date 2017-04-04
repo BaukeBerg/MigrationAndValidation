@@ -1,18 +1,17 @@
 module PC20Syntax
 
 
-start syntax Pds = Expression* ; //!>> [\ \t\r\n];
+start syntax Pds = Expression+ ;
 
 syntax Expression = left Label
                     | Instruction
+                    | PdsComment
                     ;
-public layout LS = L* ;
+public layout LS = [\ \t\r\n]* !>> [\ \t\r\n] 
+              //   | PdsComment 
+                 ;
 
-public layout L = [\ \t\r\n]+ !>> [\ \t\r\n]
-                  | PdsComment
-                  ;
-
-lexical PdsComment = "!" + [*_a-zA-Z0-9=.\ /,\t\"+?()\'|\>\<]* !>> [*_a-zA-Z0-9=.\ /,\t\"+?()\'|\>\<] ;
+lexical PdsComment = "!" + [*_a-zA-Z0-9=./,\ \t\"+?()\'|\>\<]* !>> [*_a-zA-Z0-9=./,\ \t\"+?()\'|\>\<] ;
 
 lexical WhiteSpace = [\t\ ]+ !>> [\t\ ];
 
