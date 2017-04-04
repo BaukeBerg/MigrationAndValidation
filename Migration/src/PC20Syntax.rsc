@@ -15,7 +15,7 @@ lexical PdsComment = "!" + [*_a-zA-Z0-9=./,\ \t\"+?()\'|\>\<]* !>> [*_a-zA-Z0-9=
 
 lexical WhiteSpace = [\t\ ]+ !>> [\t\ ];
 
-lexical Label = WhiteSpace*+ "L" + [0-9][0-9][0-9][0-9][0-9] ; 
+lexical Label = "L" + [0-9][0-9][0-9][0-9][0-9] ; 
                 
 lexical Instruction = NOP
                      | TRIG
