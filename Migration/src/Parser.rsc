@@ -1,37 +1,62 @@
 module Parser
 
-import PC20Parser;
+import Ambiguity;
+import PC20Syntax;
 import ParseTree;
 import vis::ParseTree;
 import String;
 import IO;
 
-import Ambiguity;
-
-str testFilePath = "file:///C:/Users/310283735/Desktop/MigrationAndValidation/Migration/sampleFiles/";
+str testFilePath = "file:///C:/Users/310283735/Desktop/MigrationAndValidation/Migration/testFiles/";
 
 public int parseFile(str fileName) 
 {
-  int parsingResult = 0 ;
+  int parseResult = 0;
   try 
   {
     if( /amb(_) := doParse(fileName)) 
     {
-      println("--- AMBIGUOUS result when parsing <fileName> ---");
-      parsingResult = 1;
-    }
-    else 
+      tuple[int line, str text] info = <0, "">;
+      try
+      {
+        for(tempLine <- readFileLines(fileLocation(fileName)))
+        {        
+          info.line += 1 ;
+          info.text = tempLine;              
+          if(isAmbiguous(tempLine))
+          {
+            println("<info.line>:<info.text>");
+            iprintln(diagnose(parseText(info.text)));
+          }        
+        }            
+      }         
+      catch:
+      {
+        println("ERROR while trying to parse <info.line>:<info.text>");
+        parseResult = 1;
+      }
+      println("--- AMBIGUOUS result whilst parsing <fileName> --- ");
+      parseResult = 2;       
+    }    
+    else
     {
-      println("--- SUCCESS when parsing <fileName> ---");      
+      println("--- SUCCESSFULLY parsed <fileName> ---");
     }
   }
   catch: 
   {
-    parsingResult = 2;
     println("--- ERROR while parsing <fileName> ---");
-  }
-  return parsingResult;
+    parseResult = 3 ;
+        
+  }  
+  return parseResult;
 }
+
+private bool isAmbiguous(str textLine)
+{
+  return /amb(_) := parseText(textLine);
+}
+  
 
 void subRoutine()
 {
@@ -51,11 +76,14 @@ void checkAndRender(str fileName)
   }  
 }
 
-start [Pds] doParse(str fileName) = doParse(toLocation(testFilePath + fileName)); // parse a test file based on its file name
+start [Pds] doParse(str fileName) = doParse(fileLocation(fileName)); // parse a test file based on its file name
 start [Pds] doParse(loc fileLoc) = parseText(readFile(fileLoc)); // parse any file based on its location
 start [Pds] parseText(str textLine) = parse(#start[Pds], textLine); // parse any text
 bool isUnambiguous(str textToParse) = /amb(_) !:= parseText(textToParse); // validate any text for unambiguity
 void renderTree(str textToRender) = renderParsetree(parseText(textToRender));
 void renderFile(str fileToRender) = renderParsetree(doParse(fileToRender));
 void diagnoseFile(str fileToDiagnose) = diagnose(doParse(fileToDiagnose));
+
+loc fileLocation(str fileName) = toLocation(testFilePath + fileName);
+
 
