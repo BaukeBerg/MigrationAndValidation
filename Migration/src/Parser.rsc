@@ -1,15 +1,12 @@
 module Parser
 
 import Ambiguity;
+import IO;
+import Locations;
 import PC20Syntax;
 import ParseTree;
 import vis::ParseTree;
 import String;
-import IO;
-
-// Test file calls
-loc fileLocation(str fileName) = toLocation(testFilePath + fileName);
-str testFilePath = "project://Migration/testFiles/";
 
 alias sourceLine = tuple[int line, str text] ; 
 
@@ -22,7 +19,7 @@ public int parseFile(str fileName)
     {
       parseResult = 1;      
       list[sourceLine] ambiguousLines = findAmbiguousLines(fileName);
-      loc ambiguityFile = fileLocation("lastAmbiguity");
+      loc ambiguityFile = testFile("lastAmbiguity");
       writeFile(ambiguityFile, "");      
       for(line <- ambiguousLines)
       {
@@ -48,7 +45,7 @@ public int parseFile(str fileName)
 list[sourceLine] findAmbiguousLines(str fileName) = [ n | n <- readFile(fileName), isAmbiguous(n.text)];
 list[sourceLine] readFile(str fileName) = [ <n, fileLines(fileName)[n-1]> | n <- [0 .. fileSize(fileName)]];
 int fileSize(str fileName) = size(fileLines(fileName));
-list[str] fileLines(str fileName) = readFileLines(fileLocation(fileName));
+list[str] fileLines(str fileName) = readFileLines(testFile(fileName));
 
 // parse functions
 private bool isAmbiguous(str textLine)
@@ -64,7 +61,7 @@ private bool isAmbiguous(str textLine)
   return false;
 }
 
-start [PC20] doParse(str fileName) = doParse(fileLocation(fileName)); 
+start [PC20] doParse(str fileName) = doParse(testFile(fileName)); 
 start [PC20] doParse(loc fileLoc) = parseText(readFile(fileLoc)); 
 start [PC20] parseText(str textLine) = parse(#start[PC20], textLine); 
 
