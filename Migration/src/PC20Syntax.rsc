@@ -3,7 +3,7 @@ module PC20Syntax
 
 start syntax PC20 = Expression+ ;
 
-syntax Expression = left Label
+syntax Expression = Label
                     | Instruction
                     | PdsComment
                     ;
@@ -17,37 +17,37 @@ lexical WhiteSpace = [\t\ ]+ !>> [\t\ ];
 
 lexical Label = "L" + [0-9][0-9][0-9][0-9][0-9] ; 
                 
-lexical Instruction = NOP
-                     | TRIG
-                     | EQL
-                     | EQLNT
-                     | SHFTL
-                     | SHFTR
-                     | CNTD
-                     | CNTU
-                     | SET0
-                     | SET1
-                     | STRB
-                     | FTCHB
-                     | FTCHC
-                     | FTCHD
-                     | STRD
-                     | COMP
-                     | AND
-                     | ANDNT
-                     | OR
-                     | ORNT
-                     | ADD
-                     | SUBTR
-                     | MULT
-                     | DIV
-                     | JSAF
-                     | JSAT
-                     | RET
-                     | END
-                     | JBRF
-                     | JFRF
-                     | LSTIO
+lexical Instruction = NOP     // No-operation
+                     | TRIG   // Rising Edge Detection
+                     | EQL    // EQUALS
+                     | EQLNT  // NOT Equal
+                     | SHFTL  // Shift LEFT
+                     | SHFTR  // Shift RIGHT
+                     | CNTD   // Count DOWN
+                     | CNTU   // Count UP
+                     | SET0   // Disable bit
+                     | SET1   // Enable bit
+                     | STRB   // Store Bt
+                     | FTCHB  // Fetch Bit
+                     | FTCHC  // Fetch Constant
+                     | FTCHD  // Fetch Digit
+                     | STRD   // Store Digit
+                     | COMP   // Compare                 
+                     | AND    // AND
+                     | ANDNT  // AND NOT
+                     | OR     // OR
+                     | ORNT   // OR NOT
+                     | ADD    // ADD
+                     | SUBTR  // SUBTRACT
+                     | MULT   // MULTIPLY
+                     | DIV    // DIVIDE      
+                     | JSAF   // Jump to Subroutine, Absolute FALSE
+                     | JSAT   // Jump to Subroutine, Absolute TRUE
+                     | RET    // RETURN
+                     | END    // END
+                     | JBRF   // Jump Backwards, Relative FALSE
+                     | JFRF   // Jump Forwards, Relative FALSE
+                     | LSTIO  // LaST Input or Output
                      ;
             
 lexical NOP = "NOP" + Amount?;
