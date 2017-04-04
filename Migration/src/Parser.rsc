@@ -64,9 +64,9 @@ private bool isAmbiguous(str textLine)
   return false;
 }
 
-start [Pds] doParse(str fileName) = doParse(fileLocation(fileName)); 
-start [Pds] doParse(loc fileLoc) = parseText(readFile(fileLoc)); 
-start [Pds] parseText(str textLine) = parse(#start[Pds], textLine); 
+start [PC20] doParse(str fileName) = doParse(fileLocation(fileName)); 
+start [PC20] doParse(loc fileLoc) = parseText(readFile(fileLoc)); 
+start [PC20] parseText(str textLine) = parse(#start[PC20], textLine); 
 
 // render functions (trees)
 void renderFile(str fileToRender) = renderParsetree(doParse(fileToRender));

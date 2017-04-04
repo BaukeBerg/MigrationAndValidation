@@ -1,7 +1,7 @@
 module PC20Syntax
 
 
-start syntax Pds = Expression+ ;
+start syntax PC20 = Expression+ ;
 
 syntax Expression = left Label
                     | Instruction
