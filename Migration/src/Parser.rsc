@@ -18,43 +18,32 @@ public int parseFile(str fileName)
   int parseResult = 0;
   try 
   {
-    if( /amb(_) := doParse(fileName)) 
+    list[sourceLine] ambiguousLines = findAmbiguousLines(fileName);
+    if(isEmpty(ambiguousLines))
     {
-      sourceLine info = <0, "">;
-      try
-      {
-        for(tempLine <- readFileLines(fileLocation(fileName)))
-        {        
-          info.line += 1 ;
-          info.text = tempLine;              
-          if(isAmbiguous(tempLine))
-          {
-            println("<info.line>:<info.text>");
-            iprintln(diagnose(parseText(info.text)));
-          }        
-        }            
-      }         
-      catch:
-      {
-        println("ERROR while trying to parse <info.line>:<info.text>");
-        parseResult = 1;
-      }
-      println("--- AMBIGUOUS result whilst parsing <fileName> --- ");
-      parseResult = 2;       
-    }    
-    else
-    {
-      println("--- SUCCESSFULLY parsed <fileName> ---");
+      println("--- SUCCESS on parsing <fileName> ---");
     }
+    else
+    { 
+      for(line <- ambiguousLines)
+      {      
+        println("<line.line>:<line.text>"); 
+        iprintln(diagnose(parseText(line.text)));
+      }
+      println("--- AMBIGUITIES found whilst parsing <fileName>");
+      parseResult = 1;      
+    }  
   }
   catch: 
   {
     println("--- ERROR while parsing <fileName> ---");
-    parseResult = 3 ;
+    parseResult = 2 ;
         
   }  
   return parseResult;
 }
+
+list[sourceLine] findAmbiguousLines(str fileName) = [ <indexOf(readFileLines(fileLocation(fileName)), n), n> | n <- readFileLines(fileLocation(fileName)), isAmbiguous(n)];
 
 private bool isAmbiguous(str textLine) = /amb(_) := parseText(textLine);
 
@@ -64,5 +53,3 @@ start [Pds] parseText(str textLine) = parse(#start[Pds], textLine);
 
 void renderTree(str textToRender) = renderParsetree(parseText(textToRender));
 void renderFile(str fileToRender) = renderParsetree(doParse(fileToRender));
-
-
