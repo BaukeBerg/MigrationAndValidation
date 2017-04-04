@@ -11,6 +11,8 @@ import IO;
 str testFilePath = "file:///C:/Users/310283735/Desktop/MigrationAndValidation/Migration/testFiles/";
 loc fileLocation(str fileName) = toLocation(testFilePath + fileName);
 
+alias sourceLine = tuple[int line, str text] ; 
+
 public int parseFile(str fileName) 
 {
   int parseResult = 0;
@@ -18,7 +20,7 @@ public int parseFile(str fileName)
   {
     if( /amb(_) := doParse(fileName)) 
     {
-      tuple[int line, str text] info = <0, "">;
+      sourceLine info = <0, "">;
       try
       {
         for(tempLine <- readFileLines(fileLocation(fileName)))
