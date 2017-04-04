@@ -43,13 +43,19 @@ public int parseFile(str fileName)
   return parseResult;
 }
 
-list[sourceLine] findAmbiguousLines(str fileName) = [ <indexOf(readFileLines(fileLocation(fileName)), n), n> | n <- readFileLines(fileLocation(fileName)), isAmbiguous(n)];
+// file utilities
+list[sourceLine] findAmbiguousLines(str fileName) = [ n | n <- readFile(fileName), isAmbiguous(n.text)];
+list[sourceLine] readFile(str fileName) = [ <n, fileLines(fileName)[n-1]> | n <- [0 .. fileSize(fileName)]];
+int fileSize(str fileName) = size(fileLines(fileName));
+list[str] fileLines(str fileName) = readFileLines(fileLocation(fileName));
 
+// parse functions
 private bool isAmbiguous(str textLine) = /amb(_) := parseText(textLine);
 
 start [Pds] doParse(str fileName) = doParse(fileLocation(fileName)); 
 start [Pds] doParse(loc fileLoc) = parseText(readFile(fileLoc)); 
 start [Pds] parseText(str textLine) = parse(#start[Pds], textLine); 
 
+// render functions (trees)
 void renderTree(str textToRender) = renderParsetree(parseText(textToRender));
 void renderFile(str fileToRender) = renderParsetree(doParse(fileToRender));
