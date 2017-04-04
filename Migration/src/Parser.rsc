@@ -9,7 +9,7 @@ import IO;
 
 // Test file calls
 loc fileLocation(str fileName) = toLocation(testFilePath + fileName);
-str testFilePath = "file:///C:/Users/310283735/Desktop/MigrationAndValidation/Migration/testFiles/";
+str testFilePath = "project://Migration/testFiles/";
 
 alias sourceLine = tuple[int line, str text] ; 
 
