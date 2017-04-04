@@ -8,8 +8,8 @@ import String;
 import IO;
 
 // Test file calls
-str testFilePath = "file:///C:/Users/310283735/Desktop/MigrationAndValidation/Migration/testFiles/";
 loc fileLocation(str fileName) = toLocation(testFilePath + fileName);
+str testFilePath = "file:///C:/Users/310283735/Desktop/MigrationAndValidation/Migration/testFiles/";
 
 alias sourceLine = tuple[int line, str text] ; 
 
@@ -18,27 +18,28 @@ public int parseFile(str fileName)
   int parseResult = 0;
   try 
   {
-    list[sourceLine] ambiguousLines = findAmbiguousLines(fileName);
-    if(isEmpty(ambiguousLines))
+    if(/amb(_) := doParse(fileName))
     {
-      println("--- SUCCESS on parsing <fileName> ---");
+      parseResult = 1;      
+      list[sourceLine] ambiguousLines = findAmbiguousLines(fileName);
+      loc ambiguityFile = fileLocation("lastAmbiguity");
+      writeFile(ambiguityFile, "");      
+      for(line <- ambiguousLines)
+      {
+        appendToFile(ambiguityFile, "<line.text>\r\n"); 
+        println("<line.line>:<line.text>");        
+        iprintln(diagnose(parseText(line.text)));
+      }   
     }
     else
-    { 
-      for(line <- ambiguousLines)
-      {      
-        println("<line.line>:<line.text>"); 
-        iprintln(diagnose(parseText(line.text)));
-      }
-      println("--- AMBIGUITIES found whilst parsing <fileName>");
-      parseResult = 1;      
-    }  
+    {
+      println("--- SUCCESS on parsing <fileName> ---");
+    }     
   }
   catch: 
   {
     println("--- ERROR while parsing <fileName> ---");
-    parseResult = 2 ;
-        
+    parseResult = 2 ;        
   }  
   return parseResult;
 }
@@ -50,12 +51,25 @@ int fileSize(str fileName) = size(fileLines(fileName));
 list[str] fileLines(str fileName) = readFileLines(fileLocation(fileName));
 
 // parse functions
-private bool isAmbiguous(str textLine) = /amb(_) := parseText(textLine);
+private bool isAmbiguous(str textLine)
+{
+  try
+  {
+    return /amb(_) := parseText(textLine);
+  }
+  catch:
+  {
+    ;
+  }
+  return false;
+}
 
 start [Pds] doParse(str fileName) = doParse(fileLocation(fileName)); 
 start [Pds] doParse(loc fileLoc) = parseText(readFile(fileLoc)); 
 start [Pds] parseText(str textLine) = parse(#start[Pds], textLine); 
 
 // render functions (trees)
-void renderTree(str textToRender) = renderParsetree(parseText(textToRender));
 void renderFile(str fileToRender) = renderParsetree(doParse(fileToRender));
+
+// test calls
+test bool testAmbiguities() = 0 == parseFile("ambiguityIssues");
