@@ -1,0 +1,2 @@
+! This file contains the lines which result in ambiguity during the parsing
+! Parsing this file should yield unambiguous results.
