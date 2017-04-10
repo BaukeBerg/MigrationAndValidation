@@ -2,7 +2,7 @@ module Parser
 
 import Ambiguity;
 import IO;
-import Locations;
+import FileLocations;
 import PC20Syntax;
 import ParseTree;
 import vis::ParseTree;
@@ -23,7 +23,7 @@ public int parseFile(str fileName)
       writeFile(ambiguityFile, "");      
       for(line <- ambiguousLines)
       {
-        appendToFile(ambiguityFile, "<line.text>\r\n"); 
+        addToFile(ambiguityFile, "<line.text>\r\n"); 
         println("<line.line>:<line.text>");        
         iprintln(diagnose(parseText(line.text)));
       }   
