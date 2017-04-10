@@ -1,6 +1,8 @@
 module utility::TestUtility
 
 import IO;
+import String;
+
 import utility::ListUtility;
 
 bool expectFalse(bool testMe) = expectEqual(false, testMe);
@@ -20,12 +22,22 @@ bool expectEqual(&T expected, &T actual, loc fileToStore)
   return result;
 }
 
+bool expectEqual(str expected, str actual)
+{
+  if(expected != actual)
+  {
+    iprintln("Expected: --\><expected>\<-- size: <size(expected)>, received --\><actual>\<-- size: <size(actual)>");
+    return false;
+  }
+  return true;
+}
+
 // Prints the resuls when they are not expected, faster debugging of tests
 bool expectEqual(&T expected, &T actual)
 {
   if(expected != actual)
   {
-    iprintln("Expected: <expected>, but received <actual>");
+    iprintln("Expected: <expected>, but received <actual>");    
     return false;
   }
   return true;
