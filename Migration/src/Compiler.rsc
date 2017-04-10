@@ -8,6 +8,8 @@ import PC20Syntax;
 import Prelude;
 import String;
 
+import utility::StringUtility;
+
 map[str label, str lineNumber] labels;
 
 private int compiledStringLength = 24;
@@ -71,8 +73,7 @@ void handleInstruction(Instruction I)
 
 str formatLine(int lineNumber) = padLength(format(lineNumber));
 str formatLine(int lineNumber, int progCounter, int instruction, &T address) = padLength("<format(lineNumber)> <format(progCounter)> <format(instruction, 2)> <format(address)>");
-str padLength(str inputString) = padString(inputString, compiledStringLength);
-
+str padLength(str inputString) = padString(inputString, " ", compiledStringLength);
 
 str format(real realValue) = format(split(".", "<realValue>"));
 str format(list[str] addressData) = "<format(toInt(addressData[0]),5)>.<format(toInt(addressData[1]),1)>"; 
