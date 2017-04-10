@@ -9,6 +9,7 @@ import Prelude;
 import String;
 
 import utility::StringUtility;
+import utility::FileUtility;
 
 map[str label, str lineNumber] labels;
 
@@ -25,24 +26,27 @@ void compile(str fileName)
   resetData();
   tree = visit(doParse(fileName))
   {
-    case label L:
+    case Label L:
     {
-      storeLabel(L);
+      ;
     }  
     case PdsComment C:
     {
-      handleComment(C);
+      compiledLines += formatLine(lineCounter);
+      lineCounter +=1;
     } 
-    case Instruction I:
-    { 
-      handleInstruction(I);
+    case IdentifierInstruction I:
+    {
+      compiledLines += handleInstruction(I, lineCounter, progCounter);      
+      lineCounter += 1;
+      progCounter += 1;      
     }
     case Variable V:
     {
       substitute(V);
     }
   }
-  iprintln(compiledLines);  
+  addToFile(generatedFile("compiledData"),compiledLines);  
 }
 
 void resetData()
@@ -52,20 +56,6 @@ void resetData()
   labels = ("":"");
   compiledLines = [];  
 }
-
-void storeLabel(Label L)
-{
-  ;
-  //  println("Label: <L>, line: <convertLine(progCounter)>");
-  //  labels += ("<L>": convertLine(progCounter));
-}
-
-void handleComment(PdsComment C, compiledLines)
-{
-  compiledLines += formatLine(lineCounter, "", "<C>\r\n");
-  lineCounter += 1;
-  return compiledLines;
-} 
 
 list[str] handleNop(int amount, int lineNumber, int progCounter)
 {
@@ -79,9 +69,23 @@ list[str] handleNop(int amount, int lineNumber, int progCounter)
   return compiledLines;
 }
 
-void handleInstruction(Instruction I)
+str handleInstruction(IdentifierInstruction I, int lineNumber, int progCounter)
 {
-  ;//iprintln(I);
+  int instruction = -1;
+  visit(I)
+  {
+    case IdentifierInstructionName A:
+      instruction = instructionNumber(A);      
+    case AmountInstructionName A:
+      instruction = instructionNumber(A);
+    case LabelInstructionName A:
+      instruction = instructionNumber(A);    
+    case NOP:
+      instruction = 0;
+    case RET:
+      instruction = 26;
+  }
+  return formattedLine = formatLine(lineNumber, progCounter, instruction, 0); 
 }
 
 str formatLine(int lineNumber) = padLength(format(lineNumber));
@@ -115,5 +119,53 @@ void substitute(Variable V)
   }
 }
 
+int instructionNumber(LabelInstructionName name)
+{
+  switch(name)
+  {
+    case JSAF: return 24;
+    case JSAT: return 25;
+    case JBRF: return 29;
+    case JFRF: return 30; 
+    default: iprintln("Unknown instruction: <name>");       
+  }   
+  return -1;
+}
 
+int instructionNumber(IdentifierInstructionName name)
+{
+  switch(name)
+  {
+    case TRIG: return 1;
+    case EQL: return 2;
+    case EQLNT: return 3;
+    case SHFTL: return 4;
+    case SHFTR: return 5;
+    case CNTD: return 6;
+    case CNTU: return 7;
+    case SET0: return 8;
+    case SET1: return 9;
+    case STRB: return 10;
+    case FTCHB: return 11;
+    case FTCHC: return 12;
+    case FTCHD: return 13;
+    case STRD: return 14;
+    case COMP: return 15;
+    case AND: return 16;
+    case ANDNT: return 17;
+    case OR: return 18;
+    case ORNT: return 19;
+    case ADD: return 20;
+    case SUBTR: return 21;
+    case MULT: return 22;
+    case DIV: return 23;
+    case RET: return 26;
+    case END: return 27;    
+    case JBRF: return 29;
+    case JFRF: return 30;
+    case LSTIO: return 31;
+    default: iprintln("Unknown instruction: <name>");
+  }
+  return -1;
+}
 
