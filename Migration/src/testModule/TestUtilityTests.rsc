@@ -20,7 +20,7 @@ test bool expectTrueTestFalse()= !expectTrue(false);
 test bool expectFalseTestTrue() = expectFalse(false);
 test bool expectFalseTestTrue() = !expectFalse(true);
 
-test bool expectDetectionOfDifferentSizeFirst() = expectFalse([], [""]);
-test bool expectDetectionOfDifferentSizeSecond() = expectFalse([""], []);
-test bool expectDetectionOfDifferentContent() = expectFalse(["A"], ["B"]);
-test bool expectDetectionOfEqualContent() = expectTrue(["A"], ["A"]);
+test bool expectDetectionOfDifferentSizeFirst() = expectFalse(expectEqual([], [""]));
+test bool expectDetectionOfDifferentSizeSecond() = expectFalse(expectEqual([""], []));
+test bool expectDetectionOfDifferentContent() = expectFalse(expectEqual(["A"], ["B"]));
+test bool expectDetectionOfEqualContent() = expectTrue(expectEqual(["A"], ["A"]));

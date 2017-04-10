@@ -60,11 +60,24 @@ void storeLabel(Label L)
   //  labels += ("<L>": convertLine(progCounter));
 }
 
-void handleComment(PdsComment C)
+void handleComment(PdsComment C, compiledLines)
 {
   compiledLines += formatLine(lineCounter, "", "<C>\r\n");
   lineCounter += 1;
+  return compiledLines;
 } 
+
+list[str] handleNop(int amount, int lineNumber, int progCounter)
+{
+  list[str] compiledLines = [];
+  for(n <- [0 .. amount])
+  {
+    compiledLines += formatLine(lineNumber, progCounter);
+    lineNumber += 1 ;
+    progCounter += 1;
+  }
+  return compiledLines;
+}
 
 void handleInstruction(Instruction I)
 {
@@ -72,6 +85,7 @@ void handleInstruction(Instruction I)
 }
 
 str formatLine(int lineNumber) = padLength(format(lineNumber));
+str formatLine(int lineNumber, int progCounter)  = padLength("<format(lineNumber)> <format(progCounter)> 00");
 str formatLine(int lineNumber, int progCounter, int instruction, &T address) = padLength("<format(lineNumber)> <format(progCounter)> <format(instruction, 2)> <format(address)>");
 str padLength(str inputString) = padString(inputString, " ", compiledStringLength);
 
