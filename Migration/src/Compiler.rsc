@@ -75,9 +75,13 @@ str handleInstruction(IdentifierInstruction I, int lineNumber, int progCounter)
   visit(I)
   {
     case IdentifierInstructionName A:
-      instruction = instructionNumber(A);      
-    case AmountInstructionName A:
+    {
       instruction = instructionNumber(A);
+    }      
+    case AmountInstructionName A:
+    {
+      instruction = instructionNumber(A);
+    }
     case LabelInstructionName A:
       instruction = instructionNumber(A);    
     case NOP:
@@ -85,7 +89,8 @@ str handleInstruction(IdentifierInstruction I, int lineNumber, int progCounter)
     case RET:
       instruction = 26;
   }
-  return formattedLine = formatLine(lineNumber, progCounter, instruction, 0); 
+  println(instruction);
+  return formatLine(lineNumber, progCounter, instruction, 0); 
 }
 
 str formatLine(int lineNumber) = padLength(format(lineNumber));
@@ -123,49 +128,64 @@ int instructionNumber(LabelInstructionName name)
 {
   switch(name)
   {
-    case JSAF: return 24;
-    case JSAT: return 25;
-    case JBRF: return 29;
-    case JFRF: return 30; 
+    case (LabelInstructionName)`JSAF`: instruction = 29;
+    case (LabelInstructionName)`JSAT`: instruction = 30;    
+    case (LabelInstructionName)`JBRF`: instruction = 29;
+    case (LabelInstructionName)`JFRF`: instruction = 30;
     default: iprintln("Unknown instruction: <name>");       
   }   
   return -1;
 }
 
-int instructionNumber(IdentifierInstructionName name)
+int instructionNumber(AmountInstructionName name)
 {
   switch(name)
   {
-    case TRIG: return 1;
-    case EQL: return 2;
-    case EQLNT: return 3;
-    case SHFTL: return 4;
-    case SHFTR: return 5;
-    case CNTD: return 6;
-    case CNTU: return 7;
-    case SET0: return 8;
-    case SET1: return 9;
-    case STRB: return 10;
-    case FTCHB: return 11;
-    case FTCHC: return 12;
-    case FTCHD: return 13;
-    case STRD: return 14;
-    case COMP: return 15;
-    case AND: return 16;
-    case ANDNT: return 17;
-    case OR: return 18;
-    case ORNT: return 19;
-    case ADD: return 20;
-    case SUBTR: return 21;
-    case MULT: return 22;
-    case DIV: return 23;
-    case RET: return 26;
-    case END: return 27;    
-    case JBRF: return 29;
-    case JFRF: return 30;
-    case LSTIO: return 31;
-    default: iprintln("Unknown instruction: <name>");
+    case (AmountInstructionName)`FTCHC`: instruction = 12;
   }
   return -1;
+}
+
+int instructionNumber(IdentifierInstructionName name)
+{
+  println(name);
+  instruction = -1;
+  switch(name)
+  {
+  
+    case (IdentifierInstructionName)`TRIG`: return 1;
+    case (IdentifierInstructionName)`EQL`: return 2;
+    case (IdentifierInstructionName)`EQLNT`: instruction = 3;
+    case (IdentifierInstructionName)`SHFTL`: instruction = 4;
+    case (IdentifierInstructionName)`SHFTR`: instruction = 5;
+    case (IdentifierInstructionName)`CNTD`: instruction = 6;
+    case (IdentifierInstructionName)`CNTU`: instruction = 7;
+    case (IdentifierInstructionName)`SET0`: instruction = 8;
+    case (IdentifierInstructionName)`SET1`: instruction = 9;
+    case (IdentifierInstructionName)`STRB`: instruction = 10;
+    case (IdentifierInstructionName)`FTCHB`: instruction = 11;
+    
+    case (IdentifierInstructionName)`FTCHD`: return 13;
+    case (IdentifierInstructionName)`STRD`: instruction = 14;
+    case (IdentifierInstructionName)`COMP`: instruction = 15;
+    case (IdentifierInstructionName)`AND`: return 16;
+    case (IdentifierInstructionName)`ANDNT`: instruction = 17;
+    case (IdentifierInstructionName)`OR`: instruction = 18;
+    case (IdentifierInstructionName)`ORNT`: instruction = 19;
+    case (IdentifierInstructionName)`ADD`: instruction = 20;
+    case (IdentifierInstructionName)`SUBTR`: instruction = 21;
+    case (IdentifierInstructionName)`MULT`: instruction = 22;
+    case (IdentifierInstructionName)`DIV`: instruction = 23;
+    
+    case (IdentifierInstructionName)`END`: instruction = 27;    
+    case (IdentifierInstructionName)`LSTIO`: instruction = 31;
+    
+    default: 
+    {
+      iprintln("Unknown instruction: <name>");
+    }
+  }
+  println(instruction);
+  return instruction;
 }
 
