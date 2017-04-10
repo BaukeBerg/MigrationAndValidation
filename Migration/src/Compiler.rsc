@@ -1,14 +1,16 @@
-module compiler
+module Compiler
 
+import FileLocations;
 import IO;
-import locations;
+import List;
 import Parser;
 import PC20Syntax;
 import Prelude;
-import string;
+import String;
 
-//alias labelList = map[str label, int lineNumber];
 map[str label, str lineNumber] labels;
+
+private int compiledStringLength = 24;
 
 int lineCounter = 0;
 int progCounter = 0;
@@ -21,11 +23,11 @@ void compile(str fileName)
   resetData();
   tree = visit(doParse(fileName))
   {
-    case label l:
+    case label L:
     {
       storeLabel(L);
     }  
-    case PdsComment c:
+    case PdsComment C:
     {
       handleComment(C);
     } 
@@ -49,15 +51,16 @@ void resetData()
   compiledLines = [];  
 }
 
-void storeLabel((Label) l)
+void storeLabel(Label L)
 {
-//  println("Label: <L>, line: <convertLine(progCounter)>");
-//  labels += ("<L>": convertLine(progCounter));
+  ;
+  //  println("Label: <L>, line: <convertLine(progCounter)>");
+  //  labels += ("<L>": convertLine(progCounter));
 }
 
-void handleComment(PdsComment c)
+void handleComment(PdsComment C)
 {
-  handleLine(lineCounter, "", "<C>\r\n");
+  compiledLines += formatLine(lineCounter, "", "<C>\r\n");
   lineCounter += 1;
 } 
 
@@ -66,30 +69,13 @@ void handleInstruction(Instruction I)
   ;//iprintln(I);
 }
 
-void handleLine(int lineNumber, int progCounter, int instruction, int address)
-{
-  compiledLines += "<convertLine(lineNumber)> <instruction>\t<input>";
-}
+str formatLine(int lineNumber) = padLength(format(lineNumber));
+str formatLine(int lineNumber, int progCounter, int instruction, &T address) = padLength("<format(lineNumber)> <format(progCounter)> <format(instruction, 2)> <format(address)>");
+str padLength(str inputString) = padString(inputString, compiledStringLength);
 
 
-void handleLine(int lineNumber, int progCounter, int instruction, real address)
-{
-  compiledLines += "<format(lineNumber)> <format(progCounter)> <format(instruction, 2)> <format(address)>\t";
-}
-
-test bool testFormat()
-{
-  return 
-}
-
-str format(real realValue)
-{
-  list[str] addressData = split(".", "<realValue>");
-  return format(addressData[0], addressData[1]);  
-}
-
-str format(str address, str bitAddress) = "<format(toInt(address),5)>.<format(toInt(bitAddress),1)>"; 
-
+str format(real realValue) = format(split(".", "<realValue>"));
+str format(list[str] addressData) = "<format(toInt(addressData[0]),5)>.<format(toInt(addressData[1]),1)>"; 
 str format(int numericValue) = format(numericValue, 5);
 str format(int numericValue, int stringSize)
 {
