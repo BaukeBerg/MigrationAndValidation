@@ -54,7 +54,7 @@ str createTryCatchHarness(str moduleName, str methodName) = "test bool try<metho
 str createTestCall(str moduleName, str methodName) = "checkAndReport(\"<moduleName>\",\"<methodName>\", <methodName>)";
 str failTestCall(str moduleName, str methodName) = "checkAndReport(\"<moduleName>\",\"!!! EXCEPTION IN <methodName> !!!\", false)";
 
-loc testReport = outputFile("TestReport.html");
+loc testReport = generatedFile("TestReport.html");
 
 void removeReport() = remove(testReport);
 
@@ -71,7 +71,7 @@ bool checkAndReport(str moduleName, str methodName, bool testResult)
 
 test bool showMeARedCell()
 {
-  return expectEqual(false, true);
+  return expectTrue(false);
 }
 
 void initializeTestReport()
