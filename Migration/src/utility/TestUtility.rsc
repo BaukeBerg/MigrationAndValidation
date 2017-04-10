@@ -26,7 +26,7 @@ bool expectEqual(str expected, str actual)
 {
   if(expected != actual)
   {
-    iprintln("Expected: --\><expected>\<-- size: <size(expected)>, received --\><actual>\<-- size: <size(actual)>");
+    iprintln("Expected: --|<expected>|-- size: <size(expected)>, received --|<actual>|-- size: <size(actual)>");
     return false;
   }
   return true;
