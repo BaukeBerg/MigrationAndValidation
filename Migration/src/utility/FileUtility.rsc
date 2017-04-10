@@ -56,6 +56,14 @@ void resetFile(loc file)
   }
 }
 
+void addToFile(loc file, list[str] text)
+{
+  for(line <- text)
+  {
+    addToFile(file, "<line>\r\n");
+  }
+}
+
 void addToFile(loc file, str text) = exists(file) ? appendToFile(file, text) : writeFile(file, text);
 
 
