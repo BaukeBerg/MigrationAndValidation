@@ -1,6 +1,7 @@
 module utility::TestUtility
 
 import IO;
+import List;
 import String;
 
 import utility::ListUtility;
@@ -20,6 +21,22 @@ bool expectEqual(&T expected, &T actual, loc fileToStore)
   bool result = expectEqual(expected, actual);
   writeFile(fileToStore, actual);
   return result;
+}
+
+bool expectEqual(list[str] expected, list[str] actual)
+{
+  if(!expectEqual(size(expected), size(actual)))
+  {
+    println("list differ in size");
+    return false;
+  }
+  
+  for(n <- [0.. size(actual)], !expectEqual(expected[n], actual[n]))
+  {
+    println("list contents differ");
+    return false;
+  }
+  return true;
 }
 
 bool expectEqual(str expected, str actual)
