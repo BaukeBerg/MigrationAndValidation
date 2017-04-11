@@ -18,5 +18,11 @@ list[str] multipleNop = [padString("00010 00005 00",24), padString("00011 00006 
 
 test bool testMultipleNop() = expectEqual(multipleNop, handleNop(3, 10, 5));
 
+test bool testSimplePair()
+{
+  compile("Sample.PRG", "Sample.SYM");
+}
+
+
 
 
