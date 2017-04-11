@@ -14,7 +14,7 @@ syntax Symbol = Declaration
               | PdsComment              
               ; 
 
-lexical Declaration = VariableName + WhiteSpace+ "=" Address;
+lexical Declaration = VariableName + WhiteSpace+ "=" Address ;
 
 lexical UnreferencedDeclaration = "=" + Address ;
                     
@@ -111,5 +111,5 @@ syntax Address = BitAddress | WordAddress ;
 lexical BitAddress = WhiteSpace+[0-9]+ !>> [0-9] + "." + [0-7];
 lexical WordAddress = WhiteSpace+[0-9][0-9][0-9][0-9] ;
 lexical Variable = WhiteSpace+ + VariableName ;
-lexical VariableName = [A-Z][A-Z_0-9,]* !>> [A-Z_0-9,]+ ;
+lexical VariableName = [A-Z][A-Z_0-9,]* !>> [A-Z_0-9,]+ !>> [A-Z_0-9] ;
 lexical Amount = WhiteSpace+[0-9]+ !>> [0-9];  
