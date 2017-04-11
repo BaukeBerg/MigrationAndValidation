@@ -11,13 +11,3 @@ public str clipString(str stringToClip, str startToken, str endToken) = clipStri
 public str clipString(str stringToClip, str startToken, str endToken, str splitToken) = clipString(stringToClip, findFirst(stringToClip, startToken), findFirst(stringToClip, endToken) + size(endToken), splitToken);
 public str clipString(str stringToClip, int startPos, int endPos) = clipString(stringToClip, startPos, endPos, ""); 
 public str clipString(str stringToClip, int startPos, int endPos, str split) = substring(stringToClip, 0, startPos) + split + substring(stringToClip, endPos);
-
-public str padString(str stringToPad, int desiredLength) = padString(stringToPad, " ", desiredLength);
-public str padString(str stringToPad, str token, int desiredLength)
-{
-  while(desiredLength > size(stringToPad))
-  {
-    stringToPad += token;
-  }
-  return stringToPad;   
-}
