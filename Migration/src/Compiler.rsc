@@ -7,6 +7,7 @@ import Parser;
 import PC20Syntax;
 import Prelude;
 import String;
+import SymbolTable;
 
 import utility::StringUtility;
 import utility::FileUtility;
@@ -19,34 +20,33 @@ int lineCounter = 0;
 int progCounter = 0;
 list[str] compiledLines = [];
 
-void compilePds() = compile("DR_TOT_3.PRG");
+void compilePds() = compile("DR_TOT_3.PRG", "DR_TOT_3.SYM");
 
-void compile(str fileName)
+void compile(str file) = compile("<file>.PRG", "<file>.SYM");
+
+void compile(str sourceFile, str symbolTableFile)
 {
-  resetData();
-  tree = visit(doParse(fileName))
+  symbolTable = generateSymbolTable(symbolTableFile);
+  resetData();  
+  
+  visit(generateSourceTree(sourceFile))
   {
     case Label L:
     {
-      ;
-    }  
+      println("Label: <L>");
+    }
+    case Instruction I:
+    {
+      compiledLines += handleInstruction(I, lineCounter, progCounter, symbolTable);
+      progCounter += 1 ;
+      lineCounter += 1;
+    }
     case PdsComment C:
     {
-      compiledLines += formatLine(lineCounter);
-      lineCounter +=1;
-    } 
-    case IdentifierInstruction I:
-    {
-      compiledLines += handleInstruction(I, lineCounter, progCounter);      
-      lineCounter += 1;
-      progCounter += 1;      
-    }
-    case Variable V:
-    {
-      substitute(V);
-    }
-  }
-  addToFile(generatedFile("compiledData"),compiledLines);  
+      println("Comment: <C>");
+    }  
+  }    
+  writeToFile(generatedFile("compiledData"),compiledLines);  
 }
 
 void resetData()
@@ -69,47 +69,47 @@ list[str] handleNop(int amount, int lineNumber, int progCounter)
   return compiledLines;
 }
 
-str handleInstruction(IdentifierInstruction I, int lineNumber, int progCounter)
+str handleInstruction(&T I, int lineNumber, int progCounter, symbolTable table)
 {
-  int instruction = -1;
+  instruction = -1;
+  address = "";  
   visit(I)
   {
-    case IdentifierInstructionName A:
-    {
+    case IdentifierInstructionName I: 
+      instruction = instructionNumber(I);          
+    case AmountInstructionName A: 
       instruction = instructionNumber(A);
-    }      
-    case AmountInstructionName A:
-    {
-      instruction = instructionNumber(A);
-    }
-    case LabelInstructionName A:
-      instruction = instructionNumber(A);    
-    case NOP:
+    case LabelInstructionName L: 
+      instruction = instructionNumber(L);
+    case NopInstruction N:
       instruction = 0;
-    case RET:
+    case PlainInstruction P:
       instruction = 26;
+    case Variable V:    
+      address = convertVariable(V, table);
+    case Address A:
+      address = trim("<A>");    
+  }  
+  return formatLine(lineNumber, progCounter, instruction, format(address, contains(address, ".") ? 7 : 5));   
+}
+
+str convertVariable(Variable V, symbolTable table)
+{
+  for(symbol <- table, trim("<V>") == symbol.name)
+  {
+    println("<V> resolves to <symbol.address>");
+    return symbol.address;
   }
-  println(instruction);
-  return formatLine(lineNumber, progCounter, instruction, 0); 
+  return UnknownIdentifier(I);
 }
 
 str formatLine(int lineNumber) = padLength(format(lineNumber));
 str formatLine(int lineNumber, int progCounter)  = padLength("<format(lineNumber)> <format(progCounter)> 00");
-str formatLine(int lineNumber, int progCounter, int instruction, &T address) = padLength("<format(lineNumber)> <format(progCounter)> <format(instruction, 2)> <format(address)>");
-str padLength(str inputString) = padString(inputString, " ", compiledStringLength);
-
-str format(real realValue) = format(split(".", "<realValue>"));
-str format(list[str] addressData) = "<format(toInt(addressData[0]),5)>.<format(toInt(addressData[1]),1)>"; 
+str formatLine(int lineNumber, int progCounter, int instruction, str address) = padLength("<format(lineNumber)> <format(progCounter)> <format(instruction, 2)> <address>");
+str padLength(str inputString) = left(inputString, " ", compiledStringLength);
 str format(int numericValue) = format(numericValue, 5);
-str format(int numericValue, int stringSize)
-{
-  str number = "<numericValue>";
-  while(stringSize > size(number))
-  {
-    number = "0" + number;
-  }
-  return number;  
-}
+str format(int numericValue, int stringSize) = format("<numericValue>", stringSize);
+str format(str stringValue, int stringSize) = right(stringValue, stringSize, "0");
 
 void substitute(Variable V)
 {
@@ -128,64 +128,87 @@ int instructionNumber(LabelInstructionName name)
 {
   switch(name)
   {
-    case (LabelInstructionName)`JSAF`: instruction = 29;
-    case (LabelInstructionName)`JSAT`: instruction = 30;    
-    case (LabelInstructionName)`JBRF`: instruction = 29;
-    case (LabelInstructionName)`JFRF`: instruction = 30;
-    default: iprintln("Unknown instruction: <name>");       
+    case (LabelInstructionName)`JSAF`: return 29;
+    case (LabelInstructionName)`JSAT`: return 30;    
+    case (LabelInstructionName)`JBRF`: return 29;
+    case (LabelInstructionName)`JFRF`: return 30;         
   }   
-  return -1;
+  return UnknownInstruction("Label: <name>");
 }
 
 int instructionNumber(AmountInstructionName name)
 {
   switch(name)
   {
-    case (AmountInstructionName)`FTCHC`: instruction = 12;
+    case (AmountInstructionName)`FTCHC`: return 12;
   }
-  return -1;
+  return UnknownInstruction("Amount: <name>");
 }
 
 int instructionNumber(IdentifierInstructionName name)
 {
-  println(name);
-  instruction = -1;
   switch(name)
-  {
-  
+  {  
     case (IdentifierInstructionName)`TRIG`: return 1;
     case (IdentifierInstructionName)`EQL`: return 2;
-    case (IdentifierInstructionName)`EQLNT`: instruction = 3;
-    case (IdentifierInstructionName)`SHFTL`: instruction = 4;
-    case (IdentifierInstructionName)`SHFTR`: instruction = 5;
-    case (IdentifierInstructionName)`CNTD`: instruction = 6;
-    case (IdentifierInstructionName)`CNTU`: instruction = 7;
-    case (IdentifierInstructionName)`SET0`: instruction = 8;
-    case (IdentifierInstructionName)`SET1`: instruction = 9;
-    case (IdentifierInstructionName)`STRB`: instruction = 10;
-    case (IdentifierInstructionName)`FTCHB`: instruction = 11;
+    case (IdentifierInstructionName)`EQLNT`: return 3;
+    case (IdentifierInstructionName)`SHFTL`: return 4;
+    case (IdentifierInstructionName)`SHFTR`: return 5;
+    case (IdentifierInstructionName)`CNTD`: return 6;
+    case (IdentifierInstructionName)`CNTU`: return 7;
+    case (IdentifierInstructionName)`SET0`: return 8;
+    case (IdentifierInstructionName)`SET1`: return 9;
+    case (IdentifierInstructionName)`STRB`: return 10;
+    case (IdentifierInstructionName)`FTCHB`: return 11;
     
     case (IdentifierInstructionName)`FTCHD`: return 13;
-    case (IdentifierInstructionName)`STRD`: instruction = 14;
-    case (IdentifierInstructionName)`COMP`: instruction = 15;
+    case (IdentifierInstructionName)`STRD`: return 14;
+    case (IdentifierInstructionName)`COMP`: return 15;
     case (IdentifierInstructionName)`AND`: return 16;
-    case (IdentifierInstructionName)`ANDNT`: instruction = 17;
-    case (IdentifierInstructionName)`OR`: instruction = 18;
-    case (IdentifierInstructionName)`ORNT`: instruction = 19;
-    case (IdentifierInstructionName)`ADD`: instruction = 20;
-    case (IdentifierInstructionName)`SUBTR`: instruction = 21;
-    case (IdentifierInstructionName)`MULT`: instruction = 22;
-    case (IdentifierInstructionName)`DIV`: instruction = 23;
+    case (IdentifierInstructionName)`ANDNT`: return 17;
+    case (IdentifierInstructionName)`OR`: return 18;
+    case (IdentifierInstructionName)`ORNT`: return 19;
+    case (IdentifierInstructionName)`ADD`: return 20;
+    case (IdentifierInstructionName)`SUBTR`: return 21;
+    case (IdentifierInstructionName)`MULT`: return 22;
+    case (IdentifierInstructionName)`DIV`: return 23;
     
-    case (IdentifierInstructionName)`END`: instruction = 27;    
-    case (IdentifierInstructionName)`LSTIO`: instruction = 31;
-    
-    default: 
-    {
-      iprintln("Unknown instruction: <name>");
-    }
+    case (IdentifierInstructionName)`END`: return 27;    
+    case (IdentifierInstructionName)`LSTIO`: return 31;
   }
-  println(instruction);
-  return instruction;
+  return UnknownInstruction("Identifier: <name>");
 }
 
+int UnknownInstruction(&T instruction)
+{
+  println("Unknown Instruction: <instruction>");
+  return -1;
+}
+
+str convertIdentifier(Identifier I)
+{
+  switch(I)
+  {
+    case BitAddress B: return "<B>";
+    case WordAddress W: "<W>";
+    case Variable V: return lookup("<V>");
+  }
+  return UnknownIdentifier(I);  
+}
+
+str lookup(Variable V)
+{
+  try{
+    return symbolTable.indexOf("<V>");
+  }
+  catch:
+  {
+    return UnknownIdentifier(V);
+  };    
+}
+
+str UnknownIdentifier(&T identifier)
+{
+  println("Unknown Identifier: <identifier>");
+  return "UNKNOWN-IDENTIFIER";
+}
