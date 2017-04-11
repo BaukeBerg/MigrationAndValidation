@@ -3,45 +3,45 @@ module SymbolTable
 import IO;
 import Parser;
 import PC20Syntax;
+import String;
+
+import utility::Debugging;
 
 alias symbolTable = list[symbol];
-alias symbol = tuple[str name, str address, str comment];
+alias symbol = tuple[str name, str address];
 
 symbolTable generateSymbolTable(str fileName)
 {
   symbolTable = [];
-  visit(parseSymbol(fileName))
+  visit(generateSymbolTree(fileName))
   {
     case Declaration D:
-        symbolTable += processDeclaration(D);
-    case PdsComment C:
-        println(C);
+    {
+      symbolTable += processDeclaration(D);      
+    }
     case UnreferencedDeclaration UD:
-      println(UD);
-                  
+    {
+      println("Unreferenced declaration: <UD>");
+    }                  
   }
-  iprintln(symbolTable);
+  debugPrint(symbolTable);
   return symbolTable;
 }
 
 symbol processDeclaration(&T D)
 {
-  symbol extractedSymbol = <"", "", "">;
+  symbol extractedSymbol = <"", "">;
   visit(D)
   {
     case VariableName N:
     {
-      println("<N>");
-      extractedSymbol.name = "trim(<N>)";
+      debugPrint("<N>");
+      extractedSymbol.name = "<trim("<N>")>";
     }
     case Address A:
     {
-      extractedSymbol.address = "trim(<A>)";
-    }
-    case PdsComment C:
-    {
-      extractedSymbol.comment = "<C>";
-    }      
+      extractedSymbol.address = "<trim("<A>")>";
+    }       
   }  
   return extractedSymbol;     
 }
