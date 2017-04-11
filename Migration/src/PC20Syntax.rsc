@@ -6,6 +6,18 @@ syntax Expression = Label
                     | Instruction
                     | PdsComment
                     ;
+
+start syntax PlcSymbols = Symbol+ ;
+
+syntax Symbol = Declaration
+              | UnreferencedDeclaration
+              | PdsComment              
+              ; 
+
+lexical Declaration = VariableName + WhiteSpace+ "=" Address;
+
+lexical UnreferencedDeclaration = "=" + Address ;
+                    
 public layout LS = [\ \t\r\n]* !>> [\ \t\r\n]
                    ;
 
@@ -93,10 +105,11 @@ lexical END = "END";
 lexical JBRF = "JBRF";
 lexical JFRF = "JFRF";
 lexical LSTIO = "LSTIO";
-    
-                    
-syntax Identifier = BitAddress | WordAddress | Variable;
-lexical Amount = WhiteSpace+[0-9]+ !>> [0-9];
-lexical Variable = WhiteSpace+[A-Z][A-Z_0-9,]* !>> [A-Z_0-9,]+ ; 
+                  
+syntax Identifier = Address | Variable;
+syntax Address = BitAddress | WordAddress ; 
 lexical BitAddress = WhiteSpace+[0-9]+ !>> [0-9] + "." + [0-7];
 lexical WordAddress = WhiteSpace+[0-9][0-9][0-9][0-9] ;
+lexical Variable = WhiteSpace+ + VariableName ;
+lexical VariableName = [A-Z][A-Z_0-9,]* !>> [A-Z_0-9,]+ ;
+lexical Amount = WhiteSpace+[0-9]+ !>> [0-9];  
