@@ -16,6 +16,9 @@ public int parseSymbolTable() = parsePdsSymbols("DR_TOT_3.SYM");
 public int parsePdsSource(str fileName) = parseFile(fileName, #start[PC20]);
 public int parsePdsSymbols(str fileName) = parseFile(fileName, #start[PlcSymbols]);
 
+public Tree generateSourceTree(str fileName) = doParse(fileName, #start[PC20]);
+public Tree generateSymbolTree(str fileName) = doParse(fileName, #start[PlcSymbols]);
+
 alias sourceLine = tuple[int line, str text] ; 
 
 public int parseFile(str fileName, &T syntaxType) 
@@ -27,7 +30,7 @@ public int parseFile(str fileName, &T syntaxType)
     {
       parseResult = 1;      
       list[sourceLine] ambiguousLines = findAmbiguousLines(fileName, syntaxType);
-      loc ambiguityFile = testFile("lastAmbiguity");
+      loc ambiguityFile = generatedFile("lastAmbiguity");
       writeFile(ambiguityFile, "");      
       for(line <- ambiguousLines)
       {
