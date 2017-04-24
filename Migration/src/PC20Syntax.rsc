@@ -13,6 +13,10 @@ syntax Symbol = Declaration
               | UnreferencedDeclaration
               | PdsComment              
               ; 
+              
+start syntax LabelList = LabelLocation+ ;
+
+lexical LabelLocation = Label + ":" + LineNumber ;         
 
 lexical Declaration = VariableName + WhiteSpace+ "=" Address ;
 
@@ -35,12 +39,13 @@ lexical Instruction = AmountInstruction
                     | LabelInstruction
                     ;
                      
+                     
 lexical AmountInstruction = AmountInstructionName + Amount;
 lexical IdentifierInstruction = IdentifierInstructionName + Identifier ;
 syntax LabelInstruction = LabelInstructionName + (Label | ProgramLine) ;
 lexical PlainInstruction = RET ;
 lexical NopInstruction = NOP + Amount?;
-                        
+                                     
 lexical AmountInstructionName = FTCHC ;
 lexical IdentifierInstructionName = TRIG   // 01 Rising Edge Detection
                                   | EQL    // 02 EQUALS
@@ -112,4 +117,5 @@ lexical BitAddress = WhiteSpace+[0-9]+ !>> [0-9] + "." + [0-7];
 lexical WordAddress = WhiteSpace+[0-9][0-9][0-9][0-9] ;
 lexical Variable = WhiteSpace+ + VariableName ;
 lexical VariableName = [A-Z][A-Z_0-9,]* !>> [A-Z_0-9,]+ !>> [A-Z_0-9] ;
-lexical Amount = WhiteSpace+[0-9]+ !>> [0-9];  
+lexical Amount = WhiteSpace+[0-9]+ !>> [0-9]; 
+lexical LineNumber = WhiteSpace* !>> WhiteSpace + [0-9]+ !>> [0-9] ; 
