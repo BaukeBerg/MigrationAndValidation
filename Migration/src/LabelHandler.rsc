@@ -23,6 +23,11 @@ LabelList extractLabelList(str fileName)
   return labels;
 } 
 
+LabelDeclaration composeLabel(str label, int progLine)
+{
+  return <label, "<progLine>">;  
+}
+
 LabelDeclaration extractLabel(LabelLocation L)
 {
   LabelDeclaration l = <"","">;
