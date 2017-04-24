@@ -3,7 +3,7 @@ module utility::Debugging
 import DateTime;
 import IO;
 
-bool debuggingEnabled = false;
+bool debuggingEnabled = true;
 
 public void debugPrint(&T itemToPrint)
 {
