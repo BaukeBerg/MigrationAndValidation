@@ -24,6 +24,7 @@ test bool testSimplePair()
   return true;
 }
 
-
-
-
+test bool testLabels()
+{
+  LabelList list = compile("DR_TOT_3.PRG").labelList;
+  
