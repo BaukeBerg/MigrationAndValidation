@@ -22,7 +22,7 @@ void generateStrippedFile(str fileName)
     appendToFile(generatedFile("strippedLines"), lines[lineNumber] + "\r\n");
   }
   printDuration("line by line, using Prelude.", startTime);
-  startTime = startDutation();
+  startTime = startDuration();
   addToFile(generatedFile("strippedLines2"), lines);
   printDuration("checking existence every line.", startTime);
 }
