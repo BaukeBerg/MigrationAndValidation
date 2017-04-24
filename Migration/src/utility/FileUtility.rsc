@@ -64,9 +64,13 @@ void writeToFile(loc file, list[str] text)
 
 void addToFile(loc file, list[str] text)
 {
-  for(line <- text)
+  for(line <- size(text))
   {
-    addToFile(file, "<line>\r\n");
+    if(0 == line % 100)
+    {
+      println("<100.0 * lineNumber/size(text)>%");  
+    }
+    addToFile(file, "<text[line]>\r\n");
   }
 }
 

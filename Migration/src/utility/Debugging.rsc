@@ -12,6 +12,8 @@ public void debugPrint(&T itemToPrint)
     println(itemToPrint);
   }
 }
+
+datetime startDuration() = now();
 public void printDuration(datetime startTime) = duration("", startTime);
 public void printDuration(str prefix, datetime startTime) = println("<prefix> duration: <createDuration(startTime, now())>");
 
