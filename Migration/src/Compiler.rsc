@@ -14,54 +14,42 @@ import utility::Debugging;
 import utility::FileUtility;
 import utility::StringUtility;
 
+alias CompiledData = tuple[list[str] compiledLines, LabelList labels];
+
+void compilePds() = compileToFile("DR_TOT_3");
+void compileToFile(str file) = writeToFile(generatedFile("<file>.compiled"),compile(file).compiledLines);
+
 private int nopLength = 15;
 private int compiledStringLength = 24;
 
-int lineCounter = 0;
-int progCounter = 0;
-list[str] compiledLines = [];
 
-LabelList labels;
-
-void compilePds() = compileToFile("DR_TOT_3");
-void compileToFile(str file) = writeToFile(generatedFile("<file>.compiled"),compile(file));
-
-list[str] compile(str file) = compile("<file>.PRG", "<file>.SYM");
-list[str] compile(str sourceFile, str symbolTableFile)
+CompiledData compile(str file) = compile("<file>.PRG", "<file>.SYM");
+CompiledData compile(str sourceFile, str symbolTableFile)
 {
+  LabelList labels = [];
   debugPrint("Generating symbol table");
   symbolTable = generateSymbolTable(symbolTableFile);  
-  resetData();  
+  progCounter = 0;
+  lineCounter = 0;
+  compiledLines = [];
   debugPrint("Visiting ast");
   visit(generateSourceTree(sourceFile))
   {
     case Label L:
     {
-      println("Label: <L>");
-      labels["<L>", progCounter]; 
+      labels += composeLabel("<L>", progCounter); 
     }
     case Instruction I:
     {
+      println("Handling instruction: <lineCounter>, <progCounter>" );
       compiledLines += handleInstruction(I, lineCounter, progCounter, symbolTable);
       progCounter += 1 ;
       lineCounter += 1;
-    }
-    case PdsComment C:
-    {
-      println("Comment: <C>");
-    }  
+    }      
   }  
   debugPrint("Handled!");
-  return compiledLines; 
+  return <compiledLines, labels>;
     
-}
-
-void resetData()
-{
-  lineCounter = 0;
-  progCounter = 0;  
-  labels = ("":"");
-  compiledLines = [];  
 }
 
 list[str] handleNop(int amount, int lineNumber, int progCounter)
@@ -97,14 +85,13 @@ str handleInstruction(&T I, int lineNumber, int progCounter, symbolTable table)
     case Address A:
       address = trim("<A>");    
   }  
-  return formatLine(lineNumber, progCounter, instruction, format(address, contains(address, ".") ? 7 : 5));   
+  return formatLine(lineNumber, progCounter, instruction, format(address, 5));   
 }
 
 str convertVariable(Variable V, symbolTable table)
 {
   for(symbol <- table, trim("<V>") == symbol.name)
   {
-    println("<V> resolves to <symbol.address>");
     return symbol.address;
   }
   return UnknownIdentifier(I);
