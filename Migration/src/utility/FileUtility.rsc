@@ -64,7 +64,7 @@ void writeToFile(loc file, list[str] text)
 
 void addToFile(loc file, list[str] text)
 {
-  for(line <- size(text))
+  for(line <- [0..size(text)])
   {
     if(0 == line % 100)
     {
