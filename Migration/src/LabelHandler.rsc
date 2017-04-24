@@ -8,29 +8,33 @@ import String;
 
 import utility::ListUtility;
 
-alias LabelList = map[str label, str lineNumber];
-
+alias LabelList = list[LabelDeclaration];
+alias LabelDeclaration = tuple[str label, str lineNumber];
 LabelList extractLabelList(str fileName)
 {
-  LabelList labels = ();
+  LabelList labels = [];
   visit(parseText(extractLabelString(fileName), #start[LabelList]))
   {
     case LabelLocation L:
     {
-      str Label = "";
-      str Line = "";
-      visit(L)
-      {
-        case Label L:
-          Label = "<L>";
-        case LineNumber L:
-          Line = "<L>";
-      }      
-      labels[Label] = Line;
+      labels += [extractLabel(L)];      
     }
   }
   return labels;
 } 
+
+LabelDeclaration extractLabel(LabelLocation L)
+{
+  LabelDeclaration l = <"","">;
+  visit(L)
+  {
+    case Label L:
+      l.label = "<L>";
+    case LineNumber L:
+      l.lineNumber = "<L>";
+  }      
+  return l;
+ }
 
 str extractLabelString(str fileName)
 {
