@@ -2,6 +2,7 @@ module Compiler
 
 import FileLocations;
 import IO;
+import LabelHandler;
 import List;
 import Parser;
 import PC20Syntax;
@@ -9,31 +10,35 @@ import Prelude;
 import String;
 import SymbolTable;
 
-import utility::StringUtility;
+import utility::Debugging;
 import utility::FileUtility;
+import utility::StringUtility;
 
-map[str label, str lineNumber] labels;
-
+private int nopLength = 15;
 private int compiledStringLength = 24;
 
 int lineCounter = 0;
 int progCounter = 0;
 list[str] compiledLines = [];
 
-void compilePds() = compile("DR_TOT_3.PRG", "DR_TOT_3.SYM");
+LabelList labels;
 
-void compile(str file) = compile("<file>.PRG", "<file>.SYM");
+void compilePds() = compileToFile("DR_TOT_3");
+void compileToFile(str file) = writeToFile(generatedFile("<file>.compiled"),compile(file));
 
-void compile(str sourceFile, str symbolTableFile)
+list[str] compile(str file) = compile("<file>.PRG", "<file>.SYM");
+list[str] compile(str sourceFile, str symbolTableFile)
 {
-  symbolTable = generateSymbolTable(symbolTableFile);
+  debugPrint("Generating symbol table");
+  symbolTable = generateSymbolTable(symbolTableFile);  
   resetData();  
-  
+  debugPrint("Visiting ast");
   visit(generateSourceTree(sourceFile))
   {
     case Label L:
     {
       println("Label: <L>");
+      labels["<L>", progCounter]; 
     }
     case Instruction I:
     {
@@ -45,8 +50,10 @@ void compile(str sourceFile, str symbolTableFile)
     {
       println("Comment: <C>");
     }  
-  }    
-  writeToFile(generatedFile("compiledData"),compiledLines);  
+  }  
+  debugPrint("Handled!");
+  return compiledLines; 
+    
 }
 
 void resetData()
@@ -103,13 +110,13 @@ str convertVariable(Variable V, symbolTable table)
   return UnknownIdentifier(I);
 }
 
-str formatLine(int lineNumber) = padLength(format(lineNumber));
-str formatLine(int lineNumber, int progCounter)  = padLength("<format(lineNumber)> <format(progCounter)> 00");
-str formatLine(int lineNumber, int progCounter, int instruction, str address) = padLength("<format(lineNumber)> <format(progCounter)> <format(instruction, 2)> <address>");
-str padLength(str inputString) = left(inputString, " ", compiledStringLength);
+str formatLine(int lineNumber) = padLength(format(lineNumber), compiledStringLength);
+str formatLine(int lineNumber, int progCounter)  = padLength("<format(lineNumber)> <format(progCounter)> 00", nopLength);
+str formatLine(int lineNumber, int progCounter, int instruction, str address) = padLength("<format(lineNumber)> <format(progCounter)> <format(instruction, 2)> <format(address,5)>", compiledStringLength);
+str padLength(str inputString, int outputSize) = left(inputString, outputSize, " ");
 str format(int numericValue) = format(numericValue, 5);
 str format(int numericValue, int stringSize) = format("<numericValue>", stringSize);
-str format(str stringValue, int stringSize) = right(stringValue, stringSize, "0");
+str format(str stringValue, int stringSize) = contains(stringValue, ".") ? right(stringValue, stringSize+2, "0") : right(stringValue, stringSize, "0") ;
 
 void substitute(Variable V)
 {
