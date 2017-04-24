@@ -59,7 +59,8 @@ int fileSize(str fileName) = size(fileLines(fileName));
 list[str] fileLines(str fileName) = readFileLines(testFile(fileName));
 
 // parse functions
-private bool isAmbiguous(str textLine, &T syntaxType)
+public bool isUnAmbiguous(str textLine, &T syntaxType) = false == isAmbiguous(textLine, syntaxType);
+public bool isAmbiguous(str textLine, &T syntaxType)
 {
   try
   {
