@@ -19,6 +19,3 @@ str inlineCommentString = "Hello/*InlineComment*/GoodBye";
 
 test bool testClipString() = expectEqual("HelloGoodBye", clipString(inlineCommentString, "/*", "*/"));
 test bool testClipStringWithSplit() = expectEqual("Hello\r\nGoodBye", clipString(inlineCommentString, "/*", "*/", "\r\n")); 
-
-test bool testSpecificPadding() = expectEqual("10aaa", padString("10", "a", 6));
-test bool testDefaultPadding() = expectEqual("10    ", padString("10", 6));
