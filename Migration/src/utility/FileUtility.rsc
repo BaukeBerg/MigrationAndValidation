@@ -56,13 +56,13 @@ void resetFile(loc file)
   }
 }
 
-void writeToFile(loc file, list[str] text)
+void writeToFile(loc file, list[&T] text)
 {
   resetFile(file);
   addToFile(file, text);
 }
 
-void addToFile(loc file, list[str] text)
+void addToFile(loc file, list[&T] text)
 {
   for(line <- [0..size(text)])
   {
