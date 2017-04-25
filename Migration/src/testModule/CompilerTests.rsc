@@ -2,6 +2,8 @@ module testModule::CompilerTests
 
 import Compiler;
 import List;
+import Parser;
+import PC20Syntax;
 import String;
 
 import utility::StringUtility;
@@ -17,6 +19,8 @@ test bool testSingleNop() = expectEqual([padLength("00000 00000 00", 15)], handl
 list[str] multipleNop = [padLength("00010 00005 00",15), padLength("00011 00006 00", 15), padLength("00012 00007 00",15)];
 
 test bool testMultipleNop() = expectEqual(multipleNop, handleNop(3, 10, 5));
+test bool testMultipleNopParsed() = expectEqual(multipleNop, handleNop(parseText("NOP 3", #Expression), 10, 5));
+
 
 test bool testSimplePair()
 {
@@ -24,7 +28,4 @@ test bool testSimplePair()
   return true;
 }
 
-test bool testLabels()
-{
-  LabelList list = compile("DR_TOT_3.PRG").labelList;
   
