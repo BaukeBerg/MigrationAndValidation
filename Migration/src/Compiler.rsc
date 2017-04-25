@@ -19,6 +19,7 @@ alias CompiledData = tuple[list[str] compiledLines, LabelList labels];
 void compilePds() = compileToFile("DR_TOT_3");
 void compileToFile(str file) = writeToFile(generatedFile("<file>.compiled"),compile(file).compiledLines);
 
+private bool printCompileInfo = true;
 private int nopLength = 15;
 private int compiledStringLength = 24;
 
@@ -39,27 +40,41 @@ CompiledData compile(str sourceFile, str symbolTableFile)
       labels += composeLabel("<L>", progCounter); 
     }
     case Instruction I:
-    {
-      compiledLines += handleInstruction(I, lineCounter, progCounter, symbolTable);
+    {      
+      insctructions = handleInstruction(I, lineCounter, progCounter, symbolTable);
       progCounter += 1 ;
       lineCounter += 1;
-    }      
+    }
+          
   }  
-  debugPrint("Handled!");
+  debugPrint("Handled!", printCompileInfo);
   return <compiledLines, sort(labels)>;
     
 }
 
+list[str] handleNop(Tree I, int lineNumber, int progCounter)
+{
+  visit(I)
+  {
+    case Amount A:
+    {
+      debugPrint("Found <A> Nops", printCompileInfo);
+      return handleNop(toInt(trim("<A>")), lineNumber, progCounter);      
+    }
+  }
+  return handleNop(1, lineNumber, progCounter);  
+}
+
 list[str] handleNop(int amount, int lineNumber, int progCounter)
 {
-  list[str] compiledLines = [];
+  list[str] instructions = [];
   for(n <- [0 .. amount])
   {
-    compiledLines += formatLine(lineNumber, progCounter);
+    instructions += formatLine(lineNumber, progCounter);
     lineNumber += 1 ;
     progCounter += 1;
   }
-  return compiledLines;
+  return instructions;
 }
 
 str handleInstruction(&T I, int lineNumber, int progCounter, symbolTable table)
@@ -75,7 +90,7 @@ str handleInstruction(&T I, int lineNumber, int progCounter, symbolTable table)
     case LabelInstructionName L: 
       instruction = instructionNumber(L);
     case NopInstruction N:
-      instruction = 0;
+      handleNop(I, lineNumber, progCounter);
     case PlainInstruction P:
       instruction = 26;
     case Variable V:    
