@@ -50,21 +50,26 @@ bool expectEqual(str expected, str actual)
 }
 
 // Prints the resuls when they are not expected, faster debugging of tests
-bool expectEqual(&T expected, &T actual)
+bool expectEqual(&T expected, &T actual) = expectEqual(expected, actual, "");
+bool expectEqual(&T expected, &T actual, str messageOnFailure)
 {
   if(expected != actual)
   {
-    iprintln("Expected: <expected>, but received <actual>");    
+    iprintln("Expected: <expected>");
+    iprintln("Received: <actual>");
+    iprintln(messageOnFailure);            
     return false;
   }
   return true;
 }
 
-bool expectNotEqual(&T expected, &T actual)
+bool expectNotEqual(&T expected, &T actual) = expectNotEqual(expected, actual, "");
+bool expectNotEqual(&T expected, &T actual, str messageOnFailure)
 {
   if(expected == actual)
   {
     iprintln("Equal values passed: <expected>!");
+    iprintln(messageOnFailure);  
     return false;
   }
   return true;
