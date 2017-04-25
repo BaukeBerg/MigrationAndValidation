@@ -2,6 +2,7 @@ module testModule::ParserTests
 
 import utility::TestUtility;
 import Parser;
+import PC20Syntax;
 
 test bool testParsingSymbols() = expectEqual(0, parsePdsSymbols("simpleDeclarations"));
 
