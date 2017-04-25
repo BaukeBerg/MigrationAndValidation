@@ -12,3 +12,5 @@ test bool testComposing() = expectEqual(expectedDeclaration, composeLabel("L1245
 LabelList labels = [ <"L00004", "4">,<"L00006", "6">, <"L00008", "8">];
 
 test bool testLabels() = expectEqual(labels, compile("LabelSamples").labels);
+
+test bool testLabelFile() = expectEqual(extractLabelList("DR_TOT_3.SYM"), compile("SmallPart").labels);\
