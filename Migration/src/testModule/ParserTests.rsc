@@ -13,3 +13,5 @@ test bool testParsingTotalSource() = expectEqual(0, parsePdsSource("DR_TOT_3.PRG
 test bool testParsingTotalSymbolTable() = expectEqual(0, parsePdsSymbols("DR_TOT_3.SYM"));
 
 test bool testParsingLabels() = isUnAmbiguous("L02840:2840L12769:12769L03429:3429L12902:12902\r\nL10103:10103L04037:4037", #start[LabelList]);
+
+test bool testParsingNop() = isUnAmbiguous("NOP 57", #Expression);
