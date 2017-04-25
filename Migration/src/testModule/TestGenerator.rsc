@@ -1,5 +1,6 @@
 module testModule::TestGenerator
 
+import DateTime;
 import FileLocations;
 import IO;
 import String;
@@ -77,7 +78,7 @@ test bool showMeARedCell()
 void initializeTestReport()
 {
   resetFile(testReport);
-  addToFile(testReport, openTable() + caption("Test results"));
+  addToFile(testReport, openTable() + caption("Test results @ <printDateTime(now(), "YYYY-MM-dd HH:mm:ss")>"));  
 }
 
 void finalizeTestReport()
