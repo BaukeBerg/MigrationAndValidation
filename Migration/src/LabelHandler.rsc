@@ -2,25 +2,39 @@ module LabelHandler
 
 import FileLocations;
 import IO;
+import List;
 import Parser;
 import PC20Syntax;
 import String;
 
 import utility::ListUtility;
+import utility::FileUtility;
 
 alias LabelList = list[LabelDeclaration];
 alias LabelDeclaration = tuple[str label, str lineNumber];
-LabelList extractLabelList(str fileName)
+
+void writeToFile(loc fileToWrite, LabelList listToStore)
+{
+  formattedList = ["Number of errors: 0"]; // @TODO perhaps change this to a more elegant solution
+  for(declaration <- listToStore)
+  {
+    formattedList += "<declaration.label>:<declaration.lineNumber>";    
+  }
+  writeToFile(fileToWrite, formattedList);
+}
+
+LabelList extractLabelList(str fileName) = extractLabelList(testFile(fileName));
+LabelList extractLabelList(loc fileLocation)
 {
   LabelList labels = [];
-  visit(parseText(extractLabelString(fileName), #start[LabelList]))
+  visit(parseText(extractLabelString(fileLocation), #start[LabelList]))
   {
     case LabelLocation L:
     {
       labels += [extractLabel(L)];      
     }
   }
-  return labels;
+  return sort(labels);
 } 
 
 LabelDeclaration composeLabel(str label, int progLine)
@@ -41,11 +55,11 @@ LabelDeclaration extractLabel(LabelLocation L)
   return l;
  }
 
-str extractLabelString(str fileName)
+str extractLabelString(loc fileLocation)
 {
   startFound = false ;
   symbolLines = [];
-  for(line <- readFileLines(testFile(fileName)))
+  for(line <- readFileLines(fileLocation))
   {
     if(startFound)
     {
