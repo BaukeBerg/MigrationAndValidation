@@ -35,7 +35,7 @@ CompiledData compile(str sourceFile, str symbolTableFile)
   debugPrint("Visiting ast");
   visit(generateSourceTree(sourceFile))
   {
-    case Label L:
+    case SingleLabel L:
     {
       labels += composeLabel("<L>", progCounter); 
     }
@@ -94,7 +94,7 @@ str convertVariable(Variable V, symbolTable table)
   {
     return symbol.address;
   }
-  return UnknownIdentifier(I);
+  return UnknownIdentifier(V);
 }
 
 str formatLine(int lineNumber) = padLength(format(lineNumber), compiledStringLength);

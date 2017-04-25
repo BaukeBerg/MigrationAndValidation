@@ -2,7 +2,7 @@ module PC20Syntax
 
 start syntax PC20 = Expression+ ;
 
-syntax Expression = Label
+syntax Expression = SingleLabel
                     | Instruction
                     | PdsComment
                     ;
@@ -13,22 +13,22 @@ syntax Symbol = Declaration
               | UnreferencedDeclaration
               | PdsComment              
               ; 
-              
+
 start syntax LabelList = LabelLocation+ ;
 
-lexical LabelLocation = Label + ":" + LineNumber ;         
+lexical LabelLocation = Label + ":" + LineNumber ;
 
 lexical Declaration = VariableName + WhiteSpace+ "=" Address ;
 
 lexical UnreferencedDeclaration = "=" + Address ;
                     
-public layout LS = [\ \t\r\n]* !>> [\ \t\r\n]
-                   ;
+public layout LS = [\ \t\r\n]* !>> [\ \t\r\n] ;
 
 lexical PdsComment = "!" + [*_a-zA-Z0-9=./,\ \t\"+?()\'|\>\<]* !>> [*_a-zA-Z0-9=./,\ \t\"+?()\'|\>\<] ;
 
 lexical WhiteSpace = [\t\ ]+ !>> [\t\ ];
 
+lexical SingleLabel = Label;
 lexical Label = "L" + [0-9][0-9][0-9][0-9][0-9] ;
 lexical ProgramLine = [0-9]+ !>> [0-9] ; 
                         
@@ -39,10 +39,11 @@ lexical Instruction = AmountInstruction
                     | LabelInstruction
                     ;
                      
-                     
 lexical AmountInstruction = AmountInstructionName + Amount;
 lexical IdentifierInstruction = IdentifierInstructionName + Identifier ;
+
 syntax LabelInstruction = LabelInstructionName + (Label | ProgramLine) ;
+
 lexical PlainInstruction = RET ;
 lexical NopInstruction = NOP + Amount?;
                                      
@@ -72,7 +73,7 @@ lexical IdentifierInstructionName = TRIG   // 01 Rising Edge Detection
                                   | END    // 27 End of IO handling
                                   | LSTIO  // 31 LaST Input or Output                                  
                                   ;
-                                  
+
 lexical LabelInstructionName = JSAF   // 24 Jump to Subroutine, Absolute FALSE
                              | JSAT   // 25 Jump to Subroutine, Absolute TRUE
                              | JBRF   // 29 Jump Backwards, Relative FALSE
@@ -110,7 +111,7 @@ lexical END = "END";
 lexical JBRF = "JBRF";
 lexical JFRF = "JFRF";
 lexical LSTIO = "LSTIO";
-                  
+                                    
 syntax Identifier = Address | Variable;
 syntax Address = BitAddress | WordAddress ; 
 lexical BitAddress = WhiteSpace+[0-9]+ !>> [0-9] + "." + [0-7];
