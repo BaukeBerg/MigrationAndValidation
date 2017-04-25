@@ -41,9 +41,10 @@ CompiledData compile(str sourceFile, str symbolTableFile)
     }
     case Instruction I:
     {      
-      insctructions = handleInstruction(I, lineCounter, progCounter, symbolTable);
-      progCounter += 1 ;
+      instructions = handleInstruction(I, lineCounter, progCounter, symbolTable);
+      progCounter += size(instructions);
       lineCounter += 1;
+      compiledLines += instructions;
     }
           
   }  
@@ -77,7 +78,7 @@ list[str] handleNop(int amount, int lineNumber, int progCounter)
   return instructions;
 }
 
-str handleInstruction(&T I, int lineNumber, int progCounter, symbolTable table)
+list[str] handleInstruction(&T I, int lineNumber, int progCounter, symbolTable table)
 {
   instruction = -1;
   address = "";  
@@ -90,7 +91,7 @@ str handleInstruction(&T I, int lineNumber, int progCounter, symbolTable table)
     case LabelInstructionName L: 
       instruction = instructionNumber(L);
     case NopInstruction N:
-      handleNop(I, lineNumber, progCounter);
+      return handleNop(I, lineNumber, progCounter);
     case PlainInstruction P:
       instruction = 26;
     case Variable V:    
@@ -98,7 +99,7 @@ str handleInstruction(&T I, int lineNumber, int progCounter, symbolTable table)
     case Address A:
       address = trim("<A>");    
   }  
-  return formatLine(lineNumber, progCounter, instruction, format(address, 5));   
+  return [formatLine(lineNumber, progCounter, instruction, format(address, 5))];   
 }
 
 str convertVariable(Variable V, symbolTable table)
