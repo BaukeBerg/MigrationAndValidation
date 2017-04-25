@@ -22,13 +22,12 @@ void compileToFile(str file) = writeToFile(generatedFile("<file>.compiled"),comp
 private int nopLength = 15;
 private int compiledStringLength = 24;
 
-
 CompiledData compile(str file) = compile("<file>.PRG", "<file>.SYM");
 CompiledData compile(str sourceFile, str symbolTableFile)
 {
   LabelList labels = [];
   debugPrint("Generating symbol table");
-  symbolTable = generateSymbolTable(symbolTableFile);  
+  symbolTable = generateSymbolTable(symbolTableFile);
   progCounter = 0;
   lineCounter = 0;
   compiledLines = [];
@@ -41,14 +40,13 @@ CompiledData compile(str sourceFile, str symbolTableFile)
     }
     case Instruction I:
     {
-      println("Handling instruction: <lineCounter>, <progCounter>" );
       compiledLines += handleInstruction(I, lineCounter, progCounter, symbolTable);
       progCounter += 1 ;
       lineCounter += 1;
     }      
   }  
   debugPrint("Handled!");
-  return <compiledLines, labels>;
+  return <compiledLines, sort(labels)>;
     
 }
 
