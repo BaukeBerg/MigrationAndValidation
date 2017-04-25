@@ -10,6 +10,8 @@ import utility::Debugging;
 alias symbolTable = list[symbol];
 alias symbol = tuple[str name, str address];
 
+private bool printSymbolInfo = false;
+
 symbolTable generateSymbolTable(str fileName)
 {
   symbolTable = [];
@@ -24,7 +26,7 @@ symbolTable generateSymbolTable(str fileName)
       println("Unreferenced declaration: <UD>");
     }                  
   }
-  debugPrint(symbolTable);
+  debugPrint(symbolTable, printSymbolInfo);
   return symbolTable;
 }
 
@@ -35,7 +37,7 @@ symbol processDeclaration(&T D)
   {
     case VariableName N:
     {
-      debugPrint("<N>");
+      debugPrint("<N>", printSymbolInfo);
       extractedSymbol.name = "<trim("<N>")>";
     }
     case Address A:
