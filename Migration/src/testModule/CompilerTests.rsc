@@ -39,7 +39,7 @@ symbolTable loadSymbols()
   return symbols;
 }
 
-symbolTable symbols = loadSymbols();
+public symbolTable symbols = loadSymbols();
 
 test bool testSimplePair()
 {
@@ -58,7 +58,7 @@ test bool testComparing() = handleCompare(compile("LabelOffset.PRG", symbols).co
 test bool testFirstOneHundred() = handleCompare(compile("FirstOneHundred.PRG", symbols).compiledLines);
 test bool testNopBlankLine() = expectEqual(compile("BlankLineIssue.PRG", symbols).compiledLines, readFileLines(testFile("BlankLineComparison.PRN")));   
 
-list[str] fetchResult = ["00001 00000 12 00001", "00002 00001 12 00002"];
+list[str] fetchResult = ["00001 00000 12 00001    ", "00002 00001 12 00002    "];
 
 test bool testFetching() = expectEqual(fetchResult, compile("FetchConstant.PRG", symbols).compiledLines);
 
@@ -67,4 +67,6 @@ bool handleCompare(list[str] compiledLines)
   referenceData = take(size(compiledLines), readFileLines(generatedFile("strippedLines")));
   return expectEqual(referenceData, compiledLines);
 }
+
+
 

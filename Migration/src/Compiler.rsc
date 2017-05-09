@@ -124,11 +124,12 @@ list[str] handleInstruction(&T I, int lineNumber, int progCounter, symbolTable t
     }          
     case AmountInstructionName A:
     { 
-      instruction = instructionNumber(A);
+      debugPrint("Handling amount instruction <A>");
+      instruction = instructionNumber(A);      
     }
     case LabelInstructionName L:
     {
-      println("Handling label instruction <L>");      
+      debugPrint("Handling label instruction <L>");      
       instruction = instructionNumber(L);      
     }
     case Label L:
@@ -160,6 +161,10 @@ list[str] handleInstruction(&T I, int lineNumber, int progCounter, symbolTable t
     {
       address = trim("<A>");
     }    
+    case Amount A:
+    {
+      address = trim("<A>");
+    }
   }  
   str returnLine = formatLine(lineNumber, progCounter, instruction, format(address, 5));
   println(returnLine);
