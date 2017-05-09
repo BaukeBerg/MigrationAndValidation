@@ -1,10 +1,13 @@
 module testModule::CompilerTests
 
 import Compiler;
+import FileLocations;
+import IO;
 import List;
 import Parser;
 import PC20Syntax;
 import String;
+import SymbolTable;
 
 import utility::StringUtility;
 import utility::TestUtility;
@@ -21,11 +24,26 @@ list[str] multipleNop = [padLength("00010 00005 00",15), padLength("00011 00006 
 test bool testMultipleNop() = expectEqual(multipleNop, handleNop(3, 10, 5));
 test bool testMultipleNopParsed() = expectEqual(multipleNop, handleNop(parseText("NOP 3", #Expression), 10, 5));
 
+symbolTable symbols = readSymbolTableFromFile(generatedFile("DR_TOT_3.symbolTable"));
 
 test bool testSimplePair()
 {
-  compile("Sample.PRG", "Sample.SYM");
+  compile("Sample.PRG", symbols);
   return true;
 }
 
-  
+test bool testSimpleLabel()
+{
+  lines = compile("SimpleLabel.PRG", symbols).compiledLines;
+  referenceData = take(size(lines), readFileLines(generatedFile("strippedLines")));
+  return expectEqual(referenceData, lines);
+}
+
+test bool testComparing()
+{
+  compiledData = compile("LabelOffset.PRG", symbols).compiledLines;
+  referenceData = take(size(compiledData), readFileLines(generatedFile("strippedLines")));
+  return expectEqual(referenceData, compiledData);
+}
+
+
