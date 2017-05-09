@@ -49,15 +49,25 @@ CompiledData compile(str sourceFile, symbolTable symbols)
     }
     case PdsComment C:
     {
-      debugPrint("Handling pds comment <C>, line count <lineCounter>, prog count <progCounter>");
-      compiledLines += formatLine(lineCounter);
-      lineCounter+=1;
+      lineNumber = getLineNumber(C);
+      if(size(compiledLines) < lineNumber)
+      {
+        debugPrint("Handling pds comment <C>, line count <lineCounter>, prog count <progCounter>");
+        compiledLines += formatLine(lineCounter);
+        lineCounter+=1;
+      }
+      else
+      {
+        debugPrint("Skipping comment, line number <lineNumber> already occupied");
+      }
     }    
   }  
   debugPrint("Handled!", printCompileInfo);
   writeToFile(generatedFile("compiledData.compile"), compiledLines);
   return <compiledLines, sort(labels)>;    
 }
+
+int getLineNumber(&T item) = item@\loc.begin.line;
 
 list[str] handleNop(Tree I, int lineNumber, int progCounter)
 {
@@ -91,23 +101,48 @@ list[str] handleInstruction(&T I, int lineNumber, int progCounter, symbolTable t
   debugPrint("Handling line number <lineNumber>, Instruction <I>");
   visit(I)
   {
-    case IdentifierInstructionName I: 
-      instruction = instructionNumber(I);          
-    case AmountInstructionName A: 
+    case IdentifierInstructionName I:
+    { 
+      instruction = instructionNumber(I);
+    }          
+    case AmountInstructionName A:
+    { 
       instruction = instructionNumber(A);
+    }
     case LabelInstructionName L:
     {
       println("Handling label instruction <L>");      
-      instruction = instructionNumber(L);
+      instruction = instructionNumber(L);      
+    }
+    case Label L:
+    {
+      /// TODO: Fix this => now simply cuts the L
+      /// Perhaps Post process all L.... by replacing them?
+      /// Perhaps do a pre-visit to collect all labels?
+      address = substring("<L>",1);
+    }
+    case ProgramLine P:
+    {
+      address = "<P>";
     }
     case NopInstruction N:
+    {
       return handleNop(I, lineNumber, progCounter);
+    }
     case PlainInstruction P:
+    {
+      /// TODO: Handle RET instructions better
       instruction = 26;
-    case Variable V:    
+      return [formatLine(lineNumber, progCounter, instruction, "     ")];
+    }
+    case Variable V:
+    {    
       address = convertVariable(V, table);
+    }
     case Address A:
-      address = trim("<A>");    
+    {
+      address = trim("<A>");
+    }    
   }  
   str returnLine = formatLine(lineNumber, progCounter, instruction, format(address, 5));
   println(returnLine);
