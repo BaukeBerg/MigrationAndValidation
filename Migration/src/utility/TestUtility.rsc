@@ -27,11 +27,13 @@ bool expectEqual(list[str] expected, list[str] actual, str messageOnFailure)
 {
   if(!expectEqual(size(expected), size(actual)))
   {
+    println("<messageOnFailure> list differ in size" );    
     return false;
   }
   
   for(n <- [0.. size(actual)], !expectEqual(expected[n], actual[n]))
   {
+    println("<messageOnFailure> list contents differ at position <n>.");
     return false;
   }
   return true;
