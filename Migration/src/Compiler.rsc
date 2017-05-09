@@ -30,6 +30,7 @@ CompiledData compile(str sourceFile, symbolTable symbols)
   LabelList labels = [];
   progCounter = 0;
   lineCounter = 1;
+  lastLine = 1;
   compiledLines = [];
   debugPrint("Visiting ast");
   visit(generateSourceTree(sourceFile))
@@ -37,15 +38,16 @@ CompiledData compile(str sourceFile, symbolTable symbols)
     case NewLine N:
     {
       lineNumber = getLineNumber(N);
-      if(size(compiledLines) < getLineNumber(N))
+      if(lastLine == getLineNumber(N))
       {
         debugPrint("Handling newline");  
-        compiledLines += formatLine(lineCounter);
+        compiledLines += formatLine(lineCounter);        
         lineCounter += 1;  
+        lastLine = lineCounter;
       }
       else
       {
-        debugPrint("skipping newline");
+        debugPrint("skipping newline @ line <lineNumber>");
       }      
     }
     case SingleLabel L:
@@ -60,15 +62,17 @@ CompiledData compile(str sourceFile, symbolTable symbols)
       progCounter += size(instructions);
       lineCounter += 1;
       compiledLines += instructions;
+      lastLine = lineCounter;
     }
     case PdsComment C:
     {
       lineNumber = getLineNumber(C);
-      if(size(compiledLines) < lineNumber)
+      if(lastLine == lineNumber)
       {
         debugPrint("Handling pds comment <C>, line count <lineCounter>, prog count <progCounter>");
-        compiledLines += formatLine(lineCounter);
+        compiledLines += formatLine(lineCounter);        
         lineCounter+=1;
+        lastLine = lineCounter;
       }
       else
       {
@@ -102,9 +106,8 @@ list[str] handleNop(int amount, int lineNumber, int progCounter)
   for(n <- [0 .. amount])
   {
     instructions += formatLine(lineNumber, progCounter);    
-    progCounter += 1;
-  }
-  lineNumber += 1 ;
+    progCounter += 1;    
+  }  
   return instructions;
 }
 
