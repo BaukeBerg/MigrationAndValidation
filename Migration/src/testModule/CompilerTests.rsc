@@ -20,7 +20,7 @@ test bool testFormatSize() = expectEqual(24, size(formatLine(0,0,0,"0")));
 
 test bool testSingleNop() = expectEqual([padLength("00000 00000 00", 15)], handleNop(1, 0, 0));
 
-list[str] multipleNop = [padLength("00010 00005 00",15), padLength("00011 00006 00", 15), padLength("00012 00007 00",15)];
+list[str] multipleNop = [padLength("00010 00005 00",15), padLength("00010 00006 00", 15), padLength("00010 00007 00",15)];
 
 test bool testMultipleNop() = expectEqual(multipleNop, handleNop(3, 10, 5));
 test bool testMultipleNopParsed() = expectEqual(multipleNop, handleNop(parseText("NOP 3", #Expression), 10, 5));
