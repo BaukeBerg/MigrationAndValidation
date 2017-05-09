@@ -101,10 +101,10 @@ list[str] handleNop(int amount, int lineNumber, int progCounter)
   list[str] instructions = [];
   for(n <- [0 .. amount])
   {
-    instructions += formatLine(lineNumber, progCounter);
-    lineNumber += 1 ;
+    instructions += formatLine(lineNumber, progCounter);    
     progCounter += 1;
   }
+  lineNumber += 1 ;
   return instructions;
 }
 
