@@ -1,0 +1,8 @@
+	NOP	57
+	AND	000.1
+	FTCHC	00
+	STRD	1500	!constante 0
+
+	AND	000.1
+	FTCHC	01
+	STRD	1501	!constante 1
