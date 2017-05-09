@@ -34,6 +34,20 @@ CompiledData compile(str sourceFile, symbolTable symbols)
   debugPrint("Visiting ast");
   visit(generateSourceTree(sourceFile))
   {
+    case NewLine N:
+    {
+      lineNumber = getLineNumber(N);
+      if(size(compiledLines) < getLineNumber(N))
+      {
+        debugPrint("Handling newline");  
+        compiledLines += formatLine(lineCounter);
+        lineCounter += 1;  
+      }
+      else
+      {
+        debugPrint("skipping newline");
+      }      
+    }
     case SingleLabel L:
     {
       debugPrint("Handling single label <L>");
