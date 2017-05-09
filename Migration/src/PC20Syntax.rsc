@@ -2,16 +2,18 @@ module PC20Syntax
 
 start syntax PC20 = Expression+ ;
 
-syntax Expression = SingleLabel
-                    | Instruction
-                    | PdsComment
+syntax Expression = SingleLabel 
+                    | Instruction 
+                    | PdsComment                                     
+                    | NewLine
                     ;
 
 start syntax PlcSymbols = Symbol+ ;
 
 syntax Symbol = Declaration
               | UnreferencedDeclaration
-              | PdsComment              
+              | PdsComment
+              | NewLine           
               ; 
 
 start syntax LabelList = LabelLocation+ ;
@@ -19,15 +21,15 @@ start syntax LabelList = LabelLocation+ ;
 lexical LabelLocation = Label + ":" + LineNumber ;
 
 lexical Declaration = VariableName + WhiteSpace+ "=" Address ;
-
+lexical NewLine = "\r\n";
 lexical UnreferencedDeclaration = "=" + Address ;
                     
-public layout LS = [\ \t\r\n]* !>> [\ \t\r\n] ;
+public layout LS = [\ \t]* !>> [\ \t] ;
 
 lexical PdsComment = "!" + [*_a-zA-Z0-9=./,\ \t\"+?()\'|\>\<]* !>> [*_a-zA-Z0-9=./,\ \t\"+?()\'|\>\<] ;
 
-lexical WhiteSpace = [\t\ ]+ !>> [\t\ ];
 
+lexical WhiteSpace = [\t\ ]+ !>> [\t\ ];
 lexical SingleLabel = Label;
 lexical Label = "L" + [0-9][0-9][0-9][0-9][0-9] ;
 lexical ProgramLine = [0-9]+ !>> [0-9] ; 
