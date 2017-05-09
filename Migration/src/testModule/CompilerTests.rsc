@@ -54,11 +54,13 @@ test bool testSimpleLabel()
   return expectEqual(referenceData, lines);
 }
 
-test bool testComparing()
-{
-  compiledData = compile("LabelOffset.PRG", symbols).compiledLines;
-  referenceData = take(size(compiledData), readFileLines(generatedFile("strippedLines")));
-  return expectEqual(referenceData, compiledData);
-}
+test bool testComparing() = handleCompare(compile("LabelOffset.PRG", symbols).compiledLines);
+test bool testFirstOneHundred() = handleCompare(compile("FirstOneHundred.PRG", symbols).compiledLines);
+test bool testNopBlankLine() = expectEqual(compile("BlankLineIssue.PRG", symbols).compiledLines, readFileLines(testFile("BlankLineComparison.PRN")));   
 
+bool handleCompare(list[str] compiledLines)
+{
+  referenceData = take(size(compiledLines), readFileLines(generatedFile("strippedLines")));
+  return expectEqual(referenceData, compiledLines);
+}
 
