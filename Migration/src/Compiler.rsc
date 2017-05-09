@@ -23,34 +23,40 @@ private bool printCompileInfo = true;
 private int nopLength = 15;
 private int compiledStringLength = 24;
 
-CompiledData compile(str file) = compile("<file>.PRG", "<file>.SYM");
-CompiledData compile(str sourceFile, str symbolTableFile)
-{
+CompiledData compile(str file) = compile("<file>", "DR_TOT_3.SYM");
+CompiledData compile(str sourceFile, str symbolTableFile) = compile(sourceFile, generateSymbolTable(symbolTableFile));
+CompiledData compile(str sourceFile, symbolTable symbols)
+{  
   LabelList labels = [];
-  debugPrint("Generating symbol table");
-  symbolTable = generateSymbolTable(symbolTableFile);
   progCounter = 0;
-  lineCounter = 0;
+  lineCounter = 1;
   compiledLines = [];
   debugPrint("Visiting ast");
   visit(generateSourceTree(sourceFile))
   {
     case SingleLabel L:
     {
+      debugPrint("Handling single label <L>");
       labels += composeLabel("<L>", progCounter); 
     }
     case Instruction I:
-    {      
-      instructions = handleInstruction(I, lineCounter, progCounter, symbolTable);
+    {     
+      debugPrint("handling <I>, line count <lineCounter>, prog count <progCounter>"); 
+      instructions = handleInstruction(I, lineCounter, progCounter, symbols);
       progCounter += size(instructions);
       lineCounter += 1;
       compiledLines += instructions;
     }
-          
+    case PdsComment C:
+    {
+      debugPrint("Handling pds comment <C>, line count <lineCounter>, prog count <progCounter>");
+      compiledLines += formatLine(lineCounter);
+      lineCounter+=1;
+    }    
   }  
   debugPrint("Handled!", printCompileInfo);
-  return <compiledLines, sort(labels)>;
-    
+  writeToFile(generatedFile("compiledData.compile"), compiledLines);
+  return <compiledLines, sort(labels)>;    
 }
 
 list[str] handleNop(Tree I, int lineNumber, int progCounter)
@@ -81,15 +87,19 @@ list[str] handleNop(int amount, int lineNumber, int progCounter)
 list[str] handleInstruction(&T I, int lineNumber, int progCounter, symbolTable table)
 {
   instruction = -1;
-  address = "";  
+  address = ""; 
+  debugPrint("Handling line number <lineNumber>, Instruction <I>");
   visit(I)
   {
     case IdentifierInstructionName I: 
       instruction = instructionNumber(I);          
     case AmountInstructionName A: 
       instruction = instructionNumber(A);
-    case LabelInstructionName L: 
+    case LabelInstructionName L:
+    {
+      println("Handling label instruction <L>");      
       instruction = instructionNumber(L);
+    }
     case NopInstruction N:
       return handleNop(I, lineNumber, progCounter);
     case PlainInstruction P:
@@ -99,7 +109,9 @@ list[str] handleInstruction(&T I, int lineNumber, int progCounter, symbolTable t
     case Address A:
       address = trim("<A>");    
   }  
-  return [formatLine(lineNumber, progCounter, instruction, format(address, 5))];   
+  str returnLine = formatLine(lineNumber, progCounter, instruction, format(address, 5));
+  println(returnLine);
+  return [returnLine];   
 }
 
 str convertVariable(Variable V, symbolTable table)
@@ -136,11 +148,11 @@ int instructionNumber(LabelInstructionName name)
 {
   switch(name)
   {
-    case (LabelInstructionName)`JSAF`: return 29;
-    case (LabelInstructionName)`JSAT`: return 30;    
+    case (LabelInstructionName)`JSAF`: return 24;
+    case (LabelInstructionName)`JSAT`: return 25;    
     case (LabelInstructionName)`JBRF`: return 29;
     case (LabelInstructionName)`JFRF`: return 30;         
-  }   
+  }
   return UnknownInstruction("Label: <name>");
 }
 
