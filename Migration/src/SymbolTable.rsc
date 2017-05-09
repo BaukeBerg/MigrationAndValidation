@@ -20,18 +20,20 @@ symbolTable readSymbolTableFromFile(loc fileToParse)
   list[str] fileContent = readFileLines(fileToParse);
   for(line <- fileContent) 
   {
-    items = split(",",line);
+    items = split(splitter, line);
     table += <items[0], items[1]>;    
   }
   return table;
 }
+
+str splitter = "@" ;
 
 void writeSymbolTableToFile(loc fileToSave, symbolTable tableToSave)
 {
   totalSymbols = [];
   for(symbol <- tableToSave)
   {
-    totalSymbols += "<symbol.name>,<symbol.address>";    
+    totalSymbols += "<symbol.name><splitter><symbol.address>";    
   }
   writeToFile(fileToSave, totalSymbols);  
 }
