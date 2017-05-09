@@ -23,17 +23,15 @@ bool expectEqual(&T expected, &T actual, loc fileToStore)
   return result;
 }
 
-bool expectEqual(list[str] expected, list[str] actual)
+bool expectEqual(list[str] expected, list[str] actual, str messageOnFailure)
 {
   if(!expectEqual(size(expected), size(actual)))
   {
-    println("list differ in size");
     return false;
   }
   
   for(n <- [0.. size(actual)], !expectEqual(expected[n], actual[n]))
   {
-    println("list contents differ");
     return false;
   }
   return true;
