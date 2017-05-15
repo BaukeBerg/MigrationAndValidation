@@ -12,6 +12,7 @@ import SymbolTable;
 
 import utility::Debugging;
 import utility::FileUtility;
+import utility::MathUtility;
 import utility::StringUtility;
 
 alias CompiledData = tuple[list[str] compiledLines, LabelList labels];
@@ -163,7 +164,7 @@ list[str] handleInstruction(&T I, int lineNumber, int progCounter, symbolTable t
 {
   instruction = -1;
   address = ""; 
-  debugPrint("Handling line number <lineNumber>, Instruction <I>");
+  debugPrint("Handling line number <lineNumber>, Instruction <I>", printHandlingStatements);
   visit(I)
   {
     case IdentifierInstructionName I:
@@ -182,10 +183,7 @@ list[str] handleInstruction(&T I, int lineNumber, int progCounter, symbolTable t
     }
     case Label L:
     {
-      /// TODO: Fix this => now simply cuts the L
-      /// Perhaps Post process all L.... by replacing them?
-      /// Perhaps do a pre-visit to collect all labels?
-      address = substring("<L>",1);
+      address = "<L>";
     }
     case ProgramLine P:
     {
