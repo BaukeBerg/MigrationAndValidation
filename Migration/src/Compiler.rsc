@@ -20,6 +20,7 @@ void compilePds() = compileToFile("DR_TOT_3");
 void compileToFile(str file) = writeToFile(generatedFile("<file>.compiled"),compile(file).compiledLines);
 
 private bool printCompileInfo = true;
+private bool savingEnabled = false ;
 private int nopLength = 15;
 private int compiledStringLength = 24;
 
@@ -81,7 +82,10 @@ CompiledData compile(str sourceFile, symbolTable symbols)
     }    
   }  
   debugPrint("Handled!", printCompileInfo);
-  writeToFile(generatedFile("compiledData.compile"), compiledLines);
+  if(savingEnabled)
+  {
+    writeToFile(generatedFile("compiledData.compile"), compiledLines);
+  }
   return <compiledLines, sort(labels)>;    
 }
 
