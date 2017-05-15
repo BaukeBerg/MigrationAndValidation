@@ -8,8 +8,9 @@ import PC20Syntax;
 import String;
 
 import utility::Debugging;
-import utility::ListUtility;
 import utility::FileUtility;
+import utility::ListUtility;
+import utility::StringUtility;
 
 alias LabelList = list[LabelDeclaration];
 alias LabelDeclaration = tuple[str label, str lineNumber];
@@ -79,12 +80,12 @@ str extractLabelString(loc fileLocation)
   return replaceAll(joinList(trimList(symbolLines)), " ", "");
 }
 
-str getProgramLine(LabelList labels, str labelToFind)
+int getProgramLine(LabelList labels, str labelToFind)
 {
   for(label <- labels, label.label == labelToFind)
   {
-    return label.lineNumber;
+    return parseInt(label.lineNumber);
   }
-  return "-1";  
+  return -1;  
 }
 
