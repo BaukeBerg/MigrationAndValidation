@@ -76,7 +76,7 @@ void addToFile(loc file, list[&T] text)
   {
     if(0 == line % 100)
     {
-      println("<100 * line/size(text)>%");  
+      println("<100.0 * line/size(text)>%");  
     }
     addToFile(file, "<text[line]>\r\n");
   }
