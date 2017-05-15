@@ -92,8 +92,8 @@ CompiledData insertJumps(CompiledData firstStageData)
   for(n <- [0 .. size(compiledLines)], isRelativeJump(compiledLines[n]))
   {
     programLine = getProgramLine(compiledLines[n]);
-    labelLine = getLabelLine(firstStageData.labels, labelName(compiledLines[n]));
-    switch(instructionNumber(compiledLine))
+    labelLine = getProgramLine(firstStageData.labels, labelName(compiledLines[n]));
+    switch(instructionNumber(compiledLines[n]))
     {
       case 29:
       {
@@ -108,15 +108,16 @@ CompiledData insertJumps(CompiledData firstStageData)
   return <compiledLines, firstStageData.labels>;
 }
 
-bool isRelativeJump(str compiledLine)
+bool isRelativeJump(str compiledLine) = inLimits(29, instructionNumber(compiledLine), 30);
+
+int instructionNumber(str compiledLine)
 {
-  int instructionNumber = 0;
   if(14 < size(compiledLine)) 
   {
-    instructionNumber = parseInt(substring(compiledLine, 12,14));    
+    return parseInt(substring(compiledLine, 12,14));    
   }
-  return inLimits(29, instructionNumber, 30);
-} 
+  return -1;
+}
 
 int getProgramLine(str compiledLine)
 {
@@ -148,6 +149,16 @@ list[str] handleNop(Tree I, int lineNumber, int progCounter)
 }
 
 str replaceLabel(str compiledLine, str replacedJump) = padLength(substring(compiledLine, 0, 15) + replacedJump, compiledStringLength); 
+
+str labelName(str compiledLine)
+{
+  characterPos = findLast(compiledLine, "L");
+  if(0 < characterPos)
+  {
+    return trim(substring(compiledLine, characterPos));
+  }
+  return "Invalid label found!";  
+}
 
 list[str] handleNop(int amount, int lineNumber, int progCounter)
 {
