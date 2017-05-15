@@ -33,7 +33,15 @@ list[loc] enumerateDirFiles(loc folderLoc)
 bool isDirectory(loc path) = (-1 == findLast(path.path, "."));
 
 list[str] stripFileExtension(list[str] files) = [ stripFileExtension(file) | file <- files];
-str stripFileExtension(str file) = substring(file, 0, findLast(file, "."));
+str stripFileExtension(str file)
+{
+  dotPos = findLast(file, ".") ;
+  if(0 < dotPos)
+  {
+    return substring(file, 0, dotPos);    
+  }
+  return file;
+}
 
 list[str] fileName(list[loc] Files) = [ fileName(file.path) | file <- Files];
 list[str] fileName(list[str] files) = [ FileName(name) | name <- Files] ;
