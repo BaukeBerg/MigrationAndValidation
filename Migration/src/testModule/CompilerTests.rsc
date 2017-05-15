@@ -42,7 +42,7 @@ test bool testSimpleLabel()
 
 test bool testComparing() = handleCompare(compile("LabelOffset.PRG", symbols).compiledLines);
 test bool testFirstOneHundred() = handleCompare(compile("FirstOneHundred.PRG", symbols).compiledLines);
-test bool testNopBlankLine() = expectEqual(compile("BlankLineIssue.PRG", symbols).compiledLines, readFileLines(testFile("BlankLineComparison.PRN")));   
+test bool testNopBlankLine() = expectEqual(readFileLines(testFile("BlankLineComparison.PRN")), compile("BlankLineIssue.PRG", symbols).compiledLines);   
 
 list[str] fetchResult = ["00001 00000 12 00001    ", "00002 00001 12 00002    "];
 
@@ -53,6 +53,16 @@ bool handleCompare(list[str] compiledLines)
   referenceData = take(size(compiledLines), readFileLines(generatedFile("strippedLines")));
   return expectEqual(referenceData, compiledLines);
 }
+
+test bool testRelativeJumpJFRF() = expectTrue(isRelativeJump("00196 00200 30 00013    "), "JFRF is a relative jump forward");
+test bool testRelativeJumpJBRF() = expectTrue(isRelativeJump("00196 00200 29 00013    "), "JBRF is a relative jump forward");
+test bool testRelativeJumpSTRB() = expectFalse(isRelativeJump("12999 11201 10 00374.3  "), "STRB is no relative jump");  
+test bool testRelativeJumpNop() = expectFalse(isRelativeJump("13000 11206 00 "), "NOP is no relative jump");
+
+test bool testProgramLine0() = expectEqual(0, getProgramLine("00008 00000 31 00003    "), "Should return 0");
+test bool testProgramLine200() = expectEqual(200, getProgramLine("00196 00200 29 00013    "), "Should return 200");
+
+test bool testReplaceJump() = expectEqual("00196 00200 29 00013    ", replaceLabel("00196 00200 29 L00213 ", "00013"), "Label should be replaced by jump size");
 
 
 

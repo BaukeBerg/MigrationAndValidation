@@ -80,8 +80,54 @@ CompiledData compile(str sourceFile, symbolTable symbols)
       }
     }    
   }  
-  debugPrint("Handled!", printCompileInfo);  
-  return <compiledLines, sort(labels)>;    
+  debugPrint("First compilation stage completed", printCompileInfo);
+  return insertJumps(<compiledLines, sort(labels)>);  
+}
+
+CompiledData insertJumps(CompiledData firstStageData)
+{
+  compiledLines = firstStageData.compiledLines;  
+  for(n <- [0 .. size(compiledLines)], isRelativeJump(compiledLines[n]))
+  {
+    programLine = getProgramLine(compiledLines[n]);
+    labelLine = getLabelLine(firstStageData.labels, labelName(compiledLines[n]));
+    switch(instructionNumber(compiledLine))
+    {
+      case 29:
+      {
+        compiledLines[n] = replaceLabel(compiledLines[n], format(programLine - labelLine));
+      }
+      case 30:
+      {
+        compiledLines[n] = replaceLabel(compiledLines[n], format(labelLine - programLine));
+      }   
+    }    
+  }
+  return <compiledLines, firstStageData.labels>;
+}
+
+bool isRelativeJump(str compiledLine)
+{
+  int instructionNumber = 0;
+  if(14 < size(compiledLine)) 
+  {
+    instructionNumber = parseInt(substring(compiledLine, 12,14));    
+  }
+  return inLimits(29, instructionNumber, 30);
+} 
+
+int getProgramLine(str compiledLine)
+{
+  if(11 < size(compiledLine))
+  {
+    programLine = substring(compiledLine,6,11);
+    while(startsWith(programLine, "0") && size(programLine) > 1)
+    {
+      programLine = substring(programLine,1);
+    }    
+    return parseInt(programLine);
+  }
+  return -1;
 }
 
 int getLineNumber(&T item) = item@\loc.begin.line;
@@ -98,6 +144,8 @@ list[str] handleNop(Tree I, int lineNumber, int progCounter)
   }
   return handleNop(1, lineNumber, progCounter);  
 }
+
+str replaceLabel(str compiledLine, str replacedJump) = padLength(substring(compiledLine, 0, 15) + replacedJump, compiledStringLength); 
 
 list[str] handleNop(int amount, int lineNumber, int progCounter)
 {
@@ -186,19 +234,6 @@ str padLength(str inputString, int outputSize) = left(inputString, outputSize, "
 str format(int numericValue) = format(numericValue, 5);
 str format(int numericValue, int stringSize) = format("<numericValue>", stringSize);
 str format(str stringValue, int stringSize) = contains(stringValue, ".") ? right(stringValue, stringSize+2, "0") : right(stringValue, stringSize, "0") ;
-
-void substitute(Variable V)
-{
-  str varName = trim("<V>");
-  try
-  {
-    println(labels[varName]);
-  }
-  catch:
-  {
-    ;//println("No such key: <varName>");
-  }
-}
 
 int instructionNumber(LabelInstructionName name)
 {
