@@ -15,12 +15,8 @@ list[str] clippedLines(str fileName)
   list[str] convertedLines = [];
   for(line <- readFileLines(testFile(fileName)))
   {
-    endPos = 24;
-    if(contains(line, " 00 "))
-    {
-      endPos = 15;
-    }
-    else if(contains(line, "Number of errors: 0"))
+    endPos = findEndPos(line);
+    if(contains(line, "Number of errors: 0"))
     {
       break;
     }
@@ -36,6 +32,16 @@ list[str] clippedLines(str fileName)
   }
   println("Processed <size(convertedLines)> lines.");  
   return convertedLines;
+}
+
+int findEndPos(str lineToCheck)
+{
+  endpos = 24;
+  if(contains(lineToCheck, " 00 "))
+  {
+    return 15;
+  }
+  return 24;
 }
 
 
