@@ -43,6 +43,8 @@ test bool testSimpleLabel()
 test bool testComparing() = handleCompare(compile("LabelOffset.PRG", symbols).compiledLines);
 test bool testFirstOneHundred() = handleCompare(compile("FirstOneHundred.PRG", symbols).compiledLines);
 test bool testNopBlankLine() = expectEqual(readFileLines(testFile("BlankLineComparison.PRN")), compile("BlankLineIssue.PRG", symbols).compiledLines);   
+test bool testCompileSmallPart() = handleCompare(compile("SmallPart.PRG", symbols).compiledLines);
+
 
 list[str] fetchResult = ["00001 00000 12 00001    ", "00002 00001 12 00002    "];
 
@@ -64,5 +66,7 @@ test bool testProgramLine200() = expectEqual(200, getProgramLine("00196 00200 29
 
 test bool testReplaceJump() = expectEqual("00196 00200 29 00013    ", replaceLabel("00196 00200 29 L00213 ", "00013"), "Label should be replaced by jump size");
 
+test bool testLabelName() = expectEqual("L00213", labelName("00196 00200 29 L00213 "), "labelName should extract a trimmed label");
 
-
+test bool testInstructionNumber29() = expectEqual(29, instructionNumber("00196 00200 29 L00213 "));
+test bool testInstructionNumber31() = expectEqual(31, instructionNumber("00008 00000 31 00003    "));
