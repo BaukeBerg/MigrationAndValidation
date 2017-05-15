@@ -20,6 +20,7 @@ void compilePds() = compileToFile("DR_TOT_3");
 void compileToFile(str file) = writeToFile(generatedFile("<file>.compiled"),compile(file).compiledLines);
 
 private bool printCompileInfo = true;
+private bool printHandlingStatements = false;
 private int nopLength = 15;
 private int compiledStringLength = 24;
 
@@ -40,24 +41,24 @@ CompiledData compile(str sourceFile, symbolTable symbols)
       lineNumber = getLineNumber(N);
       if(lastLine == getLineNumber(N))
       {
-        debugPrint("Handling newline");  
+        debugPrint("Handling newline", printHandlingStatements);  
         compiledLines += formatLine(lineCounter);        
         lineCounter += 1;  
         lastLine = lineCounter;
       }
       else
       {
-        debugPrint("skipping newline @ line <lineNumber>");
+        debugPrint("Skipping newline @ line <lineNumber>", printHandlingStatements);
       }      
     }
     case SingleLabel L:
     {
-      debugPrint("Handling single label <L>");
+      debugPrint("Handling single label <L>", printHandlingStatements);
       labels += composeLabel("<L>", progCounter); 
     }
     case Instruction I:
     {     
-      debugPrint("handling <I>, line count <lineCounter>, prog count <progCounter>"); 
+      debugPrint("Handling <I>, line count <lineCounter>, prog count <progCounter>", printHandlingStatements); 
       instructions = handleInstruction(I, lineCounter, progCounter, symbols);
       progCounter += size(instructions);
       lineCounter += 1;
@@ -69,14 +70,14 @@ CompiledData compile(str sourceFile, symbolTable symbols)
       lineNumber = getLineNumber(C);
       if(lastLine == lineNumber)
       {
-        debugPrint("Handling pds comment <C>, line count <lineCounter>, prog count <progCounter>");
+        debugPrint("Handling pds comment <C>, line count <lineCounter>, prog count <progCounter>", printHandlingStatements);
         compiledLines += formatLine(lineCounter);        
         lineCounter+=1;
         lastLine = lineCounter;
       }
       else
       {
-        debugPrint("Skipping comment, line number <lineNumber> already occupied");
+        debugPrint("Skipping comment, line number <lineNumber> already occupied", printHandlingStatements);
       }
     }    
   }  
