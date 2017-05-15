@@ -9,7 +9,7 @@ import utility::ListUtility;
 bool expectFalse(bool testMe) = expectEqual(false, testMe);
 bool expectTrue(bool testMe) = expectEqual(true, testMe);
 
-bool expectEqual(list[str] expected, list[str] actual, loc fileToStore)
+bool expectEqual(list[&T] expected, list[&T] actual, loc fileToStore)
 {
   bool result = expectEqual(expected, actual);
   writeFile(fileToStore, joinList(actual));
@@ -23,7 +23,7 @@ bool expectEqual(&T expected, &T actual, loc fileToStore)
   return result;
 }
 
-bool expectEqual(list[str] expected, list[str] actual, str messageOnFailure)
+bool expectEqual(list[&T] expected, list[&T] actual, str messageOnFailure)
 {
   if(!expectEqual(size(expected), size(actual)))
   {
@@ -66,7 +66,7 @@ bool expectEqual(&T expected, &T actual, str messageOnFailure)
 bool expectNotEqual(&T expected, &T actual) = expectNotEqual(expected, actual, "");
 bool expectNotEqual(&T expected, &T actual, str messageOnFailure)
 {
-  if(expected == actual)
+  if(true == expectEqual(expected, actual, messageOnFailure))
   {
     iprintln("Equal values passed: <expected>!");
     iprintln(messageOnFailure);  
@@ -77,7 +77,7 @@ bool expectNotEqual(&T expected, &T actual, str messageOnFailure)
 
 bool expectEqualFiles(loc expectedFile, loc actualFile) = expectEqualFiles(expectedFile, readFileLines(actualFile));
 bool expectEqualFiles(loc fileToScan, list[str] contentToCompare) = expectEqualFiles(readFileLines(fileToScan), contentToCompare);
-bool expectEqualFiles(list[str] fileToScan, list[str] contentToCompare)
+bool expectEqualFiles(list[&T] fileToScan, list[&T] contentToCompare)
 {
   if(false == expectEqual(fileToScan, contentToCompare))
   {

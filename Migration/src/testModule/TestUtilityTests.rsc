@@ -24,3 +24,12 @@ test bool expectDetectionOfDifferentSizeFirst() = expectFalse(expectEqual([], ["
 test bool expectDetectionOfDifferentSizeSecond() = expectFalse(expectEqual([""], []));
 test bool expectDetectionOfDifferentContent() = expectFalse(expectEqual(["A"], ["B"]));
 test bool expectDetectionOfEqualContent() = expectTrue(expectEqual(["A"], ["A"]));
+
+list[str] sampleList = ["A", "B", "C"];
+list[str] identicalList = ["A", "B", "C"];
+list[str] differentSize = ["A", "B", "C", "D"];
+list[str] differentContent = ["A", "B", "D"];
+
+test bool testEqualLists() = expectEqual(sampleList, identicalList, "Identical lists return true");
+test bool testListDifferentSize() = expectNotEqual(sampleList, differentSize, "Different size returns false");
+test bool testListDifferentContent() = expectNotEqual(sampleList, differentContent, "Different content returns error");
