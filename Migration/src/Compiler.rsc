@@ -173,11 +173,11 @@ str labelName(str compiledLine)
 
 list[str] handleNop(int amount, int lineNumber, int progCounter)
 {
-  list[str] instructions = [];
-  for(n <- [0 .. amount])
+  list[str] instructions = [formatLine(lineNumber, progCounter, compiledStringLength)];
+  for(n <- [1 .. amount])
   {
-    instructions += formatLine(lineNumber, progCounter);    
     progCounter += 1;    
+    instructions += formatLine(lineNumber, progCounter, nopLength);
   }  
   return instructions;
 }
@@ -249,7 +249,7 @@ str convertVariable(Variable V, symbolTable table)
 }
 
 str formatLine(int lineNumber) = padLength(format(lineNumber), compiledStringLength);
-str formatLine(int lineNumber, int progCounter)  = padLength("<format(lineNumber)> <format(progCounter)> 00", nopLength);
+str formatLine(int lineNumber, int progCounter, int desiredLength) = padLength("<format(lineNumber)> <format(progCounter)> 00", desiredLength);
 str formatLine(int lineNumber, int progCounter, int instruction, str address) = padLength("<format(lineNumber)> <format(progCounter)> <format(instruction, 2)> <format(address,5)>", compiledStringLength);
 str padLength(str inputString, int outputSize) = left(inputString, outputSize, " ");
 str format(int numericValue) = format(numericValue, 5);
