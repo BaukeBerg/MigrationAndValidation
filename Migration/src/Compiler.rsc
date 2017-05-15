@@ -23,8 +23,8 @@ private bool printCompileInfo = true;
 private int nopLength = 15;
 private int compiledStringLength = 24;
 
-CompiledData compile(str file) = compile("<file>", loadSymbols("DR_TOT_3.SYM"));
-CompiledData compile(str sourceFile, str symbolTableFile) = compile(sourceFile, generateSymbolTable(symbolTableFile));
+CompiledData compile(str file) = compile("<file>", "DR_TOT_3.SYM");
+CompiledData compile(str sourceFile, str symbolTableFile) = compile(sourceFile, loadSymbols(symbolTableFile));
 CompiledData compile(str sourceFile, symbolTable symbols)
 {  
   LabelList labels = [];
