@@ -6,8 +6,11 @@ import String;
 
 import utility::ListUtility;
 
-bool expectFalse(bool testMe) = expectEqual(false, testMe);
-bool expectTrue(bool testMe) = expectEqual(true, testMe);
+bool expectFalse(bool testMe) = expectFalse(testMe, "");
+bool expectTrue(bool testMe) = expectTrue(testMe, "");
+
+bool expectFalse(bool testMe, str messageOnFailure) = expectEqual(false, testMe, messageOnFailure);
+bool expectTrue(bool testMe, str messageOnFailure) = expectEqual(true, testMe, messageOnFailure);
 
 bool expectEqual(list[&T] expected, list[&T] actual, loc fileToStore)
 {
