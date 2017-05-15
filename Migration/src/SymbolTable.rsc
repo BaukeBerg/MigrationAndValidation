@@ -1,5 +1,6 @@
 module SymbolTable
 
+import FileLocations;
 import IO;
 import Parser;
 import PC20Syntax;
@@ -14,6 +15,22 @@ alias symbol = tuple[str name, str address];
 
 private bool printSymbolInfo = false;
 
+symbolTable loadSymbols(str symbolFile)
+{  
+  symbolFile = stripFileExtension(symbolFile);
+  cachedFile = generatedFile("<symbolFile>.symbolTable");
+  if(exists(cachedFile))
+  {
+    debugPrint("Loading cached symbols from file");
+    return readSymbolTableFromFile(cachedFile);
+  }  
+  symbols = generateSymbolTable("<symbolFile>.SYM");
+  writeSymbolTableToFile(cachedFile, symbols);
+  debugPrint("Generated new symbol cache");
+  return symbols;
+}
+
+
 symbolTable readSymbolTableFromFile(loc fileToParse)
 {
   symbolTable table = [];
@@ -27,6 +44,8 @@ symbolTable readSymbolTableFromFile(loc fileToParse)
 }
 
 str splitter = "@" ;
+
+
 
 void writeSymbolTableToFile(loc fileToSave, symbolTable tableToSave)
 {

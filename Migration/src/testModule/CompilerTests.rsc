@@ -25,21 +25,7 @@ list[str] multipleNop = [padLength("00010 00005 00",15), padLength("00010 00006 
 test bool testMultipleNop() = expectEqual(multipleNop, handleNop(3, 10, 5));
 test bool testMultipleNopParsed() = expectEqual(multipleNop, handleNop(parseText("NOP 3", #Expression), 10, 5));
 
-symbolTable loadSymbols()
-{
-  cachedFile = generatedFile("DR_TOT_3.symbolTable");
-  if(exists(cachedFile))
-  {
-    debugPrint("Loading cached symbols from file");
-    return readSymbolTableFromFile(cachedFile);
-  }  
-  symbols = generateSymbolTable("DR_TOT_3.SYM");
-  writeSymbolTableToFile(cachedFile, symbols);
-  debugPrint("Generated new symbol cache");
-  return symbols;
-}
-
-public symbolTable symbols = loadSymbols();
+public symbolTable symbols = loadSymbols("DR_TOT_3.SYM");
 
 test bool testSimplePair()
 {
