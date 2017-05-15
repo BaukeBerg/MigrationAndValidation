@@ -18,9 +18,11 @@ syntax Symbol = Declaration
 
 start syntax LabelList = LabelLocation+ ;
 
-lexical LabelLocation = Label + ":" + LineNumber + NewLine?
+lexical LabelLocation = ComposedLabel
                       | NewLine
                       ;
+                      
+lexical ComposedLabel = Label + ":" + LineNumber + NewLine? !>> "\r" ;
 
 lexical Declaration = VariableName + WhiteSpace+ "=" Address ;
 lexical NewLine = "\r\n";

@@ -7,11 +7,14 @@ import Parser;
 import PC20Syntax;
 import String;
 
+import utility::Debugging;
 import utility::ListUtility;
 import utility::FileUtility;
 
 alias LabelList = list[LabelDeclaration];
 alias LabelDeclaration = tuple[str label, str lineNumber];
+
+private bool showLabelHandlerOutput = true ;
 
 void writeToFile(loc fileToWrite, LabelList listToStore)
 {
@@ -27,14 +30,17 @@ LabelList extractLabelList(str fileName) = extractLabelList(testFile(fileName));
 LabelList extractLabelList(loc fileLocation)
 {
   LabelList labels = [];
-  visit(parseText(extractLabelString(fileLocation), #start[LabelList]))
+  labelString = extractLabelString(fileLocation);
+  debugPrint("labelString = <labelString>", showLabelHandlerOutput);
+  visit(parseText(labelString, #start[LabelList]))
   {
-    case LabelLocation L:
+    case ComposedLabel C:
     {
-      labels += [extractLabel(L)];      
+      debugPrint("Found label <C>", showLabelHandlerOutput);
+      labels += [extractLabel(C)];      
     }
   }
-  return tail(sort(labels));
+  return sort(labels);
 } 
 
 LabelDeclaration composeLabel(str label, int progLine)
@@ -42,15 +48,15 @@ LabelDeclaration composeLabel(str label, int progLine)
   return <label, "<progLine>">;  
 }
 
-LabelDeclaration extractLabel(LabelLocation L)
+LabelDeclaration extractLabel(ComposedLabel C)
 {
   LabelDeclaration l = <"","">;
-  visit(L)
+  visit(C)
   {
-    case Label L:
-      l.label = "<L>";
-    case LineNumber L:
-      l.lineNumber = "<L>";
+    case Label C:
+      l.label = "<C>";
+    case LineNumber C:
+      l.lineNumber = "<C>";
   }      
   return l;
  }
