@@ -28,9 +28,11 @@ bool compareLabels(LabelList labels)
 
 str expectedString = "L00004:4\r\nL00006:6\r\nL00008:8";
 
-
 test bool testExtractString() = expectEqual(expectedString, extractLabelString(testFile("simpleLabel.lbl")));
 test bool testParsing() = isUnAmbiguous(expectedString, #start[LabelList]);
 test bool testReading() = expectEqual(labels, smallLabels(), "Reading this file should yield this list");
 
 LabelList smallLabels() = extractLabelList(testFile("simpleLabel.lbl"));
+
+test bool testKnownLabelLine() = expectEqual("4", getProgramLine(labels, "L00004"), "L00004 corresponds to program line 4");
+test bool testUnknownLabelLine() = expectEqual("-1", getProgramLine(labels, "Non-existing"), "non-existing label returns -1");

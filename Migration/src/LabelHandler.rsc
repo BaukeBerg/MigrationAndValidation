@@ -78,3 +78,13 @@ str extractLabelString(loc fileLocation)
   }
   return replaceAll(joinList(trimList(symbolLines)), " ", "");
 }
+
+str getProgramLine(LabelList labels, str labelToFind)
+{
+  for(label <- labels, label.label == labelToFind)
+  {
+    return label.lineNumber;
+  }
+  return "-1";  
+}
+
