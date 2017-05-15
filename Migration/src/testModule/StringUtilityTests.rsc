@@ -19,3 +19,6 @@ str inlineCommentString = "Hello/*InlineComment*/GoodBye";
 
 test bool testClipString() = expectEqual("HelloGoodBye", clipString(inlineCommentString, "/*", "*/"));
 test bool testClipStringWithSplit() = expectEqual("Hello\r\nGoodBye", clipString(inlineCommentString, "/*", "*/", "\r\n")); 
+
+test bool testParseInt() = expectEqual(-1, parseInt("hallo"));
+test bool testParseInt() = expectEqual(30, parseInt("30"));

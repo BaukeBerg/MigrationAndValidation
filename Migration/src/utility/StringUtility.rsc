@@ -2,6 +2,18 @@ module utility::StringUtility
 
 import String;
 
+int parseInt(str inputString)
+{
+  try
+  {
+    return toInt(inputString);
+  }
+  catch:
+  {
+    return -1;
+  }
+}
+
 public str stringToken(str stringToCheck, str firstOccurrence, str lastOccurrence) = stringToken(stringToCheck, firstOccurrence, findLast(stringToCheck, lastOccurrence));
 public str stringToken(str stringToCheck, int firstPosition, str lastOccurrence) = stringToken(stringToCheck, firstPosition, findLast(stringToCheck, lastOccurrence));
 public str stringToken(str stringToCheck, str firstOccurrence, int lastPosition) = stringToken(stringToCheck, findFirst(stringToCheck, firstOccurrence)+size(firstOccurrence), lastPosition);
