@@ -89,12 +89,20 @@ CompiledData compile(str sourceFile, symbolTable symbols)
 CompiledData insertJumps(CompiledData firstStageData)
 {
   compiledLines = firstStageData.compiledLines;  
-  for(n <- [0 .. size(compiledLines)], isRelativeJump(compiledLines[n]))
+  for(n <- [0 .. size(compiledLines)], isJump(compiledLines[n]))
   {
     programLine = getProgramLine(compiledLines[n]);
     labelLine = getProgramLine(firstStageData.labels, labelName(compiledLines[n]));
     switch(instructionNumber(compiledLines[n]))
     {
+      case 24:
+      {
+        compiledLines[n] = replaceLabel(compiledLines[n], format(labelLine));
+      }
+      case 25:
+      {
+        compiledLines[n] = replaceLabel(compiledLines[n], format(labelLine));
+      }
       case 29:
       {
         compiledLines[n] = replaceLabel(compiledLines[n], format(programLine - labelLine));
@@ -108,7 +116,10 @@ CompiledData insertJumps(CompiledData firstStageData)
   return <compiledLines, firstStageData.labels>;
 }
 
+bool isJump(str compiledLine) = isRelativeJump(compiledLine) || isAbsoluteJump(compiledLine);
+
 bool isRelativeJump(str compiledLine) = inLimits(29, instructionNumber(compiledLine), 30);
+bool isAbsoluteJump(str compiledLine) = inLimits(24, instructionNumber(compiledLine), 25);
 
 int instructionNumber(str compiledLine)
 {
