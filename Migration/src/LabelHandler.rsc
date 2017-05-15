@@ -34,7 +34,7 @@ LabelList extractLabelList(loc fileLocation)
       labels += [extractLabel(L)];      
     }
   }
-  return sort(labels);
+  return tail(sort(labels));
 } 
 
 LabelDeclaration composeLabel(str label, int progLine)
