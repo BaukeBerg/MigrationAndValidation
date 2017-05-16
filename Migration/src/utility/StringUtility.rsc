@@ -6,6 +6,10 @@ int parseInt(str inputString)
 {
   try
   {
+    while(1 < size(inputString) && startsWith(inputString, "0"))
+    {
+      inputString = substring(inputString,1);
+    }
     return toInt(inputString);
   }
   catch:

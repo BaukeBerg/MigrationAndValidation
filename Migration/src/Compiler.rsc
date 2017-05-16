@@ -134,12 +134,7 @@ int getProgramLine(str compiledLine)
 {
   if(11 < size(compiledLine))
   {
-    programLine = substring(compiledLine,6,11);
-    while(startsWith(programLine, "0") && size(programLine) > 1)
-    {
-      programLine = substring(programLine,1);
-    }    
-    return parseInt(programLine);
+    return parseInt(substring(compiledLine,6,11));    
   }
   return -1;
 }
