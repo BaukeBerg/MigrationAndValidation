@@ -44,8 +44,7 @@ test bool testSimpleLabel()
 test bool testComparing() = handleCompare(compile("LabelOffset.PRG", symbols).compiledLines);
 test bool testFirstOneHundred() = handleCompare(compile("FirstOneHundred.PRG", symbols).compiledLines);
 test bool testNopBlankLine() = expectEqual(readFileLines(testFile("BlankLineComparison.PRN")), compile("BlankLineIssue.PRG", symbols).compiledLines);   
-test bool testCompileSmallPart() = handleCompare(compile("SmallPart.PRG", symbols).compiledLines);
-test bool testCompileHalf() = handleCompare(compile("HalfProgram.PRG", symbols).compiledLines);
+
 test bool testCompileFull()
 {  
   startDuration();
