@@ -92,25 +92,29 @@ CompiledData insertJumps(CompiledData firstStageData)
   for(n <- [0 .. size(compiledLines)], isJump(compiledLines[n]))
   {
     programLine = getProgramLine(compiledLines[n]);    
-    labelLine = getProgramLine(firstStageData.labels, labelName(compiledLines[n]));
-    switch(instructionNumber(compiledLines[n]))
+    str label = labelName(compiledLines[n]);
+    labelLine = getProgramLine(firstStageData.labels, label);
+    if(startsWith(label, "L"))
     {
-      case 24:
+      switch(instructionNumber(compiledLines[n]))
       {
-        compiledLines[n] = replaceLabel(compiledLines[n], format(labelLine));
+        case 24:
+        {
+          compiledLines[n] = replaceLabel(compiledLines[n], format(labelLine));
+        }
+        case 25:
+        {
+          compiledLines[n] = replaceLabel(compiledLines[n], format(labelLine));
+        }
+        case 29:
+        {
+          compiledLines[n] = replaceLabel(compiledLines[n], format(programLine - labelLine));
+        }
+        case 30:
+        {
+          compiledLines[n] = replaceLabel(compiledLines[n], format(labelLine - programLine));
+        }   
       }
-      case 25:
-      {
-        compiledLines[n] = replaceLabel(compiledLines[n], format(labelLine));
-      }
-      case 29:
-      {
-        compiledLines[n] = replaceLabel(compiledLines[n], format(programLine - labelLine));
-      }
-      case 30:
-      {
-        compiledLines[n] = replaceLabel(compiledLines[n], format(labelLine - programLine));
-      }   
     }    
   }
   return <compiledLines, firstStageData.labels>;
