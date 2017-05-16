@@ -82,10 +82,14 @@ str extractLabelString(loc fileLocation)
 
 int getProgramLine(LabelList labels, str labelToFind)
 {
-  for(label <- labels, label.label == labelToFind)
+  if(startsWith(labelToFind, "L"))
   {
-    return parseInt(label.lineNumber);
+    for(label <- labels, label.label == labelToFind)
+    {
+      return parseInt(label.lineNumber);
+    }
+    return -1;
   }
-  return -1;  
+  return labelToFind;  
 }
 

@@ -82,3 +82,9 @@ test bool testInstructionNumber31() = expectEqual(31, instructionNumber("00008 0
 list[str] expectedJumpResult = ["00001 00000 29 00013    ", "00002 00001 30 01234    ","00003 00002 24 00100    ", "00004 00003 25 00008     "];
 
 test bool testUnlabeledJump() = expectEqual(expectedJumpResult, compile("unlabeledJumps.PRG").compiledLines); 
+
+test bool testSampleJumpDestination() = expectEqual("00013", jumpDestination("00001 00000 29 00013    "));
+test bool testAnotherSampleJumpDestination() = expectEqual("84562", jumpDestination("00004 00003 25 84562    "));
+test bool testInvalidJumpDestination() = expectEqual("ERROR", jumpDestination("Nonsense"));
+
+

@@ -91,7 +91,7 @@ CompiledData insertJumps(CompiledData firstStageData)
   compiledLines = firstStageData.compiledLines;  
   for(n <- [0 .. size(compiledLines)], isJump(compiledLines[n]))
   {
-    programLine = getProgramLine(compiledLines[n]);
+    programLine = getProgramLine(compiledLines[n]);    
     labelLine = getProgramLine(firstStageData.labels, labelName(compiledLines[n]));
     switch(instructionNumber(compiledLines[n]))
     {
@@ -168,7 +168,18 @@ str labelName(str compiledLine)
   {
     return trim(substring(compiledLine, characterPos));
   }
-  return "Invalid label found!";  
+  return jumpDestination(compiledLine);      
+}
+
+str jumpDestination(str compiledLine)
+{
+  compiledLine = trim(compiledLine);
+  lastSpacePos = findLast(compiledLine, " ");
+  if(0 < lastSpacePos)
+  {
+    return trim(substring(compiledLine, lastSpacePos));
+  }
+  return "ERROR";
 }
 
 list[str] handleNop(int amount, int lineNumber, int progCounter)
