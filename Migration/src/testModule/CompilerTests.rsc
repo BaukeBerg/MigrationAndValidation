@@ -1,6 +1,7 @@
 module testModule::CompilerTests
 
 import Compiler;
+import DateTime;
 import FileLocations;
 import IO;
 import List;
@@ -44,7 +45,14 @@ test bool testComparing() = handleCompare(compile("LabelOffset.PRG", symbols).co
 test bool testFirstOneHundred() = handleCompare(compile("FirstOneHundred.PRG", symbols).compiledLines);
 test bool testNopBlankLine() = expectEqual(readFileLines(testFile("BlankLineComparison.PRN")), compile("BlankLineIssue.PRG", symbols).compiledLines);   
 test bool testCompileSmallPart() = handleCompare(compile("SmallPart.PRG", symbols).compiledLines);
-
+test bool testCompileHalf() = handleCompare(compile("HalfProgram.PRG", symbols).compiledLines);
+test bool testCompileFull()
+{  
+  startDuration();
+  result = handleCompare(compile("DR_TOT_3.PRG", symbols).compiledLines);
+  printDuration("Compiling of total file.");
+  return result;  
+}
 
 list[str] fetchResult = ["00001 00000 12 00001    ", "00002 00001 12 00002    "];
 
@@ -70,3 +78,7 @@ test bool testLabelName() = expectEqual("L00213", labelName("00196 00200 29 L002
 
 test bool testInstructionNumber29() = expectEqual(29, instructionNumber("00196 00200 29 L00213 "));
 test bool testInstructionNumber31() = expectEqual(31, instructionNumber("00008 00000 31 00003    "));
+
+list[str] expectedJumpResult = ["00001 00000 29 00013    ", "00002 00001 30 01234    ","00003 00002 24 00100    ", "00004 00003 25 00008     "];
+
+test bool testUnlabeledJump() = expectEqual(expectedJumpResult, compile("unlabeledJumps.PRG").compiledLines); 
