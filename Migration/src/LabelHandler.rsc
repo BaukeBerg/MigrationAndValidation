@@ -90,6 +90,6 @@ int getProgramLine(LabelList labels, str labelToFind)
     }
     return -1;
   }
-  return labelToFind;  
+  return parseInt(labelToFind);  
 }
 
