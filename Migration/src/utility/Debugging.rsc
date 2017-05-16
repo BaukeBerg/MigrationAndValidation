@@ -22,7 +22,17 @@ public void debugPrint(&T itemToPrint)
   }
 }
 
-datetime startDuration() = now();
-public void printDuration(datetime startTime) = duration("", startTime);
+datetime localDateTime = now(); 
+
+public void startDuration() 
+{
+  debugPrint("Starting duration...");
+  localDateTime = now();  
+}
+
+public void printDuration() = printDuration("", localDateTime);
+public void printDuration(str prefix) = printDuration(prefix, localDateTime); 
+
+public void printDuration(datetime startTime) = printDuration("", startTime);
 public void printDuration(str prefix, datetime startTime) = println("<prefix> duration: <createDuration(startTime, now())>");
 
