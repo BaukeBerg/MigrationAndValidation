@@ -146,3 +146,19 @@ L00153	AND	000.1
 
 	AND	RESULT	!F=C
 	JFRF	L00173
+
+	AND	RESULT	!F=C
+	AND	ENTER	!triggerpuls enterdrukkn.
+	FTCHD	SETP_0	!ingevoerde setpoint eenheden
+	FTCHD	SETP_1	!ingevoerde setpoint tientallen
+	FTCHD	SETP_2	!ingevoerde setpoint honderdtallen
+	FTCHD	SETP_3	!ingevoerde setpoint duizendtallen
+	STRD	STP01_0	!setpoint 01 eenheden
+	STRD	STP01_1	!setpoint 01 tientallen
+	STRD	STP01_2	!setpoint 01 honderdtallen
+	STRD	STP01_3	!setpoint 01 duizendtallen
+
+	ANDNT	000.1
+	NOP	1
+
+L00173	AND	000.1
