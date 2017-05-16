@@ -22,3 +22,9 @@ test bool testClipStringWithSplit() = expectEqual("Hello\r\nGoodBye", clipString
 
 test bool testParseInt() = expectEqual(-1, parseInt("hallo"));
 test bool testParseInt() = expectEqual(30, parseInt("30"));
+
+
+// Add some tests to make sure parseInt does not mistake input for binary, octal or hexadecimal
+test bool testParseIntBinary() = expectEqual(10, parseInt("00010"), "Check that 10 is reported instead of 3");
+test bool testParseIntOctal() = expectEqual(70, parseInt("00070"), "Check that 70 is reported instead of 56");
+test bool testParseIntHexadecimal() = expectEqual(-1, parseInt("0001F"), "Check that hex input is considered erroneous");

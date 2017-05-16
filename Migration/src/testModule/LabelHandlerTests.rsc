@@ -36,3 +36,4 @@ LabelList smallLabels() = extractLabelList(testFile("simpleLabel.lbl"));
 
 test bool testKnownLabelLine() = expectEqual(4, getProgramLine(labels, "L00004"), "L00004 corresponds to program line 4");
 test bool testUnknownLabelLine() = expectEqual(-1, getProgramLine(labels, "Non-existing"), "non-existing label returns -1");
+test bool testUnlabeledLine() = expectEqual(8, getProgramLine(labels, "00008"), "label without L should be passed without replacing");
