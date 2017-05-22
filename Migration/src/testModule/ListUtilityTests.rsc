@@ -21,3 +21,10 @@ test bool testTokenizedListTrimming() = expectEqual(["FilledLine$Hello", "Filled
 list[str] moduleNames = ["Package.rsc", "Package2.rsc"];
 
 test bool testPadding() = expectEqual(["import Package.rsc;", "import Package2.rsc;"], padList("import ", moduleNames, ";"));
+
+list[str] firstList = ["One", "Two", "Three"];
+list[str] secondList = [" Bird", " Stones", " Horses"];
+
+list[str] mergedList = ["One Bird", "Two Stones", "Three Horses"];
+
+test bool mergeLists() = expectEqual(mergedList, mergeList(firstList, secondList), "Merging should glue same indexes together");

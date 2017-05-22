@@ -2,6 +2,7 @@ module \utility::ListUtility
 
 import String;
 import List;
+import util::Math;
 
 bool contains(list[&T] items, &T item) = -1 != indexOf(items, item);
 
@@ -24,6 +25,8 @@ list[str] trimList(list[str] linesToTrim)
   }
   return results;
 }
+
+list[&T] mergeList(list[&T] first, list[&T] second) = [ first[n] + second[n] | n <- [0.. min(size(first), size(second))] ];
 
 list[str] padList(str prefix, list[str] lines, str suffix) = ["<prefix><line><suffix>" | line <- lines];
 
