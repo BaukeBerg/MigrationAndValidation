@@ -12,10 +12,13 @@ import SymbolTable;
 
 import utility::Debugging;
 import utility::FileUtility;
+import utility::ListUtility;
 import utility::MathUtility;
 import utility::StringUtility;
 
 alias CompiledData = tuple[list[str] compiledLines, LabelList labels];
+alias CompiledSourceData = tuple[CompiledData compiledData, list[str] sourceInfo];
+alias InstructionList = tuple[list[str] compiledLines, list[str] sourceInfo];
 
 void compilePds() = compileToFile("DR_TOT_3");
 void compileToFile(str file) = writeToFile(generatedFile("<file>.compiled"),compile(file).compiledLines);
@@ -25,20 +28,29 @@ private bool printHandlingStatements = false;
 private int nopLength = 15;
 private int compiledStringLength = 24;
 
-CompiledData compile(str file) = compile("<file>", "DR_TOT_3.SYM");
-CompiledData compile(str sourceFile, str symbolTableFile) = compile(sourceFile, loadSymbols(symbolTableFile));
-CompiledData compile(str sourceFile, symbolTable symbols) = doCompile(sourceFile, symbols, false);
+// Compile without storing orignal input
+CompiledData compile(str file) = compile("<file>", "DR_TOT_3.SYM").compiledData;
+CompiledData compile(str sourceFile, str symbolTableFile) = compile(sourceFile, loadSymbols(symbolTableFile)).compiledData;
+CompiledData compile(str sourceFile, symbolTable symbols) = doCompile(sourceFile, symbols).compiledData;
 
-CompiledData compileWithSources(str sourceFile, symbolTable symbols) = doCompile(sourceFile, symbols, true);
+// Compile with storing of original input
+CompiledData compileWithSources(str sourceFile, symbolTable symbols)
+{
+  totalData = doCompile(sourceFile, symbols);
+  totalData.compiledData.compiledLines = mergeList(totalData.compiledData.compiledLines, totalData.sourceInfo);  
+  return totalData.compiledData;
+}
 
-CompiledData doCompile(str sourceFile, symbolTable symbols, bool includeSourceLines)
+CompiledSourceData doCompile(str sourceFile, symbolTable symbols)
 {  
   LabelList labels = [];
   progCounter = 0;
   lineCounter = 1;
   lastLine = 1;
   compiledLines = [];
+  sourceInfo = [];  
   debugPrint("Visiting ast");
+  inputCode = readFileLines(sourceFile);
   visit(generateSourceTree(sourceFile))
   {
     case NewLine N:
@@ -47,7 +59,8 @@ CompiledData doCompile(str sourceFile, symbolTable symbols, bool includeSourceLi
       if(lastLine == getLineNumber(N))
       {
         debugPrint("Handling newline", printHandlingStatements);  
-        compiledLines += formatLine(lineCounter);        
+        compiledLines += formatLine(lineCounter);  
+        sourceInfo += "" ;      
         lineCounter += 1;  
         lastLine = lineCounter;
       }
@@ -65,9 +78,10 @@ CompiledData doCompile(str sourceFile, symbolTable symbols, bool includeSourceLi
     {     
       debugPrint("Handling <I>, line count <lineCounter>, prog count <progCounter>", printHandlingStatements); 
       instructions = handleInstruction(I, lineCounter, progCounter, symbols);
-      progCounter += size(instructions);
+      progCounter += size(instructions.compiledLines);
       lineCounter += 1;
-      compiledLines += instructions;
+      compiledLines += instructions.compiledLines;
+      sourceInfo += instructions.sourceInfo;      
       lastLine = lineCounter;
     }
     case PdsComment C:
@@ -79,15 +93,17 @@ CompiledData doCompile(str sourceFile, symbolTable symbols, bool includeSourceLi
         compiledLines += formatLine(lineCounter);        
         lineCounter+=1;
         lastLine = lineCounter;
+        sourceInfo += "<C>";        
       }
       else
       {
         debugPrint("Skipping comment, line number <lineNumber> already occupied", printHandlingStatements);
-      }
-    }    
+      }      
+    }  
+      
   }  
   debugPrint("First compilation stage completed", printCompileInfo);
-  return insertJumps(<compiledLines, sort(labels)>);  
+  return <insertJumps(<compiledLines, sort(labels)>), sourceInfo>;  
 }
 
 CompiledData insertJumps(CompiledData firstStageData)
@@ -149,7 +165,7 @@ int getProgramLine(str compiledLine)
 
 int getLineNumber(&T item) = item@\loc.begin.line;
 
-list[str] handleNop(Tree I, int lineNumber, int progCounter)
+InstructionList handleNop(Tree I, int lineNumber, int progCounter)
 {
   visit(I)
   {
@@ -185,18 +201,20 @@ str jumpDestination(str compiledLine)
   return "ERROR";
 }
 
-list[str] handleNop(int amount, int lineNumber, int progCounter)
+InstructionList handleNop(int amount, int lineNumber, int progCounter)
 {
   list[str] instructions = [formatLine(lineNumber, progCounter, compiledStringLength)];
+  sourceInfo = 1 < amount ? ["\tNOP\t<amount>"] : ["\tNOP"];
   for(n <- [1 .. amount])
   {
     progCounter += 1;    
     instructions += formatLine(lineNumber, progCounter, nopLength);
+    sourceInfo += "";
   }  
-  return instructions;
+  return <instructions, sourceInfo>;
 }
 
-list[str] handleInstruction(&T I, int lineNumber, int progCounter, symbolTable table)
+InstructionList handleInstruction(&T I, int lineNumber, int progCounter, symbolTable table)
 {
   instruction = -1;
   address = ""; 
@@ -233,7 +251,7 @@ list[str] handleInstruction(&T I, int lineNumber, int progCounter, symbolTable t
     {
       /// TODO: Handle RET instructions better
       instruction = 26;
-      return [formatLine(lineNumber, progCounter, instruction, "     ")];
+      return <[formatLine(lineNumber, progCounter, instruction, "     ")], ["RET"]>;
     }
     case Variable V:
     {    
@@ -249,8 +267,8 @@ list[str] handleInstruction(&T I, int lineNumber, int progCounter, symbolTable t
     }
   }  
   str returnLine = formatLine(lineNumber, progCounter, instruction, format(address, 5));
-  println(returnLine);
-  return [returnLine];   
+  println(returnLine);  
+  return <[returnLine],["GENERIC_INSTRUCTION"]>;   
 }
 
 str convertVariable(Variable V, symbolTable table)
