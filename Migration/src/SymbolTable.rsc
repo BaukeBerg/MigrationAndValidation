@@ -69,6 +69,7 @@ void writeSymbolTableToFile(loc fileToSave, symbolTable tableToSave)
 symbolTable generateSymbolTable(str fileName)
 {
   symbolTable = [];
+  unreferencedIndex = 1 ;
   visit(generateSymbolTree(fileName))
   {
     case Declaration D:
@@ -77,20 +78,22 @@ symbolTable generateSymbolTable(str fileName)
     }
     case UnreferencedDeclaration UD:
     {
-      println("Unreferenced declaration: <UD>");
+      symbolTable += generateDeclaration("unreferenced_<unreferencedIndex>", UD);
+      unreferencedIndex += 1 ;      
     } 
     case PdsComment C:
     {
-      symbolTable[size(symbolTable)-1].comment = "<C>";
+      symbolTable[size(symbolTable)-1].comment = "<C>";      
     }                 
   }
   debugPrint(symbolTable, printSymbolInfo);
   return symbolTable;
 }
 
-symbol processDeclaration(&T D)
+symbol processDeclaration(&T D) = generateDeclaration("", D);
+symbol generateDeclaration(str defaultName, &T D)
 {
-  symbol extractedSymbol = <"", "", "">;
+  symbol extractedSymbol = <defaultName, "", "">;
   visit(D)
   {
     case VariableName N:
