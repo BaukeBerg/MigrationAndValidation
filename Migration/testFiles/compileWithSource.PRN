@@ -1,0 +1,3 @@
+00001                   ! Sample file for testing compiling including sources
+00002                   ! Simply add samples with known issues in compiling.
+00003 00000 02 00511.2  	EQL	S_10SEC	!triggerpuls 10 sec.
