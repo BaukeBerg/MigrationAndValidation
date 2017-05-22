@@ -51,8 +51,8 @@ void createTestModule(list[str] modules, list[str] testCalls)
 
 void printResult(bool result) = result ? print("true") : print("false");
 
-str createTryCatchHarness(str moduleName, str methodName) = "test bool try<methodName>{ try{ return <createTestCall(moduleName, methodName)>;} catch: { <failTestCall(moduleName, methodName)>; } return false; }";
-str createTestCall(str moduleName, str methodName) = "checkAndReport(\"<moduleName>\",\"<methodName>\", <methodName>)";
+str createTryCatchHarness(str moduleName, str methodName) = "test bool try_<moduleName>_<methodName>{ try{ return <createTestCall(moduleName, methodName)>;} catch: { <failTestCall(moduleName, methodName)>; } return false; }";
+str createTestCall(str moduleName, str methodName) = "checkAndReport(\"<moduleName>\",\"<methodName>\", testModule::<moduleName>::<methodName>)";
 str failTestCall(str moduleName, str methodName) = "checkAndReport(\"<moduleName>\",\"!!! EXCEPTION IN <methodName> !!!\", false)";
 
 loc testReport = generatedFile("TestReport.html");
