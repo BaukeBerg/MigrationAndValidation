@@ -54,6 +54,7 @@ test bool testCompileFull()
 }
 
 test bool testFirstOneHundredWithSources() = handleCompareWithSources(compileWithSourcesToFile("FirstOneHundred.PRG", symbols).compiledLines);
+test bool testSampleSuite() = expectEqual(readFileLines(testFile("compileWithSource.PRN")), compileWithSourcesToFile("compileWithSource.PRG", symbols).compiledLines);
 
 test bool testCompileFullWithSources()
 {

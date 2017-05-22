@@ -28,11 +28,7 @@ private bool printHandlingStatements = false;
 private int nopLength = 15;
 private int compiledStringLength = 24;
 
-// Compile without storing orignal input
-CompiledData compile(str file) = compile("<file>", "DR_TOT_3.SYM").compiledData;
-CompiledData compile(str sourceFile, str symbolTableFile) = compile(sourceFile, loadSymbols(symbolTableFile)).compiledData;
-CompiledData compile(str sourceFile, symbolTable symbols) = doCompile(sourceFile, symbols).compiledData;
-
+// Compile and glue back original input
 CompiledData compileWithSourcesToFile(str sourceFile, symbolTable symbols)
 { 
   compiledData = compileWithSources(sourceFile, symbols) ;
@@ -43,21 +39,38 @@ CompiledData compileWithSourcesToFile(str sourceFile, symbolTable symbols)
 // Compile with storing of original input
 CompiledData compileWithSources(str sourceFile, symbolTable symbols)
 {
-  totalData = doCompile(sourceFile, symbols);
-  totalData.compiledData.compiledLines = mergeList(totalData.compiledData.compiledLines, totalData.sourceInfo);  
-  return totalData.compiledData;
+  totalData = compile(sourceFile, symbols);
+  totalData.compiledLines = insertSources(totalData.compiledLines, sourceFile);  
+  return totalData;
 }
 
-CompiledSourceData doCompile(str sourceFile, symbolTable symbols)
+list[str] insertSources(list[str] compiledLines, str inputFile)
+{
+  inputData = readFileLines(testFile(inputFile));
+  processedLine = -1;
+  for(n <- [0..size(compiledLines)])
+  {
+    compiledLine = getSourceLineNumber(compiledLines[n]);
+    if(processedLine != compiledLine)
+    {
+      compiledLines[n] += inputData[compiledLine-1];
+      processedLine = compiledLine;
+    } 
+  }
+  return compiledLines;  
+}
+
+// Compile without storing orignal input
+CompiledData compile(str file) = compile("<file>", "DR_TOT_3.SYM");
+CompiledData compile(str sourceFile, str symbolTableFile) = compile(sourceFile, loadSymbols(symbolTableFile));
+CompiledData compile(str sourceFile, symbolTable symbols)
 {  
   LabelList labels = [];
   progCounter = 0;
   lineCounter = 1;
   lastLine = 1;
   compiledLines = [];
-  sourceInfo = [];  
   debugPrint("Visiting ast");
-  inputData = readFileLines(testFile(sourceFile));
   visit(generateSourceTree(sourceFile))
   {
     case NewLine N:
@@ -67,7 +80,6 @@ CompiledSourceData doCompile(str sourceFile, symbolTable symbols)
       {
         debugPrint("Handling newline", printHandlingStatements);  
         compiledLines += formatLine(lineCounter);
-        sourceInfo += "";  
         lineCounter += 1;  
         lastLine = lineCounter;
       }
@@ -85,13 +97,7 @@ CompiledSourceData doCompile(str sourceFile, symbolTable symbols)
     {     
       debugPrint("Handling <I>, line count <lineCounter>, prog count <progCounter>", printHandlingStatements); 
       instructions = handleInstruction(I, lineCounter, progCounter, symbols);
-      lineAmount = size(instructions);
-      progCounter += lineAmount;
-      sourceInfo += inputData[lineCounter-1];
-      for(n <- [1..lineAmount])
-      {
-        sourceInfo += "";
-      }      
+      progCounter += size(instructions);
       lineCounter += 1;
       compiledLines += instructions;         
       lastLine = lineCounter;
@@ -105,18 +111,16 @@ CompiledSourceData doCompile(str sourceFile, symbolTable symbols)
         compiledLines += formatLine(lineCounter);        
         lineCounter+=1;
         lastLine = lineCounter;
-        sourceInfo += "<C>";        
       }
       else
       {
-        debugPrint("Skipping comment, line number <lineNumber> already occupied", printHandlingStatements);
+        debugPrint("Skipping comment, line number <lineNumber> already occupied", printHandlingStatements);              
       }      
     }  
       
   }  
-  debugPrint("First compilation stage completed", printCompileInfo);
-  println(sourceInfo);
-  return <insertJumps(<compiledLines, sort(labels)>), sourceInfo>;  
+  debugPrint("First compilation stage completed", printCompileInfo);  
+  return insertJumps(<compiledLines, sort(labels)>);  
 }
 
 CompiledData insertJumps(CompiledData firstStageData)
@@ -174,6 +178,16 @@ int getProgramLine(str compiledLine)
     return parseInt(substring(compiledLine,6,11));    
   }
   return -1;
+}
+
+int getSourceLineNumber(str compiledLine)
+{
+  spacePos = findFirst(compiledLine, " ");
+  if(-1 != spacePos)
+  {
+    return parseInt(substring(compiledLine, 0, spacePos));
+  }
+  return parseInt(compiledLine);
 }
 
 int getLineNumber(&T item) = item@\loc.begin.line;
