@@ -53,6 +53,18 @@ test bool testCompileFull()
   return result;  
 }
 
+test bool testOffsetWithSources() = handleCompareWithSources(compile("LabelOffset.PRG", symbols).compiledLines);
+test bool testFirstOneHundredWithSources() = handleCompareWithSources(compile("FirstOneHundred.PRG", symbols).compiledLines);
+
+
+test bool testCompileFullWithSources()
+{
+  startDuration();
+  result = handleCompareWithSources(compileWithSources("DR_TOT_3.PRG", symbols).compiledLines);
+  printDuration("Compiling including original sources.");
+  return result;
+ }
+
 list[str] fetchResult = ["00001 00000 12 00001    ", "00002 00001 12 00002    "];
 
 test bool testFetching() = expectEqual(fetchResult, compile("FetchConstant.PRG", symbols).compiledLines);
@@ -60,6 +72,12 @@ test bool testFetching() = expectEqual(fetchResult, compile("FetchConstant.PRG",
 bool handleCompare(list[str] compiledLines)
 {
   referenceData = take(size(compiledLines), readFileLines(generatedFile("strippedLines")));
+  return expectEqual(referenceData, compiledLines);
+}
+
+bool handleCompareWithSources(list[str] compiledLines)
+{
+  referenceData = take(size(compiledLines), readFileLines(testFile("DR_TOT_3.PRN")));
   return expectEqual(referenceData, compiledLines);
 }
 

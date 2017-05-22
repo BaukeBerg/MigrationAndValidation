@@ -27,7 +27,11 @@ private int compiledStringLength = 24;
 
 CompiledData compile(str file) = compile("<file>", "DR_TOT_3.SYM");
 CompiledData compile(str sourceFile, str symbolTableFile) = compile(sourceFile, loadSymbols(symbolTableFile));
-CompiledData compile(str sourceFile, symbolTable symbols)
+CompiledData compile(str sourceFile, symbolTable symbols) = doCompile(sourceFile, symbols, false);
+
+CompiledData compileWithSources(str sourceFile, symbolTable symbols) = doCompile(sourceFile, symbols, true);
+
+CompiledData doCompile(str sourceFile, symbolTable symbols, bool includeSourceLines)
 {  
   LabelList labels = [];
   progCounter = 0;
