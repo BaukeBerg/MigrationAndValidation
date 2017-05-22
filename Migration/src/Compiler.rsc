@@ -33,6 +33,13 @@ CompiledData compile(str file) = compile("<file>", "DR_TOT_3.SYM").compiledData;
 CompiledData compile(str sourceFile, str symbolTableFile) = compile(sourceFile, loadSymbols(symbolTableFile)).compiledData;
 CompiledData compile(str sourceFile, symbolTable symbols) = doCompile(sourceFile, symbols).compiledData;
 
+CompiledData compileWithSourcesToFile(str sourceFile, symbolTable symbols)
+{ 
+  compiledData = compileWithSources(sourceFile, symbols) ;
+  writeToFile(generatedFile("<sourceFile>.compiled"), compiledData.compiledLines);
+  return compiledData;
+}
+
 // Compile with storing of original input
 CompiledData compileWithSources(str sourceFile, symbolTable symbols)
 {
@@ -50,7 +57,7 @@ CompiledSourceData doCompile(str sourceFile, symbolTable symbols)
   compiledLines = [];
   sourceInfo = [];  
   debugPrint("Visiting ast");
-  inputCode = readFileLines(sourceFile);
+  inputData = readFileLines(testFile(sourceFile));
   visit(generateSourceTree(sourceFile))
   {
     case NewLine N:
@@ -59,8 +66,8 @@ CompiledSourceData doCompile(str sourceFile, symbolTable symbols)
       if(lastLine == getLineNumber(N))
       {
         debugPrint("Handling newline", printHandlingStatements);  
-        compiledLines += formatLine(lineCounter);  
-        sourceInfo += "" ;      
+        compiledLines += formatLine(lineCounter);
+        sourceInfo += "";  
         lineCounter += 1;  
         lastLine = lineCounter;
       }
@@ -78,10 +85,15 @@ CompiledSourceData doCompile(str sourceFile, symbolTable symbols)
     {     
       debugPrint("Handling <I>, line count <lineCounter>, prog count <progCounter>", printHandlingStatements); 
       instructions = handleInstruction(I, lineCounter, progCounter, symbols);
-      progCounter += size(instructions.compiledLines);
+      lineAmount = size(instructions);
+      progCounter += lineAmount;
+      sourceInfo += inputData[lineCounter-1];
+      for(n <- [1..lineAmount])
+      {
+        sourceInfo += "";
+      }      
       lineCounter += 1;
-      compiledLines += instructions.compiledLines;
-      sourceInfo += instructions.sourceInfo;      
+      compiledLines += instructions;         
       lastLine = lineCounter;
     }
     case PdsComment C:
@@ -103,6 +115,7 @@ CompiledSourceData doCompile(str sourceFile, symbolTable symbols)
       
   }  
   debugPrint("First compilation stage completed", printCompileInfo);
+  println(sourceInfo);
   return <insertJumps(<compiledLines, sort(labels)>), sourceInfo>;  
 }
 
@@ -165,7 +178,7 @@ int getProgramLine(str compiledLine)
 
 int getLineNumber(&T item) = item@\loc.begin.line;
 
-InstructionList handleNop(Tree I, int lineNumber, int progCounter)
+list[str] handleNop(Tree I, int lineNumber, int progCounter)
 {
   visit(I)
   {
@@ -201,20 +214,18 @@ str jumpDestination(str compiledLine)
   return "ERROR";
 }
 
-InstructionList handleNop(int amount, int lineNumber, int progCounter)
+list[str] handleNop(int amount, int lineNumber, int progCounter)
 {
-  list[str] instructions = [formatLine(lineNumber, progCounter, compiledStringLength)];
-  sourceInfo = 1 < amount ? ["\tNOP\t<amount>"] : ["\tNOP"];
+  list[str] instructions = [formatLine(lineNumber, progCounter, compiledStringLength)];  
   for(n <- [1 .. amount])
   {
     progCounter += 1;    
-    instructions += formatLine(lineNumber, progCounter, nopLength);
-    sourceInfo += "";
+    instructions += formatLine(lineNumber, progCounter, nopLength);    
   }  
-  return <instructions, sourceInfo>;
+  return instructions;
 }
 
-InstructionList handleInstruction(&T I, int lineNumber, int progCounter, symbolTable table)
+list[str] handleInstruction(&T I, int lineNumber, int progCounter, symbolTable table)
 {
   instruction = -1;
   address = ""; 
@@ -249,9 +260,8 @@ InstructionList handleInstruction(&T I, int lineNumber, int progCounter, symbolT
     }
     case PlainInstruction P:
     {
-      /// TODO: Handle RET instructions better
       instruction = 26;
-      return <[formatLine(lineNumber, progCounter, instruction, "     ")], ["RET"]>;
+      return [formatLine(lineNumber, progCounter, instruction, "     ")];
     }
     case Variable V:
     {    
@@ -268,7 +278,7 @@ InstructionList handleInstruction(&T I, int lineNumber, int progCounter, symbolT
   }  
   str returnLine = formatLine(lineNumber, progCounter, instruction, format(address, 5));
   println(returnLine);  
-  return <[returnLine],["GENERIC_INSTRUCTION"]>;   
+  return [returnLine];   
 }
 
 str convertVariable(Variable V, symbolTable table)

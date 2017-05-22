@@ -53,9 +53,7 @@ test bool testCompileFull()
   return result;  
 }
 
-test bool testOffsetWithSources() = handleCompareWithSources(compileWithSources("LabelOffset.PRG", symbols).compiledLines);
-test bool testFirstOneHundredWithSources() = handleCompareWithSources(compileWithSources("FirstOneHundred.PRG", symbols).compiledLines);
-
+test bool testFirstOneHundredWithSources() = handleCompareWithSources(compileWithSourcesToFile("FirstOneHundred.PRG", symbols).compiledLines);
 
 test bool testCompileFullWithSources()
 {
