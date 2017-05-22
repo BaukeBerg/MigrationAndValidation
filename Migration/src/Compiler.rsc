@@ -295,15 +295,6 @@ list[str] handleInstruction(&T I, int lineNumber, int progCounter, symbolTable t
   return [returnLine];   
 }
 
-str convertVariable(Variable V, symbolTable table)
-{
-  for(symbol <- table, trim("<V>") == symbol.name)
-  {
-    return symbol.address;
-  }
-  return UnknownIdentifier(V);
-}
-
 str formatLine(int lineNumber) = padLength(format(lineNumber), compiledStringLength);
 str formatLine(int lineNumber, int progCounter, int desiredLength) = padLength("<format(lineNumber)> <format(progCounter)> 00", desiredLength);
 str formatLine(int lineNumber, int progCounter, int instruction, str address) = padLength("<format(lineNumber)> <format(progCounter)> <format(instruction, 2)> <format(address,5)>", compiledStringLength);
@@ -371,32 +362,4 @@ int UnknownInstruction(&T instruction)
 {
   println("Unknown Instruction: <instruction>");
   return -1;
-}
-
-str convertIdentifier(Identifier I)
-{
-  switch(I)
-  {
-    case BitAddress B: return "<B>";
-    case WordAddress W: "<W>";
-    case Variable V: return lookup("<V>");
-  }
-  return UnknownIdentifier(I);  
-}
-
-str lookup(Variable V)
-{
-  try{
-    return symbolTable.indexOf("<V>");
-  }
-  catch:
-  {
-    return UnknownIdentifier(V);
-  };    
-}
-
-str UnknownIdentifier(&T identifier)
-{
-  println("Unknown Identifier: <identifier>");
-  return "UNKNOWN-IDENTIFIER";
 }

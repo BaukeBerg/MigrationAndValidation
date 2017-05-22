@@ -2,6 +2,7 @@ module SymbolTable
 
 import FileLocations;
 import IO;
+import List;
 import Parser;
 import PC20Syntax;
 import String;
@@ -11,7 +12,7 @@ import utility::FileUtility;
 import utility::ListUtility;
 
 alias symbolTable = list[symbol];
-alias symbol = tuple[str name, str address];
+alias symbol = tuple[str name, str address, str comment];
 
 private bool printSymbolInfo = false;
 
@@ -38,21 +39,29 @@ symbolTable readSymbolTableFromFile(loc fileToParse)
   for(line <- fileContent) 
   {
     items = split(splitter, line);
-    table += <items[0], items[1]>;    
+    switch(size(items))
+    {
+      case 2:
+      {      
+        table += <items[0], items[1], "">;
+      }
+      case 3:
+      {
+        table += <items[0], items[1], items[2]>;
+      }
+    }
   }
   return table;
 }
 
 str splitter = "@" ;
 
-
-
 void writeSymbolTableToFile(loc fileToSave, symbolTable tableToSave)
 {
   totalSymbols = [];
   for(symbol <- tableToSave)
   {
-    totalSymbols += "<symbol.name><splitter><symbol.address>";    
+    totalSymbols += "<symbol.name><splitter><symbol.address><splitter><symbol.comment>";    
   }
   writeToFile(fileToSave, totalSymbols);  
 }
@@ -69,7 +78,11 @@ symbolTable generateSymbolTable(str fileName)
     case UnreferencedDeclaration UD:
     {
       println("Unreferenced declaration: <UD>");
-    }                  
+    } 
+    case PdsComment C:
+    {
+      symbolTable[size(symbolTable)-1].comment = "<C>";
+    }                 
   }
   debugPrint(symbolTable, printSymbolInfo);
   return symbolTable;
@@ -77,7 +90,7 @@ symbolTable generateSymbolTable(str fileName)
 
 symbol processDeclaration(&T D)
 {
-  symbol extractedSymbol = <"", "">;
+  symbol extractedSymbol = <"", "", "">;
   visit(D)
   {
     case VariableName N:
@@ -88,8 +101,31 @@ symbol processDeclaration(&T D)
     case Address A:
     {
       extractedSymbol.address = "<trim("<A>")>";
-    }       
+    }     
   }  
   return extractedSymbol;     
 }
 
+str convertVariable(Variable V, symbolTable table)
+{
+  for(symbol <- table, trim("<V>") == symbol.name)
+  {
+    return symbol.address;
+  }
+  return UnknownIdentifier(V);
+}
+
+str retrieveComment(str Address, symbolTable table)
+{
+  for(symbol <- table, trim(Address) == symbol.address)
+  {
+    return symbol.comment;
+  }
+  return UnknownIdentifier(Address);
+}
+
+str UnknownIdentifier(&T identifier)
+{
+  println("Unknown Identifier: <identifier>");
+  return "UNKNOWN-IDENTIFIER";
+}
