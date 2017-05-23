@@ -50,74 +50,42 @@ lexical IdentifierInstruction = IdentifierInstructionName + Identifier ;
 
 syntax LabelInstruction = LabelInstructionName + (Label | ProgramLine) ;
 
-lexical PlainInstruction = RET ;
-lexical NopInstruction = NOP + Amount?;
+lexical PlainInstruction = "RET" ;
+lexical NopInstruction = "NOP" + Amount?;
                                      
-lexical AmountInstructionName = FTCHC ;
-lexical IdentifierInstructionName = TRIG   // 01 Rising Edge Detection
-                                  | EQL    // 02 EQUALS
-                                  | EQLNT  // 03 NOT Equal
-                                  | SHFTL  // 04 Shift LEFT
-                                  | SHFTR  // 05 Shift RIGHT
-                                  | CNTD   // 06 Count DOWN 
-                                  | CNTU   // 07 Count UP
-                                  | SET0   // 08 Disable bit
-                                  | SET1   // 09 Enable bit
-                                  | STRB   // 10 Store Bt
-                                  | FTCHB  // 11 Fetch Bit                                  
-                                  | FTCHD  // 13 Fetch Digit
-                                  | STRD   // 14 Store Digit
-                                  | COMP   // 15 Compare                 
-                                  | AND    // 16 AND
-                                  | ANDNT  // 17 AND NOT
-                                  | OR     // 18 OR
-                                  | ORNT   // 19 OR NOT
-                                  | ADD    // 20 ADD
-                                  | SUBTR  // 21 SUBTRACT
-                                  | MULT   // 22 MULTIPLY
-                                  | DIV    // 23 DIVIDE    
-                                  | END    // 27 End of IO handling
-                                  | LSTIO  // 31 LaST Input or Output                                  
+lexical AmountInstructionName = "FTCHC" ;
+lexical IdentifierInstructionName = "TRIG"   // 01 Rising Edge Detection
+                                  | "EQL"    // 02 "EQUALS"
+                                  | "EQLNT"  // 03 "NOT" Equal
+                                  | "SHFTL"  // 04 Shift "LEFT"
+                                  | "SHFTR"  // 05 Shift "RIGHT"
+                                  | "CNTD"   // 06 Count "DOWN" 
+                                  | "CNTU"   // 07 Count "UP"
+                                  | "SET0"   // 08 Disable bit
+                                  | "SET1"   // 09 Enable bit
+                                  | "STRB"   // 10 Store Bt
+                                  | "FTCHB"  // 11 Fetch Bit                                  
+                                  | "FTCHD"  // 13 Fetch Digit
+                                  | "STRD"   // 14 Store Digit
+                                  | "COMP"   // 15 Compare                 
+                                  | "AND"    // 16 "AND"
+                                  | "ANDNT"  // 17 "AND" "NOT"
+                                  | "OR"     // 18 "OR"
+                                  | "ORNT"   // 19 "OR" "NOT"
+                                  | "ADD"    // 20 "ADD"
+                                  | "SUBTR"  // 21 "SUBTRACT"
+                                  | "MULT"   // 22 "MULTIPLY"
+                                  | "DIV"    // 23 "DIVIDE"    
+                                  | "END"    // 27 End of "IO" handling
+                                  | "LSTIO"  // 31 La"ST" Input or Output                                  
                                   ;
 
-lexical LabelInstructionName = JSAF   // 24 Jump to Subroutine, Absolute FALSE
-                             | JSAT   // 25 Jump to Subroutine, Absolute TRUE
-                             | JBRF   // 29 Jump Backwards, Relative FALSE
-                             | JFRF   // 30 Jump Forwards, Relative FALSE                             
+lexical LabelInstructionName = "JSAF"   // 24 Jump to Subroutine, Absolute FALSE
+                             | "JSAT"   // 25 Jump to Subroutine, Absolute TRUE
+                             | "JBRF"   // 29 Jump Backwards, Relative FALSE
+                             | "JFRF"   // 30 Jump Forwards, Relative FALSE                             
                              ;
-
-lexical NOP = "NOP";
-lexical TRIG = "TRIG";
-lexical EQL = "EQL";
-lexical EQLNT = "EQLNT";
-lexical SHFTL = "SHFTL";
-lexical SHFTR = "SHFTR";
-lexical CNTD = "CNTD";
-lexical CNTU = "CNTU";
-lexical SET0 = "SET0";
-lexical SET1 = "SET1";
-lexical STRB = "STRB";
-lexical FTCHB = "FTCHB";
-lexical FTCHC = "FTCHC";
-lexical FTCHD = "FTCHD";
-lexical STRD = "STRD";
-lexical COMP = "COMP";
-lexical AND = "AND";
-lexical ANDNT = "ANDNT";
-lexical OR = "OR";
-lexical ORNT = "ORNT";
-lexical ADD = "ADD";
-lexical SUBTR = "SUBTR";
-lexical MULT = "MULT";
-lexical DIV = "DIV";
-lexical JSAF = "JSAF";
-lexical JSAT = "JSAT";
-lexical RET = "RET";
-lexical END = "END";
-lexical JBRF = "JBRF";
-lexical JFRF = "JFRF";
-lexical LSTIO = "LSTIO";
-                                    
+                                   
 syntax Identifier = Address | Variable;
 syntax Address = BitAddress | WordAddress ; 
 lexical BitAddress = WhiteSpace+[0-9]+ !>> [0-9] + "." + [0-7];
