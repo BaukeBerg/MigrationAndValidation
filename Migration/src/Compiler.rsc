@@ -44,7 +44,7 @@ CompiledData compileWithSources(str sourceFile, symbolTable symbols)
   return totalData;
 }
 
-list[str] insertSources(list[str] compiledLines, str inputFile)
+list[str] insertSources(list[str] compiledLines, str inputFile, symbolTable symbols)
 {
   inputData = readFileLines(testFile(inputFile));
   processedLine = -1;
@@ -53,7 +53,12 @@ list[str] insertSources(list[str] compiledLines, str inputFile)
     compiledLine = getSourceLineNumber(compiledLines[n]);
     if(processedLine != compiledLine)
     {
-      compiledLines[n] += inputData[compiledLine-1];
+      str sourceLine = inputData[compiledLine-1];
+      if(-1 == FindFirst(sourceLine, "!"))
+      {
+        sourceLine += retrieveComment(address(compiledLines[n], symbols));
+      }
+      compiledLines[n] += sourceLine;      
       processedLine = compiledLine;
     } 
   }
@@ -303,63 +308,37 @@ str format(int numericValue) = format(numericValue, 5);
 str format(int numericValue, int stringSize) = format("<numericValue>", stringSize);
 str format(str stringValue, int stringSize) = contains(stringValue, ".") ? right(stringValue, stringSize+2, "0") : right(stringValue, stringSize, "0") ;
 
-int instructionNumber(LabelInstructionName name)
-{
-  switch(name)
-  {
-    case (LabelInstructionName)`JSAF`: return 24;
-    case (LabelInstructionName)`JSAT`: return 25;    
-    case (LabelInstructionName)`JBRF`: return 29;
-    case (LabelInstructionName)`JFRF`: return 30;         
-  }
-  return UnknownInstruction("Label: <name>");
-}
+int instructionNumber((IdentifierInstructionName)`TRIG`) = 1 ;
+int instructionNumber((IdentifierInstructionName)`EQL`) = 2 ;
+int instructionNumber((IdentifierInstructionName)`EQLNT`) = 3 ;
+int instructionNumber((IdentifierInstructionName)`SHFTL`) = 4 ;
+int instructionNumber((IdentifierInstructionName)`SHFTR`) = 5 ;
+int instructionNumber((IdentifierInstructionName)`CNTD`) = 6;
+int instructionNumber((IdentifierInstructionName)`CNTU`) = 7;
+int instructionNumber((IdentifierInstructionName)`SET0`) = 8;
+int instructionNumber((IdentifierInstructionName)`SET1`) = 9;
+int instructionNumber((IdentifierInstructionName)`STRB`) = 10;
+int instructionNumber((IdentifierInstructionName)`FTCHB`) = 11;
 
-int instructionNumber(AmountInstructionName name)
-{
-  switch(name)
-  {
-    case (AmountInstructionName)`FTCHC`: return 12;
-  }
-  return UnknownInstruction("Amount: <name>");
-}
+int instructionNumber((AmountInstructionName)`FTCHC`) = 12;
+ 
+int instructionNumber((IdentifierInstructionName)`FTCHD`) = 13;
+int instructionNumber((IdentifierInstructionName)`STRD`) = 14;
+int instructionNumber((IdentifierInstructionName)`COMP`) = 15;
+int instructionNumber((IdentifierInstructionName)`AND`) = 16;
+int instructionNumber((IdentifierInstructionName)`ANDNT`) = 17;
+int instructionNumber((IdentifierInstructionName)`OR`) = 18;
+int instructionNumber((IdentifierInstructionName)`ORNT`) = 19;
+int instructionNumber((IdentifierInstructionName)`ADD`) = 20;
+int instructionNumber((IdentifierInstructionName)`SUBTR`) = 21;
+int instructionNumber((IdentifierInstructionName)`MULT`) = 22;
+int instructionNumber((IdentifierInstructionName)`DIV`) = 23;
 
-int instructionNumber(IdentifierInstructionName name)
-{
-  switch(name)
-  {  
-    case (IdentifierInstructionName)`TRIG`: return 1;
-    case (IdentifierInstructionName)`EQL`: return 2;
-    case (IdentifierInstructionName)`EQLNT`: return 3;
-    case (IdentifierInstructionName)`SHFTL`: return 4;
-    case (IdentifierInstructionName)`SHFTR`: return 5;
-    case (IdentifierInstructionName)`CNTD`: return 6;
-    case (IdentifierInstructionName)`CNTU`: return 7;
-    case (IdentifierInstructionName)`SET0`: return 8;
-    case (IdentifierInstructionName)`SET1`: return 9;
-    case (IdentifierInstructionName)`STRB`: return 10;
-    case (IdentifierInstructionName)`FTCHB`: return 11;
-    
-    case (IdentifierInstructionName)`FTCHD`: return 13;
-    case (IdentifierInstructionName)`STRD`: return 14;
-    case (IdentifierInstructionName)`COMP`: return 15;
-    case (IdentifierInstructionName)`AND`: return 16;
-    case (IdentifierInstructionName)`ANDNT`: return 17;
-    case (IdentifierInstructionName)`OR`: return 18;
-    case (IdentifierInstructionName)`ORNT`: return 19;
-    case (IdentifierInstructionName)`ADD`: return 20;
-    case (IdentifierInstructionName)`SUBTR`: return 21;
-    case (IdentifierInstructionName)`MULT`: return 22;
-    case (IdentifierInstructionName)`DIV`: return 23;
-    
-    case (IdentifierInstructionName)`END`: return 27;    
-    case (IdentifierInstructionName)`LSTIO`: return 31;
-  }
-  return UnknownInstruction("Identifier: <name>");
-}
+int instructionNumber((LabelInstructionName)`JSAF`) = 24;
+int instructionNumber((LabelInstructionName)`JSAT`) = 25;
 
-int UnknownInstruction(&T instruction)
-{
-  println("Unknown Instruction: <instruction>");
-  return -1;
-}
+int instructionNumber((LabelInstructionName)`JBRF`) = 29;
+int instructionNumber((LabelInstructionName)`JFRF`) = 30;
+   
+int instructionNumber((IdentifierInstructionName)`END`) = 27;    
+int instructionNumber((IdentifierInstructionName)`LSTIO`) = 31;
