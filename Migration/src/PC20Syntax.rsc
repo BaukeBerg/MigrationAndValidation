@@ -50,40 +50,40 @@ lexical IdentifierInstruction = IdentifierInstructionName + Identifier ;
 
 syntax LabelInstruction = LabelInstructionName + (Label | ProgramLine) ;
 
-lexical PlainInstruction = "RET" ;
-lexical NopInstruction = "NOP" + Amount?;
+lexical PlainInstruction = ret:"RET" ;
+lexical NopInstruction = noOperation:"NOP" + Amount?;
                                      
-lexical AmountInstructionName = "FTCHC" ;
-lexical IdentifierInstructionName = "TRIG"   // 01 Rising Edge Detection
-                                  | "EQL"    // 02 "EQUALS"
-                                  | "EQLNT"  // 03 "NOT" Equal
-                                  | "SHFTL"  // 04 Shift "LEFT"
-                                  | "SHFTR"  // 05 Shift "RIGHT"
-                                  | "CNTD"   // 06 Count "DOWN" 
-                                  | "CNTU"   // 07 Count "UP"
-                                  | "SET0"   // 08 Disable bit
-                                  | "SET1"   // 09 Enable bit
-                                  | "STRB"   // 10 Store Bt
-                                  | "FTCHB"  // 11 Fetch Bit                                  
-                                  | "FTCHD"  // 13 Fetch Digit
-                                  | "STRD"   // 14 Store Digit
-                                  | "COMP"   // 15 Compare                 
-                                  | "AND"    // 16 "AND"
-                                  | "ANDNT"  // 17 "AND" "NOT"
-                                  | "OR"     // 18 "OR"
-                                  | "ORNT"   // 19 "OR" "NOT"
-                                  | "ADD"    // 20 "ADD"
-                                  | "SUBTR"  // 21 "SUBTRACT"
-                                  | "MULT"   // 22 "MULTIPLY"
-                                  | "DIV"    // 23 "DIVIDE"    
-                                  | "END"    // 27 End of "IO" handling
-                                  | "LSTIO"  // 31 La"ST" Input or Output                                  
+lexical AmountInstructionName = fetchConstant:"FTCHC" ;
+lexical IdentifierInstructionName = risingEdge:"TRIG"   // 01 Rising Edge Detection
+                                  | equal:"EQL"    // 02 "EQUALS"
+                                  | notEqual:"EQLNT"  // 03 "NOT" Equal
+                                  | shiftLeft:"SHFTL"  // 04 Shift "LEFT"
+                                  | shiftRight:"SHFTR"  // 05 Shift "RIGHT"
+                                  | countDown:"CNTD"   // 06 Count "DOWN" 
+                                  | countUp:"CNTU"   // 07 Count "UP"
+                                  | resetBit:"SET0"   // 08 Disable bit
+                                  | setBit:"SET1"   // 09 Enable bit
+                                  | storeBit:"STRB"   // 10 Store Bt
+                                  | fetchBit:"FTCHB"  // 11 Fetch Bit                                  
+                                  | fetchDigit:"FTCHD"  // 13 Fetch Digit
+                                  | storeDigit:"STRD"   // 14 Store Digit
+                                  | compare:"COMP"   // 15 Compare                 
+                                  | and:"AND"    // 16 "AND"
+                                  | andNot:"ANDNT"  // 17 "AND" "NOT"
+                                  | or:"OR"     // 18 "OR"
+                                  | orNot:"ORNT"   // 19 "OR" "NOT"
+                                  | add:"ADD"    // 20 "ADD"
+                                  | subtract:"SUBTR"  // 21 "SUBTRACT"
+                                  | multiply:"MULT"   // 22 "MULTIPLY"
+                                  | divide:"DIV"    // 23 "DIVIDE"    
+                                  | end:"END"    // 27 End of "IO" handling
+                                  | lastInputOutput:"LSTIO"  // 31 La"ST" Input or Output                                  
                                   ;
 
-lexical LabelInstructionName = "JSAF"   // 24 Jump to Subroutine, Absolute FALSE
-                             | "JSAT"   // 25 Jump to Subroutine, Absolute TRUE
-                             | "JBRF"   // 29 Jump Backwards, Relative FALSE
-                             | "JFRF"   // 30 Jump Forwards, Relative FALSE                             
+lexical LabelInstructionName = subRoutineAbsoluteFalse:"JSAF"   // 24 Jump to Subroutine, Absolute FALSE
+                             | subRoutineAbsoluteTrue:"JSAT"   // 25 Jump to Subroutine, Absolute TRUE
+                             | backwardRelativeFalse:"JBRF"   // 29 Jump Backwards, Relative FALSE
+                             | forwardRelativeFalse:"JFRF"   // 30 Jump Forwards, Relative FALSE                             
                              ;
                                    
 syntax Identifier = Address | Variable;
