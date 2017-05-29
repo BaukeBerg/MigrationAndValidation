@@ -53,20 +53,25 @@ list[str] insertSources(list[str] compiledLines, str inputFile, symbolTable symb
     compiledLine = getSourceLineNumber(compiledLines[n]);
     if(processedLine != compiledLine)
     {
-      str sourceLine = inputData[compiledLine-1];
-      if(-1 == findFirst(sourceLine, "!"))
-      {
-        comment = retrieveComment(jumpDestination(compiledLines[n]), symbols);
-        if("UNKNOWN-IDENTIFIER" != comment)
-        {
-          sourceLine += comment;
-        } 
-      }
+      str sourceLine = composeSourceLine(inputData[compiledLine-1], compiledLines[n], symbols);
       compiledLines[n] += sourceLine;      
       processedLine = compiledLine;
     } 
   }
   return compiledLines;  
+}
+
+str composeSourceLine(str sourceLine, str compiledLine, symbolTable symbols)
+{
+  if(-1 == findFirst(sourceLine, "!"))
+  {
+    comment = retrieveComment(jumpDestination(compiledLine), symbols);
+    if("UNKNOWN-IDENTIFIER" != comment)
+    {
+      sourceLine += comment;
+    } 
+  }
+  return sourceLine;
 }
 
 // Compile without storing orignal input
