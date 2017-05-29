@@ -64,11 +64,11 @@ list[str] insertSources(list[str] compiledLines, str inputFile, symbolTable symb
 str composeSourceLine(str sourceLine, str compiledLine, symbolTable symbols)
 {
   if(-1 == findFirst(sourceLine, "!"))
-  {
+  {    
     comment = retrieveComment(jumpDestination(compiledLine), symbols);
     if("UNKNOWN-IDENTIFIER" != comment)
     {
-      sourceLine += comment;
+      sourceLine += "\t<comment>";
     } 
   }
   return sourceLine;
