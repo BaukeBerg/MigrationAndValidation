@@ -117,5 +117,8 @@ str singleSource = "\tAND\tKNIPPER";
 
 test bool testSymbolWithoutComment() = expectEqual(compositionNoComment, composeSourceLine(singleSource, symbols), "Composing without comment should yield the same input");
 
+str nopSource = "\tNOP\t110";
+
+test bool testNopComment() = expectEqual(nopSource, composeSourceLine(nopSource, symbols));
 
 
