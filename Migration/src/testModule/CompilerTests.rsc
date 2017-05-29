@@ -103,4 +103,9 @@ test bool testSampleJumpDestination() = expectEqual("00013", jumpDestination("00
 test bool testAnotherSampleJumpDestination() = expectEqual("84562", jumpDestination("00004 00003 25 84562    "));
 test bool testInvalidJumpDestination() = expectEqual("ERROR", jumpDestination("Nonsense"));
 
+str sourceLine = "  OR  REG0B61";
+str compiledLine = "06730 05817 18 00400.1  ";
 
+str expectedComposition = "06730 05817 18 00400.1   OR  REG0B61 !regeneratie fase 61";
+
+test bool testSymbolComments() = expectEqual(expectedComposition, composeSourceLine(sourceLine , compiledLine, symbols));
