@@ -121,8 +121,7 @@ str convertVariable(Variable V, symbolTable table)
 
 str retrieveComment(str Address, symbolTable table)
 {
-  Address = stripLeading(trim(Address), "0");
-  for(symbol <- table, Address == stripLeading(trim(symbol.address), "0"))
+  for(symbol <- table, (stripLeading(trim(Address), "0") == stripLeading(trim(symbol.address), "0")) || (Address == symbol.name))
   {
     return symbol.comment;
   }
