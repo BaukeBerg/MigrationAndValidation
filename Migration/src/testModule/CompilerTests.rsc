@@ -104,11 +104,16 @@ test bool testAnotherSampleJumpDestination() = expectEqual("84562", jumpDestinat
 test bool testInvalidJumpDestination() = expectEqual("ERROR", jumpDestination("Nonsense"));
 
 str sourceLine = "\tOR\tREG0B61";
-str compiledLine = "06730 05817 18 00400.1  ";
 
 str expectedComposition = "\tOR\tREG0B61\t!regeneratie fase 61";
 
 test bool testJumpDestination() = expectEqual("00400.1", jumpDestination(compiledLine), "jumpDestination filters address from line");
-test bool testSymbolComments() = expectEqual(expectedComposition, composeSourceLine(sourceLine , compiledLine, symbols), "Composing sources should yield compiled line with comment obtained from sybmol table");
+test bool testSymbolComments() = expectEqual(expectedComposition, composeSourceLine(sourceLine, symbols), "Composing sources should yield compiled line with comment obtained from sybmol table");
+
+str compositionNoComment = "\tAND\tKNIPPER" ;
+str singleSource = "\tAND\tKNIPPER";
+
+test bool testSymbolWithoutComment() = expectEqual(compositionNoComment, composeSourceLine(singleSource, symbols), "Composing without comment should yield the same input");
+
 
 
