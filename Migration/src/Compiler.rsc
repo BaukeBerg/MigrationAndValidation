@@ -233,7 +233,7 @@ str labelName(str compiledLine)
 
 str jumpDestination(str compiledLine)
 {
-  compiledLine = trim(compiledLine);
+  compiledLine = trim(replaceAll(compiledLine, "\t", " "));
   lastSpacePos = findLast(compiledLine, " ");
   if(0 < lastSpacePos)
   {
