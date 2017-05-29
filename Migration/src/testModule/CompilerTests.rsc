@@ -14,6 +14,8 @@ import utility::Debugging;
 import utility::StringUtility;
 import utility::TestUtility;
 
+import testModule::DataModule;
+
 test bool testEmptyInstruction() = expectEqual("00000                   ", formatLine(0));
 test bool testIntAddressFormat() = expectEqual("12345 54321 99 67890    ", formatLine(12345, 54321, 99, "67890")); 
 test bool testRealAddressFormat() = expectEqual("00010 00000 15 00023.1  ", formatLine(10, 0, 15, "23.1"));
@@ -25,8 +27,6 @@ list[str] multipleNop = [padLength("00010 00005 00",24), padLength("00010 00006 
 
 test bool testMultipleNop() = expectEqual(multipleNop, handleNop(3, 10, 5));
 test bool testMultipleNopParsed() = expectEqual(multipleNop, handleNop(parseText("NOP 3", #Expression), 10, 5));
-
-public symbolTable symbols = loadSymbols("DR_TOT_3.SYM");
 
 test bool testSimplePair()
 {
@@ -103,9 +103,12 @@ test bool testSampleJumpDestination() = expectEqual("00013", jumpDestination("00
 test bool testAnotherSampleJumpDestination() = expectEqual("84562", jumpDestination("00004 00003 25 84562    "));
 test bool testInvalidJumpDestination() = expectEqual("ERROR", jumpDestination("Nonsense"));
 
-str sourceLine = "  OR  REG0B61";
+str sourceLine = "\tOR\tREG0B61";
 str compiledLine = "06730 05817 18 00400.1  ";
 
-str expectedComposition = "06730 05817 18 00400.1   OR  REG0B61 !regeneratie fase 61";
+str expectedComposition = "\tOR\tREG0B61\t!regeneratie fase 61";
 
-test bool testSymbolComments() = expectEqual(expectedComposition, composeSourceLine(sourceLine , compiledLine, symbols));
+test bool testJumpDestination() = expectEqual("00400.1", jumpDestination(compiledLine), "jumpDestination filters address from line");
+test bool testSymbolComments() = expectEqual(expectedComposition, composeSourceLine(sourceLine , compiledLine, symbols), "Composing sources should yield compiled line with comment obtained from sybmol table");
+
+
