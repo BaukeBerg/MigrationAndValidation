@@ -10,6 +10,7 @@ import String;
 import utility::Debugging;
 import utility::FileUtility;
 import utility::ListUtility;
+import utility::StringUtility;
 
 alias symbolTable = list[symbol];
 alias symbol = tuple[str name, str address, str comment];
@@ -120,7 +121,8 @@ str convertVariable(Variable V, symbolTable table)
 
 str retrieveComment(str Address, symbolTable table)
 {
-  for(symbol <- table, trim(Address) == symbol.address)
+  Address = stripLeading(trim(Address), "0");
+  for(symbol <- table, Address == symbol.address)
   {
     return symbol.comment;
   }

@@ -28,3 +28,7 @@ test bool testParseInt() = expectEqual(30, parseInt("30"));
 test bool testParseIntBinary() = expectEqual(10, parseInt("00010"), "Check that 10 is reported instead of 3");
 test bool testParseIntOctal() = expectEqual(70, parseInt("00070"), "Check that 70 is reported instead of 56");
 test bool testParseIntHexadecimal() = expectEqual(-1, parseInt("0001F"), "Check that hex input is considered erroneous");
+
+test bool testStripLeadingSingleChar() = expectEqual("400.1", stripLeading("00400.1", "0"), "stripLeading should remove all leading 0\'s");
+test bool testStripLeadingNoChar() = expectEqual("00400.1", stripLeading("00400.1", "5"), "stripLeading should return original string");
+test bool testLargeToken() = expectEqual("00.1", stripLeading("00400.1", "004"), "multiple characters are removed with similar syntax");

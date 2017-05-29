@@ -5,17 +5,22 @@ import String;
 int parseInt(str inputString)
 {
   try
-  {
-    while(1 < size(inputString) && startsWith(inputString, "0"))
-    {
-      inputString = substring(inputString,1);
-    }
-    return toInt(inputString);
+  { 
+    return toInt(stripLeading(inputString, "0"));
   }
   catch:
   {
     return -1;
   }
+}
+
+public str stripLeading(str inputString, str tokenToRemove)
+{
+  while(size(tokenToRemove) < size(inputString) && startsWith(inputString, tokenToRemove))
+  {
+    inputString = substring(inputString,size(tokenToRemove));
+  }
+  return inputString;
 }
 
 public str stringToken(str stringToCheck, str firstOccurrence, str lastOccurrence) = stringToken(stringToCheck, firstOccurrence, findLast(stringToCheck, lastOccurrence));
