@@ -110,6 +110,8 @@ str expectedComposition = "\tOR\tREG0B61\t!regeneratie fase 61";
 test bool testJumpDestination() = expectEqual("00400.1", jumpDestination(compiledLine), "jumpDestination filters address from line");
 test bool testSymbolComments() = expectEqual(expectedComposition, composeSourceLine(sourceLine, symbols), "Composing sources should yield compiled line with comment obtained from sybmol table");
 
+test bool testJumpDestinationSource() = expectEqual("REG0B61", jumpDestination(sourceLine), "Source line should return REG0B61");
+
 str compositionNoComment = "\tAND\tKNIPPER" ;
 str singleSource = "\tAND\tKNIPPER";
 
