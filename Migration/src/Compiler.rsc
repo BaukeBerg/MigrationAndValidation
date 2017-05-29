@@ -40,7 +40,7 @@ CompiledData compileWithSourcesToFile(str sourceFile, symbolTable symbols)
 CompiledData compileWithSources(str sourceFile, symbolTable symbols)
 {
   totalData = compile(sourceFile, symbols);
-  totalData.compiledLines = insertSources(totalData.compiledLines, sourceFile);  
+  totalData.compiledLines = insertSources(totalData.compiledLines, sourceFile, symbols);  
   return totalData;
 }
 
@@ -54,9 +54,13 @@ list[str] insertSources(list[str] compiledLines, str inputFile, symbolTable symb
     if(processedLine != compiledLine)
     {
       str sourceLine = inputData[compiledLine-1];
-      if(-1 == FindFirst(sourceLine, "!"))
+      if(-1 == findFirst(sourceLine, "!"))
       {
-        sourceLine += retrieveComment(address(compiledLines[n], symbols));
+        comment = retrieveComment(jumpDestination(compiledLines[n]), symbols);
+        if("UNKNOWN-IDENTIFIER" != comment)
+        {
+          sourceLine += comment;
+        } 
       }
       compiledLines[n] += sourceLine;      
       processedLine = compiledLine;
