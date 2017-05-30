@@ -21,8 +21,9 @@ public Tree generateSymbolTree(str fileName) = doParse(fileName, #start[PlcSymbo
 
 alias sourceLine = tuple[int line, str text] ; 
 
-public int parseFile(loc fileName, &T syntaxType) = parseFile(readFile(fileName), syntaxType);
-public int parseFile(str fileName, &T syntaxType) 
+
+public int parseFile(str fileName, &T syntaxType) = parseFile(testFile(fileName), syntaxType);
+public int parseFile(loc fileName, &T syntaxType)  
 {
   int parseResult = 0;
   try 

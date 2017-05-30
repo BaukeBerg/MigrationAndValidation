@@ -36,5 +36,8 @@ test bool testLocation()
   return expectEqual(1, LineNumber, "Line number of comment should be 1");
 }
 
-test bool testParsingCompiledComments() = isCorrect("00001                   !                       DR_INIT3\r\n", #CompiledComment);
+test bool testParsingCompiledComment() = isCorrect("00001                   !                       DR_INIT3\r\n", #CompiledComment);
 test bool testParsingCompiledCommentFile() = isCorrect(compiledFile("comments.compile"), #start[PC20_Compiled]);
+test bool testParsingFirstLine() = isCorrect("00001                   !                       DR_INIT3\r\n", #start[PC20_Compiled]);
+test bool testManualFileReading() = isCorrect(readFile(compiledFile("comments.compile")), #start[PC20_Compiled]);
+
