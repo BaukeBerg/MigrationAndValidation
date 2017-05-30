@@ -21,6 +21,7 @@ public Tree generateSymbolTree(str fileName) = doParse(fileName, #start[PlcSymbo
 
 alias sourceLine = tuple[int line, str text] ; 
 
+public int parseFile(loc fileName, &T syntaxType) = parseFile(readFile(fileName), syntaxType);
 public int parseFile(str fileName, &T syntaxType) 
 {
   int parseResult = 0;
@@ -58,7 +59,21 @@ list[sourceLine] readFile(str fileName) = [ <n, fileLines(fileName)[n-1]> | n <-
 int fileSize(str fileName) = size(fileLines(fileName));
 list[str] fileLines(str fileName) = readFileLines(testFile(fileName));
 
-// parse functions
+public bool isCorrect(loc file, &T syntaxType) = 0 == parseFile(file, syntaxType);
+public bool isCorrect(str textLine, &T syntaxType) = isParseable(textLine, syntaxType) && isUnAmbiguous(textLine, syntaxType);
+public bool isParseable(str textLine, &T syntaxType)
+{
+  try
+  {
+    parseText(textLine, syntaxType);    
+  }
+  catch:
+  {
+    return false;
+  }
+  return true;
+}
+
 public bool isUnAmbiguous(str textLine, &T syntaxType) = false == isAmbiguous(textLine, syntaxType);
 public bool isAmbiguous(str textLine, &T syntaxType)
 {
