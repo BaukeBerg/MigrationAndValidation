@@ -8,12 +8,19 @@ import utility::FileUtility;
 import utility::Debugging;
 
 // Ability to generate a compiled file without all the comments present.
-void generateStrippedFile(str fileName) = writeToFile(generatedFile("strippedLines"), clippedLines(fileName));
+void generateStrippedFile(str fileName) = writeToFile(generatedFile("<filename>.stripped"), clippedLines(testFile(fileName)));
 
-list[str] clippedLines(str fileName)
+list[str] clipAndSave(loc fileName)
+{
+  fileData = clippedLines(fileName);
+  writeToFile(generatedFile("<fileName.file>.stripped") ,fileData);
+  return fileData;
+}
+
+list[str] clippedLines(loc fileName)
 {
   list[str] convertedLines = [];
-  for(line <- readFileLines(testFile(fileName)))
+  for(line <- readFileLines(fileName))
   {
     endPos = findEndPos(line);
     if(contains(line, "Number of errors: 0"))
