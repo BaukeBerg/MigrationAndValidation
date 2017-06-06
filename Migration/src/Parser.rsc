@@ -1,6 +1,7 @@
 module Parser
 
-import ParserBase;
+extend ParserBase;
+
 import PC20Syntax;
 
 public int parseSourceFile() = parsePdsSource("DR_TOT_3.PRG");
