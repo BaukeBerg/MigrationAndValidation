@@ -2,14 +2,13 @@ module PC20Syntax
 
 start syntax PC20_Compiled = CompiledInstruction+ ;
 
-syntax CompiledInstruction = CompiledComment
+syntax CompiledInstruction = EmptyLine
+//                           | BitInstruction
                            ;
 
-lexical CompiledComment = SourceLineNumber + WhiteSpace_19 + PdsComment + NewLine ;
+lexical EmptyLine = SourceLineNumber + WhiteSpace + NewLine ;
 
 lexical SourceLineNumber = [0-9][0-9][0-9][0-9][0-9] ; 
-
-lexical WhiteSpace_19 = "                   " ;
 
 start syntax PC20 = Expression+ ;
 
