@@ -1,5 +1,6 @@
 module Stripper
 
+import Compiler;
 import FileLocations;
 import IO;
 import List;
@@ -40,5 +41,17 @@ list[str] clippedLines(loc fileName)
   println("Processed <size(convertedLines)> lines.");  
   return convertedLines;
 }
+
+list[str] instructionList(list[str] clippedLines)
+{
+  intructions = [];
+  for(line <- clippedLines, isProgramLine(line))
+  {
+    intructions += trim(substring(line, 12));
+  }
+  return intructions;
+}
+
+bool isProgramLine(str lineToCheck) = -1 != getProgramLine(lineToCheck);
 
 int findEndPos(str lineToCheck) = size(lineToCheck) >= 24 ? 24 : 15 ;
