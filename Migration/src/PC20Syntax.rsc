@@ -25,17 +25,27 @@ start syntax PC20_Compiled = CompiledInstruction+ ;
 
 syntax CompiledInstruction = EmptyLine
 //                           | StateTransition                           
-//                           > BitInstruction
-//                           | WordInstruction
+                             > BitInstruction
+                             | WordInstruction
+                             | SingleInstruction
                            ;
 
 lexical EmptyLine = SourceLineNumber NewLine ;
 
-//lexical BitInstruction = SourceLineNumber + WhiteSpace + ProgramLineNumber + WhiteSpace + InstructionNumber + WhiteSpace + BitAddress + NewLine ;
-//lexical WordInstruction = SourceLineNumber + WhiteSpace + ProgramLineNumber + WhiteSpace + InstructionNumber + WhiteSpace + WordAddress + NewLine ;
+lexical BitInstruction = InstructionPrefix BitAddress NewLine ;
+lexical WordInstruction = InstructionPrefix WordAddress NewLine ;
+lexical SingleInstruction = InstructionPrefix NewLine ;
 
+lexical InstructionPrefix = SourceLineNumber ProgramLineNumber InstructionNumber ;
 
-lexical SourceLineNumber = [0-9][0-9][0-9][0-9][0-9] WhiteSpace; 
+lexical ProgramLineNumber = FiveDigits WhiteSpace ;
+lexical SourceLineNumber = FiveDigits WhiteSpace;
+
+lexical InstructionNumber = [0-3][0-9] WhiteSpace;
+lexical BitAddress = FiveDigits "." [0-3] WhiteSpace;
+lexical WordAddress = FiveDigits WhiteSpace;
+
+lexical FiveDigits = [0-9][0-9][0-9][0-9][0-9] ;
 
 start syntax PC20 = Expression+ ;
 
