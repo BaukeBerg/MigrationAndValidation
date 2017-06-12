@@ -64,6 +64,8 @@ public bool isParseable(str textLine, &T syntaxType)
   return true;
 }
 
+public bool isUnAmbiguous(Tree inputTree) = false == isAmbiguous(inputTree);
+public bool isAmbiguous(Tree inputTree) = /amb() := inputTree ; 
 public bool isUnAmbiguous(str textLine, &T syntaxType) = false == isAmbiguous(textLine, syntaxType);
 public bool isAmbiguous(str textLine, &T syntaxType)
 {
