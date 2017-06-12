@@ -12,3 +12,5 @@ public int parsePdsSymbols(str fileName) = parseFile(fileName, #start[PlcSymbols
 
 public Tree generateSourceTree(str fileName) = doParse(fileName, #start[PC20]);
 public Tree generateSymbolTree(str fileName) = doParse(fileName, #start[PlcSymbols]);
+
+public Tree generateDisassembly(str fileName) = doParse(fileName, #start[PC20_Assembled]);
