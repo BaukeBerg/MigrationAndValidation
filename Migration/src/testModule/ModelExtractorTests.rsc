@@ -17,4 +17,3 @@ void showCommentTree() = renderParsetree(parseComments());
 void showCommentFigure() = highLightSources(parseComments());
 
 Tree parseComments() = parseText(joinList(clipAndSave(compiledFile("comments.compile")))+"\r\n", #start[PC20_Compiled]);
-

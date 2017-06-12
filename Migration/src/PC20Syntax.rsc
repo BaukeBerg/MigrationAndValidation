@@ -24,13 +24,18 @@ lexical HexChar = [0-9A-F];
 start syntax PC20_Compiled = CompiledInstruction+ ;
 
 syntax CompiledInstruction = EmptyLine
-                           | StateTransition
-                           > BitInstruction
+//                           | StateTransition                           
+//                           > BitInstruction
+//                           | WordInstruction
                            ;
 
-lexical EmptyLine = SourceLineNumber + WhiteSpace + NewLine ;
+lexical EmptyLine = SourceLineNumber NewLine ;
 
-lexical SourceLineNumber = [0-9][0-9][0-9][0-9][0-9] ; 
+//lexical BitInstruction = SourceLineNumber + WhiteSpace + ProgramLineNumber + WhiteSpace + InstructionNumber + WhiteSpace + BitAddress + NewLine ;
+//lexical WordInstruction = SourceLineNumber + WhiteSpace + ProgramLineNumber + WhiteSpace + InstructionNumber + WhiteSpace + WordAddress + NewLine ;
+
+
+lexical SourceLineNumber = [0-9][0-9][0-9][0-9][0-9] WhiteSpace; 
 
 start syntax PC20 = Expression+ ;
 
