@@ -1,9 +1,31 @@
 module PC20Syntax
 
+start syntax PC20_Assembled = AssembledInstruction+;
+
+syntax AssembledInstruction = FileHeader
+                            | InstructionLine
+                            | FileEnd
+                            ;
+                            
+lexical FileHeader = "S0030000FC" NewLine ;
+lexical FileEnd = "S9030000FC" NewLine ;
+
+lexical InstructionLine = LineHeader Instruction+ Checksum NewLine ; 
+                        
+lexical LineHeader = "S1" InstructionAmount PlcAddress "0" ;
+lexical PlcAddress = HexChar HexChar HexChar ;
+lexical InstructionAmount = HexChar HexChar ;  
+                           
+lexical Instruction = HexChar HexChar HexChar HexChar ;
+lexical Checksum = HexChar HexChar ;
+
+lexical HexChar = [0-9A-F];                         
+
 start syntax PC20_Compiled = CompiledInstruction+ ;
 
 syntax CompiledInstruction = EmptyLine
-//                           | BitInstruction
+                           | StateTransition
+                           > BitInstruction
                            ;
 
 lexical EmptyLine = SourceLineNumber + WhiteSpace + NewLine ;
@@ -61,9 +83,10 @@ lexical IdentifierInstruction = IdentifierInstructionName + Identifier ;
 syntax LabelInstruction = LabelInstructionName + (Label | ProgramLine) ;
 
 lexical PlainInstruction = ret:"RET" ;
-lexical NopInstruction = noOperation:"NOP" + Amount?;
+lexical NopInstruction = noOperation:"NOP" + Amount?; // 00 No operation
                                      
-lexical AmountInstructionName = fetchConstant:"FTCHC" ;
+lexical AmountInstructionName = fetchConstant:"FTCHC" ; // 12 Fetch Constant
+
 lexical IdentifierInstructionName = risingEdge:"TRIG"   // 01 Rising Edge Detection
                                   | equal:"EQL"    // 02 "EQUALS"
                                   | notEqual:"EQLNT"  // 03 "NOT" Equal
