@@ -34,3 +34,4 @@ int mask(int initialValue, int maskValue)
   return totalValue;
 }
 
+real pow(num x, int y) = y < 0 ? 1.0 / util::Math::pow(x, y * -1) : util::Math::pow(x,y) ;
