@@ -41,3 +41,5 @@ test bool testParsingCompiledCommentFile() = isCorrect(compiledFile("comments.co
 test bool testParsingFirstLine() = isCorrect("00001                   !                       DR_INIT3\r\n", #start[PC20_Compiled]);
 test bool testManualFileReading() = isCorrect(readFile(compiledFile("comments.compile")), #start[PC20_Compiled]);
 
+test bool testDisassembling() = isCorrect("sample.obj", #start[PC20_Assembled]);
+
