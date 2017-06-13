@@ -21,13 +21,12 @@ void highLightSources(Tree parseTree) = highLightSources(parseTree, []);
 void highLightSources(Tree parseTree, list[str] sourceLines)
 {
   list[Figure] sourceFigures = [];  
-  visit(parseTree)
-  {
+  visit(visitConcrete(parseTree))  {
     case EmptyLine E:
     {
       if(displayEmptyLines)
       {  
-        sourceFigures += generateLine("White", generateSuffix(E, sourceLines));
+        sourceFigures += generateLine("LightGrey", generateSuffix(E, sourceLines));
       }
     }
     case BitInstruction B:
@@ -36,15 +35,24 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
     }
     case WordInstruction W:
     {
-      sourceFigures += generateLine("Blue", generateSuffix(W, sourceLines));
+      sourceFigures += generateLine("Cyan", generateSuffix(W, sourceLines));
     }
     case SingleInstruction E:
     {
-       sourceFigures += generateLine("Green", generateSuffix(E, sourceLines));
-    }    
-  }
+       sourceFigures += generateLine("SpringGreen", generateSuffix(E, sourceLines));
+    }   
+  }  
   render(vcat(sourceFigures));  
 }
+
+Tree visitConcrete(Tree parseTree) = visit(parseTree)
+{
+  case (PC20_Compiled)`<CompiledInstruction* unusedPre><EmptyLine e><EmptyLine e><CompiledInstruction* unusedPost>`:
+  {
+    println("Two emtpy lines!");
+  }
+};
+
 
 str generateSuffix(&T item, list[str] sourceLines) = "<getLineNumber(item)>: <lineContent(sourceLines, getLineNumber(item))>";
 
@@ -60,5 +68,15 @@ str lineContent(list[str] sourceLines, int lineNumber)
   }
 }
 
-int getLineNumber(&T item) = item@\loc.begin.line;
+int getLineNumber(&T item)
+{
+  try
+  {
+    return item@\loc.begin.line;
+  }
+  catch:
+  {
+    return -1 ;
+  }
+}
 
