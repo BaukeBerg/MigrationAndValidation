@@ -4,7 +4,7 @@ start syntax PC20_Assembled = AssembledInstruction+;
 
 syntax AssembledInstruction = FileHeader
                             | InstructionLine
-                            | FileEnd
+                            | FileEnd                           
                             ;
                             
 lexical FileHeader = "S0030000FC" NewLine ;
@@ -21,9 +21,9 @@ lexical Checksum = HexChar HexChar ;
 
 lexical HexChar = [0-9A-F];                         
 
-start syntax PC20_Compiled = CompiledInstruction+ ;
+start syntax PC20_Compiled = CompiledInstruction*;
 
-syntax CompiledInstruction = EmptyLine                           
+syntax CompiledInstruction = EmptyLine           
                            | BitInstruction // Instruction with a bit address
                            | WordInstruction // Instruction with a word address
                            | SingleInstruction // Instruction without address
@@ -49,16 +49,16 @@ lexical WordAddress = FiveDigits WhiteSpace;
 lexical FiveDigits = [0-9][0-9][0-9][0-9][0-9] ;
 
 
+// This block defines the syntax for a labellist
+start syntax LabelList = LabelLocation+ ;
 
+lexical LabelLocation = ComposedLabel
+                      | NewLine
+                      ;
+                      
+lexical ComposedLabel = Label + ":" + LineNumber + NewLine? !>> "\r" ;
 
-
-start syntax PC20 = Expression+ ;
-
-syntax Expression = SingleLabel 
-                    | Instruction 
-                    | PdsComment                                     
-                    | NewLine
-                    ;
+// This block defines the syntax for a symbol table
 
 start syntax PlcSymbols = Symbol+ ;
 
@@ -68,24 +68,24 @@ syntax Symbol = Declaration
               | NewLine           
               ; 
 
-start syntax LabelList = LabelLocation+ ;
-
-lexical LabelLocation = ComposedLabel
-                      | NewLine
-                      ;
-                      
-lexical ComposedLabel = Label + ":" + LineNumber + NewLine? !>> "\r" ;
-
 lexical Declaration = VariableName + WhiteSpace+ "=" Address ;
 lexical NewLine = "\r\n";
 lexical UnreferencedDeclaration = "=" + Address ;
+
+// This block defines the syntax for PDS5 source files
+
+start syntax PC20 = Expression+ ;
+
+syntax Expression = SingleLabel 
+                    | Instruction 
+                    | PdsComment                                     
+                    | NewLine
+                    ;
                     
 public layout LS = [\ \t]* !>> [\ \t] ;
-
 lexical PdsComment = "!" + [*_a-zA-Z0-9=./,\ \t\"+?()\'|\>\<]* !>> [*_a-zA-Z0-9=./,\ \t\"+?()\'|\>\<] ;
-
-
 lexical WhiteSpace = [\t\ ]+ !>> [\t\ ];
+
 lexical SingleLabel = Label;
 lexical Label = "L" + [0-9][0-9][0-9][0-9][0-9] ;
 lexical ProgramLine = [0-9]+ !>> [0-9] ; 
