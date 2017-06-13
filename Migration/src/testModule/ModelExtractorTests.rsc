@@ -17,6 +17,8 @@ import vis::Render;
 void showCommentTree() = renderParsetree(parseComments());
 void showCommentFigure() = highLightSources(parseComments());
 
+void showSampleFigure() = showFigure("first50.compiled");
+
 test bool testComments() = isUnAmbiguous(parseComments());
 test bool testSample() = isUnAmbiguous(parseCompiledFile("first50.compiled"));
 test bool testTotal() = isUnAmbiguous(parseCompiledFile("DR_TOT_3.compiled"));
