@@ -25,8 +25,8 @@ start syntax PC20_Compiled = CodeBlock ;
 
 syntax CodeBlock = CompiledInstruction*;
 
-syntax CompiledInstruction = EmptyLine           
-                           | BitInstruction // Instruction with a bit address
+syntax CompiledInstruction = empty:EmptyLine           
+                           | bit:BitInstruction // Instruction with a bit address
                            | WordInstruction // Instruction with a word address
                            | SingleInstruction // Instruction without address
                            ;

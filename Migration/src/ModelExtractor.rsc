@@ -20,8 +20,9 @@ private bool displayEmptyLines = true;
 void highLightSources(Tree parseTree) = highLightSources(parseTree, []);
 void highLightSources(Tree parseTree, list[str] sourceLines)
 {
-  list[Figure] sourceFigures = [];  
-  visit(visitConcrete(parseTree))  {
+  list[Figure] sourceFigures = []; 
+   
+  visit(visitConcrete(removeComments(parseTree)))  {
     case EmptyLine E:
     {
       if(displayEmptyLines)
@@ -45,14 +46,23 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
   render(vcat(sourceFigures));  
 }
 
-Tree visitConcrete(Tree parseTree) = visit(parseTree)
+Tree removeComments(Tree parseTree) = innermost visit(parseTree)
 {
-  case (PC20_Compiled)`<CompiledInstruction* unusedPre><EmptyLine e><EmptyLine e><CompiledInstruction* unusedPost>`:
-  {
-    println("Two emtpy lines!");
-  }
+  case (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* bits> <CompiledInstruction* post>` 
+  => (CodeBlock) `<CompiledInstruction* pre>  <CompiledInstruction* post>` when all(b <- bits, b is empty)
 };
 
+Tree visitConcrete(Tree parseTree) = innermost visit(parseTree)
+{
+  case (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* bits> <CompiledInstruction* post>` 
+  => (CodeBlock) `<CompiledInstruction* pre>  <CompiledInstruction* post>` when all(b <- bits, b is bit)
+};
+
+Tree extractPattern(Tree parseTree, bool(&T callBack))
+{
+case (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* bits> <CompiledInstruction* post>` 
+  => (CodeBlock) `<CompiledInstruction* pre>  <CompiledInstruction* post>` when callBack(bits)
+}
 
 str generateSuffix(&T item, list[str] sourceLines) = "<getLineNumber(item)>: <lineContent(sourceLines, getLineNumber(item))>";
 
