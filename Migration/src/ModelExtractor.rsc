@@ -15,23 +15,44 @@ import utility::ListUtility;
 
 import Decorator;
 
+private bool displayEmptyLines = true;
+
 void highLightSources(Tree parseTree) = highLightSources(parseTree, []);
 void highLightSources(Tree parseTree, list[str] sourceLines)
 {
-  list[Figure] sourceFigures = [];
+  list[Figure] sourceFigures = [];  
   visit(parseTree)
   {
     case EmptyLine E:
-      sourceFigures += generateLine("White","<getLineNumber(E)>: <lineContent(sourceLines, getLineNumber(E))>");
+    {
+      if(displayEmptyLines)
+      {  
+        sourceFigures += generateLine("White", generateSuffix(E, sourceLines));
+      }
+    }
+    case BitInstruction B:
+    {
+      sourceFigures += generateLine("Yellow", generateSuffix(B, sourceLines));      
+    }
+    case WordInstruction W:
+    {
+      sourceFigures += generateLine("Blue", generateSuffix(W, sourceLines));
+    }
+    case SingleInstruction E:
+    {
+       sourceFigures += generateLine("Green", generateSuffix(E, sourceLines));
+    }    
   }
   render(vcat(sourceFigures));  
 }
+
+str generateSuffix(&T item, list[str] sourceLines) = "<getLineNumber(item)>: <lineContent(sourceLines, getLineNumber(item))>";
 
 str lineContent(list[str] sourceLines, int lineNumber)
 {
   try
   {
-    return sourceLines[lineNumber];
+    return sourceLines[lineNumber-1];
   }
   catch:
   {

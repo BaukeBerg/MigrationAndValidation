@@ -23,20 +23,21 @@ lexical HexChar = [0-9A-F];
 
 start syntax PC20_Compiled = CompiledInstruction+ ;
 
-syntax CompiledInstruction = EmptyLine
-//                           | StateTransition                           
-                             > BitInstruction
-                             | WordInstruction
-                             | SingleInstruction
+syntax CompiledInstruction = EmptyLine                           
+                           | BitInstruction // Instruction with a bit address
+                           | WordInstruction // Instruction with a word address
+                           | SingleInstruction // Instruction without address
                            ;
 
+// Lowest level instructions
 lexical EmptyLine = SourceLineNumber NewLine ;
 
 lexical BitInstruction = InstructionPrefix BitAddress NewLine ;
 lexical WordInstruction = InstructionPrefix WordAddress NewLine ;
 lexical SingleInstruction = InstructionPrefix NewLine ;
 
-lexical InstructionPrefix = SourceLineNumber ProgramLineNumber InstructionNumber ;
+lexical InstructionPrefix = SourcePrefix InstructionNumber ;
+lexical SourcePrefix = SourceLineNumber ProgramLineNumber ;
 
 lexical ProgramLineNumber = FiveDigits WhiteSpace ;
 lexical SourceLineNumber = FiveDigits WhiteSpace;
@@ -46,6 +47,10 @@ lexical BitAddress = FiveDigits "." [0-3] WhiteSpace;
 lexical WordAddress = FiveDigits WhiteSpace;
 
 lexical FiveDigits = [0-9][0-9][0-9][0-9][0-9] ;
+
+
+
+
 
 start syntax PC20 = Expression+ ;
 

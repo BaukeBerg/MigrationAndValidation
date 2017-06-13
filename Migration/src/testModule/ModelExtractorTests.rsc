@@ -7,6 +7,7 @@ import Stripper;
 
 import utility::ListUtility;
 
+import IO;
 import ParseTree;
 
 import vis::Figure;
@@ -23,7 +24,7 @@ test bool testTotal() = isUnAmbiguous(parseCompiledFile("DR_TOT_3.compiled"));
 Tree parseComments() = parseCompiledFile("comments.compiled");
 
 void showTree(str fileName) = renderParsetree(parseCompiledFile(fileName));
-void showFigure(str fileName) = highLightSources(parseCompiledFile(fileName));
+void showFigure(str fileName) = highLightSources(parseCompiledFile(fileName), readFileLines(compiledFile(fileName)));
 
 Tree parseCompiledFile(str fileName) = parseText(joinList(clipAndSave(compiledFile(fileName)))+"\r\n", #start[PC20_Compiled]);
 
