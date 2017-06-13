@@ -21,7 +21,9 @@ lexical Checksum = HexChar HexChar ;
 
 lexical HexChar = [0-9A-F];                         
 
-start syntax PC20_Compiled = CompiledInstruction*;
+start syntax PC20_Compiled = CodeBlock ;
+
+syntax CodeBlock = CompiledInstruction*;
 
 syntax CompiledInstruction = EmptyLine           
                            | BitInstruction // Instruction with a bit address
