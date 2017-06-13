@@ -1,0 +1,4 @@
+10908 09331 16 00037.0    AND BDR0B05 !bedrijfsfase 5
+10909 09332 16 00053.3    AND STAP_2  !stappen faseregister
+10910 09333 09 00037.1    SET1  BDR0B06 !bedrijfsfase 6
+10911 09334 08 00037.0    SET0  BDR0B05 !bedrijfsfase 5
