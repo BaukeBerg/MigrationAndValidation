@@ -11,6 +11,7 @@ import vis::Figure;
 import vis::ParseTree;
 import vis::Render;
 
+import utility::Debugging;
 import utility::ListUtility;
 
 import Decorator;
@@ -48,8 +49,17 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
 
 Tree removeComments(Tree parseTree) = innermost visit(parseTree)
 {
-  case (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* bits> <CompiledInstruction* post>` 
-  => (CodeBlock) `<CompiledInstruction* pre>  <CompiledInstruction* post>` when all(b <- bits, b is empty)
+  case (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* lines> <CompiledInstruction* post>` :
+  {     
+    if(all(b <- lines, b is empty))
+    {
+      insert (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* post>`;
+    }     
+    else
+    {
+      fail; // Try again for another match!
+    }
+  }
 };
 
 Tree visitConcrete(Tree parseTree) = innermost visit(parseTree)
@@ -57,12 +67,6 @@ Tree visitConcrete(Tree parseTree) = innermost visit(parseTree)
   case (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* bits> <CompiledInstruction* post>` 
   => (CodeBlock) `<CompiledInstruction* pre>  <CompiledInstruction* post>` when all(b <- bits, b is bit)
 };
-
-Tree extractPattern(Tree parseTree, bool(&T callBack))
-{
-case (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* bits> <CompiledInstruction* post>` 
-  => (CodeBlock) `<CompiledInstruction* pre>  <CompiledInstruction* post>` when callBack(bits)
-}
 
 str generateSuffix(&T item, list[str] sourceLines) = "<getLineNumber(item)>: <lineContent(sourceLines, getLineNumber(item))>";
 
