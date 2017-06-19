@@ -16,7 +16,7 @@ import vis::Render;
 
 void showCommentTree() = renderParsetree(parseComments());
 void showCommentFigure() = highLightSources(parseComments());
-void showTotalFigure() = highLightSources(parseTotalFile());
+void showTotalFigure() = showFigure("DR_TOT_3.compiled");
 
 void showSampleFigure() = showFigure("first50.compiled");
 
