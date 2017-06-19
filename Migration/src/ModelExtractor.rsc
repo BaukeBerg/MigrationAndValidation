@@ -22,7 +22,7 @@ void highLightSources(Tree parseTree) = highLightSources(parseTree, []);
 void highLightSources(Tree parseTree, list[str] sourceLines)
 {
   list[Figure] sourceFigures = []; 
-   
+  debugPrint("Starting visit"); 
   visit(visitConcrete(removeComments(parseTree)))  {
     case EmptyLine E:
     {
@@ -47,11 +47,11 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
   render(vcat(sourceFigures));  
 }
 
-Tree removeComments(Tree parseTree) = innermost visit(parseTree)
+Tree visitConcrete(Tree parseTree) = innermost visit(parseTree)
 {
-  case (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* lines> <CompiledInstruction* post>` :
+  case (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* patternLines> <CompiledInstruction* followingLine> <CompiledInstruction* post>` :
   {     
-    if(all(b <- lines, b is empty))
+    if(!(followingLine is bit) && all(line <- patternLines, line is bit))
     {
       insert (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* post>`;
     }     
@@ -62,10 +62,10 @@ Tree removeComments(Tree parseTree) = innermost visit(parseTree)
   }
 };
 
-Tree visitConcrete(Tree parseTree) = innermost visit(parseTree)
+Tree removeComments(Tree parseTree) = visit(parseTree)
 {
-  case (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* bits> <CompiledInstruction* post>` 
-  => (CodeBlock) `<CompiledInstruction* pre>  <CompiledInstruction* post>` when all(b <- bits, b is bit)
+  case (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* line> <CompiledInstruction* post>` 
+  => (CodeBlock) `<CompiledInstruction* pre>  <CompiledInstruction* post>` when line is empty
 };
 
 str generateSuffix(&T item, list[str] sourceLines) = "<getLineNumber(item)>: <lineContent(sourceLines, getLineNumber(item))>";
