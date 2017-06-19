@@ -14,7 +14,11 @@ void generateStrippedFile(str fileName) = writeToFile(generatedFile("<filename>.
 list[str] clipAndSave(loc fileName)
 {
   fileData = clippedLines(fileName);
-  writeToFile(generatedFile("<fileName.file>.stripped") ,fileData);
+  targetFile = generatedFile("<fileName.file>.stripped"); 
+  if(!exists(targetFile))
+  {
+    writeToFile(targetFile ,fileData);
+  }
   return fileData;
 }
 
