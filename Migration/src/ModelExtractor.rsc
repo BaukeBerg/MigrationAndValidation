@@ -23,7 +23,13 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
 {
   list[Figure] sourceFigures = [];   
   debugPrint("Removing comments"); 
-  parseTree = removeComments(parseTree);
+  treesDiffer = true;
+  while(treesDiffer)
+  {
+    prevTree = parseTree;
+    parseTree = removeComments(parseTree);
+    treesDiffer = prevTree != parseTree;
+  }  
   debugPrint("Starting visit");
   visit(parseTree)
   { 
@@ -47,10 +53,11 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
        sourceFigures += generateLine("SpringGreen", generateSuffix(E, sourceLines));
     }   
   }  
+  debugPrint("Rendering Figure");
   render(vcat(sourceFigures));  
 }
 
-Tree visitConcrete(Tree parseTree) = innermost visit(parseTree)
+Tree visitConcrete(Tree parseTree) = visit(parseTree)
 {
   case (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* patternLines> <CompiledInstruction* followingLine> <CompiledInstruction* post>` :
   {     
@@ -66,21 +73,29 @@ Tree visitConcrete(Tree parseTree) = innermost visit(parseTree)
 };
 
 
-Tree removeComments(Tree parseTree) = innermost visit(parseTree)
+int visitPassed = 0;
+
+Tree removeComments(Tree parseTree)
 {
-  case (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* emptyLines> <CompiledInstruction* post>`: 
+  visitPassed += 1;
+  debugPrint("Starting pass <visitPassed>");
+  parseTree = top-down visit(parseTree)
   {
-    if(all(line <- emptyLines, line is empty))
+    case (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* emptyLines> <CompiledInstruction* post>`: 
     {
-      debugPrint("Removing empty line block");
-      insert(CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* post>` ;
-    } 
-    else 
-    {
-      fail;
+      if(all(line <- emptyLines, line is empty))
+      {
+        debugPrint("Removing empty line block");
+        insert(CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* post>` ;
+      } 
+      else 
+      {
+        fail;
+      }
     }
   }
-};
+  return parseTree;  
+}
 
 //Tree removeComments(Tree parseTree) = innermost visit(parseTree)
 //{
