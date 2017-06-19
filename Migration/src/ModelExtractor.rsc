@@ -21,9 +21,12 @@ private bool displayEmptyLines = true;
 void highLightSources(Tree parseTree) = highLightSources(parseTree, []);
 void highLightSources(Tree parseTree, list[str] sourceLines)
 {
-  list[Figure] sourceFigures = []; 
-  debugPrint("Starting visit"); 
-  visit(visitConcrete(removeComments(parseTree)))  {
+  list[Figure] sourceFigures = [];   
+  debugPrint("Removing comments"); 
+  parseTree = removeComments(parseTree);
+  debugPrint("Starting visit");
+  visit(parseTree)
+  { 
     case EmptyLine E:
     {
       if(displayEmptyLines)
@@ -51,7 +54,7 @@ Tree visitConcrete(Tree parseTree) = innermost visit(parseTree)
 {
   case (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* patternLines> <CompiledInstruction* followingLine> <CompiledInstruction* post>` :
   {     
-    if(!(followingLine is bit) && all(line <- patternLines, line is bit))
+    if(!(followingLine is bit) && all(line <- patternLines, line is empty))
     {
       insert (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* post>`;
     }     
@@ -62,11 +65,28 @@ Tree visitConcrete(Tree parseTree) = innermost visit(parseTree)
   }
 };
 
-Tree removeComments(Tree parseTree) = visit(parseTree)
+
+Tree removeComments(Tree parseTree) = innermost visit(parseTree)
 {
-  case (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* line> <CompiledInstruction* post>` 
-  => (CodeBlock) `<CompiledInstruction* pre>  <CompiledInstruction* post>` when line is empty
+  case (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* emptyLines> <CompiledInstruction* post>`: 
+  {
+    if(all(line <- emptyLines, line is empty))
+    {
+      debugPrint("Removing empty line block");
+      insert(CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* post>` ;
+    } 
+    else 
+    {
+      fail;
+    }
+  }
 };
+
+//Tree removeComments(Tree parseTree) = innermost visit(parseTree)
+//{
+//  case (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* emptyLines> <CompiledInstruction* nonEmptyLine> <CompiledInstruction* post>` 
+//  => (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* post>` when !(nonEmptyLine is empty) && all(line <- emptyLines, line is empty)
+//};
 
 str generateSuffix(&T item, list[str] sourceLines) = "<getLineNumber(item)>: <lineContent(sourceLines, getLineNumber(item))>";
 
