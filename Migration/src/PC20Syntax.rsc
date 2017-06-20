@@ -26,25 +26,41 @@ start syntax PC20_Compiled = CodeBlock ;
 syntax CodeBlock = CompiledInstruction*;
 
 syntax CompiledInstruction = empty:EmptyLine           
-                           | bit:BitInstruction // Instruction with a bit address
-                           | WordInstruction // Instruction with a word address
+                           | logic:LogicInstruction
+                           | jump:JumpInstruction
                            | SingleInstruction // Instruction without address
                            ;
 
 // Lowest level instructions
 lexical EmptyLine = SourceLineNumber NewLine ;
 
+lexical LogicInstruction = BitInstruction
+                         | WordInstruction
+                         ;
 lexical BitInstruction = InstructionPrefix BitAddress NewLine ;
 lexical WordInstruction = InstructionPrefix WordAddress NewLine ;
 lexical SingleInstruction = InstructionPrefix NewLine ;
+lexical JumpInstruction = JumpPrefix WordAddress NewLine;
+
 
 lexical InstructionPrefix = SourcePrefix InstructionNumber ;
+lexical JumpPrefix = SourcePrefix JumpInstruction WhiteSpace;
 lexical SourcePrefix = SourceLineNumber ProgramLineNumber ;
 
 lexical ProgramLineNumber = FiveDigits WhiteSpace ;
 lexical SourceLineNumber = FiveDigits WhiteSpace;
 
-lexical InstructionNumber = [0-3][0-9] WhiteSpace;
+lexical InstructionNumber = Instruction WhiteSpace ;
+lexical Instruction = ([013][0-9])
+                    | [2][0-36-7]
+                    ;
+                          
+lexical JumpInstruction = "24"
+                          | "25"
+                          | "28"
+                          | "29"
+                          ; 
+                         
 lexical BitAddress = FiveDigits "." [0-3] WhiteSpace;
 lexical WordAddress = FiveDigits WhiteSpace;
 
