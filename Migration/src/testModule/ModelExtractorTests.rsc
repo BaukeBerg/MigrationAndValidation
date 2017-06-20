@@ -18,6 +18,9 @@ void showCommentTree() = renderParsetree(parseComments());
 void showCommentFigure() = highLightSources(parseComments());
 void showTotalFigure() = showFigure("DR_TOT_3.compiled");
 void showSampleFigure() = showFigure("first50.compiled");
+void showFirst100Figure() = showFigure("first100.compiled");
+void showFirst200Figure() = showFigure("first200.compiled");
+void showFirst500Figure() = showFigure("first500.compiled");
 void show1kSample() = showFigure("first1000.compiled");
 
 test bool testComments() = isUnAmbiguous(parseComments());
