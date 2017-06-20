@@ -36,10 +36,15 @@ test bool testLocation()
   return expectEqual(1, LineNumber, "Line number of comment should be 1");
 }
 
-test bool testParsingCompiledComment() = isCorrect("00001                   !                       DR_INIT3\r\n", #CompiledComment);
-test bool testParsingCompiledCommentFile() = isCorrect(compiledFile("comments.compile"), #start[PC20_Compiled]);
-test bool testParsingFirstLine() = isCorrect("00001                   !                       DR_INIT3\r\n", #start[PC20_Compiled]);
-test bool testManualFileReading() = isCorrect(readFile(compiledFile("comments.compile")), #start[PC20_Compiled]);
+test bool testLogicInstruction1() = isCorrect("00008 00000 31 00003    \r\n", #LogicInstruction);
+test bool testLogicInstruction21() = isCorrect("00008 00000 21 00003    \r\n", #LogicInstruction);
+test bool testLogicInstruction22() = isCorrect("00008 00000 22 00003    \r\n", #LogicInstruction);
+test bool testLogicInstruction23() = isCorrect("00008 00000 23 00003    \r\n", #LogicInstruction);
+test bool testLogicInstruction26() = isCorrect("00008 00000 26 00003    \r\n", #LogicInstruction);
+test bool testLogicInstruction27() = isCorrect("00008 00000 27 00003    \r\n", #LogicInstruction);
 
-test bool testDisassembling() = isCorrect("sample.obj", #start[PC20_Assembled]);
-
+// Jumps should not be parseable by #LogicInstrcuction to remove ambiguity
+test bool testLogicJump1() = expectFalse(isCorrect("00008 00000 24 00003    \r\n", #LogicInstruction));
+test bool testLogicJump2() = expectFalse(isCorrect("00008 00000 25 00003    \r\n", #LogicInstruction));
+test bool testLogicJump3() = expectFalse(isCorrect("00008 00000 28 00003    \r\n", #LogicInstruction));
+test bool testLogicJump4() = expectFalse(isCorrect("00008 00000 29 00003    \r\n", #LogicInstruction));
