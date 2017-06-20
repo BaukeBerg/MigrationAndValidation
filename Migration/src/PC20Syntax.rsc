@@ -25,24 +25,30 @@ start syntax PC20_Compiled = CodeBlock ;
 
 syntax CodeBlock = CompiledInstruction*;
 
-syntax CompiledInstruction = empty:EmptyLine           
-                           | logic:LogicInstruction
+syntax CompiledInstruction = empty:EmptyLine
                            | jump:JumpInstruction
+                           | ReadInstruction
+                           | BitInstruction
+                           | EventInstruction
+                           | WordInstruction
+                           | SkipInstruction
+                           | AssignInstruction 
                            | SingleInstruction // Instruction without address
                            ;
 
 // Lowest level instructions
 lexical EmptyLine = SourceLineNumber NewLine ;
 
-lexical LogicInstruction = BitInstruction
-                         | WordInstruction
-                         ;
+lexical AssignInstruction = SourcePrefix ("02" | "08" | "09") WhiteSpace BitAddress NewLine ;                      
+lexical SkipInstruction = SourcePrefix "00" WhiteSpace NewLine;                        
+lexical EventInstruction = SourcePrefix "01" WhiteSpace BitAddress NewLine ;                        
+lexical ReadInstruction = ReadInstructionPrefix BitAddress NewLine ;                                  
 lexical BitInstruction = InstructionPrefix BitAddress NewLine ;
 lexical WordInstruction = InstructionPrefix WordAddress NewLine ;
 lexical SingleInstruction = InstructionPrefix NewLine ;
 lexical JumpInstruction = JumpPrefix WordAddress NewLine;
 
-
+lexical ReadInstructionPrefix = SourcePrefix ReadInstructionNumber WhiteSpace ;
 lexical InstructionPrefix = SourcePrefix InstructionNumber ;
 lexical JumpPrefix = SourcePrefix JumpInstructionNumber WhiteSpace;
 lexical SourcePrefix = SourceLineNumber ProgramLineNumber ;
@@ -51,15 +57,15 @@ lexical ProgramLineNumber = FiveDigits WhiteSpace ;
 lexical SourceLineNumber = FiveDigits WhiteSpace;
 
 lexical InstructionNumber = Instruction WhiteSpace ;
-lexical Instruction = ([013][0-9])
-                    | [2][0-36-7]
+lexical Instruction = [0][3-7]
+                    | [1][0-5]
+                    | [2][0-3]
+                    | [2][6-7]
+                    | [3][0-1]
                     ;
-                          
-lexical JumpInstructionNumber = "24"
-                          | "25"
-                          | "28"
-                          | "29"
-                          ; 
+
+lexical ReadInstructionNumber = "16" | "17" | "18" | "19" ;                          
+lexical JumpInstructionNumber = "24" | "25" | "28" | "29" ; 
                          
 lexical BitAddress = FiveDigits "." [0-3] WhiteSpace;
 lexical WordAddress = FiveDigits WhiteSpace;
