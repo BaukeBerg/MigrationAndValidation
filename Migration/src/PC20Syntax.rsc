@@ -44,7 +44,7 @@ lexical JumpInstruction = JumpPrefix WordAddress NewLine;
 
 
 lexical InstructionPrefix = SourcePrefix InstructionNumber ;
-lexical JumpPrefix = SourcePrefix JumpInstruction WhiteSpace;
+lexical JumpPrefix = SourcePrefix JumpInstructionNumber WhiteSpace;
 lexical SourcePrefix = SourceLineNumber ProgramLineNumber ;
 
 lexical ProgramLineNumber = FiveDigits WhiteSpace ;
@@ -55,7 +55,7 @@ lexical Instruction = ([013][0-9])
                     | [2][0-36-7]
                     ;
                           
-lexical JumpInstruction = "24"
+lexical JumpInstructionNumber = "24"
                           | "25"
                           | "28"
                           | "29"
