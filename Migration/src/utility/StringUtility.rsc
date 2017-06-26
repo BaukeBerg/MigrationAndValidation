@@ -6,7 +6,8 @@ int parseInt(str inputString)
 {
   try
   { 
-    return toInt(trim(stripLeading(inputString, "0")));
+    inputString = trim(inputString);
+    return toInt(stripLeading(inputString, "0"));
   }
   catch:
   {

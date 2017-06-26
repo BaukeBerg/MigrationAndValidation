@@ -34,3 +34,4 @@ test bool testStripLeadingNoChar() = expectEqual("00400.1", stripLeading("00400.
 test bool testLargeToken() = expectEqual("00.1", stripLeading("00400.1", "004"), "multiple characters are removed with similar syntax");
 
 test bool testPaddedStrings() = expectEqual(332, parseInt("00332      "), "parseInt should be able to trim strings");
+test bool testZeroValue() = expectEqual(0, parseInt("00000        "), "zero with trailing spaces should parse correctly");
