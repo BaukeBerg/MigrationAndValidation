@@ -13,11 +13,12 @@ import vis::Render;
 
 import utility::Debugging;
 import utility::ListUtility;
+import utility::StringUtility;
 
 import Decorator;
 
 private bool displayEmptyLines = true;
-private bool preProcess = true;
+private bool preProcess = false;
 
 void highLightSources(Tree parseTree) = highLightSources(parseTree, []);
 void highLightSources(Tree parseTree, list[str] sourceLines)
@@ -47,6 +48,7 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
     }
     case WordInstruction W:
     {
+      patternCheck(W);
       sourceFigures += generateLine("Lime", generateSuffix(W, sourceLines));
     }
     case BitInstruction B:
@@ -76,6 +78,32 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
   }  
   debugPrint("Rendering Figure");
   render(vcat(sourceFigures));  
+}
+
+void patternCheck(WordInstruction W)
+{
+  switch(W)
+  {
+    // Start of Reset block
+    case (WordInstruction) `<SourcePrefix source>12 00000<WhiteSpace ws><NewLine n>`:
+    {
+      debugPrint("Resetpattern found");
+    }
+    default:
+    {
+      debugPrint("Unmatched instruction: <W>");
+    }
+  }
+}
+
+bool isResetPattern(InstructionNumber instruction, WordAddress addressValue)
+{
+  instructionNumber = parseInt("<instruction>");
+  addressNumber = parseInt("<addressValue>");
+  
+  debugPrint("parsing int <instruction>, <instructionNumber>");
+  debugPrint("parsing int <addressValue>, <addressNumber>");
+  return 12 == instructionNumber && 0 == addressNumber;
 }
 
 Tree extractAssignments(Tree parseTree) = innermost visit(parseTree)
@@ -134,7 +162,7 @@ int visitPassed = 0;
 Tree removeComments(Tree parseTree)
 {
   visitPassed += 1;
-  debugPrint("Starting pass <visitPassed>");
+  debugPrint("pass <visitPassed>");
   parseTree = innermost visit(parseTree)
   {
     case (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* emptyLines> <CompiledInstruction* post>`: 
