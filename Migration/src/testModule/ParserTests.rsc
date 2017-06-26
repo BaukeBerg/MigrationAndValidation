@@ -14,6 +14,9 @@ test bool testParsingRoutine() = expectEqual(0, parsePdsSource("simpleRoutine"))
 test bool testParsingPartialSource() = expectEqual(0, parsePdsSource("SmallPart.PRG"));
 test bool testParsingTotalSource() = expectEqual(0, parsePdsSource("DR_TOT_3.PRG"));
 
+test bool testFetchWord() = isCorrect("00051 00024 12 00000    \r\n", #WordInstruction);
+test bool testFetchCompiled() = isCorrect("00051 00024 12 00000    \r\n", #CompiledInstruction);
+
 test bool testParsingLabels() = isCorrect("L02840:2840L12769:12769L03429:3429L12902:12902\r\nL10103:10103L04037:4037", #start[LabelList]);
 
 test bool testParsingNop() = isCorrect("NOP 57", #Expression);
