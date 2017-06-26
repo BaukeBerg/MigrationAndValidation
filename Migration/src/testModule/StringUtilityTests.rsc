@@ -32,3 +32,5 @@ test bool testParseIntHexadecimal() = expectEqual(-1, parseInt("0001F"), "Check 
 test bool testStripLeadingSingleChar() = expectEqual("400.1", stripLeading("00400.1", "0"), "stripLeading should remove all leading 0\'s");
 test bool testStripLeadingNoChar() = expectEqual("00400.1", stripLeading("00400.1", "5"), "stripLeading should return original string");
 test bool testLargeToken() = expectEqual("00.1", stripLeading("00400.1", "004"), "multiple characters are removed with similar syntax");
+
+test bool testPaddedStrings() = expectEqual(332, parseInt("00332      "), "parseInt should be able to trim strings");
