@@ -22,10 +22,11 @@ list[str] clipAndSave(loc fileName)
   return fileData;
 }
 
-list[str] clippedLines(loc fileName)
+list[str] clippedLines(loc fileName) = clipLines(readFileLines(fileName));
+list[str] clipLines(list[str] lines)
 {
   list[str] convertedLines = [];
-  for(line <- readFileLines(fileName))
+  for(line <- lines)
   {
     endPos = findEndPos(line);
     if(contains(line, "Number of errors: 0"))
@@ -46,9 +47,12 @@ list[str] clippedLines(loc fileName)
   return convertedLines;
 }
 
+int findEndPos(str lineToCheck) = size(lineToCheck) >= 24 ? 24 : 15 ;
+
 list[str] instructionList(list[str] clippedLines)
 {
   intructions = [];
+  clippedLines = clipLines(clippedLines);  
   for(line <- clippedLines, isProgramLine(line))
   {
     intructions += trim(substring(line, 12));
@@ -57,5 +61,3 @@ list[str] instructionList(list[str] clippedLines)
 }
 
 bool isProgramLine(str lineToCheck) = -1 != getProgramLine(lineToCheck);
-
-int findEndPos(str lineToCheck) = size(lineToCheck) >= 24 ? 24 : 15 ;
