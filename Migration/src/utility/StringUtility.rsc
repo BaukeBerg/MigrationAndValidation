@@ -2,8 +2,9 @@ module utility::StringUtility
 
 import String;
 
-int parseInt(str inputString)
+int parseInt(&T inputObject)
 {
+  inputString = "<inputObject>";
   try
   { 
     inputString = trim(inputString);
