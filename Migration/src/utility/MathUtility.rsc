@@ -10,6 +10,12 @@ bool inLimits(&T lowerBound, &T actualValue, &T upperBound) = actualValue == lim
 int shiftLeft(int initialValue, int positions) = shiftRight(initialValue, -1 * positions);
 int shiftRight(int initialValue, int positions) = floor(initialValue / pow(2.0000000000000000000000000, positions));
 
+bool getBit(int intValue, int bitPosition) = 0 < mask(intValue, shiftLeft(1,bitPosition));
+int setBit(int intValue, int bitPosition, bool newValue)
+{
+
+}
+
 int mask(int initialValue, int maskValue)
 {
   totalValue = 0;

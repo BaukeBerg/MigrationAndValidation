@@ -41,3 +41,11 @@ test bool testMaskingUpperBit() = expectEqual(16, mask(255, 16));
 test bool testMaskingValues() = expectEqual(32, mask(32,32));
 test bool testLargeMask() = expectEqual(0, mask(32,64));
 
+// Test 5 bits
+test bool testGetBit0() = expectFalse(getBit(8,0));
+test bool testGetBit1() = expectFalse(getBit(8,1));
+test bool testGetBit2() = expectFalse(getBit(8,2));
+test bool testGetBit3() = expectTrue(getBit(8,3));
+test bool testGetBit4() = expectFalse(getBit(8,4));
+
+
