@@ -24,8 +24,14 @@ public int programCounter = 0 ;
 list[str] instructionList = readFileLines(generatedFile("DR_TOT_3.instructions"));
 list[int] scratchPad = initScratchPad();
 list[int] triggerScratchPad = initScratchPad();
-bool condition = false;
+list[int] stack = [];
+bool condition = true;
 Register register = <generateList(16,false), 0>;
+
+int LastAddress = 0;
+int FirstAddress = 0;
+
+list[int] physicalIO = initScratchPad();
 
 bool showInstructions = false;
 
@@ -33,7 +39,7 @@ void reset()
 {
  lastFetch = -10;
  programCounter = 0;
- conddition = false;
+ condition = true;
  resetScratchPad();
 }
 
@@ -178,6 +184,24 @@ void ORNT(Address address)
   handlePrint("ORNT", address, wasTrue, isTrue);
 }
 
+void JUMP_SUBROUTINE_FALSE(Address address)
+{
+  int previous = programCounter;
+  int current = address.index;
+  handlePrint("JSAF", address, previous, current);
+  programCounter = current;
+  stack += previous;
+}
+
+void JUMP_SUBROUTINE_TRUE(Address address)
+{
+  int previous = programCounter;  
+  int current = address.index;
+  handlePrint("JSAT", address, previous, current);
+  programCounter = current;  
+  stack += previous;
+}
+
 void JUMP_FORWARD_RELATIVE_FALSE(Address address)
 {
   previous = programCounter;
@@ -206,6 +230,34 @@ void SETBIT(Address address)
 void RESETBIT(Address address)
 {
   scratchPad[address.index] = resetBit(scratchPad[address.index], address.bit);
+}
+
+void LAST_IO(Address address)
+{
+  previous = LastAddress;
+  current = address.index;
+  LastAddress = address.index;
+  handlePrint("LSTIO", address, previous, current);
+}
+
+void END(Address address)
+{
+  previous = FirstAddress;
+  current = address.index;
+  FirstAddress = address.index;
+  handlePrint("END", address, previous, current);
+  for(n <- [FirstAddress .. LastAddress+1])
+  {
+    scratchPad[n] = physicalIO[n];
+  }
+}
+
+void RET()
+{
+  previous = programCounter;
+  current = last(stack);
+  handlePrint("END", <0,0>, previous, current);
+  stack = take(size(stack)-1);  
 }
 
 Address generateAddress(str stringAddress)
@@ -261,7 +313,7 @@ void handleInstruction()
   debugPrint("<programCounter> : Handling instruction <instructionNumber> with data: <address>", showInstructions);  
   switch(instructionNumber)
   {
-    case 0:
+       case 0:
     {
       NOP();
     }
@@ -279,19 +331,31 @@ void handleInstruction()
     }
     case 4:
     {
-      ;
+      if(true == condition)
+      {
+        SHIFT_LEFT(address);
+      }
     }
     case 5:
     {
-      ;
+      if(true == condition)
+      {
+        SHIFT_RIGHT(address);
+      }
     }
     case 6:
     {
-      ;
+      if(true == condition)
+      {
+        COUNT_DOWN(address);
+      }
     }
     case 7:
     {
-      ;
+      if(true == condition)
+      {
+        COUNT_UP(address);
+      }
     }
     case 8:
     {
@@ -309,7 +373,10 @@ void handleInstruction()
     }
     case 10:
     {
-      ;
+      if(true == condition)
+      {
+        STORE_BIT(address);
+      }
     }
     case 11:
     {
@@ -334,11 +401,17 @@ void handleInstruction()
     }
     case 14:
     {
-      ;
+      if(true == condition)
+      {
+        STORE_DIGIT(address);
+      }
     }
     case 15:
     {
-      ;
+      if(true == condition)
+      {
+        COMPARE(address);
+      }
     }
     case 16:
     {
@@ -358,35 +431,55 @@ void handleInstruction()
     }
     case 20:
     {
-      ;
+      if(true == condition)
+      {
+        ADD(address);
+      }
     }
     case 21:
     {
-      ;
+      if(true == condition)
+      {
+        SUBTRACT(address);
+      }
     }
     case 22:
     {
-      ;
+      if(true == condition)
+      {
+        MULTIPLY(address);
+      }
     }
     case 23:
     {
-      ;
+      if(true == condition)
+      {
+        DIVIDE(address);
+      }
     }
     case 24:
     {
-      ;
+      if(false == condition)
+      {
+        JUMP_SUBROUTINE_FALSE(address);
+        return;
+      }
     }
     case 25:
     {
-      ;
+      if(true == condition)
+      {
+        JUMP_SUBROUTINE_TRUE(address);
+        return;
+      }
     }
     case 26:
     {
-      ;
+      RET();
     }
     case 27:
     {
-      ;
+      END(address);
     }
     case 28:
     {
@@ -397,6 +490,7 @@ void handleInstruction()
       if(false == condition)
       {
         JUMP_BACK_RELATIVE_FALSE(address);
+        return;
       }
     }
     case 30:
@@ -404,12 +498,13 @@ void handleInstruction()
       if(false == condition)
       {
         JUMP_FORWARD_RELATIVE_FALSE(address);
+        return;
       }
     }
     case 31:
     {
-      ;
-    }  
+      LAST_IO(address);
+    }    
   }
-  programCounter+=1;
+  programCounter += 1;
 }
