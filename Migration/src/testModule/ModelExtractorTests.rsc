@@ -5,6 +5,8 @@ import ModelExtractor;
 import Parser;
 import Stripper;
 
+import utility::Debugging;
+import utility::FileUtility;
 import utility::ListUtility;
 
 import IO;
@@ -32,3 +34,10 @@ Tree parseTotalFile() = parseCompiledFile("DR_TOT_3.compiled");
 
 void showTree(str fileName) = renderParsetree(parseCompiledFile(fileName));
 void showFigure(str fileName) = highLightSources(parseCompiledFile(fileName), readFileLines(compiledFile(fileName)));
+
+void generateInstructions(str fileName)
+{
+  instructions = instructionList(readFileLines(compiledFile(fileName)));
+  instructions = padList("", instructions, "\r\n");
+  writeFile(generatedFile("<stripFileExtension(fileName)>.instructions"), instructions);
+}
