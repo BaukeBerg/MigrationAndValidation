@@ -41,6 +41,7 @@ void reset()
  programCounter = 0;
  condition = true;
  resetScratchPad();
+ SETBIT(<0,1>);
 }
 
 void resetRegister()
@@ -245,19 +246,22 @@ void END(Address address)
   previous = FirstAddress;
   current = address.index;
   FirstAddress = address.index;
-  handlePrint("END", address, previous, current);
+  handlePrint("END", address, previous, last(stack));
   for(n <- [FirstAddress .. LastAddress+1])
   {
     scratchPad[n] = physicalIO[n];
   }
+  programCounter = last(stack);
+  stack = take(size(stack)-1, stack); 
 }
 
 void RET()
 {
   previous = programCounter;
   current = last(stack);
-  handlePrint("END", <0,0>, previous, current);
-  stack = take(size(stack)-1);  
+  handlePrint("RET", <0,0>, previous, last(stack));
+  stack = take(size(stack)-1, stack);
+  programCounter = current;  
 }
 
 Address generateAddress(str stringAddress)
@@ -475,11 +479,11 @@ void handleInstruction()
     }
     case 26:
     {
-      RET();
+      RET();      
     }
     case 27:
     {
-      END(address);
+      END(address);      
     }
     case 28:
     {
