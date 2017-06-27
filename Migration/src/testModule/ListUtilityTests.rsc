@@ -28,3 +28,5 @@ list[str] secondList = [" Bird", " Stones", " Horses"];
 list[str] mergedList = ["One Bird", "Two Stones", "Three Horses"];
 
 test bool mergeLists() = expectEqual(mergedList, mergeList(firstList, secondList), "Merging should glue same indexes together");
+
+test bool testGenerating() = expectEqual([1,1,1], generateList(3,1), "Generating a list should work");

@@ -6,6 +6,16 @@ import util::Math;
 
 bool contains(list[&T] items, &T item) = -1 != indexOf(items, item);
 
+list[&T] generateList(int listSize, &T defaultValue)
+{
+  localList = [];
+  while(size(localList) < listSize)
+  {
+    localList += defaultValue;
+  }
+  return localList;
+}
+
 list[str] trimList(list[str] linesToTrim, str tokenToSplit)
 {
   results = [];
