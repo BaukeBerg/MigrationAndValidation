@@ -46,6 +46,12 @@ test bool testGetBit0() = expectFalse(getBit(8,0));
 test bool testGetBit1() = expectFalse(getBit(8,1));
 test bool testGetBit2() = expectFalse(getBit(8,2));
 test bool testGetBit3() = expectTrue(getBit(8,3));
-test bool testGetBit4() = expectFalse(getBit(8,4));
 
-
+test bool testSetBit0On() = expectEqual(3, setBit(2, 0));
+test bool testSetBit0Off() = expectEqual(2, resetBit(3,0));
+test bool testSetBit1On() = expectEqual(10, setBit(8,1));
+test bool testSetBit1Off() =  expectEqual(13, resetBit(15,1));
+test bool testSetBit2On() = expectEqual(4, setBit(0, 2));
+test bool testSetBit2Off() = expectEqual(3, resetBit(7,2));
+test bool testSetBit3On() = expectEqual(15, setBit(7, 3));
+test bool testSetBit3Off() = expectEqual(0, resetBit(8, 3));

@@ -11,10 +11,9 @@ int shiftLeft(int initialValue, int positions) = shiftRight(initialValue, -1 * p
 int shiftRight(int initialValue, int positions) = floor(initialValue / pow(2.0000000000000000000000000, positions));
 
 bool getBit(int intValue, int bitPosition) = 0 < mask(intValue, shiftLeft(1,bitPosition));
-int setBit(int intValue, int bitPosition, bool newValue)
-{
 
-}
+int setBit(int intValue, int bitPosition) = resetBit(intValue, bitPosition) + shiftLeft(1, bitPosition);
+int resetBit(int intValue, int bitPosition) = intValue - mask(intValue, shiftLeft(1, bitPosition));
 
 int mask(int initialValue, int maskValue)
 {
