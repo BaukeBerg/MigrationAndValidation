@@ -35,6 +35,11 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
   debugPrint("Starting visit");
   visit(parseTree)
   { 
+    case (CompiledBlock)`<CompiledInstruction* pre><WordInstruction W><CompiledInstruction* after>`:
+    {
+      insert((CompiledBlock)`<CompiledInstruction* pre><CompiledInstruction* after>`);
+    }
+  
     case EmptyLine E:
     {
       if(displayEmptyLines)
