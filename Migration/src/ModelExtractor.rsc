@@ -80,7 +80,7 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
       sourceFigures += generateLine("Orange", generateSuffix(I, sourceLines));
     }
   }  
-  debugPrint("Rendering Figure");
+  debugPrint("Rendering Figure, <size(sourceFigures)>/<size(sourceLines)> lines unallocated.");
   render(vcat(sourceFigures));  
 }
 
