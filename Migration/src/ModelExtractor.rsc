@@ -18,7 +18,7 @@ import utility::StringUtility;
 import Decorator;
 
 private bool displayEmptyLines = true;
-private bool preProcess = false;
+private bool preProcess = true;
 
 void highLightSources(Tree parseTree) = highLightSources(parseTree, []);
 void highLightSources(Tree parseTree, list[str] sourceLines)
@@ -27,17 +27,17 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
   list[Figure] sourceFigures = [];
   if(true == preProcess)
   {
-    debugPrint("Removing comments");   
-    parseTree = removeComments(parseTree);
-    debugPrint("Extracting assignments");
-    parseTree = extractAssignments(parseTree);
+    debugPrint("Removing unnecessary code");   
+    parseTree = removeBoilerPlate(parseTree);    
+    debugPrint("Extracting assignments");    
   }
   debugPrint("Starting visit");
   visit(parseTree)
   { 
-    case (CompiledBlock)`<CompiledInstruction* pre><WordInstruction W><CompiledInstruction* after>`:
+    case (CodeBlock) `<CompiledInstruction* pre> <WordInstruction logicLines> <CompiledInstruction* post>` :
     {
-      insert((CompiledBlock)`<CompiledInstruction* pre><CompiledInstruction* after>`);
+      debugPrint("Hitted a word instruction");
+      insert((CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* post>` );
     }
   
     case EmptyLine E:
@@ -78,6 +78,7 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
     }   
     case JumpInstruction J:
     {
+      debugPrint("JumpInstruction");
       sourceFigures += generateLine("Violet", generateSuffix(J, sourceLines));
     }
   }  
@@ -113,9 +114,9 @@ bool isResetPattern(InstructionNumber instruction, WordAddress addressValue)
 
 Tree extractAssignments(Tree parseTree) = innermost visit(parseTree)
 {
-  case (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* logicLines> <CompiledInstruction* nextLine> <CompiledInstruction* post>` :
+  case (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* logicLines> <AssignInstruction nextLine> <CompiledInstruction* post>` :
   {
-    if(hasContent(logicLines) && singleLine(nextLine) && all(logicLine <- logicLines, logicLine is logic))
+    if(all(logicLine <- logicLines, logicLine is logic))
     {
       if(size(logicLines) > 1) 
       {
@@ -164,24 +165,22 @@ int size(&T inputData)
 
 int visitPassed = 0;
 
-Tree removeComments(Tree parseTree)
+Tree removeBoilerPlate(Tree parseTree)
 {
   visitPassed += 1;
   debugPrint("pass <visitPassed>");
   parseTree = innermost visit(parseTree)
   {
-    case (CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* emptyLines> <CompiledInstruction* post>`: 
+    case (CodeBlock) `<CompiledInstruction* pre> <EmptyLine emptyLines> <CompiledInstruction* post>`: 
     {
-      if(all(line <- emptyLines, line is empty))
-      {
-        debugPrint("Removing empty line block");
-        insert(CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* post>` ;
-      } 
-      else 
-      {
-        fail;
-      }
+      debugPrint("Removing empty line block");
+      insert(CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* post>` ;
     }
+    case (CodeBlock) `<CompiledInstruction* pre> <SkipInstruction firstNop> <SkipInstruction secondNop> <CompiledInstruction* post>`:
+    {
+      debugPrint("Removing multiple nop");
+      insert((CodeBlock) `<CompiledInstruction* pre> <SkipInstruction firstNop> <CompiledInstruction* post>`);
+    }      
   }
   return parseTree;  
 }
