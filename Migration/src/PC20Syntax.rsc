@@ -34,7 +34,7 @@ syntax CompiledInstruction = empty:EmptyLine
                            | SkipInstruction
                            | AssignInstruction 
                            | SingleInstruction // Instruction without address
-                           | IOInstruction
+                           | io:IOInstruction
                            ;
 
 // Lowest level instructions
