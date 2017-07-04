@@ -1,0 +1,2544 @@
+00001                   !                       DR_INIT3
+00002                   !     ********
+00003                   !
+00004                   !********************************************************************
+00005                   ! INITIALISATIE               *
+00006                   !********************************************************************
+00007                   !
+00008 00000 31 00003      LSTIO 0003
+00009 00001 09 00015.0    SET1  PLCC1 !eerste PLC_cyclus hoog_signaal
+00010 00002 25 00008      JSAT  L00008
+00011 00003 26            RET
+00012                   !
+00013                   !********************************************************************
+00014                   ! SUBROUTINES EN I/O_SLAGEN           *
+00015                   !********************************************************************
+00016                   !
+00017 00004 31 00199    L00004  LSTIO 0199
+00018 00005 27 00104      END DWS1_1  !eenheid DWS
+00019                   
+00020 00006 31 01099    L00006  LSTIO 1099
+00021 00007 27 01000      END 1000
+00022                   !
+00023                   !********************************************************************
+00024                   ! BEGIN HOOFDPROGRAMMA              *
+00025                   !********************************************************************
+00026                   !
+00027 00008 16 00000.1  L00008  AND 000.1
+00028 00009 25 00004      JSAT  L00004
+00029 00010 25 00006      JSAT  L00006
+00030 00011 00            NOP
+00031                   !
+00032                   !********************************************************************
+00033                   ! MAKEN VAN TRIGGERPULSEN T.B.V. TIMERS         *
+00034                   !********************************************************************
+00035                   !
+00036 00012 16 00001.0    AND 001.0 !0.1 sec. puls
+00037 00013 01 00510.0    TRIG  510.0
+00038 00014 02 00511.0    EQL S_0,1SEC  !triggerpuls 0,1 sec.
+00039                   
+00040 00015 16 00001.1    AND KNIPPER
+00041 00016 01 00510.1    TRIG  510.1
+00042 00017 02 00511.1    EQL S_1SEC  !triggerpuls 1,0 sec.
+00043                   
+00044 00018 16 00001.2    AND 001.2 !10 sec. puls
+00045 00019 01 00510.2    TRIG  510.2
+00046 00020 02 00511.2    EQL S_10SEC !triggerpuls 10 sec.
+00047                   
+00048 00021 16 00001.3    AND 001.3 !1 min. puls
+00049 00022 01 00510.3    TRIG  510.3
+00050 00023 02 00511.3    EQL S_1MIN  !triggerpuls 1 min.
+00051 00024 12 00000      FTCHC 00
+00052 00025 14 00320      STRD  0320
+00053 00026 14 00321      STRD  0321
+00054 00027 14 00322      STRD  0322
+00055 00028 14 00323      STRD  0323
+00056 00029 14 00324      STRD  0324
+00057 00030 14 00325      STRD  0325
+00058 00031 14 00326      STRD  0326
+00059 00032 14 00327      STRD  0327
+00060 00033 14 00328      STRD  0328
+00061 00034 14 00329      STRD  0329
+00062 00035 14 00330      STRD  0330
+00063 00036 14 00331      STRD  0331
+00064 00037 14 00332      STRD  0332
+00065 00038 14 00333      STRD  0333
+00066                   
+00067 00039 17 00000.1    ANDNT 000.1
+00068 00040 02 00147.0    EQL V13_1__2
+00069 00041 02 00147.1    EQL 147.1
+00070 00042 02 00147.2    EQL 147.2
+00071 00043 00            NOP 57
+00071 00044 00 
+00071 00045 00 
+00071 00046 00 
+00071 00047 00 
+00071 00048 00 
+00071 00049 00 
+00071 00050 00 
+00071 00051 00 
+00071 00052 00 
+00071 00053 00 
+00071 00054 00 
+00071 00055 00 
+00071 00056 00 
+00071 00057 00 
+00071 00058 00 
+00071 00059 00 
+00071 00060 00 
+00071 00061 00 
+00071 00062 00 
+00071 00063 00 
+00071 00064 00 
+00071 00065 00 
+00071 00066 00 
+00071 00067 00 
+00071 00068 00 
+00071 00069 00 
+00071 00070 00 
+00071 00071 00 
+00071 00072 00 
+00071 00073 00 
+00071 00074 00 
+00071 00075 00 
+00071 00076 00 
+00071 00077 00 
+00071 00078 00 
+00071 00079 00 
+00071 00080 00 
+00071 00081 00 
+00071 00082 00 
+00071 00083 00 
+00071 00084 00 
+00071 00085 00 
+00071 00086 00 
+00071 00087 00 
+00071 00088 00 
+00071 00089 00 
+00071 00090 00 
+00071 00091 00 
+00071 00092 00 
+00071 00093 00 
+00071 00094 00 
+00071 00095 00 
+00071 00096 00 
+00071 00097 00 
+00071 00098 00 
+00071 00099 00 
+00072 00100 16 00000.1    AND 000.1
+00073 00101 12 00000      FTCHC 00
+00074 00102 14 01500      STRD  1500  !constante 0
+00075                   
+00076 00103 16 00000.1    AND 000.1
+00077 00104 12 00001      FTCHC 01
+00078 00105 14 01501      STRD  1501  !constante 1
+00079                   
+00080 00106 16 00000.1    AND 000.1
+00081 00107 12 00002      FTCHC 02
+00082 00108 14 01502      STRD  1502  !constante 2
+00083                   
+00084 00109 16 00000.1    AND 000.1
+00085 00110 12 00003      FTCHC 03
+00086 00111 14 01503      STRD  1503  !constante 3
+00087                   
+00088 00112 16 00000.1    AND 000.1
+00089 00113 12 00004      FTCHC 04
+00090 00114 14 01504      STRD  1504  !constante 4
+00091                   
+00092 00115 16 00000.1    AND 000.1
+00093 00116 12 00005      FTCHC 05
+00094 00117 14 01505      STRD  1505  !constante 5
+00095                   
+00096 00118 16 00000.1    AND 000.1
+00097 00119 12 00006      FTCHC 06
+00098 00120 14 01506      STRD  1506  !constante 6
+00099                   
+00100 00121 16 00000.1    AND 000.1
+00101 00122 12 00007      FTCHC 07
+00102 00123 14 01507      STRD  1507  !constante 7
+00103                   
+00104 00124 16 00000.1    AND 000.1
+00105 00125 12 00008      FTCHC 08
+00106 00126 14 01508      STRD  1508  !constante 8
+00107                   
+00108 00127 16 00000.1    AND 000.1
+00109 00128 12 00009      FTCHC 09
+00110 00129 14 01509      STRD  1509  !constante 9
+00111                   
+00112 00130 16 00114.2    AND 114.2 !ENTER_drukknop
+00113 00131 01 00003.2    TRIG  003.2
+00114 00132 02 00003.3    EQL ENTER !triggerpuls enterdrukkn.
+00115                   
+00116 00133 16 00000.1    AND 000.1
+00117 00134 13 00104      FTCHD DWS1_1  !eenheid DWS
+00118 00135 13 00105      FTCHD DWS1_2  !tiental DWS
+00119 00136 15 01500      COMP  1500  !constante 0
+00120 00137 15 01500      COMP  1500  !constante 0
+00121 00138 10 00003.1    STRB  RESULT  !F=C
+00122                   
+00123 00139 16 00003.1    AND RESULT  !F=C
+00124 00140 30 00013      JFRF  L00153
+00125                   
+00126 00141 16 00003.1    AND RESULT  !F=C
+00127 00142 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00128 00143 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00129 00144 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00130 00145 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00131 00146 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00132 00147 14 02000      STRD  STP00_0 !setpoint 00 eenheden
+00133 00148 14 02001      STRD  STP00_1 !setpoint 00 tientallen
+00134 00149 14 02002      STRD  STP00_2 !setpoint 00 honderdtallen
+00135 00150 14 02003      STRD  STP00_3 !setpoint 00 duizendtallen
+00136                   
+00137 00151 17 00000.1    ANDNT 000.1
+00138 00152 00            NOP 1
+00139                   
+00140 00153 16 00000.1  L00153  AND 000.1
+00141 00154 13 00104      FTCHD DWS1_1  !eenheid DWS
+00142 00155 13 00105      FTCHD DWS1_2  !tiental DWS
+00143 00156 15 01501      COMP  1501  !constante 1
+00144 00157 15 01500      COMP  1500  !constante 0
+00145 00158 10 00003.1    STRB  RESULT  !F=C
+00146                   
+00147 00159 16 00003.1    AND RESULT  !F=C
+00148 00160 30 00013      JFRF  L00173
+00149                   
+00150 00161 16 00003.1    AND RESULT  !F=C
+00151 00162 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00152 00163 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00153 00164 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00154 00165 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00155 00166 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00156 00167 14 02004      STRD  STP01_0 !setpoint 01 eenheden
+00157 00168 14 02005      STRD  STP01_1 !setpoint 01 tientallen
+00158 00169 14 02006      STRD  STP01_2 !setpoint 01 honderdtallen
+00159 00170 14 02007      STRD  STP01_3 !setpoint 01 duizendtallen
+00160                   
+00161 00171 17 00000.1    ANDNT 000.1
+00162 00172 00            NOP 1
+00163                   
+00164 00173 16 00000.1  L00173  AND 000.1
+00165 00174 13 00104      FTCHD DWS1_1  !eenheid DWS
+00166 00175 13 00105      FTCHD DWS1_2  !tiental DWS
+00167 00176 15 01502      COMP  1502  !constante 2
+00168 00177 15 01500      COMP  1500  !constante 0
+00169 00178 10 00003.1    STRB  RESULT  !F=C
+00170                   
+00171 00179 16 00003.1    AND RESULT  !F=C
+00172 00180 30 00013      JFRF  L00193
+00173                   
+00174 00181 16 00003.1    AND RESULT  !F=C
+00175 00182 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00176 00183 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00177 00184 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00178 00185 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00179 00186 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00180 00187 14 02008      STRD  STP02_0 !setpoint 02 eenheden
+00181 00188 14 02009      STRD  STP02_1 !setpoint 02 tientallen
+00182 00189 14 02010      STRD  STP02_2 !setpoint 02 honderdtallen
+00183 00190 14 02011      STRD  STP02_3 !setpoint 02 duizendtallen
+00184                   
+00185 00191 17 00000.1    ANDNT 000.1
+00186 00192 00            NOP 1
+00187                   
+00188 00193 16 00000.1  L00193  AND 000.1
+00189 00194 13 00104      FTCHD DWS1_1  !eenheid DWS
+00190 00195 13 00105      FTCHD DWS1_2  !tiental DWS
+00191 00196 15 01503      COMP  1503  !constante 3
+00192 00197 15 01500      COMP  1500  !constante 0
+00193 00198 10 00003.1    STRB  RESULT  !F=C
+00194                   
+00195 00199 16 00003.1    AND RESULT  !F=C
+00196 00200 30 00013      JFRF  L00213
+00197                   
+00198 00201 16 00003.1    AND RESULT  !F=C
+00199 00202 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00200 00203 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00201 00204 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00202 00205 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00203 00206 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00204 00207 14 02012      STRD  STP03_0 !setpoint 03 eenheden
+00205 00208 14 02013      STRD  STP03_1 !setpoint 03 tientallen
+00206 00209 14 02014      STRD  STP03_2 !setpoint 03 honderdtallen
+00207 00210 14 02015      STRD  STP03_3 !setpoint 03 duizendtallen
+00208                   
+00209 00211 17 00000.1    ANDNT 000.1
+00210 00212 00            NOP 1
+00211                   
+00212 00213 16 00000.1  L00213  AND 000.1
+00213 00214 13 00104      FTCHD DWS1_1  !eenheid DWS
+00214 00215 13 00105      FTCHD DWS1_2  !tiental DWS
+00215 00216 15 01504      COMP  1504  !constante 4
+00216 00217 15 01500      COMP  1500  !constante 0
+00217 00218 10 00003.1    STRB  RESULT  !F=C
+00218                   
+00219 00219 16 00003.1    AND RESULT  !F=C
+00220 00220 30 00013      JFRF  L00233
+00221                   
+00222 00221 16 00003.1    AND RESULT  !F=C
+00223 00222 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00224 00223 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00225 00224 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00226 00225 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00227 00226 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00228 00227 14 02016      STRD  STP04_0 !setpoint 04 eenheden
+00229 00228 14 02017      STRD  STP04_1 !setpoint 04 tientallen
+00230 00229 14 02018      STRD  STP04_2 !setpoint 04 honderdtallen
+00231 00230 14 02019      STRD  STP04_3 !setpoint 04 duizendtallen
+00232                   
+00233 00231 17 00000.1    ANDNT 000.1
+00234 00232 00            NOP 1
+00235                   
+00236 00233 16 00000.1  L00233  AND 000.1
+00237 00234 13 00104      FTCHD DWS1_1  !eenheid DWS
+00238 00235 13 00105      FTCHD DWS1_2  !tiental DWS
+00239 00236 15 01505      COMP  1505  !constante 5
+00240 00237 15 01500      COMP  1500  !constante 0
+00241 00238 10 00003.1    STRB  RESULT  !F=C
+00242                   
+00243 00239 16 00003.1    AND RESULT  !F=C
+00244 00240 30 00013      JFRF  L00253
+00245                   
+00246 00241 16 00003.1    AND RESULT  !F=C
+00247 00242 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00248 00243 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00249 00244 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00250 00245 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00251 00246 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00252 00247 14 02020      STRD  STP05_0 !setpoint 05 eenheden
+00253 00248 14 02021      STRD  STP05_1 !setpoint 05 tientallen
+00254 00249 14 02022      STRD  STP05_2 !setpoint 05 honderdtallen
+00255 00250 14 02023      STRD  STP05_3 !setpoint 05 duizendtallen
+00256                   
+00257 00251 17 00000.1    ANDNT 000.1
+00258 00252 00            NOP 1
+00259                   
+00260 00253 16 00000.1  L00253  AND 000.1
+00261 00254 13 00104      FTCHD DWS1_1  !eenheid DWS
+00262 00255 13 00105      FTCHD DWS1_2  !tiental DWS
+00263 00256 15 01506      COMP  1506  !constante 6
+00264 00257 15 01500      COMP  1500  !constante 0
+00265 00258 10 00003.1    STRB  RESULT  !F=C
+00266                   
+00267 00259 16 00003.1    AND RESULT  !F=C
+00268 00260 30 00013      JFRF  L00273
+00269                   
+00270 00261 16 00003.1    AND RESULT  !F=C
+00271 00262 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00272 00263 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00273 00264 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00274 00265 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00275 00266 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00276 00267 14 02024      STRD  STP06_0 !setpoint 06 eenheden
+00277 00268 14 02025      STRD  STP06_1 !setpoint 06 tientallen
+00278 00269 14 02026      STRD  STP06_2 !setpoint 06 honderdtallen
+00279 00270 14 02027      STRD  STP06_3 !setpoint 06 duizendtallen
+00280                   
+00281 00271 17 00000.1    ANDNT 000.1
+00282 00272 00            NOP 1
+00283                   
+00284 00273 16 00000.1  L00273  AND 000.1
+00285 00274 13 00104      FTCHD DWS1_1  !eenheid DWS
+00286 00275 13 00105      FTCHD DWS1_2  !tiental DWS
+00287 00276 15 01507      COMP  1507  !constante 7
+00288 00277 15 01500      COMP  1500  !constante 0
+00289 00278 10 00003.1    STRB  RESULT  !F=C
+00290                   
+00291 00279 16 00003.1    AND RESULT  !F=C
+00292 00280 30 00013      JFRF  L00293
+00293                   
+00294 00281 16 00003.1    AND RESULT  !F=C
+00295 00282 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00296 00283 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00297 00284 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00298 00285 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00299 00286 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00300 00287 14 02028      STRD  STP07_0 !setpoint 07 eenheden
+00301 00288 14 02029      STRD  STP07_1 !setpoint 07 tientallen
+00302 00289 14 02030      STRD  STP07_2 !setpoint 07 honderdtallen
+00303 00290 14 02031      STRD  STP07_3 !setpoint 07 duizendtallen
+00304                   
+00305 00291 17 00000.1    ANDNT 000.1
+00306 00292 00            NOP 1
+00307                   
+00308 00293 16 00000.1  L00293  AND 000.1
+00309 00294 13 00104      FTCHD DWS1_1  !eenheid DWS
+00310 00295 13 00105      FTCHD DWS1_2  !tiental DWS
+00311 00296 15 01508      COMP  1508  !constante 8
+00312 00297 15 01500      COMP  1500  !constante 0
+00313 00298 10 00003.1    STRB  RESULT  !F=C
+00314                   
+00315 00299 16 00003.1    AND RESULT  !F=C
+00316 00300 30 00013      JFRF  L00313
+00317                   
+00318 00301 16 00003.1    AND RESULT  !F=C
+00319 00302 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00320 00303 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00321 00304 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00322 00305 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00323 00306 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00324 00307 14 02032      STRD  STP08_0 !setpoint 08 eenheden
+00325 00308 14 02033      STRD  STP08_1 !setpoint 08 tientallen
+00326 00309 14 02034      STRD  STP08_2 !setpoint 08 honderdtallen
+00327 00310 14 02035      STRD  STP08_3 !setpoint 08 duizendtallen
+00328                   
+00329 00311 17 00000.1    ANDNT 000.1
+00330 00312 00            NOP 1
+00331                   
+00332 00313 16 00000.1  L00313  AND 000.1
+00333 00314 13 00104      FTCHD DWS1_1  !eenheid DWS
+00334 00315 13 00105      FTCHD DWS1_2  !tiental DWS
+00335 00316 15 01509      COMP  1509  !constante 9
+00336 00317 15 01500      COMP  1500  !constante 0
+00337 00318 10 00003.1    STRB  RESULT  !F=C
+00338                   
+00339 00319 16 00003.1    AND RESULT  !F=C
+00340 00320 30 00013      JFRF  L00333
+00341                   
+00342 00321 16 00003.1    AND RESULT  !F=C
+00343 00322 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00344 00323 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00345 00324 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00346 00325 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00347 00326 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00348 00327 14 02036      STRD  STP09_0 !setpoint 09 eenheden
+00349 00328 14 02037      STRD  STP09_1 !setpoint 09 tientallen
+00350 00329 14 02038      STRD  STP09_2 !setpoint 09 honderdtallen
+00351 00330 14 02039      STRD  STP09_3 !setpoint 09 duizendtallen
+00352                   
+00353 00331 17 00000.1    ANDNT 000.1
+00354 00332 00            NOP 1
+00355                   
+00356 00333 16 00000.1  L00333  AND 000.1
+00357 00334 13 00104      FTCHD DWS1_1  !eenheid DWS
+00358 00335 13 00105      FTCHD DWS1_2  !tiental DWS
+00359 00336 15 01500      COMP  1500  !constante 0
+00360 00337 15 01501      COMP  1501  !constante 1
+00361 00338 10 00003.1    STRB  RESULT  !F=C
+00362                   
+00363 00339 16 00003.1    AND RESULT  !F=C
+00364 00340 30 00013      JFRF  L00353
+00365                   
+00366 00341 16 00003.1    AND RESULT  !F=C
+00367 00342 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00368 00343 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00369 00344 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00370 00345 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00371 00346 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00372 00347 14 02040      STRD  STP10_0 !setpoint 10 eenheden
+00373 00348 14 02041      STRD  STP10_1 !setpoint 10 tientallen
+00374 00349 14 02042      STRD  STP10_2 !setpoint 10 honderdtallen
+00375 00350 14 02043      STRD  STP10_3 !setpoint 10 duizendtallen
+00376                   
+00377 00351 17 00000.1    ANDNT 000.1
+00378 00352 00            NOP 1
+00379                   
+00380 00353 16 00000.1  L00353  AND 000.1
+00381 00354 13 00104      FTCHD DWS1_1  !eenheid DWS
+00382 00355 13 00105      FTCHD DWS1_2  !tiental DWS
+00383 00356 15 01501      COMP  1501  !constante 1
+00384 00357 15 01501      COMP  1501  !constante 1
+00385 00358 10 00003.1    STRB  RESULT  !F=C
+00386                   
+00387 00359 16 00003.1    AND RESULT  !F=C
+00388 00360 30 00013      JFRF  L00373
+00389                   
+00390 00361 16 00003.1    AND RESULT  !F=C
+00391 00362 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00392 00363 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00393 00364 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00394 00365 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00395 00366 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00396 00367 14 02044      STRD  STP11_0 !setpoint 11 eenheden
+00397 00368 14 02045      STRD  STP11_1 !setpoint 11 tientallen
+00398 00369 14 02046      STRD  STP11_2 !setpoint 11 honderdtallen
+00399 00370 14 02047      STRD  STP11_3 !setpoint 11 duizendtallen
+00400                   
+00401 00371 17 00000.1    ANDNT 000.1
+00402 00372 00            NOP 1
+00403                   
+00404 00373 16 00000.1  L00373  AND 000.1
+00405 00374 13 00104      FTCHD DWS1_1  !eenheid DWS
+00406 00375 13 00105      FTCHD DWS1_2  !tiental DWS
+00407 00376 15 01502      COMP  1502  !constante 2
+00408 00377 15 01501      COMP  1501  !constante 1
+00409 00378 10 00003.1    STRB  RESULT  !F=C
+00410                   
+00411 00379 16 00003.1    AND RESULT  !F=C
+00412 00380 30 00013      JFRF  L00393
+00413                   
+00414 00381 16 00003.1    AND RESULT  !F=C
+00415 00382 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00416 00383 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00417 00384 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00418 00385 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00419 00386 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00420 00387 14 02048      STRD  STP12_0 !setpoint 12 eenheden
+00421 00388 14 02049      STRD  STP12_1 !setpoint 12 tientallen
+00422 00389 14 02050      STRD  STP12_2 !setpoint 12 honderdtallen
+00423 00390 14 02051      STRD  STP12_3 !setpoint 12 duizendtallen
+00424                   
+00425 00391 17 00000.1    ANDNT 000.1
+00426 00392 00            NOP 1
+00427                   
+00428 00393 16 00000.1  L00393  AND 000.1
+00429 00394 13 00104      FTCHD DWS1_1  !eenheid DWS
+00430 00395 13 00105      FTCHD DWS1_2  !tiental DWS
+00431 00396 15 01503      COMP  1503  !constante 3
+00432 00397 15 01501      COMP  1501  !constante 1
+00433 00398 10 00003.1    STRB  RESULT  !F=C
+00434                   
+00435 00399 16 00003.1    AND RESULT  !F=C
+00436 00400 30 00013      JFRF  L00413
+00437                   
+00438 00401 16 00003.1    AND RESULT  !F=C
+00439 00402 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00440 00403 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00441 00404 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00442 00405 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00443 00406 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00444 00407 14 02052      STRD  STP13_0 !setpoint 13 eenheden
+00445 00408 14 02053      STRD  STP13_1 !setpoint 13 tientallen
+00446 00409 14 02054      STRD  STP13_2 !setpoint 13 honderdtallen
+00447 00410 14 02055      STRD  STP13_3 !setpoint 13 duizendtallen
+00448                   
+00449 00411 17 00000.1    ANDNT 000.1
+00450 00412 00            NOP 1
+00451                   
+00452 00413 16 00000.1  L00413  AND 000.1
+00453 00414 13 00104      FTCHD DWS1_1  !eenheid DWS
+00454 00415 13 00105      FTCHD DWS1_2  !tiental DWS
+00455 00416 15 01504      COMP  1504  !constante 4
+00456 00417 15 01501      COMP  1501  !constante 1
+00457 00418 10 00003.1    STRB  RESULT  !F=C
+00458                   
+00459 00419 16 00003.1    AND RESULT  !F=C
+00460 00420 30 00013      JFRF  L00433
+00461                   
+00462 00421 16 00003.1    AND RESULT  !F=C
+00463 00422 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00464 00423 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00465 00424 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00466 00425 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00467 00426 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00468 00427 14 02056      STRD  STP14_0 !setpoint 14 eenheden
+00469 00428 14 02057      STRD  STP14_1 !setpoint 14 tientallen
+00470 00429 14 02058      STRD  STP14_2 !setpoint 14 honderdtallen
+00471 00430 14 02059      STRD  STP14_3 !setpoint 14 duizendtallen
+00472                   
+00473 00431 17 00000.1    ANDNT 000.1
+00474 00432 00            NOP 1
+00475                   
+00476 00433 16 00000.1  L00433  AND 000.1
+00477 00434 13 00104      FTCHD DWS1_1  !eenheid DWS
+00478 00435 13 00105      FTCHD DWS1_2  !tiental DWS
+00479 00436 15 01505      COMP  1505  !constante 5
+00480 00437 15 01501      COMP  1501  !constante 1
+00481 00438 10 00003.1    STRB  RESULT  !F=C
+00482                   
+00483 00439 16 00003.1    AND RESULT  !F=C
+00484 00440 30 00013      JFRF  L00453
+00485                   
+00486 00441 16 00003.1    AND RESULT  !F=C
+00487 00442 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00488 00443 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00489 00444 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00490 00445 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00491 00446 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00492 00447 14 02060      STRD  STP15_0 !setpoint 15 eenheden
+00493 00448 14 02061      STRD  STP15_1 !setpoint 15 tientallen
+00494 00449 14 02062      STRD  STP15_2 !setpoint 15 honderdtallen
+00495 00450 14 02063      STRD  STP15_3 !setpoint 15 duizendtallen
+00496                   
+00497 00451 17 00000.1    ANDNT 000.1
+00498 00452 00            NOP 1
+00499                   
+00500 00453 16 00000.1  L00453  AND 000.1
+00501 00454 13 00104      FTCHD DWS1_1  !eenheid DWS
+00502 00455 13 00105      FTCHD DWS1_2  !tiental DWS
+00503 00456 15 01506      COMP  1506  !constante 6
+00504 00457 15 01501      COMP  1501  !constante 1
+00505 00458 10 00003.1    STRB  RESULT  !F=C
+00506                   
+00507 00459 16 00003.1    AND RESULT  !F=C
+00508 00460 30 00013      JFRF  L00473
+00509                   
+00510 00461 16 00003.1    AND RESULT  !F=C
+00511 00462 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00512 00463 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00513 00464 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00514 00465 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00515 00466 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00516 00467 14 02064      STRD  STP16_0 !setpoint 16 eenheden
+00517 00468 14 02065      STRD  STP16_1 !setpoint 16 tientallen
+00518 00469 14 02066      STRD  STP16_2 !setpoint 16 honderdtallen
+00519 00470 14 02067      STRD  STP16_3 !setpoint 16 duizendtallen
+00520                   
+00521 00471 17 00000.1    ANDNT 000.1
+00522 00472 00            NOP 1
+00523                   
+00524 00473 16 00000.1  L00473  AND 000.1
+00525 00474 13 00104      FTCHD DWS1_1  !eenheid DWS
+00526 00475 13 00105      FTCHD DWS1_2  !tiental DWS
+00527 00476 15 01507      COMP  1507  !constante 7
+00528 00477 15 01501      COMP  1501  !constante 1
+00529 00478 10 00003.1    STRB  RESULT  !F=C
+00530                   
+00531 00479 16 00003.1    AND RESULT  !F=C
+00532 00480 30 00013      JFRF  L00493
+00533                   
+00534 00481 16 00003.1    AND RESULT  !F=C
+00535 00482 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00536 00483 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00537 00484 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00538 00485 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00539 00486 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00540 00487 14 02068      STRD  STP17_0 !setpoint 17 eenheden
+00541 00488 14 02069      STRD  STP17_1 !setpoint 17 tientallen
+00542 00489 14 02070      STRD  STP17_2 !setpoint 17 honderdtallen
+00543 00490 14 02071      STRD  STP17_3 !setpoint 17 duizendtallen
+00544                   
+00545 00491 17 00000.1    ANDNT 000.1
+00546 00492 00            NOP 1
+00547                   
+00548 00493 16 00000.1  L00493  AND 000.1
+00549 00494 13 00104      FTCHD DWS1_1  !eenheid DWS
+00550 00495 13 00105      FTCHD DWS1_2  !tiental DWS
+00551 00496 15 01508      COMP  1508  !constante 8
+00552 00497 15 01501      COMP  1501  !constante 1
+00553 00498 10 00003.1    STRB  RESULT  !F=C
+00554                   
+00555 00499 16 00003.1    AND RESULT  !F=C
+00556 00500 30 00013      JFRF  L00513
+00557                   
+00558 00501 16 00003.1    AND RESULT  !F=C
+00559 00502 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00560 00503 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00561 00504 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00562 00505 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00563 00506 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00564 00507 14 02072      STRD  STP18_0 !setpoint 18 eenheden
+00565 00508 14 02073      STRD  STP18_1 !setpoint 18 tientallen
+00566 00509 14 02074      STRD  STP18_2 !setpoint 18 honderdtallen
+00567 00510 14 02075      STRD  STP18_3 !setpoint 18 duizendtallen
+00568                   
+00569 00511 17 00000.1    ANDNT 000.1
+00570 00512 00            NOP 1
+00571                   
+00572 00513 16 00000.1  L00513  AND 000.1
+00573 00514 13 00104      FTCHD DWS1_1  !eenheid DWS
+00574 00515 13 00105      FTCHD DWS1_2  !tiental DWS
+00575 00516 15 01509      COMP  1509  !constante 9
+00576 00517 15 01501      COMP  1501  !constante 1
+00577 00518 10 00003.1    STRB  RESULT  !F=C
+00578                   
+00579 00519 16 00003.1    AND RESULT  !F=C
+00580 00520 30 00013      JFRF  L00533
+00581                   
+00582 00521 16 00003.1    AND RESULT  !F=C
+00583 00522 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00584 00523 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00585 00524 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00586 00525 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00587 00526 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00588 00527 14 02076      STRD  STP19_0 !setpoint 19 eenheden
+00589 00528 14 02077      STRD  STP19_1 !setpoint 19 tientallen
+00590 00529 14 02078      STRD  STP19_2 !setpoint 19 honderdtallen
+00591 00530 14 02079      STRD  STP19_3 !setpoint 19 duizendtallen
+00592                   
+00593 00531 17 00000.1    ANDNT 000.1
+00594 00532 00            NOP 1
+00595                   
+00596 00533 16 00000.1  L00533  AND 000.1
+00597 00534 13 00104      FTCHD DWS1_1  !eenheid DWS
+00598 00535 13 00105      FTCHD DWS1_2  !tiental DWS
+00599 00536 15 01500      COMP  1500  !constante 0
+00600 00537 15 01502      COMP  1502  !constante 2
+00601 00538 10 00003.1    STRB  RESULT  !F=C
+00602                   
+00603 00539 16 00003.1    AND RESULT  !F=C
+00604 00540 30 00013      JFRF  L00553
+00605                   
+00606 00541 16 00003.1    AND RESULT  !F=C
+00607 00542 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00608 00543 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00609 00544 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00610 00545 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00611 00546 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00612 00547 14 02080      STRD  STP20_0 !setpoint 20 eenheden
+00613 00548 14 02081      STRD  STP20_1 !setpoint 20 tientallen
+00614 00549 14 02082      STRD  STP20_2 !setpoint 20 honderdtallen
+00615 00550 14 02083      STRD  STP20_3 !setpoint 20 duizendtallen
+00616                   
+00617 00551 17 00000.1    ANDNT 000.1
+00618 00552 00            NOP 1
+00619                   
+00620 00553 16 00000.1  L00553  AND 000.1
+00621 00554 13 00104      FTCHD DWS1_1  !eenheid DWS
+00622 00555 13 00105      FTCHD DWS1_2  !tiental DWS
+00623 00556 15 01501      COMP  1501  !constante 1
+00624 00557 15 01502      COMP  1502  !constante 2
+00625 00558 10 00003.1    STRB  RESULT  !F=C
+00626                   
+00627 00559 16 00003.1    AND RESULT  !F=C
+00628 00560 30 00013      JFRF  L00573
+00629                   
+00630 00561 16 00003.1    AND RESULT  !F=C
+00631 00562 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00632 00563 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00633 00564 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00634 00565 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00635 00566 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00636 00567 14 02084      STRD  STP21_0 !setpoint 21 eenheden
+00637 00568 14 02085      STRD  STP21_1 !setpoint 21 tientallen
+00638 00569 14 02086      STRD  STP21_2 !setpoint 21 honderdtallen
+00639 00570 14 02087      STRD  STP21_3 !setpoint 21 duizendtallen
+00640                   
+00641 00571 17 00000.1    ANDNT 000.1
+00642 00572 00            NOP 1
+00643                   
+00644 00573 16 00000.1  L00573  AND 000.1
+00645 00574 13 00104      FTCHD DWS1_1  !eenheid DWS
+00646 00575 13 00105      FTCHD DWS1_2  !tiental DWS
+00647 00576 15 01502      COMP  1502  !constante 2
+00648 00577 15 01502      COMP  1502  !constante 2
+00649 00578 10 00003.1    STRB  RESULT  !F=C
+00650                   
+00651 00579 16 00003.1    AND RESULT  !F=C
+00652 00580 30 00013      JFRF  L00593
+00653                   
+00654 00581 16 00003.1    AND RESULT  !F=C
+00655 00582 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00656 00583 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00657 00584 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00658 00585 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00659 00586 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00660 00587 14 02088      STRD  STP22_0 !setpoint 22 eenheden
+00661 00588 14 02089      STRD  STP22_1 !setpoint 22 tientallen
+00662 00589 14 02090      STRD  STP22_2 !setpoint 22 honderdtallen
+00663 00590 14 02091      STRD  STP22_3 !setpoint 22 duizendtallen
+00664                   
+00665 00591 17 00000.1    ANDNT 000.1
+00666 00592 00            NOP 1
+00667                   
+00668 00593 16 00000.1  L00593  AND 000.1
+00669 00594 13 00104      FTCHD DWS1_1  !eenheid DWS
+00670 00595 13 00105      FTCHD DWS1_2  !tiental DWS
+00671 00596 15 01503      COMP  1503  !constante 3
+00672 00597 15 01502      COMP  1502  !constante 2
+00673 00598 10 00003.1    STRB  RESULT  !F=C
+00674                   
+00675 00599 16 00003.1    AND RESULT  !F=C
+00676 00600 30 00013      JFRF  L00613
+00677                   
+00678 00601 16 00003.1    AND RESULT  !F=C
+00679 00602 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00680 00603 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00681 00604 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00682 00605 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00683 00606 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00684 00607 14 02092      STRD  STP23_0 !setpoint 23 eenheden
+00685 00608 14 02093      STRD  STP23_1 !setpoint 23 tientallen
+00686 00609 14 02094      STRD  STP23_2 !setpoint 23 honderdtallen
+00687 00610 14 02095      STRD  STP23_3 !setpoint 23 duizendtallen
+00688                   
+00689 00611 17 00000.1    ANDNT 000.1
+00690 00612 00            NOP 1
+00691                   
+00692 00613 16 00000.1  L00613  AND 000.1
+00693 00614 13 00104      FTCHD DWS1_1  !eenheid DWS
+00694 00615 13 00105      FTCHD DWS1_2  !tiental DWS
+00695 00616 15 01504      COMP  1504  !constante 4
+00696 00617 15 01502      COMP  1502  !constante 2
+00697 00618 10 00003.1    STRB  RESULT  !F=C
+00698                   
+00699 00619 16 00003.1    AND RESULT  !F=C
+00700 00620 30 00013      JFRF  L00633
+00701                   
+00702 00621 16 00003.1    AND RESULT  !F=C
+00703 00622 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00704 00623 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00705 00624 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00706 00625 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00707 00626 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00708 00627 14 02096      STRD  STP24_0 !setpoint 24 eenheden
+00709 00628 14 02097      STRD  STP24_1 !setpoint 24 tientallen
+00710 00629 14 02098      STRD  STP24_2 !setpoint 24 honderdtallen
+00711 00630 14 02099      STRD  STP24_3 !setpoint 24 duizendtallen
+00712                   
+00713 00631 17 00000.1    ANDNT 000.1
+00714 00632 00            NOP 1
+00715                   
+00716 00633 16 00000.1  L00633  AND 000.1
+00717 00634 13 00104      FTCHD DWS1_1  !eenheid DWS
+00718 00635 13 00105      FTCHD DWS1_2  !tiental DWS
+00719 00636 15 01505      COMP  1505  !constante 5
+00720 00637 15 01502      COMP  1502  !constante 2
+00721 00638 10 00003.1    STRB  RESULT  !F=C
+00722                   
+00723 00639 16 00003.1    AND RESULT  !F=C
+00724 00640 30 00013      JFRF  L00653
+00725                   
+00726 00641 16 00003.1    AND RESULT  !F=C
+00727 00642 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00728 00643 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00729 00644 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00730 00645 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00731 00646 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00732 00647 14 02100      STRD  STP25_0 !setpoint 25 eenheden
+00733 00648 14 02101      STRD  STP25_1 !setpoint 25 tientallen
+00734 00649 14 02102      STRD  STP25_2 !setpoint 25 honderdtallen
+00735 00650 14 02103      STRD  STP25_3 !setpoint 25 duizendtallen
+00736                   
+00737 00651 17 00000.1    ANDNT 000.1
+00738 00652 00            NOP 1
+00739                   
+00740 00653 16 00000.1  L00653  AND 000.1
+00741 00654 13 00104      FTCHD DWS1_1  !eenheid DWS
+00742 00655 13 00105      FTCHD DWS1_2  !tiental DWS
+00743 00656 15 01506      COMP  1506  !constante 6
+00744 00657 15 01502      COMP  1502  !constante 2
+00745 00658 10 00003.1    STRB  RESULT  !F=C
+00746                   
+00747 00659 16 00003.1    AND RESULT  !F=C
+00748 00660 30 00013      JFRF  L00673
+00749                   
+00750 00661 16 00003.1    AND RESULT  !F=C
+00751 00662 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00752 00663 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00753 00664 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00754 00665 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00755 00666 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00756 00667 14 02104      STRD  STP26_0 !setpoint 26 eenheden
+00757 00668 14 02105      STRD  STP26_1 !setpoint 26 tientallen
+00758 00669 14 02106      STRD  STP26_2 !setpoint 26 honderdtallen
+00759 00670 14 02107      STRD  STP26_3 !setpoint 26 duizendtallen
+00760                   
+00761 00671 17 00000.1    ANDNT 000.1
+00762 00672 00            NOP 1
+00763                   
+00764 00673 16 00000.1  L00673  AND 000.1
+00765 00674 13 00104      FTCHD DWS1_1  !eenheid DWS
+00766 00675 13 00105      FTCHD DWS1_2  !tiental DWS
+00767 00676 15 01507      COMP  1507  !constante 7
+00768 00677 15 01502      COMP  1502  !constante 2
+00769 00678 10 00003.1    STRB  RESULT  !F=C
+00770                   
+00771 00679 16 00003.1    AND RESULT  !F=C
+00772 00680 30 00013      JFRF  L00693
+00773                   
+00774 00681 16 00003.1    AND RESULT  !F=C
+00775 00682 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00776 00683 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00777 00684 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00778 00685 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00779 00686 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00780 00687 14 02108      STRD  STP27_0 !setpoint 27 eenheden
+00781 00688 14 02109      STRD  STP27_1 !setpoint 27 tientallen
+00782 00689 14 02110      STRD  STP27_2 !setpoint 27 honderdtallen
+00783 00690 14 02111      STRD  STP27_3 !setpoint 27 duizendtallen
+00784                   
+00785 00691 17 00000.1    ANDNT 000.1
+00786 00692 00            NOP 1
+00787                   
+00788 00693 16 00000.1  L00693  AND 000.1
+00789 00694 13 00104      FTCHD DWS1_1  !eenheid DWS
+00790 00695 13 00105      FTCHD DWS1_2  !tiental DWS
+00791 00696 15 01508      COMP  1508  !constante 8
+00792 00697 15 01502      COMP  1502  !constante 2
+00793 00698 10 00003.1    STRB  RESULT  !F=C
+00794                   
+00795 00699 16 00003.1    AND RESULT  !F=C
+00796 00700 30 00013      JFRF  L00713
+00797                   
+00798 00701 16 00003.1    AND RESULT  !F=C
+00799 00702 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00800 00703 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00801 00704 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00802 00705 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00803 00706 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00804 00707 14 02112      STRD  STP28_0 !setpoint 28 eenheden
+00805 00708 14 02113      STRD  STP28_1 !setpoint 28 tientallen
+00806 00709 14 02114      STRD  STP28_2 !setpoint 28 honderdtallen
+00807 00710 14 02115      STRD  STP28_3 !setpoint 28 duizendtallen
+00808                   
+00809 00711 17 00000.1    ANDNT 000.1
+00810 00712 00            NOP 1
+00811                   
+00812 00713 16 00000.1  L00713  AND 000.1
+00813 00714 13 00104      FTCHD DWS1_1  !eenheid DWS
+00814 00715 13 00105      FTCHD DWS1_2  !tiental DWS
+00815 00716 15 01509      COMP  1509  !constante 9
+00816 00717 15 01502      COMP  1502  !constante 2
+00817 00718 10 00003.1    STRB  RESULT  !F=C
+00818                   
+00819 00719 16 00003.1    AND RESULT  !F=C
+00820 00720 30 00013      JFRF  L00733
+00821                   
+00822 00721 16 00003.1    AND RESULT  !F=C
+00823 00722 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00824 00723 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00825 00724 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00826 00725 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00827 00726 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00828 00727 14 02116      STRD  STP29_0 !setpoint 29 eenheden
+00829 00728 14 02117      STRD  STP29_1 !setpoint 29 tientallen
+00830 00729 14 02118      STRD  STP29_2 !setpoint 29 honderdtallen
+00831 00730 14 02119      STRD  STP29_3 !setpoint 29 duizendtallen
+00832                   
+00833 00731 17 00000.1    ANDNT 000.1
+00834 00732 00            NOP 1
+00835                   
+00836 00733 16 00000.1  L00733  AND 000.1
+00837 00734 13 00104      FTCHD DWS1_1  !eenheid DWS
+00838 00735 13 00105      FTCHD DWS1_2  !tiental DWS
+00839 00736 15 01500      COMP  1500  !constante 0
+00840 00737 15 01503      COMP  1503  !constante 3
+00841 00738 10 00003.1    STRB  RESULT  !F=C
+00842                   
+00843 00739 16 00003.1    AND RESULT  !F=C
+00844 00740 30 00013      JFRF  L00753
+00845                   
+00846 00741 16 00003.1    AND RESULT  !F=C
+00847 00742 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00848 00743 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00849 00744 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00850 00745 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00851 00746 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00852 00747 14 02120      STRD  STP30_0 !setpoint 30 eenheden
+00853 00748 14 02121      STRD  STP30_1 !setpoint 30 tientallen
+00854 00749 14 02122      STRD  STP30_2 !setpoint 30 honderdtallen
+00855 00750 14 02123      STRD  STP30_3 !setpoint 30 duizendtallen
+00856                   
+00857 00751 17 00000.1    ANDNT 000.1
+00858 00752 00            NOP 1
+00859                   
+00860 00753 16 00000.1  L00753  AND 000.1
+00861 00754 13 00104      FTCHD DWS1_1  !eenheid DWS
+00862 00755 13 00105      FTCHD DWS1_2  !tiental DWS
+00863 00756 15 01501      COMP  1501  !constante 1
+00864 00757 15 01503      COMP  1503  !constante 3
+00865 00758 10 00003.1    STRB  RESULT  !F=C
+00866                   
+00867 00759 16 00003.1    AND RESULT  !F=C
+00868 00760 30 00013      JFRF  L00773
+00869                   
+00870 00761 16 00003.1    AND RESULT  !F=C
+00871 00762 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00872 00763 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00873 00764 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00874 00765 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00875 00766 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00876 00767 14 02124      STRD  STP31_0 !setpoint 31 eenheden
+00877 00768 14 02125      STRD  STP31_1 !setpoint 31 tientallen
+00878 00769 14 02126      STRD  STP31_2 !setpoint 31 honderdtallen
+00879 00770 14 02127      STRD  STP31_3 !setpoint 31 duizendtallen
+00880                   
+00881 00771 17 00000.1    ANDNT 000.1
+00882 00772 00            NOP 1
+00883                   
+00884 00773 16 00000.1  L00773  AND 000.1
+00885 00774 13 00104      FTCHD DWS1_1  !eenheid DWS
+00886 00775 13 00105      FTCHD DWS1_2  !tiental DWS
+00887 00776 15 01502      COMP  1502  !constante 2
+00888 00777 15 01503      COMP  1503  !constante 3
+00889 00778 10 00003.1    STRB  RESULT  !F=C
+00890                   
+00891 00779 16 00003.1    AND RESULT  !F=C
+00892 00780 30 00013      JFRF  L00793
+00893                   
+00894 00781 16 00003.1    AND RESULT  !F=C
+00895 00782 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00896 00783 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00897 00784 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00898 00785 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00899 00786 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00900 00787 14 02128      STRD  STP32_0 !setpoint 32 eenheden
+00901 00788 14 02129      STRD  STP32_1 !setpoint 32 tientallen
+00902 00789 14 02130      STRD  STP32_2 !setpoint 32 honderdtallen
+00903 00790 14 02131      STRD  STP32_3 !setpoint 32 duizendtallen
+00904                   
+00905 00791 17 00000.1    ANDNT 000.1
+00906 00792 00            NOP 1
+00907                   
+00908 00793 16 00000.1  L00793  AND 000.1
+00909 00794 13 00104      FTCHD DWS1_1  !eenheid DWS
+00910 00795 13 00105      FTCHD DWS1_2  !tiental DWS
+00911 00796 15 01503      COMP  1503  !constante 3
+00912 00797 15 01503      COMP  1503  !constante 3
+00913 00798 10 00003.1    STRB  RESULT  !F=C
+00914                   
+00915 00799 16 00003.1    AND RESULT  !F=C
+00916 00800 30 00013      JFRF  L00813
+00917                   
+00918 00801 16 00003.1    AND RESULT  !F=C
+00919 00802 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00920 00803 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00921 00804 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00922 00805 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00923 00806 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00924 00807 14 02132      STRD  STP33_0 !setpoint 33 eenheden
+00925 00808 14 02133      STRD  STP33_1 !setpoint 33 tientallen
+00926 00809 14 02134      STRD  STP33_2 !setpoint 33 honderdtallen
+00927 00810 14 02135      STRD  STP33_3 !setpoint 33 duizendtallen
+00928                   
+00929 00811 17 00000.1    ANDNT 000.1
+00930 00812 00            NOP 1
+00931                   
+00932 00813 16 00000.1  L00813  AND 000.1
+00933 00814 13 00104      FTCHD DWS1_1  !eenheid DWS
+00934 00815 13 00105      FTCHD DWS1_2  !tiental DWS
+00935 00816 15 01504      COMP  1504  !constante 4
+00936 00817 15 01503      COMP  1503  !constante 3
+00937 00818 10 00003.1    STRB  RESULT  !F=C
+00938                   
+00939 00819 16 00003.1    AND RESULT  !F=C
+00940 00820 30 00013      JFRF  L00833
+00941                   
+00942 00821 16 00003.1    AND RESULT  !F=C
+00943 00822 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00944 00823 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00945 00824 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00946 00825 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00947 00826 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00948 00827 14 02136      STRD  STP34_0 !setpoint 34 eenheden
+00949 00828 14 02137      STRD  STP34_1 !setpoint 34 tientallen
+00950 00829 14 02138      STRD  STP34_2 !setpoint 34 honderdtallen
+00951 00830 14 02139      STRD  STP34_3 !setpoint 34 duizendtallen
+00952                   
+00953 00831 17 00000.1    ANDNT 000.1
+00954 00832 00            NOP 1
+00955                   
+00956 00833 16 00000.1  L00833  AND 000.1
+00957 00834 13 00104      FTCHD DWS1_1  !eenheid DWS
+00958 00835 13 00105      FTCHD DWS1_2  !tiental DWS
+00959 00836 15 01505      COMP  1505  !constante 5
+00960 00837 15 01503      COMP  1503  !constante 3
+00961 00838 10 00003.1    STRB  RESULT  !F=C
+00962                   
+00963 00839 16 00003.1    AND RESULT  !F=C
+00964 00840 30 00013      JFRF  L00853
+00965                   
+00966 00841 16 00003.1    AND RESULT  !F=C
+00967 00842 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00968 00843 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00969 00844 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00970 00845 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00971 00846 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00972 00847 14 02140      STRD  STP35_0 !setpoint 35 eenheden
+00973 00848 14 02141      STRD  STP35_1 !setpoint 35 tientallen
+00974 00849 14 02142      STRD  STP35_2 !setpoint 35 honderdtallen
+00975 00850 14 02143      STRD  STP35_3 !setpoint 35 duizendtallen
+00976                   
+00977 00851 17 00000.1    ANDNT 000.1
+00978 00852 00            NOP 1
+00979                   
+00980 00853 16 00000.1  L00853  AND 000.1
+00981 00854 13 00104      FTCHD DWS1_1  !eenheid DWS
+00982 00855 13 00105      FTCHD DWS1_2  !tiental DWS
+00983 00856 15 01506      COMP  1506  !constante 6
+00984 00857 15 01503      COMP  1503  !constante 3
+00985 00858 10 00003.1    STRB  RESULT  !F=C
+00986                   
+00987 00859 16 00003.1    AND RESULT  !F=C
+00988 00860 30 00013      JFRF  L00873
+00989                   
+00990 00861 16 00003.1    AND RESULT  !F=C
+00991 00862 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00992 00863 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00993 00864 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00994 00865 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00995 00866 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00996 00867 14 02144      STRD  STP36_0 !setpoint 36 eenheden
+00997 00868 14 02145      STRD  STP36_1 !setpoint 36 tientallen
+00998 00869 14 02146      STRD  STP36_2 !setpoint 36 honderdtallen
+00999 00870 14 02147      STRD  STP36_3 !setpoint 36 duizendtallen
+01000                   
+01001 00871 17 00000.1    ANDNT 000.1
+01002 00872 00            NOP 1
+01003                   
+01004 00873 16 00000.1  L00873  AND 000.1
+01005 00874 13 00104      FTCHD DWS1_1  !eenheid DWS
+01006 00875 13 00105      FTCHD DWS1_2  !tiental DWS
+01007 00876 15 01507      COMP  1507  !constante 7
+01008 00877 15 01503      COMP  1503  !constante 3
+01009 00878 10 00003.1    STRB  RESULT  !F=C
+01010                   
+01011 00879 16 00003.1    AND RESULT  !F=C
+01012 00880 30 00013      JFRF  L00893
+01013                   
+01014 00881 16 00003.1    AND RESULT  !F=C
+01015 00882 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01016 00883 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01017 00884 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01018 00885 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01019 00886 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01020 00887 14 02148      STRD  STP37_0 !setpoint 37 eenheden
+01021 00888 14 02149      STRD  STP37_1 !setpoint 37 tientallen
+01022 00889 14 02150      STRD  STP37_2 !setpoint 37 honderdtallen
+01023 00890 14 02151      STRD  STP37_3 !setpoint 37 duizendtallen
+01024                   
+01025 00891 17 00000.1    ANDNT 000.1
+01026 00892 00            NOP 1
+01027                   
+01028 00893 16 00000.1  L00893  AND 000.1
+01029 00894 13 00104      FTCHD DWS1_1  !eenheid DWS
+01030 00895 13 00105      FTCHD DWS1_2  !tiental DWS
+01031 00896 15 01508      COMP  1508  !constante 8
+01032 00897 15 01503      COMP  1503  !constante 3
+01033 00898 10 00003.1    STRB  RESULT  !F=C
+01034                   
+01035 00899 16 00003.1    AND RESULT  !F=C
+01036 00900 30 00013      JFRF  L00913
+01037                   
+01038 00901 16 00003.1    AND RESULT  !F=C
+01039 00902 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01040 00903 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01041 00904 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01042 00905 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01043 00906 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01044 00907 14 02152      STRD  STP38_0 !setpoint 38 eenheden
+01045 00908 14 02153      STRD  STP38_1 !setpoint 38 tientallen
+01046 00909 14 02154      STRD  STP38_2 !setpoint 38 honderdtallen
+01047 00910 14 02155      STRD  STP38_3 !setpoint 38 duizendtallen
+01048                   
+01049 00911 17 00000.1    ANDNT 000.1
+01050 00912 00            NOP 1
+01051                   
+01052 00913 16 00000.1  L00913  AND 000.1
+01053 00914 13 00104      FTCHD DWS1_1  !eenheid DWS
+01054 00915 13 00105      FTCHD DWS1_2  !tiental DWS
+01055 00916 15 01509      COMP  1509  !constante 9
+01056 00917 15 01503      COMP  1503  !constante 3
+01057 00918 10 00003.1    STRB  RESULT  !F=C
+01058                   
+01059 00919 16 00003.1    AND RESULT  !F=C
+01060 00920 30 00013      JFRF  L00933
+01061                   
+01062 00921 16 00003.1    AND RESULT  !F=C
+01063 00922 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01064 00923 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01065 00924 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01066 00925 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01067 00926 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01068 00927 14 02156      STRD  STP39_0 !setpoint 39 eenheden
+01069 00928 14 02157      STRD  STP39_1 !setpoint 39 tientallen
+01070 00929 14 02158      STRD  STP39_2 !setpoint 39 honderdtallen
+01071 00930 14 02159      STRD  STP39_3 !setpoint 39 duizendtallen
+01072                   
+01073 00931 17 00000.1    ANDNT 000.1
+01074 00932 00            NOP 1
+01075                   
+01076 00933 16 00000.1  L00933  AND 000.1
+01077 00934 13 00104      FTCHD DWS1_1  !eenheid DWS
+01078 00935 13 00105      FTCHD DWS1_2  !tiental DWS
+01079 00936 15 01500      COMP  1500  !constante 0
+01080 00937 15 01504      COMP  1504  !constante 4
+01081 00938 10 00003.1    STRB  RESULT  !F=C
+01082                   
+01083 00939 16 00003.1    AND RESULT  !F=C
+01084 00940 30 00013      JFRF  L00953
+01085                   
+01086 00941 16 00003.1    AND RESULT  !F=C
+01087 00942 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01088 00943 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01089 00944 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01090 00945 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01091 00946 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01092 00947 14 02160      STRD  STP40_0 !setpoint 40 eenheden
+01093 00948 14 02161      STRD  STP40_1 !setpoint 40 tientallen
+01094 00949 14 02162      STRD  STP40_2 !setpoint 40 honderdtallen
+01095 00950 14 02163      STRD  STP40_3 !setpoint 40 duizendtallen
+01096                   
+01097 00951 17 00000.1    ANDNT 000.1
+01098 00952 00            NOP 1
+01099                   
+01100 00953 16 00000.1  L00953  AND 000.1
+01101 00954 13 00104      FTCHD DWS1_1  !eenheid DWS
+01102 00955 13 00105      FTCHD DWS1_2  !tiental DWS
+01103 00956 15 01501      COMP  1501  !constante 1
+01104 00957 15 01504      COMP  1504  !constante 4
+01105 00958 10 00003.1    STRB  RESULT  !F=C
+01106                   
+01107 00959 16 00003.1    AND RESULT  !F=C
+01108 00960 30 00013      JFRF  L00973
+01109                   
+01110 00961 16 00003.1    AND RESULT  !F=C
+01111 00962 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01112 00963 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01113 00964 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01114 00965 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01115 00966 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01116 00967 14 02164      STRD  STP41_0 !setpoint 41 eenheden
+01117 00968 14 02165      STRD  STP41_1 !setpoint 41 tientallen
+01118 00969 14 02166      STRD  STP41_2 !setpoint 41 honderdtallen
+01119 00970 14 02167      STRD  STP41_3 !setpoint 41 duizendtallen
+01120                   
+01121 00971 17 00000.1    ANDNT 000.1
+01122 00972 00            NOP 1
+01123                   
+01124 00973 16 00000.1  L00973  AND 000.1
+01125 00974 13 00104      FTCHD DWS1_1  !eenheid DWS
+01126 00975 13 00105      FTCHD DWS1_2  !tiental DWS
+01127 00976 15 01502      COMP  1502  !constante 2
+01128 00977 15 01504      COMP  1504  !constante 4
+01129 00978 10 00003.1    STRB  RESULT  !F=C
+01130                   
+01131 00979 16 00003.1    AND RESULT  !F=C
+01132 00980 30 00013      JFRF  L00993
+01133                   
+01134 00981 16 00003.1    AND RESULT  !F=C
+01135 00982 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01136 00983 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01137 00984 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01138 00985 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01139 00986 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01140 00987 14 02168      STRD  STP42_0 !setpoint 42 eenheden
+01141 00988 14 02169      STRD  STP42_1 !setpoint 42 tientallen
+01142 00989 14 02170      STRD  STP42_2 !setpoint 42 honderdtallen
+01143 00990 14 02171      STRD  STP42_3 !setpoint 42 duizendtallen
+01144                   
+01145 00991 17 00000.1    ANDNT 000.1
+01146 00992 00            NOP 1
+01147                   
+01148 00993 16 00000.1  L00993  AND 000.1
+01149 00994 13 00104      FTCHD DWS1_1  !eenheid DWS
+01150 00995 13 00105      FTCHD DWS1_2  !tiental DWS
+01151 00996 15 01503      COMP  1503  !constante 3
+01152 00997 15 01504      COMP  1504  !constante 4
+01153 00998 10 00003.1    STRB  RESULT  !F=C
+01154                   
+01155 00999 16 00003.1    AND RESULT  !F=C
+01156 01000 30 00013      JFRF  L01013
+01157                   
+01158 01001 16 00003.1    AND RESULT  !F=C
+01159 01002 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01160 01003 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01161 01004 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01162 01005 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01163 01006 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01164 01007 14 02172      STRD  STP43_0 !setpoint 43 eenheden
+01165 01008 14 02173      STRD  STP43_1 !setpoint 43 tientallen
+01166 01009 14 02174      STRD  STP43_2 !setpoint 43 honderdtallen
+01167 01010 14 02175      STRD  STP43_3 !setpoint 43 duizendtallen
+01168                   
+01169 01011 17 00000.1    ANDNT 000.1
+01170 01012 00            NOP 1
+01171                   
+01172 01013 16 00000.1  L01013  AND 000.1
+01173 01014 13 00104      FTCHD DWS1_1  !eenheid DWS
+01174 01015 13 00105      FTCHD DWS1_2  !tiental DWS
+01175 01016 15 01504      COMP  1504  !constante 4
+01176 01017 15 01504      COMP  1504  !constante 4
+01177 01018 10 00003.1    STRB  RESULT  !F=C
+01178                   
+01179 01019 16 00003.1    AND RESULT  !F=C
+01180 01020 30 00013      JFRF  L01033
+01181                   
+01182 01021 16 00003.1    AND RESULT  !F=C
+01183 01022 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01184 01023 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01185 01024 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01186 01025 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01187 01026 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01188 01027 14 02176      STRD  STP44_0 !setpoint 44 eenheden
+01189 01028 14 02177      STRD  STP44_1 !setpoint 44 tientallen
+01190 01029 14 02178      STRD  STP44_2 !setpoint 44 honderdtallen
+01191 01030 14 02179      STRD  STP44_3 !setpoint 44 duizendtallen
+01192                   
+01193 01031 17 00000.1    ANDNT 000.1
+01194 01032 00            NOP 1
+01195                   
+01196 01033 16 00000.1  L01033  AND 000.1
+01197 01034 13 00104      FTCHD DWS1_1  !eenheid DWS
+01198 01035 13 00105      FTCHD DWS1_2  !tiental DWS
+01199 01036 15 01505      COMP  1505  !constante 5
+01200 01037 15 01504      COMP  1504  !constante 4
+01201 01038 10 00003.1    STRB  RESULT  !F=C
+01202                   
+01203 01039 16 00003.1    AND RESULT  !F=C
+01204 01040 30 00013      JFRF  L01053
+01205                   
+01206 01041 16 00003.1    AND RESULT  !F=C
+01207 01042 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01208 01043 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01209 01044 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01210 01045 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01211 01046 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01212 01047 14 02180      STRD  STP45_0 !setpoint 45 eenheden
+01213 01048 14 02181      STRD  STP45_1 !setpoint 45 tientallen
+01214 01049 14 02182      STRD  STP45_2 !setpoint 45 honderdtallen
+01215 01050 14 02183      STRD  STP45_3 !setpoint 45 duizendtallen
+01216                   
+01217 01051 17 00000.1    ANDNT 000.1
+01218 01052 00            NOP 1
+01219                   
+01220 01053 16 00000.1  L01053  AND 000.1
+01221 01054 13 00104      FTCHD DWS1_1  !eenheid DWS
+01222 01055 13 00105      FTCHD DWS1_2  !tiental DWS
+01223 01056 15 01506      COMP  1506  !constante 6
+01224 01057 15 01504      COMP  1504  !constante 4
+01225 01058 10 00003.1    STRB  RESULT  !F=C
+01226                   
+01227 01059 16 00003.1    AND RESULT  !F=C
+01228 01060 30 00013      JFRF  L01073
+01229                   
+01230 01061 16 00003.1    AND RESULT  !F=C
+01231 01062 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01232 01063 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01233 01064 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01234 01065 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01235 01066 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01236 01067 14 02184      STRD  STP46_0 !setpoint 46 eenheden
+01237 01068 14 02185      STRD  STP46_1 !setpoint 46 tientallen
+01238 01069 14 02186      STRD  STP46_2 !setpoint 46 honderdtallen
+01239 01070 14 02187      STRD  STP46_3 !setpoint 46 duizendtallen
+01240                   
+01241 01071 17 00000.1    ANDNT 000.1
+01242 01072 00            NOP 1
+01243                   
+01244 01073 16 00000.1  L01073  AND 000.1
+01245 01074 13 00104      FTCHD DWS1_1  !eenheid DWS
+01246 01075 13 00105      FTCHD DWS1_2  !tiental DWS
+01247 01076 15 01507      COMP  1507  !constante 7
+01248 01077 15 01504      COMP  1504  !constante 4
+01249 01078 10 00003.1    STRB  RESULT  !F=C
+01250                   
+01251 01079 16 00003.1    AND RESULT  !F=C
+01252 01080 30 00013      JFRF  L01093
+01253                   
+01254 01081 16 00003.1    AND RESULT  !F=C
+01255 01082 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01256 01083 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01257 01084 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01258 01085 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01259 01086 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01260 01087 14 02188      STRD  STP47_0 !setpoint 47 eenheden
+01261 01088 14 02189      STRD  STP47_1 !setpoint 47 tientallen
+01262 01089 14 02190      STRD  STP47_2 !setpoint 47 honderdtallen
+01263 01090 14 02191      STRD  STP47_3 !setpoint 47 duizendtallen
+01264                   
+01265 01091 17 00000.1    ANDNT 000.1
+01266 01092 00            NOP 1
+01267                   
+01268 01093 16 00000.1  L01093  AND 000.1
+01269 01094 13 00104      FTCHD DWS1_1  !eenheid DWS
+01270 01095 13 00105      FTCHD DWS1_2  !tiental DWS
+01271 01096 15 01508      COMP  1508  !constante 8
+01272 01097 15 01504      COMP  1504  !constante 4
+01273 01098 10 00003.1    STRB  RESULT  !F=C
+01274                   
+01275 01099 16 00003.1    AND RESULT  !F=C
+01276 01100 30 00013      JFRF  L01113
+01277                   
+01278 01101 16 00003.1    AND RESULT  !F=C
+01279 01102 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01280 01103 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01281 01104 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01282 01105 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01283 01106 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01284 01107 14 02192      STRD  STP48_0 !setpoint 48 eenheden
+01285 01108 14 02193      STRD  STP48_1 !setpoint 48 tientallen
+01286 01109 14 02194      STRD  STP48_2 !setpoint 48 honderdtallen
+01287 01110 14 02195      STRD  STP48_3 !setpoint 48 duizendtallen
+01288                   
+01289 01111 17 00000.1    ANDNT 000.1
+01290 01112 00            NOP 1
+01291                   
+01292 01113 16 00000.1  L01113  AND 000.1
+01293 01114 13 00104      FTCHD DWS1_1  !eenheid DWS
+01294 01115 13 00105      FTCHD DWS1_2  !tiental DWS
+01295 01116 15 01509      COMP  1509  !constante 9
+01296 01117 15 01504      COMP  1504  !constante 4
+01297 01118 10 00003.1    STRB  RESULT  !F=C
+01298                   
+01299 01119 16 00003.1    AND RESULT  !F=C
+01300 01120 30 00013      JFRF  L01133
+01301                   
+01302 01121 16 00003.1    AND RESULT  !F=C
+01303 01122 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01304 01123 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01305 01124 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01306 01125 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01307 01126 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01308 01127 14 02196      STRD  STP49_0 !setpoint 49 eenheden
+01309 01128 14 02197      STRD  STP49_1 !setpoint 49 tientallen
+01310 01129 14 02198      STRD  STP49_2 !setpoint 49 honderdtallen
+01311 01130 14 02199      STRD  STP49_3 !setpoint 49 duizendtallen
+01312                   
+01313 01131 17 00000.1    ANDNT 000.1
+01314 01132 00            NOP 1
+01315                   
+01316 01133 16 00000.1  L01133  AND 000.1
+01317 01134 13 00104      FTCHD DWS1_1  !eenheid DWS
+01318 01135 13 00105      FTCHD DWS1_2  !tiental DWS
+01319 01136 15 01500      COMP  1500  !constante 0
+01320 01137 15 01505      COMP  1505  !constante 5
+01321 01138 10 00003.1    STRB  RESULT  !F=C
+01322                   
+01323 01139 16 00003.1    AND RESULT  !F=C
+01324 01140 30 00013      JFRF  L01153
+01325                   
+01326 01141 16 00003.1    AND RESULT  !F=C
+01327 01142 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01328 01143 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01329 01144 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01330 01145 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01331 01146 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01332 01147 14 02200      STRD  STP50_0 !setpoint 50 eenheden
+01333 01148 14 02201      STRD  STP50_1 !setpoint 50 tientallen
+01334 01149 14 02202      STRD  STP50_2 !setpoint 50 honderdtallen
+01335 01150 14 02203      STRD  STP50_3 !setpoint 50 duizendtallen
+01336                   
+01337 01151 17 00000.1    ANDNT 000.1
+01338 01152 00            NOP 1
+01339                   
+01340 01153 16 00000.1  L01153  AND 000.1
+01341 01154 13 00104      FTCHD DWS1_1  !eenheid DWS
+01342 01155 13 00105      FTCHD DWS1_2  !tiental DWS
+01343 01156 15 01501      COMP  1501  !constante 1
+01344 01157 15 01505      COMP  1505  !constante 5
+01345 01158 10 00003.1    STRB  RESULT  !F=C
+01346                   
+01347 01159 16 00003.1    AND RESULT  !F=C
+01348 01160 30 00013      JFRF  L01173
+01349                   
+01350 01161 16 00003.1    AND RESULT  !F=C
+01351 01162 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01352 01163 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01353 01164 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01354 01165 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01355 01166 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01356 01167 14 02204      STRD  STP51_0 !setpoint 51 eenheden
+01357 01168 14 02205      STRD  STP51_1 !setpoint 51 tientallen
+01358 01169 14 02206      STRD  STP51_2 !setpoint 51 honderdtallen
+01359 01170 14 02207      STRD  STP51_3 !setpoint 51 duizendtallen
+01360                   
+01361 01171 17 00000.1    ANDNT 000.1
+01362 01172 00            NOP 1
+01363                   
+01364 01173 16 00000.1  L01173  AND 000.1
+01365 01174 13 00104      FTCHD DWS1_1  !eenheid DWS
+01366 01175 13 00105      FTCHD DWS1_2  !tiental DWS
+01367 01176 15 01502      COMP  1502  !constante 2
+01368 01177 15 01505      COMP  1505  !constante 5
+01369 01178 10 00003.1    STRB  RESULT  !F=C
+01370                   
+01371 01179 16 00003.1    AND RESULT  !F=C
+01372 01180 30 00013      JFRF  L01193
+01373                   
+01374 01181 16 00003.1    AND RESULT  !F=C
+01375 01182 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01376 01183 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01377 01184 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01378 01185 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01379 01186 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01380 01187 14 02208      STRD  STP52_0 !setpoint 52 eenheden
+01381 01188 14 02209      STRD  STP52_1 !setpoint 52 tientallen
+01382 01189 14 02210      STRD  STP52_2 !setpoint 52 honderdtallen
+01383 01190 14 02211      STRD  STP52_3 !setpoint 52 duizendtallen
+01384                   
+01385 01191 17 00000.1    ANDNT 000.1
+01386 01192 00            NOP 1
+01387                   
+01388 01193 16 00000.1  L01193  AND 000.1
+01389 01194 13 00104      FTCHD DWS1_1  !eenheid DWS
+01390 01195 13 00105      FTCHD DWS1_2  !tiental DWS
+01391 01196 15 01503      COMP  1503  !constante 3
+01392 01197 15 01505      COMP  1505  !constante 5
+01393 01198 10 00003.1    STRB  RESULT  !F=C
+01394                   
+01395 01199 16 00003.1    AND RESULT  !F=C
+01396 01200 30 00013      JFRF  L01213
+01397                   
+01398 01201 16 00003.1    AND RESULT  !F=C
+01399 01202 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01400 01203 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01401 01204 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01402 01205 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01403 01206 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01404 01207 14 02212      STRD  STP53_0 !setpoint 53 eenheden
+01405 01208 14 02213      STRD  STP53_1 !setpoint 53 tientallen
+01406 01209 14 02214      STRD  STP53_2 !setpoint 53 honderdtallen
+01407 01210 14 02215      STRD  STP53_3 !setpoint 53 duizendtallen
+01408                   
+01409 01211 17 00000.1    ANDNT 000.1
+01410 01212 00            NOP 1
+01411                   
+01412 01213 16 00000.1  L01213  AND 000.1
+01413 01214 13 00104      FTCHD DWS1_1  !eenheid DWS
+01414 01215 13 00105      FTCHD DWS1_2  !tiental DWS
+01415 01216 15 01504      COMP  1504  !constante 4
+01416 01217 15 01505      COMP  1505  !constante 5
+01417 01218 10 00003.1    STRB  RESULT  !F=C
+01418                   
+01419 01219 16 00003.1    AND RESULT  !F=C
+01420 01220 30 00013      JFRF  L01233
+01421                   
+01422 01221 16 00003.1    AND RESULT  !F=C
+01423 01222 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01424 01223 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01425 01224 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01426 01225 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01427 01226 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01428 01227 14 02216      STRD  STP54_0 !setpoint 54 eenheden
+01429 01228 14 02217      STRD  STP54_1 !setpoint 54 tientallen
+01430 01229 14 02218      STRD  STP54_2 !setpoint 54 honderdtallen
+01431 01230 14 02219      STRD  STP54_3 !setpoint 54 duizendtallen
+01432                   
+01433 01231 17 00000.1    ANDNT 000.1
+01434 01232 00            NOP 1
+01435                   
+01436 01233 16 00000.1  L01233  AND 000.1
+01437 01234 13 00104      FTCHD DWS1_1  !eenheid DWS
+01438 01235 13 00105      FTCHD DWS1_2  !tiental DWS
+01439 01236 15 01505      COMP  1505  !constante 5
+01440 01237 15 01505      COMP  1505  !constante 5
+01441 01238 10 00003.1    STRB  RESULT  !F=C
+01442                   
+01443 01239 16 00003.1    AND RESULT  !F=C
+01444 01240 30 00013      JFRF  L01253
+01445                   
+01446 01241 16 00003.1    AND RESULT  !F=C
+01447 01242 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01448 01243 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01449 01244 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01450 01245 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01451 01246 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01452 01247 14 02220      STRD  STP55_0 !setpoint 55 eenheden
+01453 01248 14 02221      STRD  STP55_1 !setpoint 55 tientallen
+01454 01249 14 02222      STRD  STP55_2 !setpoint 55 honderdtallen
+01455 01250 14 02223      STRD  STP55_3 !setpoint 55 duizendtallen
+01456                   
+01457 01251 17 00000.1    ANDNT 000.1
+01458 01252 00            NOP 1
+01459                   
+01460 01253 16 00000.1  L01253  AND 000.1
+01461 01254 13 00104      FTCHD DWS1_1  !eenheid DWS
+01462 01255 13 00105      FTCHD DWS1_2  !tiental DWS
+01463 01256 15 01506      COMP  1506  !constante 6
+01464 01257 15 01505      COMP  1505  !constante 5
+01465 01258 10 00003.1    STRB  RESULT  !F=C
+01466                   
+01467 01259 16 00003.1    AND RESULT  !F=C
+01468 01260 30 00013      JFRF  L01273
+01469                   
+01470 01261 16 00003.1    AND RESULT  !F=C
+01471 01262 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01472 01263 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01473 01264 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01474 01265 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01475 01266 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01476 01267 14 02224      STRD  STP56_0 !setpoint 56 eenheden
+01477 01268 14 02225      STRD  STP56_1 !setpoint 56 tientallen
+01478 01269 14 02226      STRD  STP56_2 !setpoint 56 honderdtallen
+01479 01270 14 02227      STRD  STP56_3 !setpoint 56 duizendtallen
+01480                   
+01481 01271 17 00000.1    ANDNT 000.1
+01482 01272 00            NOP 1
+01483                   
+01484 01273 16 00000.1  L01273  AND 000.1
+01485 01274 13 00104      FTCHD DWS1_1  !eenheid DWS
+01486 01275 13 00105      FTCHD DWS1_2  !tiental DWS
+01487 01276 15 01507      COMP  1507  !constante 7
+01488 01277 15 01505      COMP  1505  !constante 5
+01489 01278 10 00003.1    STRB  RESULT  !F=C
+01490                   
+01491 01279 16 00003.1    AND RESULT  !F=C
+01492 01280 30 00013      JFRF  L01293
+01493                   
+01494 01281 16 00003.1    AND RESULT  !F=C
+01495 01282 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01496 01283 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01497 01284 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01498 01285 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01499 01286 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01500 01287 14 02228      STRD  STP57_0 !setpoint 57 eenheden
+01501 01288 14 02229      STRD  STP57_1 !setpoint 57 tientallen
+01502 01289 14 02230      STRD  STP57_2 !setpoint 57 honderdtallen
+01503 01290 14 02231      STRD  STP57_3 !setpoint 57 duizendtallen
+01504                   
+01505 01291 17 00000.1    ANDNT 000.1
+01506 01292 00            NOP 1
+01507                   
+01508 01293 16 00000.1  L01293  AND 000.1
+01509 01294 13 00104      FTCHD DWS1_1  !eenheid DWS
+01510 01295 13 00105      FTCHD DWS1_2  !tiental DWS
+01511 01296 15 01508      COMP  1508  !constante 8
+01512 01297 15 01505      COMP  1505  !constante 5
+01513 01298 10 00003.1    STRB  RESULT  !F=C
+01514                   
+01515 01299 16 00003.1    AND RESULT  !F=C
+01516 01300 30 00013      JFRF  L01313
+01517                   
+01518 01301 16 00003.1    AND RESULT  !F=C
+01519 01302 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01520 01303 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01521 01304 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01522 01305 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01523 01306 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01524 01307 14 02232      STRD  STP58_0 !setpoint 58 eenheden
+01525 01308 14 02233      STRD  STP58_1 !setpoint 58 tientallen
+01526 01309 14 02234      STRD  STP58_2 !setpoint 58 honderdtallen
+01527 01310 14 02235      STRD  STP58_3 !setpoint 58 duizendtallen
+01528                   
+01529 01311 17 00000.1    ANDNT 000.1
+01530 01312 00            NOP 1
+01531                   
+01532 01313 16 00000.1  L01313  AND 000.1
+01533 01314 13 00104      FTCHD DWS1_1  !eenheid DWS
+01534 01315 13 00105      FTCHD DWS1_2  !tiental DWS
+01535 01316 15 01509      COMP  1509  !constante 9
+01536 01317 15 01505      COMP  1505  !constante 5
+01537 01318 10 00003.1    STRB  RESULT  !F=C
+01538                   
+01539 01319 16 00003.1    AND RESULT  !F=C
+01540 01320 30 00013      JFRF  L01333
+01541                   
+01542 01321 16 00003.1    AND RESULT  !F=C
+01543 01322 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01544 01323 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01545 01324 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01546 01325 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01547 01326 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01548 01327 14 02236      STRD  STP59_0 !setpoint 59 eenheden
+01549 01328 14 02237      STRD  STP59_1 !setpoint 59 tientallen
+01550 01329 14 02238      STRD  STP59_2 !setpoint 59 honderdtallen
+01551 01330 14 02239      STRD  STP59_3 !setpoint 59 duizendtallen
+01552                   
+01553 01331 17 00000.1    ANDNT 000.1
+01554 01332 00            NOP 1
+01555                   
+01556 01333 16 00000.1  L01333  AND 000.1
+01557 01334 13 00104      FTCHD DWS1_1  !eenheid DWS
+01558 01335 13 00105      FTCHD DWS1_2  !tiental DWS
+01559 01336 15 01500      COMP  1500  !constante 0
+01560 01337 15 01506      COMP  1506  !constante 6
+01561 01338 10 00003.1    STRB  RESULT  !F=C
+01562                   
+01563 01339 16 00003.1    AND RESULT  !F=C
+01564 01340 30 00013      JFRF  L01353
+01565                   
+01566 01341 16 00003.1    AND RESULT  !F=C
+01567 01342 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01568 01343 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01569 01344 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01570 01345 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01571 01346 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01572 01347 14 02240      STRD  STP60_0 !setpoint 60 eenheden
+01573 01348 14 02241      STRD  STP60_1 !setpoint 60 tientallen
+01574 01349 14 02242      STRD  STP60_2 !setpoint 60 honderdtallen
+01575 01350 14 02243      STRD  STP60_3 !setpoint 60 duizendtallen
+01576                   
+01577 01351 17 00000.1    ANDNT 000.1
+01578 01352 00            NOP 1
+01579                   
+01580 01353 16 00000.1  L01353  AND 000.1
+01581 01354 13 00104      FTCHD DWS1_1  !eenheid DWS
+01582 01355 13 00105      FTCHD DWS1_2  !tiental DWS
+01583 01356 15 01501      COMP  1501  !constante 1
+01584 01357 15 01506      COMP  1506  !constante 6
+01585 01358 10 00003.1    STRB  RESULT  !F=C
+01586                   
+01587 01359 16 00003.1    AND RESULT  !F=C
+01588 01360 30 00013      JFRF  L01373
+01589                   
+01590 01361 16 00003.1    AND RESULT  !F=C
+01591 01362 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01592 01363 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01593 01364 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01594 01365 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01595 01366 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01596 01367 14 02244      STRD  STP61_0 !setpoint 61 eenheden
+01597 01368 14 02245      STRD  STP61_1 !setpoint 61 tientallen
+01598 01369 14 02246      STRD  STP61_2 !setpoint 61 honderdtallen
+01599 01370 14 02247      STRD  STP61_3 !setpoint 61 duizendtallen
+01600                   
+01601 01371 17 00000.1    ANDNT 000.1
+01602 01372 00            NOP 1
+01603                   
+01604 01373 16 00000.1  L01373  AND 000.1
+01605 01374 13 00104      FTCHD DWS1_1  !eenheid DWS
+01606 01375 13 00105      FTCHD DWS1_2  !tiental DWS
+01607 01376 15 01502      COMP  1502  !constante 2
+01608 01377 15 01506      COMP  1506  !constante 6
+01609 01378 10 00003.1    STRB  RESULT  !F=C
+01610                   
+01611 01379 16 00003.1    AND RESULT  !F=C
+01612 01380 30 00013      JFRF  L01393
+01613                   
+01614 01381 16 00003.1    AND RESULT  !F=C
+01615 01382 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01616 01383 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01617 01384 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01618 01385 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01619 01386 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01620 01387 14 02248      STRD  STP62_0 !setpoint 62 eenheden
+01621 01388 14 02249      STRD  STP62_1 !setpoint 62 tientallen
+01622 01389 14 02250      STRD  STP62_2 !setpoint 62 honderdtallen
+01623 01390 14 02251      STRD  STP62_3 !setpoint 62 duizendtallen
+01624                   
+01625 01391 17 00000.1    ANDNT 000.1
+01626 01392 00            NOP 1
+01627                   
+01628 01393 16 00000.1  L01393  AND 000.1
+01629 01394 13 00104      FTCHD DWS1_1  !eenheid DWS
+01630 01395 13 00105      FTCHD DWS1_2  !tiental DWS
+01631 01396 15 01503      COMP  1503  !constante 3
+01632 01397 15 01506      COMP  1506  !constante 6
+01633 01398 10 00003.1    STRB  RESULT  !F=C
+01634                   
+01635 01399 16 00003.1    AND RESULT  !F=C
+01636 01400 30 00013      JFRF  L01413
+01637                   
+01638 01401 16 00003.1    AND RESULT  !F=C
+01639 01402 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01640 01403 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01641 01404 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01642 01405 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01643 01406 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01644 01407 14 02252      STRD  STP63_0 !setpoint 63 eenheden
+01645 01408 14 02253      STRD  STP63_1 !setpoint 63 tientallen
+01646 01409 14 02254      STRD  STP63_2 !setpoint 63 honderdtallen
+01647 01410 14 02255      STRD  STP63_3 !setpoint 63 duizendtallen
+01648                   
+01649 01411 17 00000.1    ANDNT 000.1
+01650 01412 00            NOP 1
+01651                   
+01652 01413 16 00000.1  L01413  AND 000.1
+01653 01414 13 00104      FTCHD DWS1_1  !eenheid DWS
+01654 01415 13 00105      FTCHD DWS1_2  !tiental DWS
+01655 01416 15 01504      COMP  1504  !constante 4
+01656 01417 15 01506      COMP  1506  !constante 6
+01657 01418 10 00003.1    STRB  RESULT  !F=C
+01658                   
+01659 01419 16 00003.1    AND RESULT  !F=C
+01660 01420 30 00013      JFRF  L01433
+01661                   
+01662 01421 16 00003.1    AND RESULT  !F=C
+01663 01422 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01664 01423 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01665 01424 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01666 01425 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01667 01426 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01668 01427 14 02256      STRD  STP64_0 !setpoint 64 eenheden
+01669 01428 14 02257      STRD  STP64_1 !setpoint 64 tientallen
+01670 01429 14 02258      STRD  STP64_2 !setpoint 64 honderdtallen
+01671 01430 14 02259      STRD  STP64_3 !setpoint 64 duizendtallen
+01672                   
+01673 01431 17 00000.1    ANDNT 000.1
+01674 01432 00            NOP 1
+01675                   
+01676 01433 16 00000.1  L01433  AND 000.1
+01677 01434 13 00104      FTCHD DWS1_1  !eenheid DWS
+01678 01435 13 00105      FTCHD DWS1_2  !tiental DWS
+01679 01436 15 01505      COMP  1505  !constante 5
+01680 01437 15 01506      COMP  1506  !constante 6
+01681 01438 10 00003.1    STRB  RESULT  !F=C
+01682                   
+01683 01439 16 00003.1    AND RESULT  !F=C
+01684 01440 30 00013      JFRF  L01453
+01685                   
+01686 01441 16 00003.1    AND RESULT  !F=C
+01687 01442 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01688 01443 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01689 01444 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01690 01445 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01691 01446 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01692 01447 14 02260      STRD  STP65_0 !setpoint 65 eenheden
+01693 01448 14 02261      STRD  STP65_1 !setpoint 65 tientallen
+01694 01449 14 02262      STRD  STP65_2 !setpoint 65 honderdtallen
+01695 01450 14 02263      STRD  STP65_3 !setpoint 65 duizendtallen
+01696                   
+01697 01451 17 00000.1    ANDNT 000.1
+01698 01452 00            NOP 1
+01699                   
+01700 01453 16 00000.1  L01453  AND 000.1
+01701 01454 13 00104      FTCHD DWS1_1  !eenheid DWS
+01702 01455 13 00105      FTCHD DWS1_2  !tiental DWS
+01703 01456 15 01506      COMP  1506  !constante 6
+01704 01457 15 01506      COMP  1506  !constante 6
+01705 01458 10 00003.1    STRB  RESULT  !F=C
+01706                   
+01707 01459 16 00003.1    AND RESULT  !F=C
+01708 01460 30 00013      JFRF  L01473
+01709                   
+01710 01461 16 00003.1    AND RESULT  !F=C
+01711 01462 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01712 01463 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01713 01464 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01714 01465 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01715 01466 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01716 01467 14 02264      STRD  STP66_0 !setpoint 66 eenheden
+01717 01468 14 02265      STRD  STP66_1 !setpoint 66 tientallen
+01718 01469 14 02266      STRD  STP66_2 !setpoint 66 honderdtallen
+01719 01470 14 02267      STRD  STP66_3 !setpoint 66 duizendtallen
+01720                   
+01721 01471 17 00000.1    ANDNT 000.1
+01722 01472 00            NOP 1
+01723                   
+01724 01473 16 00000.1  L01473  AND 000.1
+01725 01474 13 00104      FTCHD DWS1_1  !eenheid DWS
+01726 01475 13 00105      FTCHD DWS1_2  !tiental DWS
+01727 01476 15 01507      COMP  1507  !constante 7
+01728 01477 15 01506      COMP  1506  !constante 6
+01729 01478 10 00003.1    STRB  RESULT  !F=C
+01730                   
+01731 01479 16 00003.1    AND RESULT  !F=C
+01732 01480 30 00013      JFRF  L01493
+01733                   
+01734 01481 16 00003.1    AND RESULT  !F=C
+01735 01482 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01736 01483 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01737 01484 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01738 01485 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01739 01486 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01740 01487 14 02268      STRD  STP67_0 !setpoint 67 eenheden
+01741 01488 14 02269      STRD  STP67_1 !setpoint 67 tientallen
+01742 01489 14 02270      STRD  STP67_2 !setpoint 67 honderdtallen
+01743 01490 14 02271      STRD  STP67_3 !setpoint 67 duizendtallen
+01744                   
+01745 01491 17 00000.1    ANDNT 000.1
+01746 01492 00            NOP 1
+01747                   
+01748 01493 16 00000.1  L01493  AND 000.1
+01749 01494 13 00104      FTCHD DWS1_1  !eenheid DWS
+01750 01495 13 00105      FTCHD DWS1_2  !tiental DWS
+01751 01496 15 01508      COMP  1508  !constante 8
+01752 01497 15 01506      COMP  1506  !constante 6
+01753 01498 10 00003.1    STRB  RESULT  !F=C
+01754                   
+01755 01499 16 00003.1    AND RESULT  !F=C
+01756 01500 30 00013      JFRF  L01513
+01757                   
+01758 01501 16 00003.1    AND RESULT  !F=C
+01759 01502 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01760 01503 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01761 01504 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01762 01505 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01763 01506 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01764 01507 14 02272      STRD  STP68_0 !setpoint 68 eenheden
+01765 01508 14 02273      STRD  STP68_1 !setpoint 68 tientallen
+01766 01509 14 02274      STRD  STP68_2 !setpoint 68 honderdtallen
+01767 01510 14 02275      STRD  STP68_3 !setpoint 68 duizendtallen
+01768                   
+01769 01511 17 00000.1    ANDNT 000.1
+01770 01512 00            NOP 1
+01771                   
+01772 01513 16 00000.1  L01513  AND 000.1
+01773 01514 13 00104      FTCHD DWS1_1  !eenheid DWS
+01774 01515 13 00105      FTCHD DWS1_2  !tiental DWS
+01775 01516 15 01509      COMP  1509  !constante 9
+01776 01517 15 01506      COMP  1506  !constante 6
+01777 01518 10 00003.1    STRB  RESULT  !F=C
+01778                   
+01779 01519 16 00003.1    AND RESULT  !F=C
+01780 01520 30 00013      JFRF  L01533
+01781                   
+01782 01521 16 00003.1    AND RESULT  !F=C
+01783 01522 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01784 01523 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01785 01524 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01786 01525 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01787 01526 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01788 01527 14 02276      STRD  STP69_0 !setpoint 69 eenheden
+01789 01528 14 02277      STRD  STP69_1 !setpoint 69 tientallen
+01790 01529 14 02278      STRD  STP69_2 !setpoint 69 honderdtallen
+01791 01530 14 02279      STRD  STP69_3 !setpoint 69 duizendtallen
+01792                   
+01793 01531 17 00000.1    ANDNT 000.1
+01794 01532 00            NOP 1
+01795                   
+01796 01533 16 00000.1  L01533  AND 000.1
+01797 01534 13 00104      FTCHD DWS1_1  !eenheid DWS
+01798 01535 13 00105      FTCHD DWS1_2  !tiental DWS
+01799 01536 15 01500      COMP  1500  !constante 0
+01800 01537 15 01507      COMP  1507  !constante 7
+01801 01538 10 00003.1    STRB  RESULT  !F=C
+01802                   
+01803 01539 16 00003.1    AND RESULT  !F=C
+01804 01540 30 00013      JFRF  L01553
+01805                   
+01806 01541 16 00003.1    AND RESULT  !F=C
+01807 01542 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01808 01543 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01809 01544 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01810 01545 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01811 01546 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01812 01547 14 02280      STRD  STP70_0 !setpoint 70 eenheden
+01813 01548 14 02281      STRD  STP70_1 !setpoint 70 tientallen
+01814 01549 14 02282      STRD  STP70_2 !setpoint 70 honderdtallen
+01815 01550 14 02283      STRD  STP70_3 !setpoint 70 duizendtallen
+01816                   
+01817 01551 17 00000.1    ANDNT 000.1
+01818 01552 00            NOP 1
+01819                   
+01820 01553 16 00000.1  L01553  AND 000.1
+01821 01554 13 00104      FTCHD DWS1_1  !eenheid DWS
+01822 01555 13 00105      FTCHD DWS1_2  !tiental DWS
+01823 01556 15 01501      COMP  1501  !constante 1
+01824 01557 15 01507      COMP  1507  !constante 7
+01825 01558 10 00003.1    STRB  RESULT  !F=C
+01826                   
+01827 01559 16 00003.1    AND RESULT  !F=C
+01828 01560 30 00013      JFRF  L01573
+01829                   
+01830 01561 16 00003.1    AND RESULT  !F=C
+01831 01562 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01832 01563 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01833 01564 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01834 01565 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01835 01566 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01836 01567 14 02284      STRD  STP71_0 !setpoint 71 eenheden
+01837 01568 14 02285      STRD  STP71_1 !setpoint 71 tientallen
+01838 01569 14 02286      STRD  STP71_2 !setpoint 71 honderdtallen
+01839 01570 14 02287      STRD  STP71_3 !setpoint 71 duizendtallen
+01840                   
+01841 01571 17 00000.1    ANDNT 000.1
+01842 01572 00            NOP 1
+01843                   
+01844 01573 16 00000.1  L01573  AND 000.1
+01845 01574 13 00104      FTCHD DWS1_1  !eenheid DWS
+01846 01575 13 00105      FTCHD DWS1_2  !tiental DWS
+01847 01576 15 01502      COMP  1502  !constante 2
+01848 01577 15 01507      COMP  1507  !constante 7
+01849 01578 10 00003.1    STRB  RESULT  !F=C
+01850                   
+01851 01579 16 00003.1    AND RESULT  !F=C
+01852 01580 30 00013      JFRF  L01593
+01853                   
+01854 01581 16 00003.1    AND RESULT  !F=C
+01855 01582 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01856 01583 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01857 01584 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01858 01585 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01859 01586 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01860 01587 14 02288      STRD  STP72_0 !setpoint 72 eenheden
+01861 01588 14 02289      STRD  STP72_1 !setpoint 72 tientallen
+01862 01589 14 02290      STRD  STP72_2 !setpoint 72 honderdtallen
+01863 01590 14 02291      STRD  STP72_3 !setpoint 72 duizendtallen
+01864                   
+01865 01591 17 00000.1    ANDNT 000.1
+01866 01592 00            NOP 1
+01867                   
+01868 01593 16 00000.1  L01593  AND 000.1
+01869 01594 13 00104      FTCHD DWS1_1  !eenheid DWS
+01870 01595 13 00105      FTCHD DWS1_2  !tiental DWS
+01871 01596 15 01503      COMP  1503  !constante 3
+01872 01597 15 01507      COMP  1507  !constante 7
+01873 01598 10 00003.1    STRB  RESULT  !F=C
+01874                   
+01875 01599 16 00003.1    AND RESULT  !F=C
+01876 01600 30 00013      JFRF  L01613
+01877                   
+01878 01601 16 00003.1    AND RESULT  !F=C
+01879 01602 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01880 01603 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01881 01604 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01882 01605 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01883 01606 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01884 01607 14 02292      STRD  STP73_0 !setpoint 73 eenheden
+01885 01608 14 02293      STRD  STP73_1 !setpoint 73 tientallen
+01886 01609 14 02294      STRD  STP73_2 !setpoint 73 honderdtallen
+01887 01610 14 02295      STRD  STP73_3 !setpoint 73 duizendtallen
+01888                   
+01889 01611 17 00000.1    ANDNT 000.1
+01890 01612 00            NOP 1
+01891                   
+01892 01613 16 00000.1  L01613  AND 000.1
+01893 01614 13 00104      FTCHD DWS1_1  !eenheid DWS
+01894 01615 13 00105      FTCHD DWS1_2  !tiental DWS
+01895 01616 15 01504      COMP  1504  !constante 4
+01896 01617 15 01507      COMP  1507  !constante 7
+01897 01618 10 00003.1    STRB  RESULT  !F=C
+01898                   
+01899 01619 16 00003.1    AND RESULT  !F=C
+01900 01620 30 00013      JFRF  L01633
+01901                   
+01902 01621 16 00003.1    AND RESULT  !F=C
+01903 01622 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01904 01623 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01905 01624 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01906 01625 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01907 01626 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01908 01627 14 02296      STRD  STP74_0 !setpoint 74 eenheden
+01909 01628 14 02297      STRD  STP74_1 !setpoint 74 tientallen
+01910 01629 14 02298      STRD  STP74_2 !setpoint 74 honderdtallen
+01911 01630 14 02299      STRD  STP74_3 !setpoint 74 duizendtallen
+01912                   
+01913 01631 17 00000.1    ANDNT 000.1
+01914 01632 00            NOP 1
+01915                   
+01916 01633 16 00000.1  L01633  AND 000.1
+01917 01634 13 00104      FTCHD DWS1_1  !eenheid DWS
+01918 01635 13 00105      FTCHD DWS1_2  !tiental DWS
+01919 01636 15 01505      COMP  1505  !constante 5
+01920 01637 15 01507      COMP  1507  !constante 7
+01921 01638 10 00003.1    STRB  RESULT  !F=C
+01922                   
+01923 01639 16 00003.1    AND RESULT  !F=C
+01924 01640 30 00013      JFRF  L01653
+01925                   
+01926 01641 16 00003.1    AND RESULT  !F=C
+01927 01642 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01928 01643 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01929 01644 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01930 01645 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01931 01646 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01932 01647 14 02300      STRD  STP75_0 !setpoint 75 eenheden
+01933 01648 14 02301      STRD  STP75_1 !setpoint 75 tientallen
+01934 01649 14 02302      STRD  STP75_2 !setpoint 75 honderdtallen
+01935 01650 14 02303      STRD  STP75_3 !setpoint 75 duizendtallen
+01936                   
+01937 01651 17 00000.1    ANDNT 000.1
+01938 01652 00            NOP 1
+01939                   
+01940 01653 16 00000.1  L01653  AND 000.1
+01941 01654 13 00104      FTCHD DWS1_1  !eenheid DWS
+01942 01655 13 00105      FTCHD DWS1_2  !tiental DWS
+01943 01656 15 01506      COMP  1506  !constante 6
+01944 01657 15 01507      COMP  1507  !constante 7
+01945 01658 10 00003.1    STRB  RESULT  !F=C
+01946                   
+01947 01659 16 00003.1    AND RESULT  !F=C
+01948 01660 30 00013      JFRF  L01673
+01949                   
+01950 01661 16 00003.1    AND RESULT  !F=C
+01951 01662 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01952 01663 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01953 01664 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01954 01665 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01955 01666 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01956 01667 14 02304      STRD  STP76_0 !setpoint 76 eenheden
+01957 01668 14 02305      STRD  STP76_1 !setpoint 76 tientallen
+01958 01669 14 02306      STRD  STP76_2 !setpoint 76 honderdtallen
+01959 01670 14 02307      STRD  STP76_3 !setpoint 76 duizendtallen
+01960                   
+01961 01671 17 00000.1    ANDNT 000.1
+01962 01672 00            NOP 1
+01963                   
+01964 01673 16 00000.1  L01673  AND 000.1
+01965 01674 13 00104      FTCHD DWS1_1  !eenheid DWS
+01966 01675 13 00105      FTCHD DWS1_2  !tiental DWS
+01967 01676 15 01507      COMP  1507  !constante 7
+01968 01677 15 01507      COMP  1507  !constante 7
+01969 01678 10 00003.1    STRB  RESULT  !F=C
+01970                   
+01971 01679 16 00003.1    AND RESULT  !F=C
+01972 01680 30 00013      JFRF  L01693
+01973                   
+01974 01681 16 00003.1    AND RESULT  !F=C
+01975 01682 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01976 01683 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01977 01684 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01978 01685 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01979 01686 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01980 01687 14 02308      STRD  STP77_0 !setpoint 77 eenheden
+01981 01688 14 02309      STRD  STP77_1 !setpoint 77 tientallen
+01982 01689 14 02310      STRD  STP77_2 !setpoint 77 honderdtallen
+01983 01690 14 02311      STRD  STP77_3 !setpoint 77 duizendtallen
+01984                   
+01985 01691 17 00000.1    ANDNT 000.1
+01986 01692 00            NOP 1
+01987                   
+01988 01693 16 00000.1  L01693  AND 000.1
+01989 01694 13 00104      FTCHD DWS1_1  !eenheid DWS
+01990 01695 13 00105      FTCHD DWS1_2  !tiental DWS
+01991 01696 15 01508      COMP  1508  !constante 8
+01992 01697 15 01507      COMP  1507  !constante 7
+01993 01698 10 00003.1    STRB  RESULT  !F=C
+01994                   
+01995 01699 16 00003.1    AND RESULT  !F=C
+01996 01700 30 00013      JFRF  L01713
+01997                   
+01998 01701 16 00003.1    AND RESULT  !F=C
+01999 01702 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+02000 01703 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+02001 01704 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+02002 01705 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+02003 01706 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+02004 01707 14 02312      STRD  STP78_0 !setpoint 78 eenheden
+02005 01708 14 02313      STRD  STP78_1 !setpoint 78 tientallen
+02006 01709 14 02314      STRD  STP78_2 !setpoint 78 honderdtallen
+02007 01710 14 02315      STRD  STP78_3 !setpoint 78 duizendtallen
+02008                   
+02009 01711 17 00000.1    ANDNT 000.1
+02010 01712 00            NOP 1
+02011                   
+02012 01713 16 00000.1  L01713  AND 000.1
+02013 01714 13 00104      FTCHD DWS1_1  !eenheid DWS
+02014 01715 13 00105      FTCHD DWS1_2  !tiental DWS
+02015 01716 15 01509      COMP  1509  !constante 9
+02016 01717 15 01507      COMP  1507  !constante 7
+02017 01718 10 00003.1    STRB  RESULT  !F=C
+02018                   
+02019 01719 16 00003.1    AND RESULT  !F=C
+02020 01720 30 00013      JFRF  L01733
+02021                   
+02022 01721 16 00003.1    AND RESULT  !F=C
+02023 01722 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+02024 01723 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+02025 01724 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+02026 01725 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+02027 01726 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+02028 01727 14 02316      STRD  STP79_0 !setpoint 79 eenheden
+02029 01728 14 02317      STRD  STP79_1 !setpoint 79 tientallen
+02030 01729 14 02318      STRD  STP79_2 !setpoint 79 honderdtallen
+02031 01730 14 02319      STRD  STP79_3 !setpoint 79 duizendtallen
+02032                   
+02033 01731 17 00000.1    ANDNT 000.1
+02034 01732 00            NOP 1
+02035                   
+02036 01733 16 00000.1  L01733  AND 000.1
+02037 01734 13 00104      FTCHD DWS1_1  !eenheid DWS
+02038 01735 13 00105      FTCHD DWS1_2  !tiental DWS
+02039 01736 15 01500      COMP  1500  !constante 0
+02040 01737 15 01508      COMP  1508  !constante 8
+02041 01738 10 00003.1    STRB  RESULT  !F=C
+02042                   
+02043 01739 16 00003.1    AND RESULT  !F=C
+02044 01740 30 00013      JFRF  L01753
+02045                   
+02046 01741 16 00003.1    AND RESULT  !F=C
+02047 01742 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+02048 01743 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+02049 01744 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+02050 01745 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+02051 01746 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+02052 01747 14 02320      STRD  STP80_0 !setpoint 80 eenheden
+02053 01748 14 02321      STRD  STP80_1 !setpoint 80 tientallen
+02054 01749 14 02322      STRD  STP80_2 !setpoint 80 honderdtallen
+02055 01750 14 02323      STRD  STP80_3 !setpoint 80 duizendtallen
+02056                   
+02057 01751 17 00000.1    ANDNT 000.1
+02058 01752 00            NOP 1
+02059                   
+02060 01753 16 00000.1  L01753  AND 000.1
+02061 01754 13 00104      FTCHD DWS1_1  !eenheid DWS
+02062 01755 13 00105      FTCHD DWS1_2  !tiental DWS
+02063 01756 15 01501      COMP  1501  !constante 1
+02064 01757 15 01508      COMP  1508  !constante 8
+02065 01758 10 00003.1    STRB  RESULT  !F=C
+02066                   
+02067 01759 16 00003.1    AND RESULT  !F=C
+02068 01760 30 00013      JFRF  L01773
+02069                   
+02070 01761 16 00003.1    AND RESULT  !F=C
+02071 01762 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+02072 01763 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+02073 01764 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+02074 01765 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+02075 01766 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+02076 01767 14 02324      STRD  STP81_0 !setpoint 81 eenheden
+02077 01768 14 02325      STRD  STP81_1 !setpoint 81 tientallen
+02078 01769 14 02326      STRD  STP81_2 !setpoint 81 honderdtallen
+02079 01770 14 02327      STRD  STP81_3 !setpoint 81 duizendtallen
+02080                   
+02081 01771 17 00000.1    ANDNT 000.1
+02082 01772 00            NOP 1
+02083                   
+02084 01773 16 00000.1  L01773  AND 000.1
+02085 01774 13 00104      FTCHD DWS1_1  !eenheid DWS
+02086 01775 13 00105      FTCHD DWS1_2  !tiental DWS
+02087 01776 15 01502      COMP  1502  !constante 2
+02088 01777 15 01508      COMP  1508  !constante 8
+02089 01778 10 00003.1    STRB  RESULT  !F=C
+02090                   
+02091 01779 16 00003.1    AND RESULT  !F=C
+02092 01780 30 00013      JFRF  L01793
+02093                   
+02094 01781 16 00003.1    AND RESULT  !F=C
+02095 01782 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+02096 01783 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+02097 01784 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+02098 01785 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+02099 01786 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+02100 01787 14 02328      STRD  STP82_0 !setpoint 82 eenheden
+02101 01788 14 02329      STRD  STP82_1 !setpoint 82 tientallen
+02102 01789 14 02330      STRD  STP82_2 !setpoint 82 honderdtallen
+02103 01790 14 02331      STRD  STP82_3 !setpoint 82 duizendtallen
+02104                   
+02105 01791 17 00000.1    ANDNT 000.1
+02106 01792 00            NOP 1
+02107                   
+02108 01793 16 00000.1  L01793  AND 000.1
+02109 01794 13 00104      FTCHD DWS1_1  !eenheid DWS
+02110 01795 13 00105      FTCHD DWS1_2  !tiental DWS
+02111 01796 15 01503      COMP  1503  !constante 3
+02112 01797 15 01508      COMP  1508  !constante 8
+02113 01798 10 00003.1    STRB  RESULT  !F=C
+02114                   
+02115 01799 16 00003.1    AND RESULT  !F=C
+02116 01800 30 00013      JFRF  L01813
+02117                   
+02118 01801 16 00003.1    AND RESULT  !F=C
+02119 01802 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+02120 01803 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+02121 01804 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+02122 01805 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+02123 01806 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+02124 01807 14 02332      STRD  STP83_0 !setpoint 83 eenheden
+02125 01808 14 02333      STRD  STP83_1 !setpoint 83 tientallen
+02126 01809 14 02334      STRD  STP83_2 !setpoint 83 honderdtallen
+02127 01810 14 02335      STRD  STP83_3 !setpoint 83 duizendtallen
+02128                   
+02129 01811 17 00000.1    ANDNT 000.1
+02130 01812 00            NOP 1
+02131                   
+02132 01813 16 00000.1  L01813  AND 000.1
+02133 01814 13 00104      FTCHD DWS1_1  !eenheid DWS
+02134 01815 13 00105      FTCHD DWS1_2  !tiental DWS
+02135 01816 15 01504      COMP  1504  !constante 4
+02136 01817 15 01508      COMP  1508  !constante 8
+02137 01818 10 00003.1    STRB  RESULT  !F=C
+02138                   
+02139 01819 16 00003.1    AND RESULT  !F=C
+02140 01820 30 00013      JFRF  L01833
+02141                   
+02142 01821 16 00003.1    AND RESULT  !F=C
+02143 01822 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+02144 01823 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+02145 01824 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+02146 01825 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+02147 01826 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+02148 01827 14 02336      STRD  STP84_0 !setpoint 84 eenheden
+02149 01828 14 02337      STRD  STP84_1 !setpoint 84 tientallen
+02150 01829 14 02338      STRD  STP84_2 !setpoint 84 honderdtallen
+02151 01830 14 02339      STRD  STP84_3 !setpoint 84 duizendtallen
+02152                   
+02153 01831 17 00000.1    ANDNT 000.1
+02154 01832 00            NOP 1
+02155                   
+02156 01833 16 00000.1  L01833  AND 000.1
+02157 01834 13 00104      FTCHD DWS1_1  !eenheid DWS
+02158 01835 13 00105      FTCHD DWS1_2  !tiental DWS
+02159 01836 15 01505      COMP  1505  !constante 5
+02160 01837 15 01508      COMP  1508  !constante 8
+02161 01838 10 00003.1    STRB  RESULT  !F=C
+02162                   
+02163 01839 16 00003.1    AND RESULT  !F=C
+02164 01840 30 00013      JFRF  L01853
+02165                   
+02166 01841 16 00003.1    AND RESULT  !F=C
+02167 01842 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+02168 01843 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+02169 01844 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+02170 01845 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+02171 01846 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+02172 01847 14 02340      STRD  STP85_0 !setpoint 85 eenheden
+02173 01848 14 02341      STRD  STP85_1 !setpoint 85 tientallen
+02174 01849 14 02342      STRD  STP85_2 !setpoint 85 honderdtallen
+02175 01850 14 02343      STRD  STP85_3 !setpoint 85 duizendtallen
+02176                   
+02177 01851 17 00000.1    ANDNT 000.1
+02178 01852 00            NOP 1
+02179                   
+02180 01853 16 00000.1  L01853  AND 000.1
+02181 01854 13 00104      FTCHD DWS1_1  !eenheid DWS
+02182 01855 13 00105      FTCHD DWS1_2  !tiental DWS
+02183 01856 15 01506      COMP  1506  !constante 6
+02184 01857 15 01508      COMP  1508  !constante 8
+02185 01858 10 00003.1    STRB  RESULT  !F=C
+02186                   
+02187 01859 16 00003.1    AND RESULT  !F=C
+02188 01860 30 00013      JFRF  L01873
+02189                   
+02190 01861 16 00003.1    AND RESULT  !F=C
+02191 01862 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+02192 01863 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+02193 01864 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+02194 01865 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+02195 01866 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+02196 01867 14 02344      STRD  STP86_0 !setpoint 86 eenheden
+02197 01868 14 02345      STRD  STP86_1 !setpoint 86 tientallen
+02198 01869 14 02346      STRD  STP86_2 !setpoint 86 honderdtallen
+02199 01870 14 02347      STRD  STP86_3 !setpoint 86 duizendtallen
+02200                   
+02201 01871 17 00000.1    ANDNT 000.1
+02202 01872 00            NOP 1
+02203                   
+02204 01873 16 00000.1  L01873  AND 000.1
+02205 01874 13 00104      FTCHD DWS1_1  !eenheid DWS
+02206 01875 13 00105      FTCHD DWS1_2  !tiental DWS
+02207 01876 15 01507      COMP  1507  !constante 7
+02208 01877 15 01508      COMP  1508  !constante 8
+02209 01878 10 00003.1    STRB  RESULT  !F=C
+02210                   
+02211 01879 16 00003.1    AND RESULT  !F=C
+02212 01880 30 00013      JFRF  L01893
+02213                   
+02214 01881 16 00003.1    AND RESULT  !F=C
+02215 01882 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+02216 01883 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+02217 01884 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+02218 01885 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+02219 01886 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+02220 01887 14 02348      STRD  STP87_0 !setpoint 87 eenheden
+02221 01888 14 02349      STRD  STP87_1 !setpoint 87 tientallen
+02222 01889 14 02350      STRD  STP87_2 !setpoint 87 honderdtallen
+02223 01890 14 02351      STRD  STP87_3 !setpoint 87 duizendtallen
+02224                   
+02225 01891 17 00000.1    ANDNT 000.1
+02226 01892 00            NOP 1
+02227                   
+02228 01893 16 00000.1  L01893  AND 000.1
+02229 01894 13 00104      FTCHD DWS1_1  !eenheid DWS
+02230 01895 13 00105      FTCHD DWS1_2  !tiental DWS
+02231 01896 15 01508      COMP  1508  !constante 8
+02232 01897 15 01508      COMP  1508  !constante 8
+02233 01898 10 00003.1    STRB  RESULT  !F=C
+02234                   
+02235 01899 16 00003.1    AND RESULT  !F=C
+02236 01900 30 00013      JFRF  L01913
+02237                   
+02238 01901 16 00003.1    AND RESULT  !F=C
+02239 01902 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+02240 01903 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+02241 01904 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+02242 01905 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+02243 01906 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+02244 01907 14 02352      STRD  STP88_0 !setpoint 88 eenheden
+02245 01908 14 02353      STRD  STP88_1 !setpoint 88 tientallen
+02246 01909 14 02354      STRD  STP88_2 !setpoint 88 honderdtallen
+02247 01910 14 02355      STRD  STP88_3 !setpoint 88 duizendtallen
+02248                   
+02249 01911 17 00000.1    ANDNT 000.1
+02250 01912 00            NOP 1
+02251                   
+02252 01913 16 00000.1  L01913  AND 000.1
+02253 01914 13 00104      FTCHD DWS1_1  !eenheid DWS
+02254 01915 13 00105      FTCHD DWS1_2  !tiental DWS
+02255 01916 15 01509      COMP  1509  !constante 9
+02256 01917 15 01508      COMP  1508  !constante 8
+02257 01918 10 00003.1    STRB  RESULT  !F=C
+02258                   
+02259 01919 16 00003.1    AND RESULT  !F=C
+02260 01920 30 00013      JFRF  L01933
+02261                   
+02262 01921 16 00003.1    AND RESULT  !F=C
+02263 01922 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+02264 01923 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+02265 01924 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+02266 01925 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+02267 01926 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+02268 01927 14 02356      STRD  STP89_0 !setpoint 89 eenheden
+02269 01928 14 02357      STRD  STP89_1 !setpoint 89 tientallen
+02270 01929 14 02358      STRD  STP89_2 !setpoint 89 honderdtallen
+02271 01930 14 02359      STRD  STP89_3 !setpoint 89 duizendtallen
+02272                   
+02273 01931 17 00000.1    ANDNT 000.1
+02274 01932 00            NOP 1
+02275                   
+02276 01933 16 00000.1  L01933  AND 000.1
+02277 01934 13 00104      FTCHD DWS1_1  !eenheid DWS
+02278 01935 13 00105      FTCHD DWS1_2  !tiental DWS
+02279 01936 15 01500      COMP  1500  !constante 0
+02280 01937 15 01509      COMP  1509  !constante 9
+02281 01938 10 00003.1    STRB  RESULT  !F=C
+02282                   
+02283 01939 16 00003.1    AND RESULT  !F=C
+02284 01940 30 00013      JFRF  L01953
+02285                   
+02286 01941 16 00003.1    AND RESULT  !F=C
+02287 01942 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+02288 01943 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+02289 01944 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+02290 01945 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+02291 01946 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+02292 01947 14 02360      STRD  STP90_0 !setpoint 90 eenheden
+02293 01948 14 02361      STRD  STP90_1 !setpoint 90 tientallen
+02294 01949 14 02362      STRD  STP90_2 !setpoint 90 honderdtallen
+02295 01950 14 02363      STRD  STP90_3 !setpoint 90 duizendtallen
+02296                   
+02297 01951 17 00000.1    ANDNT 000.1
+02298 01952 00            NOP 1
+02299                   
+02300 01953 16 00000.1  L01953  AND 000.1
+02301 01954 13 00104      FTCHD DWS1_1  !eenheid DWS
+02302 01955 13 00105      FTCHD DWS1_2  !tiental DWS
+02303 01956 15 01501      COMP  1501  !constante 1
+02304 01957 15 01509      COMP  1509  !constante 9
+02305 01958 10 00003.1    STRB  RESULT  !F=C
+02306                   
+02307 01959 16 00003.1    AND RESULT  !F=C
+02308 01960 30 00013      JFRF  L01973
+02309                   
+02310 01961 16 00003.1    AND RESULT  !F=C
+02311 01962 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+02312 01963 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+02313 01964 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+02314 01965 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+02315 01966 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+02316 01967 14 02364      STRD  STP91_0 !setpoint 91 eenheden
+02317 01968 14 02365      STRD  STP91_1 !setpoint 91 tientallen
+02318 01969 14 02366      STRD  STP91_2 !setpoint 91 honderdtallen
+02319 01970 14 02367      STRD  STP91_3 !setpoint 91 duizendtallen
+02320                   
+02321 01971 17 00000.1    ANDNT 000.1
+02322 01972 00            NOP 1
+02323                   
+02324 01973 16 00000.1  L01973  AND 000.1
+02325 01974 13 00104      FTCHD DWS1_1  !eenheid DWS
+02326 01975 13 00105      FTCHD DWS1_2  !tiental DWS
+02327 01976 15 01502      COMP  1502  !constante 2
+02328 01977 15 01509      COMP  1509  !constante 9
+02329 01978 10 00003.1    STRB  RESULT  !F=C
+02330                   
+02331 01979 16 00003.1    AND RESULT  !F=C
+02332 01980 30 00013      JFRF  L01993
+02333                   
+02334 01981 16 00003.1    AND RESULT  !F=C
+02335 01982 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+02336 01983 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+02337 01984 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+02338 01985 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+02339 01986 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+02340 01987 14 02368      STRD  STP92_0 !setpoint 92 eenheden
+02341 01988 14 02369      STRD  STP92_1 !setpoint 92 tientallen
+02342 01989 14 02370      STRD  STP92_2 !setpoint 92 honderdtallen
+02343 01990 14 02371      STRD  STP92_3 !setpoint 92 duizendtallen
+02344                   
+02345 01991 17 00000.1    ANDNT 000.1
+02346 01992 00            NOP 1
+02347                   
+02348 01993 16 00000.1  L01993  AND 000.1
+02349 01994 13 00104      FTCHD DWS1_1  !eenheid DWS
+02350 01995 13 00105      FTCHD DWS1_2  !tiental DWS
+02351 01996 15 01503      COMP  1503  !constante 3
+02352 01997 15 01509      COMP  1509  !constante 9
+02353 01998 10 00003.1    STRB  RESULT  !F=C
+02354                   
+02355 01999 16 00003.1    AND RESULT  !F=C
+02356 02000 30 00013      JFRF  L02013
+02357                   
+02358 02001 16 00003.1    AND RESULT  !F=C
+02359 02002 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+02360 02003 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+02361 02004 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+02362 02005 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+02363 02006 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+02364 02007 14 02372      STRD  STP93_0 !setpoint 93 eenheden
+02365 02008 14 02373      STRD  STP93_1 !setpoint 93 tientallen
+02366 02009 14 02374      STRD  STP93_2 !setpoint 93 honderdtallen
+02367 02010 14 02375      STRD  STP93_3 !setpoint 93 duizendtallen
+02368                   
+02369 02011 17 00000.1    ANDNT 000.1
+02370 02012 00            NOP 1
+02371                   
+02372 02013 16 00000.1  L02013  AND 000.1
+02373 02014 13 00104      FTCHD DWS1_1  !eenheid DWS
+02374 02015 13 00105      FTCHD DWS1_2  !tiental DWS
+02375 02016 15 01504      COMP  1504  !constante 4
+02376 02017 15 01509      COMP  1509  !constante 9
+02377 02018 10 00003.1    STRB  RESULT  !F=C
+02378                   
+02379 02019 16 00003.1    AND RESULT  !F=C
+02380 02020 30 00013      JFRF  L02033
+02381                   
+02382 02021 16 00003.1    AND RESULT  !F=C
+02383 02022 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+02384 02023 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+02385 02024 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+02386 02025 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+02387 02026 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+02388 02027 14 02376      STRD  STP94_0 !setpoint 94 eenheden
+02389 02028 14 02377      STRD  STP94_1 !setpoint 94 tientallen
+02390 02029 14 02378      STRD  STP94_2 !setpoint 94 honderdtallen
+02391 02030 14 02379      STRD  STP94_3 !setpoint 94 duizendtallen
+02392                   
+02393 02031 17 00000.1    ANDNT 000.1
+02394 02032 00            NOP 1
+02395                   
+02396 02033 16 00000.1  L02033  AND 000.1
+02397 02034 13 00104      FTCHD DWS1_1  !eenheid DWS
+02398 02035 13 00105      FTCHD DWS1_2  !tiental DWS
+02399 02036 15 01505      COMP  1505  !constante 5
+02400 02037 15 01509      COMP  1509  !constante 9
+02401 02038 10 00003.1    STRB  RESULT  !F=C
+02402                   
+02403 02039 16 00003.1    AND RESULT  !F=C
+02404 02040 30 00013      JFRF  L02053
+02405                   
+02406 02041 16 00003.1    AND RESULT  !F=C
+02407 02042 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+02408 02043 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+02409 02044 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+02410 02045 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+02411 02046 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+02412 02047 14 02380      STRD  STP95_0 !setpoint 95 eenheden
+02413 02048 14 02381      STRD  STP95_1 !setpoint 95 tientallen
+02414 02049 14 02382      STRD  STP95_2 !setpoint 95 honderdtallen
+02415 02050 14 02383      STRD  STP95_3 !setpoint 95 duizendtallen
+02416                   
+02417 02051 17 00000.1    ANDNT 000.1
+02418 02052 00            NOP 1
+02419                   
+02420 02053 16 00000.1  L02053  AND 000.1
+02421 02054 13 00104      FTCHD DWS1_1  !eenheid DWS
+02422 02055 13 00105      FTCHD DWS1_2  !tiental DWS
+02423 02056 15 01506      COMP  1506  !constante 6
+02424 02057 15 01509      COMP  1509  !constante 9
+02425 02058 10 00003.1    STRB  RESULT  !F=C
+02426                   
+02427 02059 16 00003.1    AND RESULT  !F=C
+02428 02060 30 00013      JFRF  L02073
+02429                   
+02430 02061 16 00003.1    AND RESULT  !F=C
+02431 02062 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+02432 02063 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+02433 02064 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+02434 02065 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+02435 02066 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+02436 02067 14 02384      STRD  STP96_0 !setpoint 96 eenheden
+02437 02068 14 02385      STRD  STP96_1 !setpoint 96 tientallen
+02438 02069 14 02386      STRD  STP96_2 !setpoint 96 honderdtallen
+02439 02070 14 02387      STRD  STP96_3 !setpoint 96 duizendtallen
+02440                   
+02441 02071 17 00000.1    ANDNT 000.1
+02442 02072 00            NOP 1
+02443                   
+02444 02073 16 00000.1  L02073  AND 000.1
+02445 02074 13 00104      FTCHD DWS1_1  !eenheid DWS
+02446 02075 13 00105      FTCHD DWS1_2  !tiental DWS
+02447 02076 15 01507      COMP  1507  !constante 7
+02448 02077 15 01509      COMP  1509  !constante 9
+02449 02078 10 00003.1    STRB  RESULT  !F=C
+02450                   
+02451 02079 16 00003.1    AND RESULT  !F=C
+02452 02080 30 00013      JFRF  L02093
+02453                   
+02454 02081 16 00003.1    AND RESULT  !F=C
+02455 02082 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+02456 02083 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+02457 02084 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+02458 02085 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+02459 02086 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+02460 02087 14 02388      STRD  STP97_0 !setpoint 97 eenheden
+02461 02088 14 02389      STRD  STP97_1 !setpoint 97 tientallen
+02462 02089 14 02390      STRD  STP97_2 !setpoint 97 honderdtallen
+02463 02090 14 02391      STRD  STP97_3 !setpoint 97 duizendtallen
+02464                   
+02465 02091 17 00000.1    ANDNT 000.1
+02466 02092 00            NOP 1
+02467                   
+02468 02093 16 00000.1  L02093  AND 000.1
+02469 02094 13 00104      FTCHD DWS1_1  !eenheid DWS
+02470 02095 13 00105      FTCHD DWS1_2  !tiental DWS
+02471 02096 15 01509      COMP  1509  !constante 9
+02472 02097 15 01509      COMP  1509  !constante 9
+02473 02098 10 00003.1    STRB  RESULT  !F=C
+02474                   
+02475 02099 16 00003.1    AND RESULT  !F=C
+02476 02100 00            NOP 1
+02477                   
+02478 02101 16 00003.1    AND RESULT  !F=C
+02479 02102 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+02480 02103 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+02481 02104 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+02482 02105 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+02483 02106 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+02484 02107 14 02396      STRD  STP99_0 !setpoint 99 eenheden
+02485 02108 14 02397      STRD  STP99_1 !setpoint 99 tientallen
+02486 02109 14 02398      STRD  STP99_2 !setpoint 99 honderdtallen
+02487 02110 14 02399      STRD  STP99_3 !setpoint 99 duizendtallen
+02488 02111 00            NOP 89
