@@ -290,7 +290,16 @@ void END(Address address)
 void RET()
 {
   previous = programCounter;
-  current = last(stack);
+  try
+  {
+    current = last(stack);
+  }
+  catch:
+  {
+    println("Returning with an empty stack.... resetting PLC");
+    reset();
+    return;
+  }
   handlePrint("RET", <0,0>, previous, last(stack));
   stack = take(size(stack)-1, stack);
   programCounter = current;  
@@ -304,6 +313,14 @@ Address generateAddress(str stringAddress)
   return <index, bit>; 
 }
 
+void randomizeInputs()
+{
+  for(n <- [1000..1100])
+  {
+    scratchPad[n] = arbInt() % 16;
+  }
+}
+
 void goHandle()
 {
   while(1 > 0)
@@ -314,7 +331,7 @@ void goHandle()
 
 void handlePrint(str instruction, Address address, bool wasTrue, bool isTrue)
 {
-  debugPrint("<printHeader(instruction)> <right("<address.index>",6, " ")>.<address.bit> was <wasTrue>, is <isTrue> condition: <condition>");
+  debugPrint("<printHeader(instruction)> <right("<address.index>",6, " ")>.<address.bit> was <left("<wasTrue>",5)>, is <isTrue> condition: <condition>");
 }
 
 void handlePrint(str instruction, Address address, int previous, int current)
@@ -339,7 +356,8 @@ void handleInstruction()
   }
   catch:
   {
-    debugPrint("End of program... restarting");
+    debugPrint("End of program, randomizing input and restarting");
+    randomizeInputs();
     programCounter = 0;
     return;
   }
