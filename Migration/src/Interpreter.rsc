@@ -143,7 +143,10 @@ void FETCH_CONSTANT(Address address)
   handlePrint("FTCHC", address, previous, current);  
 }
 
-int READ_REGISTER() = shiftLeft(register.bit[register.index+3],3) + shiftLeft(register.bit[register.index+2],2) + shiftLeft(register.bit[register.index+1],1) + register.bit[register.index];
+int READ_REGISTER() = shiftLeft(register.bit[register.index+3],3) 
+                    + shiftLeft(register.bit[register.index+2],2) 
+                    + shiftLeft(register.bit[register.index+1],1) 
+                    + toInt(register.bit[register.index]);
 
 void WRITE_REGISTER(int current)
 {
@@ -261,8 +264,8 @@ void END(Address address)
   {
     scratchPad[n] = physicalIO[n];
   }
-  programCounter = last(stack);
-  stack = take(size(stack)-1, stack); 
+  programCounter = 0;
+  condition = false;   
 }
 
 void RET()
