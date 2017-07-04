@@ -84,30 +84,6 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
   render(vcat(sourceFigures));  
 }
 
-
-bool patternCheck(WordInstruction W)
-{
-  switch(W)
-  {
-    // Start of Reset block
-    case (WordInstruction) `<SourcePrefix source>12 00000<WhiteSpace ws><NewLine n>`:
-    {
-      debugPrint("Resetpattern found");
-      return true;
-    }
-    case (WordInstruction) `<InstructionPrefix prefix><WordAddress W><NewLine n>`:
-    {
-      debugPrint("Some other AddressMethod");
-      return true;       
-    }
-    default:
-    {
-      debugPrint("Unmatched instruction: <W>");
-      return false;
-    }
-  }
-}
-
 bool singleLine(&T inputData) = 1 == size(inputData);
 bool hasContent(&T inputData) = (false == isEmpty(inputData));
 bool isEmpty(&T inputData) = (0 == size(inputData));
@@ -139,11 +115,16 @@ Tree removeBoilerPlate(Tree parseTree)
     {
       debugPrint("Removing multiple nop");
       insert((CodeBlock) `<CompiledInstruction* pre> <SkipInstruction firstNop> <CompiledInstruction* post>`);
-    }      
+    }    
+    case (CodeBlock) `<
+    CompiledInstruction* pre> <LogicInstruction logic> <SkipInstruction Nop> <CompiledInstruction* post>`:
+    {
+      debugPrint("Removing empty statement");
+      insert((CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* post>`);
+    } 
   }
   return parseTree;  
 }
-
 
 Tree extractModel(Tree tree) = innermost visit(tree)
 {  
@@ -154,7 +135,18 @@ Tree extractModel(Tree tree) = innermost visit(tree)
   WordInstruction store><
   CompiledInstruction* post>` :
   {
-    addLogicBlock(<"Memory constant", ["<source>16 0000.1","<fetchPrefix>12 <constantValue><newLine2>","<store>"]>);
+    addLogicBlock(<"Memory Constant", ["<source>16 00000.1","<fetchPrefix>12 <constantValue><newLine2>","<store>"]>);
+    insert((CodeBlock)`<CompiledInstruction* pre><CompiledInstruction* post>`);
+  }
+
+  /// This syntax fragment extracts pulses from the sources
+  case (CodeBlock)`<
+  CompiledInstruction* pre><SourcePrefix source>16 00001<BitValue bitVal><WhiteSpace ws><NewLine newLine><
+  SourcePrefix fetchPrefix>01 <BitAddress pulseSource><NewLine newLine2><  
+  AssignInstruction pulseTarget><
+  CompiledInstruction* post>` :
+  {
+    addLogicBlock(<"Timer Pulse", ["<source>16 00001<bitVal>","<fetchPrefix>01 <pulseSource><newLine2>","<pulseTarget>"]>);
     insert((CodeBlock)`<CompiledInstruction* pre><CompiledInstruction* post>`);
   }
 

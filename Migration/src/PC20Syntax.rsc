@@ -68,7 +68,8 @@ lexical Instruction = [0][3-7]
 lexical LogicInstructionNumber = "16" | "17" | "18" | "19" ;                          
 lexical JumpInstructionNumber = "24" | "25" | "29" | "30" ; 
                          
-lexical BitAddress = FiveDigits "." [0-3] WhiteSpace;
+lexical BitAddress = FiveDigits BitValue WhiteSpace;
+lexical BitValue = "." [0-3] ;
 lexical WordAddress = FiveDigits WhiteSpace;
 
 lexical FiveDigits = [0-9][0-9][0-9][0-9][0-9] ;
