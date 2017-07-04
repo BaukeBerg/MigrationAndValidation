@@ -68,9 +68,9 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
     {
     sourceFigures += generateLine("Silver", generateSuffix(S, sourceLines));
     }
-    case ReadInstruction R:
+    case LogicInstruction L:
     {
-      sourceFigures += generateLine("Tomato", generateSuffix(R, sourceLines));
+      sourceFigures += generateLine("Tomato", generateSuffix(L, sourceLines));
     }
     case SingleInstruction E:
     {
@@ -78,8 +78,11 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
     }   
     case JumpInstruction J:
     {
-      debugPrint("JumpInstruction");
       sourceFigures += generateLine("Violet", generateSuffix(J, sourceLines));
+    }
+    case IOInstruction I:
+    {
+      sourceFigures += generateLine("Orange", generateSuffix(I, sourceLines));
     }
   }  
   debugPrint("Rendering Figure");
@@ -140,8 +143,7 @@ Tree extractAssignments(Tree parseTree) = innermost visit(parseTree)
       else
       {
         insert (CodeBlock)`<CompiledInstruction* nextLine>`;
-      }
-           
+      }           
     }
     else
     {
