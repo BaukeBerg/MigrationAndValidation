@@ -2,6 +2,7 @@ module ModelExtractor
 
 import FileLocations;
 import IO;
+import PlcModel;
 import Parser;
 import ParseTree;
 import PC20Syntax;
@@ -28,18 +29,13 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
   if(true == preProcess)
   {
     debugPrint("Removing unnecessary code");   
-    parseTree = removeBoilerPlate(parseTree);    
-    debugPrint("Extracting assignments");    
+    parseTree = removeBoilerPlate(parseTree);
   }
-  debugPrint("Starting visit");
+  debugPrint("Trying to extract model data");
+  parseTree = extractModel(parseTree);  
+  debugPrint("Displaying data without a place in the model");
   visit(parseTree)
   { 
-    case (CodeBlock) `<CompiledInstruction* pre> <WordInstruction logicLines> <CompiledInstruction* post>` :
-    {
-      debugPrint("Hitted a word instruction");
-      insert((CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* post>` );
-    }
-  
     case EmptyLine E:
     {
       if(displayEmptyLines)
@@ -53,7 +49,6 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
     }
     case WordInstruction W:
     {
-      patternCheck(W);
       sourceFigures += generateLine("Lime", generateSuffix(W, sourceLines));
     }
     case BitInstruction B:
@@ -89,7 +84,37 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
   render(vcat(sourceFigures));  
 }
 
-void patternCheck(WordInstruction W)
+Tree extractModel(Tree tree) = innermost visit(tree)
+{  
+  case (CodeBlock) `<CompiledInstruction* pre> <WordInstruction logicLines> <CompiledInstruction* post>` :
+  {
+    if(patternCheck(logicLines))
+    {
+      insert((CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* post>` );
+    }
+    else
+    {
+      fail;
+    }    
+  }
+  
+  /// Handle the LSTIO END combinations, and after that, some loose LSTIO instructions...
+  case (CodeBlock) `<CompiledInstruction* pre> <IOInstruction lstio> <IOInstruction end> <CompiledInstruction* post>` :
+  {
+    debugPrint("Adding IO-readout to model");
+    addLogicBlock(["<lstio>", "<end>"]);    
+    insert((CodeBlock)`<CompiledInstruction* pre><CompiledInstruction* post>`);
+  }
+  
+  case (CodeBlock) `<CompiledInstruction* pre><IOInstruction lstio><CompiledInstruction* post>` :
+  {
+    debugPrint("Removing single IO instruction");
+    insert((CodeBlock) `<CompiledInstruction* pre><CompiledInstruction* post>`);    
+  }
+  
+};
+
+bool patternCheck(WordInstruction W)
 {
   switch(W)
   {
@@ -97,10 +122,17 @@ void patternCheck(WordInstruction W)
     case (WordInstruction) `<SourcePrefix source>12 00000<WhiteSpace ws><NewLine n>`:
     {
       debugPrint("Resetpattern found");
+      return true;
+    }
+    case (WordInstruction) `<InstructionPrefix prefix><WordAddress W><NewLine n>`:
+    {
+      debugPrint("Some other AddressMethod");
+      return true;       
     }
     default:
     {
       debugPrint("Unmatched instruction: <W>");
+      return false;
     }
   }
 }
