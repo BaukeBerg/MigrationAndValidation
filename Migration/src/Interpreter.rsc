@@ -43,10 +43,11 @@ void reset()
  programCounter = 0;
  condition = true;
  resetScratchPad();
+ clearRegisters();
  SETBIT(<0,1>);
 }
 
-void resetRegister()
+void clearRegisters()
 {
   register = <generateList(16,false), 0>;
 }
