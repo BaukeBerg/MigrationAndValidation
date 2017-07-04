@@ -32,7 +32,7 @@ syntax CompiledInstruction = empty:EmptyLine
                            | EventInstruction
                            | WordInstruction
                            | SkipInstruction
-                           | AssignInstruction 
+                           | assign:AssignInstruction 
                            | SingleInstruction // Instruction without address
                            | io:IOInstruction
                            ;
