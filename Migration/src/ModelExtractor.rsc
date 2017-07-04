@@ -128,6 +128,24 @@ Tree removeBoilerPlate(Tree parseTree)
 
 Tree extractModel(Tree tree) = innermost visit(tree)
 {  
+  /// FullStore
+  case (CodeBlock)`<
+  CompiledInstruction* pre><
+  SourcePrefix p1>13 <WordAddress w1><NewLine nl1><
+  SourcePrefix p2>13 <WordAddress w2><NewLine nl2><
+  SourcePrefix p3>13 <WordAddress w3><NewLine nl3><
+  SourcePrefix p4>13 <WordAddress w4><NewLine nl4><
+  SourcePrefix p5>14 <WordAddress w5><NewLine nl5><
+  SourcePrefix p6>14 <WordAddress w6><NewLine nl6><
+  SourcePrefix p7>14 <WordAddress w7><NewLine nl7><
+  SourcePrefix p8>14 <WordAddress w8><NewLine nl8><
+  CompiledInstruction* post>`:
+  {
+  	debugPrint("Adding 4-address FetchAndStore");
+  	addLogicBlock(<"4-address Fetch and Store", ["<p1>13 <w1>", "<p2>13 <w2>", "<p3>13 <w3>", "<p4>13 <w4>", "<p5>14 <w5>", "<p6>14 <w6>", "<p7>14 <w7>", "<p8>14 <w8>"]>);
+  	insert((CodeBlock)`<CompiledInstruction *pre><CompiledInstruction* post>`);
+  }
+
   /// This syntax fragment extracts assignment of a constant in memory
   case (CodeBlock)`<
   CompiledInstruction* pre><SourcePrefix source>16 00000.1<WhiteSpace ws><NewLine newLine><
@@ -153,7 +171,7 @@ Tree extractModel(Tree tree) = innermost visit(tree)
   // Logic instructions with an equal => Unconditional assign
   case (CodeBlock) `<CompiledInstruction* pre><LogicInstruction logic><CompiledInstruction* between><AssignInstruction assign><CompiledInstruction* post>` :
   {
-    if(!any(line <- pre, line is logic) && (isEmpty(between) || (all(line <- between, line is logic))))
+    if((isEmpty(between) || (all(line <- between, line is logic))))
     {
       debugPrint("Adding Unconditional assign instruction to model");      
       addLogicBlock(<"Unconditional assign", ["<logic>"] + ["<line>" | line <- between ] + ["<assign>"]>);
