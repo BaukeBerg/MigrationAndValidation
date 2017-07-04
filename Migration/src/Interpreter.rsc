@@ -89,6 +89,14 @@ void EQUALS_NOT(Address address)
   handlePrint("EQLNT", address, wasTrue, isTrue);
 }
 
+void COMPARE(Address address)
+{
+  wasTrue = condition;
+  isTrue = GETBIT(address);
+  condition = wasTrue == isTrue;
+  handlePrint("COMP", address, wasTrue, isTrue);  
+}
+
 void SET0(Address address)
 {
   wasTrue = GETBIT(address);  
@@ -144,11 +152,21 @@ void FETCH_CONSTANT(Address address)
   handlePrint("FTCHC", address, previous, current);  
 }
 
+void STORE_DIGIT(Address address)
+{
+  int previous = scratchPad[address.index];
+  int current = READ_REGISTER();
+  scratchPad[address.index] = previous;
+  handlePrint("STRD", address, previous, current);  
+}
+
+
+// A read and write should have it's own registers??
 int READ_REGISTER() = shiftLeft(register.bit[register.index+3],3) 
                     + shiftLeft(register.bit[register.index+2],2) 
                     + shiftLeft(register.bit[register.index+1],1) 
-                    + toInt(register.bit[register.index]);
-
+                    + toInt(register.bit[register.index]); 
+  
 void WRITE_REGISTER(int current)
 {
   register.bit[register.index] = 0 < mask(current, 0);
