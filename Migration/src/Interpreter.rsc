@@ -20,6 +20,7 @@ int memorySize = 3000;
 
 list[int] initScratchPad() = generateList(memorySize, 0);
 int lastFetch = -10;
+int lastLogic = -10;
 public int programCounter = 0 ;
 list[str] instructionList = readFileLines(generatedFile("DR_TOT_3.instructions"));
 list[int] scratchPad = initScratchPad();
@@ -38,6 +39,7 @@ bool showInstructions = false;
 void reset()
 {
  lastFetch = -10;
+ lastLogic = -10;
  programCounter = 0;
  condition = true;
  resetScratchPad();
@@ -61,7 +63,6 @@ void NOP()
   handlePrint("NOP");
 }
 
-// Specification of Trigger instruction
 void TRIGGER(Address address)
 {
   isTrue = GETBIT(address);
@@ -156,7 +157,7 @@ void WRITE_REGISTER(int current)
 void AND(Address address)
 {
   isTrue = GETBIT(address);
-  wasTrue = condition;
+  wasTrue = hasCondition();
   condition = isTrue && wasTrue; 
   handlePrint("AND", address, wasTrue, isTrue);
 }
@@ -172,7 +173,7 @@ void ANDNT(Address address)
 void OR(Address address)
 {
   isTrue = GETBIT(address);
-  wasTrue = condition;
+  wasTrue = hasCondition();
   condition = wasTrue || isTrue;
   handlePrint("OR", address, wasTrue, isTrue);
 }
@@ -180,9 +181,18 @@ void OR(Address address)
 void ORNT(Address address)
 {
   isTrue = GETBIT(address);
-  wasTrue = condition;
+  wasTrue = hasCondition();
   condition = wasTrue || !isTrue;
   handlePrint("ORNT", address, wasTrue, isTrue);
+}
+
+bool hasCondition() = (condition || startOfLogicChain());
+
+bool startOfLogicChain()
+{
+  bool isStart = 1 < abs(programCounter-lastLogic);
+  lastLogic = programCounter;  
+  return isStart;
 }
 
 void JUMP_SUBROUTINE_FALSE(Address address)
