@@ -61,11 +61,11 @@ lexical Instruction = [0][3-7]
                     | [1][0-5]
                     | [2][0-3]
                     | [2][6-7]
-                    | [3][0-1]
+                    | "31"
                     ;
 
 lexical ReadInstructionNumber = "16" | "17" | "18" | "19" ;                          
-lexical JumpInstructionNumber = "24" | "25" | "28" | "29" ; 
+lexical JumpInstructionNumber = "24" | "25" | "29" | "30" ; 
                          
 lexical BitAddress = FiveDigits "." [0-3] WhiteSpace;
 lexical WordAddress = FiveDigits WhiteSpace;
