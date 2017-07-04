@@ -195,16 +195,30 @@ void ANDNT(Address address)
 void OR(Address address)
 {
   isTrue = GETBIT(address);
-  wasTrue = hasCondition();
-  condition = wasTrue || isTrue;
+  wasTrue = condition;
+  if(startOfLogicChain())
+  {
+    condition = isTrue;
+  }
+  else
+  {
+    condition = wasTrue || isTrue;
+  }
   handlePrint("OR", address, wasTrue, isTrue);
 }
 
 void ORNT(Address address)
 {
-  isTrue = GETBIT(address);
-  wasTrue = hasCondition();
-  condition = wasTrue || !isTrue;
+  isTrue = (false == GETBIT(address));
+  wasTrue = condition;
+  if(startOfLogicChain())
+  {
+    condition = isTrue;
+  }
+  else
+  {
+    condition = wasTrue || isTrue;
+  }  
   handlePrint("ORNT", address, wasTrue, isTrue);
 }
 
@@ -331,7 +345,7 @@ void goHandle()
 
 void handlePrint(str instruction, Address address, bool wasTrue, bool isTrue)
 {
-  debugPrint("<printHeader(instruction)> <right("<address.index>",6, " ")>.<address.bit> was <left("<wasTrue>",5)>, is <isTrue> condition: <condition>");
+  debugPrint("<printHeader(instruction)> <right("<address.index>",6, " ")>.<address.bit> was <left("<wasTrue>",5)>, is <left("<isTrue>",5)> condition: <condition>");
 }
 
 void handlePrint(str instruction, Address address, int previous, int current)
