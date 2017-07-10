@@ -6,7 +6,7 @@ import PlcModel;
 import Parser;
 import ParseTree;
 import PC20Syntax;
-import Stripper;
+import String;
 
 import vis::Figure;
 import vis::ParseTree;
@@ -42,6 +42,10 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
       {  
         sourceFigures += generateLine("LightGrey", generateSuffix(E, sourceLines));
       }
+    }
+    case ExtractedCodeBlock ECB:
+    {
+      sourceFigures += generateLine("Sandybrown", "<ECB>"); 
     }
     case AssignInstruction A:
     {
@@ -106,64 +110,113 @@ Tree removeBoilerPlate(Tree parseTree)
   debugPrint("pass <visitPassed>");
   parseTree = innermost visit(parseTree)
   {
-    case (CodeBlock) `<CompiledInstruction* pre> <EmptyLine emptyLines> <CompiledInstruction* post>`: 
+    case (CodeBlock) `<CompiledInstruction* pre> <EmptyLine emptyLine> <CompiledInstruction* post>`: 
     {
       debugPrint("Removing empty line block");
-      insert(CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* post>` ;
+      while((CodeBlock)`<EmptyLine E><CompiledInstruction *newPost>` := (CodeBlock)`<CompiledInstruction* post>`)
+      {
+        post = newPost;
+      }
+      insert(CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* post>` ;     
     }
     case (CodeBlock) `<CompiledInstruction* pre> <SkipInstruction firstNop> <SkipInstruction secondNop> <CompiledInstruction* post>`:
     {
       debugPrint("Removing multiple nop");
+      while((CodeBlock)`<SkipInstruction moreNop><CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction post>`)
+      {
+        post = newPost;
+      }
       insert((CodeBlock) `<CompiledInstruction* pre> <SkipInstruction firstNop> <CompiledInstruction* post>`);
     }    
-    case (CodeBlock) `<
-    CompiledInstruction* pre> <LogicInstruction logic> <SkipInstruction Nop> <CompiledInstruction* post>`:
-    {
-      debugPrint("Removing empty statement");
-      insert((CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* post>`);
-    } 
+    //case (CodeBlock) `<
+    //CompiledInstruction* pre> <LogicInstruction logic> <SkipInstruction Nop> <CompiledInstruction* post>`:
+    //{
+    //  debugPrint("Removing empty statement <Nop>");
+    //  insert((CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* post>`);
+    //} 
   }
   return parseTree;  
 }
 
+list[Statement] actions = [];
+list[Statement] conditions = [];
+int first = 0;
+int last = 0;
+str nl = "\n";
+str blockType;
+
 Tree extractModelTest(Tree tree) = innermost visit(tree)
 {  
+     case (CodeBlock) `<CompiledInstruction* pre><
+     EventInstruction C><
+     CompiledInstruction* post>`:
+    {
+      debugPrint("Found an event");
+      actions = [];
+      conditions = ["<C>"];
+      debugPrint("Let\'s examine all previous conditions");
+      while((CodeBlock)`<CompiledInstruction* newPre><
+                         ConditionInstruction newC>` 
+          := (CodeBlock)`<CompiledInstruction *pre>`)
+      {
+        conditions = ["<newC>"] + conditions;
+        pre = newPre;
+      }
+      debugPrint("Let\'s example all following conditions");
+      while((CodeBlock)`<ConditionInstruction newC><CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction *post>`)
+      {
+        conditions += ["<newC>"];
+        post = newPost;
+      }
+      debugPrint("Now harvest all actions");
+      while((CodeBlock)`<ActionInstruction newA><CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction *post>`)
+      {
+        post = newPost;
+        actions += ["<newA>"];
+      }
+      debugPrint("Finally, store model block and insert remainder");
+      constructLogic("Event");
+      strFirst = parse(#FiveDigits, right("<first>", 5, "0"));
+      strLast = parse(#FiveDigits, right("<last>", 5, "0"));
+      description = parse(#Description, blockType);
+      insert((CodeBlock)`<CompiledInstruction* pre>CodeBlock: <FiveDigits strFirst>-<FiveDigits strLast> is <Description description><CompiledInstruction* post>`);
+    }
+  
   case (CodeBlock)`<
   CompiledInstruction* pre><
   ConditionInstruction C><
-  AssignInstruction W><
+  AssignInstruction A><
   CompiledInstruction* post>`:
   {
-    Assignments = ["<W>"];
-    debugPrint("Starting with post size <size(post)>");
-    debugPrint("Extracting the list of assignments");
-    while((CodeBlock)`<AssignInstruction newW><
+    conditions = ["<C>"];
+    actions = ["<A>"];
+    
+    while((CodeBlock)`<AssignInstruction newA><
                       CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction *post>`)
                       { 
-                        debugPrint("before <size(post)>");
                         post = newPost;
-                        Assignments += ["<newW>"];
-                        debugPrint("after <size(post)>");                     
-                        
+                        actions += ["<newA>"];
                       }
-   debugPrint("Extracted the following <size(Assignments)> assigments: <Assignments>");
-   debugPrint("Now fetching the conditions for the assignment...");                      
-       
    
-    Conditions = ["<C>"];
-    while((CodeBlock)`<CompiledInstruction *newPre><
+   while((CodeBlock)`<CompiledInstruction *newPre><
                    ConditionInstruction newC>` := (CodeBlock)`<CompiledInstruction *pre>`)
     {
       debugPrint("previous pre size: <size(pre)>");
       pre = newPre;
-      Conditions = ["<newC>"] + Conditions;
-      debugPrint("new pre size: <size(pre)>");
+      conditions = ["<newC>"] + conditions;      
     }
-    debugPrint("Extracted the following <size(Conditions)> conditions: <Conditions>");
-    
+    constructLogic("Assign Statement");
     insert((CodeBlock)`<CompiledInstruction* pre><CompiledInstruction* post>`);
   }
 };
+  
+void constructLogic(str description)
+{
+  first = getProgramCounter(head(conditions));
+  last = getProgramCounter(head(reverse(actions)));
+  blockType = description;
+  addLogicBlock(<first, last, description, conditions, actions>);
+}
   
 Tree extractModel(Tree tree) = innermost visit(tree)
 {
@@ -237,6 +290,8 @@ Tree extractModel(Tree tree) = innermost visit(tree)
   
 };
 
+str generateSuffix(ExtractedCodeBlock Block, list[str] sourceLines) = "<Block>: <Block>";
+
 str generateSuffix(&T item, list[str] sourceLines) = "<getLineNumber(item)>: <lineContent(sourceLines, getLineNumber(item))>";
 
 str lineContent(list[str] sourceLines, int lineNumber)
@@ -249,6 +304,18 @@ str lineContent(list[str] sourceLines, int lineNumber)
   {
     return "-- Empty --";
   }
+}
+
+int getProgramCounter(str lineToCheck)
+{
+  try
+  {
+    return parseInt(substring(lineToCheck, 6,11));
+  }
+  catch:
+  {
+    return -1;
+  }  
 }
 
 int getLineNumber(&T item)

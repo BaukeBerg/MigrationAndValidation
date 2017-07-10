@@ -25,16 +25,27 @@ start syntax PC20_Compiled = CodeBlock ;
 
 syntax CodeBlock = CompiledInstruction*;
 
-syntax CompiledInstruction = empty:EmptyLine
+syntax CompiledInstruction = empty:EmptyLine                             
                            | jump:JumpInstruction
                            | ConditionInstruction
-                           | BitInstruction                           
-                           | wordInstruction:WordInstruction
-                           | SkipInstruction
-                           | assign:AssignInstruction 
-                           | SingleInstruction // Instruction without address
-                           | io:IOInstruction
+                           | ActionInstruction
+                           |BitInstruction          
+                            | wordInstruction:WordInstruction
+                            | SkipInstruction                            
+                            | io:IOInstruction
+                            | SingleInstruction // Instruction without address
+                            | ExtractedCodeBlock
                            ;
+                           
+lexical ExtractedCodeBlock = "CodeBlock: " FiveDigits "-" FiveDigits " is " Description;
+
+lexical Description = [a-zA-Z0-9\ ]* !>> [a-zA-Z0-9\ ];
+
+
+lexical ActionInstruction =  assign:AssignInstruction
+                            | FetchInstruction
+                            | StoreInstruction                            
+                            ;
 
 lexical ConditionInstruction = LogicInstruction
                              | EventInstruction
@@ -46,16 +57,24 @@ lexical EmptyLine = SourceLineNumber NewLine ;
 lexical AssignInstruction = SourcePrefix ("02" | "08" | "09") WhiteSpace BitAddress NewLine ;                      
 lexical SkipInstruction = SourcePrefix "00" WhiteSpace NewLine;                        
 lexical EventInstruction = SourcePrefix "01" WhiteSpace BitAddress NewLine ;                        
-lexical LogicInstruction = LogicInstructionPrefix BitAddress NewLine ;                                  
+lexical LogicInstruction = SourcePrefix ("16" | "17" | "18" | "19") WhiteSpace BitAddress NewLine ;                                  
 lexical BitInstruction = InstructionPrefix BitAddress NewLine ;
 lexical WordInstruction = InstructionPrefix WordAddress NewLine ;
 lexical SingleInstruction = InstructionPrefix NewLine ;
-lexical JumpInstruction = JumpPrefix WordAddress NewLine;
+lexical JumpInstruction = SourcePrefix ("24" | "25" | "29" | "30") WhiteSpace WordAddress NewLine;
 lexical IOInstruction = SourcePrefix ( "31" | "27" ) WhiteSpace WordAddress NewLine;
+lexical FetchInstruction = FetchBit
+                         | FetchWord                         
+                         ;
+lexical StoreInstruction = StoreBit
+                         | StoreWord
+                         ;
 
-lexical LogicInstructionPrefix = SourcePrefix LogicInstructionNumber WhiteSpace ;
+lexical StoreBit = SourcePrefix "10" WhiteSpace BitAddress NewLine;
+lexical FetchBit = SourcePrefix "11" WhiteSpace BitAddress NewLine;
+lexical FetchWord = SourcePrefix ("12" | "13") WhiteSpace WordAddress NewLine;
+lexical StoreWord = SourcePrefix "14" WhiteSpace WordAddress NewLine;
 lexical InstructionPrefix = SourcePrefix InstructionNumber ;
-lexical JumpPrefix = SourcePrefix JumpInstructionNumber WhiteSpace;
 lexical SourcePrefix = SourceLineNumber ProgramLineNumber ;
 
 lexical ProgramLineNumber = FiveDigits WhiteSpace ;
@@ -63,13 +82,10 @@ lexical SourceLineNumber = FiveDigits WhiteSpace;
 
 lexical InstructionNumber = Instruction WhiteSpace ;
 lexical Instruction = [0][3-7]
-                    | [1][0-5]
+                    | "15"
                     | [2][0-3]
                     | "26"                    
                     ;
-
-lexical LogicInstructionNumber = "16" | "17" | "18" | "19" ;                          
-lexical JumpInstructionNumber = "24" | "25" | "29" | "30" ; 
                          
 lexical BitAddress = FiveDigits BitValue WhiteSpace;
 lexical BitValue = "." [0-3] ;
@@ -85,7 +101,7 @@ lexical LabelLocation = ComposedLabel
                       | NewLine
                       ;
                       
-lexical ComposedLabel = Label + ":" + LineNumber + NewLine? !>> "\r" ;
+lexical ComposedLabel = Label ":" LineNumber NewLine? !>> "\r" ;
 
 // This block defines the syntax for a symbol table
 
@@ -97,9 +113,9 @@ syntax Symbol = Declaration
               | NewLine           
               ; 
 
-lexical Declaration = VariableName + WhiteSpace+ "=" Address ;
+lexical Declaration = VariableName WhiteSpace+ "=" Address ;
 lexical NewLine = "\r\n";
-lexical UnreferencedDeclaration = "=" + Address ;
+lexical UnreferencedDeclaration = "=" Address ;
 
 // This block defines the syntax for PDS5 source files
 
@@ -112,7 +128,7 @@ syntax Expression = SingleLabel
                     ;
                     
 public layout LS = [\ \t]* !>> [\ \t] ;
-lexical PdsComment = "!" + [*_a-zA-Z0-9=./,\ \t\"+?()\'|\>\<]* !>> [*_a-zA-Z0-9=./,\ \t\"+?()\'|\>\<] ;
+lexical PdsComment = "!" [*_a-zA-Z0-9=./,\ \t\"+?()\'|\>\<]* !>> [*_a-zA-Z0-9=./,\ \t\"+?()\'|\>\<] ;
 lexical WhiteSpace = [\t\ ]+ !>> [\t\ ];
 
 lexical SingleLabel = Label;
@@ -170,9 +186,9 @@ lexical LabelInstructionName = subRoutineAbsoluteFalse:"JSAF"   // 24 Jump to Su
                                    
 syntax Identifier = Address | Variable;
 syntax Address = BitAddress | WordAddress ; 
-lexical BitAddress = WhiteSpace+[0-9]+ !>> [0-9] + "." + [0-7];
+lexical BitAddress = WhiteSpace+[0-9]+ !>> [0-9] "." [0-7];
 lexical WordAddress = WhiteSpace+[0-9][0-9][0-9][0-9] ;
-lexical Variable = WhiteSpace+ + VariableName ;
+lexical Variable = WhiteSpace+ VariableName ;
 lexical VariableName = [A-Z][A-Z_0-9,]* !>> [A-Z_0-9,]+ !>> [A-Z_0-9] ;
 lexical Amount = WhiteSpace+[0-9]+ !>> [0-9]; 
-lexical LineNumber = WhiteSpace* !>> WhiteSpace + [0-9]+ !>> [0-9] ; 
+lexical LineNumber = WhiteSpace* !>> WhiteSpace [0-9]+ !>> [0-9] ; 
