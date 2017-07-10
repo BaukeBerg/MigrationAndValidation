@@ -130,11 +130,13 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
 {  
   case (CodeBlock)`<
   CompiledInstruction* pre><
+  LogicInstruction L><
   AssignInstruction W><
   CompiledInstruction* post>`:
   {
     Assignments = ["<W>"];
     debugPrint("Starting with post size <size(post)>");
+    debugPrint("Extracting the list of assignments");
     while((CodeBlock)`<AssignInstruction newW><
                       CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction *post>`)
                       { 
@@ -144,20 +146,21 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
                         debugPrint("after <size(post)>");                     
                         
                       }
-                      debugPrint("Extracted the following <size(Assignments)> assigments: <Assignments>");
-    // Now fetching the conditions for the assignment...                      
+   debugPrint("Extracted the following <size(Assignments)> assigments: <Assignments>");
+   debugPrint("Now fetching the conditions for the assignment...");                      
        
-    //
-    //while((CodeBlock)`<CompiledInstruction *newPre><
-    //                LogicInstruction L>` := (CodeBlock)`<CompiledInstruction *pre>`)
-    //{
-    //  debugPrint("Execution based on: <L>");
-    //  debugPrint("previous pre size: <size(pre)>");
-    //  pre := newPre;
-    //  debugPrint("new pre size: <size(pre)>");
-    //}
+   
+    Conditions = ["<L>"];
+    while((CodeBlock)`<CompiledInstruction *newPre><
+                   LogicInstruction newL>` := (CodeBlock)`<CompiledInstruction *pre>`)
+    {
+      debugPrint("previous pre size: <size(pre)>");
+      pre = newPre;
+      Conditions = ["<newL>"] + Conditions;
+      debugPrint("new pre size: <size(pre)>");
+    }
+    debugPrint("Extracted the following <size(Conditions)> conditions: <Conditions>");
     
-    // Returning the rest
     insert((CodeBlock)`<CompiledInstruction* pre><CompiledInstruction* post>`);
   }
 };
