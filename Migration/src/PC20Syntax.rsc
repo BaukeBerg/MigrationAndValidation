@@ -25,16 +25,18 @@ start syntax PC20_Compiled = CodeBlock ;
 
 syntax CodeBlock = CompiledInstruction*;
 
-syntax CompiledInstruction = empty:EmptyLine                             
+syntax CompiledInstruction = empty:EmptyLine
                            | jump:JumpInstruction
                            | ConditionInstruction
+                           | CountInstruction
+                           | CalcInstruction
                            | ActionInstruction
-                           |BitInstruction          
-                            | wordInstruction:WordInstruction
-                            | SkipInstruction                            
-                            | io:IOInstruction
-                            | SingleInstruction // Instruction without address
-                            | ExtractedCodeBlock
+                           | SkipInstruction                            
+                           | io:IOInstruction
+                           | SingleInstruction // Instruction without address
+                           | ExtractedCodeBlock
+                           | CalcInstruction
+                           | CompareInstruction                            
                            ;
                            
 lexical ExtractedCodeBlock = "CodeBlock: " FiveDigits "-" FiveDigits " is " Description;
@@ -43,8 +45,7 @@ lexical Description = [a-zA-Z0-9\ ]* !>> [a-zA-Z0-9\ ];
 
 
 lexical ActionInstruction =  assign:AssignInstruction
-                            | FetchInstruction
-                            | StoreInstruction                            
+                            | FetchInstruction                                                        
                             ;
 
 lexical ConditionInstruction = LogicInstruction
@@ -54,39 +55,24 @@ lexical ConditionInstruction = LogicInstruction
 // Lowest level instructions
 lexical EmptyLine = SourceLineNumber NewLine ;
 
-lexical AssignInstruction = SourcePrefix ("02" | "08" | "09") WhiteSpace BitAddress NewLine ;                      
+// Not sure about instruction 10...
+                      
 lexical SkipInstruction = SourcePrefix "00" WhiteSpace NewLine;                        
 lexical EventInstruction = SourcePrefix "01" WhiteSpace BitAddress NewLine ;                        
+lexical AssignInstruction = SourcePrefix ("02" | "03" | "08" | "09" | "10" | "14") WhiteSpace (BitAddress | WordAddress) NewLine ;
+lexical CountInstruction = SourcePrefix ("06" | "07") WhiteSpace WordAddress NewLine;
+lexical FetchInstruction = SourcePrefix ("11" | "12" | "13") WhiteSpace WordAddress NewLine;
+lexical CompareInstruction = SourcePrefix "15" WhiteSpace WordAddress NewLine ;
 lexical LogicInstruction = SourcePrefix ("16" | "17" | "18" | "19") WhiteSpace BitAddress NewLine ;                                  
-lexical BitInstruction = InstructionPrefix BitAddress NewLine ;
-lexical WordInstruction = InstructionPrefix WordAddress NewLine ;
-lexical SingleInstruction = InstructionPrefix NewLine ;
+lexical CalcInstruction = SourcePrefix ("20" | "21" | "22" | "23" ) WhiteSpace (BitAddress | WordAddress) Newline;
 lexical JumpInstruction = SourcePrefix ("24" | "25" | "29" | "30") WhiteSpace WordAddress NewLine;
 lexical IOInstruction = SourcePrefix ( "31" | "27" ) WhiteSpace WordAddress NewLine;
-lexical FetchInstruction = FetchBit
-                         | FetchWord                         
-                         ;
-lexical StoreInstruction = StoreBit
-                         | StoreWord
-                         ;
-
-lexical StoreBit = SourcePrefix "10" WhiteSpace BitAddress NewLine;
-lexical FetchBit = SourcePrefix "11" WhiteSpace BitAddress NewLine;
-lexical FetchWord = SourcePrefix ("12" | "13") WhiteSpace WordAddress NewLine;
-lexical StoreWord = SourcePrefix "14" WhiteSpace WordAddress NewLine;
-lexical InstructionPrefix = SourcePrefix InstructionNumber ;
+lexical SingleInstruction = SourcePrefix "26" WhiteSpace NewLine ;
 lexical SourcePrefix = SourceLineNumber ProgramLineNumber ;
 
 lexical ProgramLineNumber = FiveDigits WhiteSpace ;
 lexical SourceLineNumber = FiveDigits WhiteSpace;
 
-lexical InstructionNumber = Instruction WhiteSpace ;
-lexical Instruction = [0][3-7]
-                    | "15"
-                    | [2][0-3]
-                    | "26"                    
-                    ;
-                         
 lexical BitAddress = FiveDigits BitValue WhiteSpace;
 lexical BitValue = "." [0-3] ;
 lexical WordAddress = FiveDigits WhiteSpace;

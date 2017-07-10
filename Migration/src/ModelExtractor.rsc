@@ -51,11 +51,11 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
     {
       sourceFigures += generateLine("Cyan", generateSuffix(A, sourceLines));
     }
-    case WordInstruction W:
+    case CompareInstruction W:
     {
       sourceFigures += generateLine("Lime", generateSuffix(W, sourceLines));
     }
-    case BitInstruction B:
+    case CalcInstruction B:
     {
       sourceFigures += generateLine("Yellow", generateSuffix(B, sourceLines));      
     }    
@@ -119,15 +119,15 @@ Tree removeBoilerPlate(Tree parseTree)
       }
       insert(CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* post>` ;     
     }
-    case (CodeBlock) `<CompiledInstruction* pre> <SkipInstruction firstNop> <SkipInstruction secondNop> <CompiledInstruction* post>`:
-    {
-      debugPrint("Removing multiple nop");
-      while((CodeBlock)`<SkipInstruction moreNop><CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction post>`)
-      {
-        post = newPost;
-      }
-      insert((CodeBlock) `<CompiledInstruction* pre> <SkipInstruction firstNop> <CompiledInstruction* post>`);
-    }    
+    //case (CodeBlock) `<CompiledInstruction* pre> <SkipInstruction firstNop> <SkipInstruction secondNop> <CompiledInstruction* post>`:
+    //{
+    //  debugPrint("Removing multiple nop");
+    //  while((CodeBlock)`<SkipInstruction moreNop><CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction post>`)
+    //  {
+    //    post = newPost;
+    //  }
+    //  insert((CodeBlock) `<CompiledInstruction* pre> <SkipInstruction firstNop> <CompiledInstruction* post>`);
+    //}    
     //case (CodeBlock) `<
     //CompiledInstruction* pre> <LogicInstruction logic> <SkipInstruction Nop> <CompiledInstruction* post>`:
     //{
