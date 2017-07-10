@@ -30,7 +30,7 @@ syntax CompiledInstruction = empty:EmptyLine
                            | LogicInstruction
                            | BitInstruction
                            | EventInstruction
-                           | WordInstruction
+                           | wordInstruction:WordInstruction
                            | SkipInstruction
                            | assign:AssignInstruction 
                            | SingleInstruction // Instruction without address

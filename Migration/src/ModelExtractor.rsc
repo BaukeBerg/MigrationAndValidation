@@ -128,6 +128,27 @@ Tree removeBoilerPlate(Tree parseTree)
 
 Tree extractModel(Tree tree) = innermost visit(tree)
 {  
+  case (CodeBlock)`<
+  CompiledInstruction* pre><
+  WordInstruction W><
+  CompiledInstruction* post>`:
+  {
+    debugPrint("Starting with post size <size(post)>");
+    //while((CodeBlock)`<CompiledInstruction *newPre><
+    //                  WordInstruction newW><
+    //                  CompiledInstruction *newPost>` := post)
+    //                  {
+    //                    debugPrint("<post>");
+    //                    
+    //                  }
+    debugPrint("Finishing with post size <size(post)>");
+    for(line <- post, line is wordInstruction)
+    {
+      debugPrint(line);
+    }    
+    insert((CodeBlock)`<CompiledInstruction* pre><CompiledInstruction* post>`);
+  }
+
   /// FullStore
   case (CodeBlock)`<
   CompiledInstruction* pre><
@@ -141,7 +162,7 @@ Tree extractModel(Tree tree) = innermost visit(tree)
   SourcePrefix p8>14 <WordAddress w8><NewLine nl8><
   CompiledInstruction* post>`:
   {
-  	debugPrint("Adding 4-address FetchAndStore");
+    debugPrint("Adding 4-address FetchAndStore");
   	addLogicBlock(<"4-address Fetch and Store", ["<p1>13 <w1>", "<p2>13 <w2>", "<p3>13 <w3>", "<p4>13 <w4>", "<p5>14 <w5>", "<p6>14 <w6>", "<p7>14 <w7>", "<p8>14 <w8>"]>);
   	insert((CodeBlock)`<CompiledInstruction *pre><CompiledInstruction* post>`);
   }
