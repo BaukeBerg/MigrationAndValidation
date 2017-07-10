@@ -130,7 +130,7 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
 {  
   case (CodeBlock)`<
   CompiledInstruction* pre><
-  LogicInstruction L><
+  ConditionInstruction C><
   AssignInstruction W><
   CompiledInstruction* post>`:
   {
@@ -150,13 +150,13 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
    debugPrint("Now fetching the conditions for the assignment...");                      
        
    
-    Conditions = ["<L>"];
+    Conditions = ["<C>"];
     while((CodeBlock)`<CompiledInstruction *newPre><
-                   LogicInstruction newL>` := (CodeBlock)`<CompiledInstruction *pre>`)
+                   ConditionInstruction newC>` := (CodeBlock)`<CompiledInstruction *pre>`)
     {
       debugPrint("previous pre size: <size(pre)>");
       pre = newPre;
-      Conditions = ["<newL>"] + Conditions;
+      Conditions = ["<newC>"] + Conditions;
       debugPrint("new pre size: <size(pre)>");
     }
     debugPrint("Extracted the following <size(Conditions)> conditions: <Conditions>");

@@ -27,15 +27,18 @@ syntax CodeBlock = CompiledInstruction*;
 
 syntax CompiledInstruction = empty:EmptyLine
                            | jump:JumpInstruction
-                           | LogicInstruction
-                           | BitInstruction
-                           | EventInstruction
+                           | ConditionInstruction
+                           | BitInstruction                           
                            | wordInstruction:WordInstruction
                            | SkipInstruction
                            | assign:AssignInstruction 
                            | SingleInstruction // Instruction without address
                            | io:IOInstruction
                            ;
+
+lexical ConditionInstruction = LogicInstruction
+                             | EventInstruction
+                             ;
 
 // Lowest level instructions
 lexical EmptyLine = SourceLineNumber NewLine ;
