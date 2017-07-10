@@ -142,6 +142,11 @@ Tree extractModel(Tree tree) = innermost visit(tree)
     //                    
     //                  }
     debugPrint("Finishing with post size <size(post)>");
+    for(line <- /*reverse(*/pre*/)*/, line is logicInstruction)
+    {
+      //Condition := line + condition; // => Add condition before previous one
+      debugPrint("Execution based on: <line>");
+    }
     for(line <- post, line is wordInstruction)
     {
       debugPrint(line);
