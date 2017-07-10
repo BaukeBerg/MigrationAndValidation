@@ -32,7 +32,7 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
     parseTree = removeBoilerPlate(parseTree);
   }
   debugPrint("Trying to extract model data");
-  parseTree = extractModel(parseTree);  
+  parseTree = extractModelTest(parseTree);  
   debugPrint("Displaying data without a place in the model");
   visit(parseTree)
   { 
@@ -126,34 +126,44 @@ Tree removeBoilerPlate(Tree parseTree)
   return parseTree;  
 }
 
-Tree extractModel(Tree tree) = innermost visit(tree)
+Tree extractModelTest(Tree tree) = innermost visit(tree)
 {  
   case (CodeBlock)`<
   CompiledInstruction* pre><
-  WordInstruction W><
+  AssignInstruction W><
   CompiledInstruction* post>`:
   {
+    Assignments = ["<W>"];
     debugPrint("Starting with post size <size(post)>");
+    while((CodeBlock)`<AssignInstruction newW><
+                      CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction *post>`)
+                      { 
+                        debugPrint("before <size(post)>");
+                        post = newPost;
+                        Assignments += ["<newW>"];
+                        debugPrint("after <size(post)>");                     
+                        
+                      }
+                      debugPrint("Extracted the following <size(Assignments)> assigments: <Assignments>");
+    // Now fetching the conditions for the assignment...                      
+       
+    //
     //while((CodeBlock)`<CompiledInstruction *newPre><
-    //                  WordInstruction newW><
-    //                  CompiledInstruction *newPost>` := post)
-    //                  {
-    //                    debugPrint("<post>");
-    //                    
-    //                  }
-    debugPrint("Finishing with post size <size(post)>");
-    for(line <- /*reverse(*/pre*/)*/, line is logicInstruction)
-    {
-      //Condition := line + condition; // => Add condition before previous one
-      debugPrint("Execution based on: <line>");
-    }
-    for(line <- post, line is wordInstruction)
-    {
-      debugPrint(line);
-    }    
+    //                LogicInstruction L>` := (CodeBlock)`<CompiledInstruction *pre>`)
+    //{
+    //  debugPrint("Execution based on: <L>");
+    //  debugPrint("previous pre size: <size(pre)>");
+    //  pre := newPre;
+    //  debugPrint("new pre size: <size(pre)>");
+    //}
+    
+    // Returning the rest
     insert((CodeBlock)`<CompiledInstruction* pre><CompiledInstruction* post>`);
   }
-
+};
+  
+Tree extractModel(Tree tree) = innermost visit(tree)
+{
   /// FullStore
   case (CodeBlock)`<
   CompiledInstruction* pre><
