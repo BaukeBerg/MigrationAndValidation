@@ -22,7 +22,7 @@ bool compareTotalFile() = compareLabels(compile("DR_TOT_3.PRG").labels);
 
 bool compareLabels(LabelList labels)
 { 
-  comparedList = take(size(labels), extractLabelList(generatedFile("DR_TOT_3.lbl")));
+  comparedList = take(size(labels), extractLabelList("DR_TOT_3.PRN"));
   return expectEqual(comparedList, labels);
 }
 
