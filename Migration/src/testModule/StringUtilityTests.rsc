@@ -25,11 +25,19 @@ test bool testParseInt() = expectEqual(30, parseInt("30"));
 
 test bool testParseBlock() = expectEqual(133, parseInt("CodeBlock: 00133-00135 is Generic action block"), "Should find the first number");
 
+test bool testFirstString() = expectEqual("133", firstInteger("CodeBlock: 00133-00135 is Generic action block"), "Should find the first numeric token");
+
+test bool testInvalidHex() = expectFalse(isHexaDecimal("CodeBlock: 00133-00135 is Generic action block"));
+test bool testValidHex() = expectTrue(isHexaDecimal("CodeBlock: 0x00133-00135 is Generic action block"));
+
+test bool testFirstNumericHex() = expectEqual(2, firstNumeric("0x10"), "Hex should ignore the 0x part");
+test bool testFirstNumericNormal() = expectEqual(7, firstNumeric("Hello, 090"), "Normal ignores characters and spaces");
 
 // Add some tests to make sure parseInt does not mistake input for binary, octal or hexadecimal
 test bool testParseIntBinary() = expectEqual(10, parseInt("00010"), "Check that 10 is reported instead of 3");
 test bool testParseIntOctal() = expectEqual(70, parseInt("00070"), "Check that 70 is reported instead of 56");
-test bool testParseIntHexadecimal() = expectEqual(-1, parseInt("0001F"), "Check that hex input is considered erroneous");
+test bool testParseIntHexadecimal() = expectEqual(31, parseInt("0x0001F"), "Check that hex input is considered valid");
+test bool testParseIntHexadecimal() = expectEqual(255, parseInt("0x000ff"), "Check that hex input is considered valid");
 
 test bool testStripLeadingSingleChar() = expectEqual("400.1", stripLeading("00400.1", "0"), "stripLeading should remove all leading 0\'s");
 test bool testStripLeadingNoChar() = expectEqual("00400.1", stripLeading("00400.1", "5"), "stripLeading should return original string");

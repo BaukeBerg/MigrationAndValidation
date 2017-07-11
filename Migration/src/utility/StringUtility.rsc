@@ -2,18 +2,51 @@ module utility::StringUtility
 
 import String;
 
+import utility::MathUtility;
+
 int parseInt(&T inputObject)
 {
   inputString = "<inputObject>";
   try
   { 
-    inputString = trim(inputString);
-    return toInt(stripLeading(inputString, "0"));
+    return toInt(firstInteger(inputString));
   }
   catch:
-  {
+  {     
     return -1;
   }
+}
+
+public str firstInteger(str inputString)
+{
+  isHex = isHexaDecimal(inputString);
+  newString = "";
+  for(n <- [firstNumeric(inputString) .. size(inputString)])
+  {
+    char = toLowerCase(inputString[n]);
+    if((inLimits("0", char, "9"))
+      || (isHex && inLimits("a", char, "f")))
+    {
+      newString += char;
+      continue;
+    }
+    break;
+  }
+  newString = stripLeading(newString, "0");
+  return isHex ? "0x" + newString : newString;
+}
+
+bool isHexaDecimal(str stringToCheck) = -1 == firstHex(stringToCheck) ? false : firstNumeric(stringToCheck) - 2 == firstHex(stringToCheck);
+int firstNumeric(str stringToCheck) = findDecimal(stringToCheck, firstHex(stringToCheck));
+int firstHex(str stringToCheck) = findFirst(stringToCheck, "0x"); 
+
+int findDecimal(str stringToCheck, int firstHexPos)
+{
+  for(n <- [0 .. size(stringToCheck)], inLimits("0", stringToCheck[n], "9") && n != firstHexPos)
+  {
+    return n;
+  }
+  return -1;
 }
 
 public str stripLeading(str inputString, str tokenToRemove)
