@@ -26,17 +26,13 @@ start syntax PC20_Compiled = CodeBlock ;
 syntax CodeBlock = CompiledInstruction*;
 
 syntax CompiledInstruction = empty:EmptyLine
-                           | jump:JumpInstruction
-                           | ConditionInstruction
-                           | CountInstruction
-                           | CalcInstruction
-                           | ActionInstruction
+                           | ExecuteInstruction                           
+                           | ConditionInstruction                                                    
                            | SkipInstruction                            
                            | io:IOInstruction
                            | SingleInstruction // Instruction without address
-                           | ExtractedCodeBlock
-                           | CalcInstruction
-                           | CompareInstruction                            
+                           | ExtractedCodeBlock                           
+                                                       
                            ;
                            
 lexical ExtractedCodeBlock = "CodeBlock: " FiveDigits "-" FiveDigits " is " Description;
@@ -44,13 +40,17 @@ lexical ExtractedCodeBlock = "CodeBlock: " FiveDigits "-" FiveDigits " is " Desc
 lexical Description = [a-zA-Z0-9\ ]* !>> [a-zA-Z0-9\ ];
 
 
-lexical ActionInstruction =  assign:AssignInstruction
+lexical ExecuteInstruction =  assign:AssignInstruction
                             | FetchInstruction 
-                            | StoreInstruction                                                       
+                            | StoreInstruction    
+                            | jump:JumpInstruction
+                            | CountInstruction
+                            | CalcInstruction                                                                                
                             ;
 
 lexical ConditionInstruction = LogicInstruction
                              | EventInstruction
+                             | CompareInstruction
                              ;
 
 // Lowest level instructions
