@@ -36,6 +36,11 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
   debugPrint("Displaying data without a place in the model");
   visit(parseTree)
   { 
+    case SkipInstruction S:
+    {
+      sourceFigures += generateLine("LightSeaGreen", generateSuffix(S, sourceLines));
+    }
+  
     case EmptyLine E:
     {
       if(displayEmptyLines)
@@ -43,27 +48,32 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
         sourceFigures += generateLine("LightGrey", generateSuffix(E, sourceLines));
       }
     }
-    case ExtractedCodeBlock ECB:
+    case EventInstruction ECB:
     {
       sourceFigures += generateLine("Sandybrown", "<ECB>"); 
     }
+    
+    case EventInstruction E:
+    {
+       sourceFigures += generateLine("OliveDrab", generateSuffix(E, sourceLines));
+    }    
     case AssignInstruction A:
     {
       sourceFigures += generateLine("Cyan", generateSuffix(A, sourceLines));
     }
-    case CompareInstruction W:
+    case StoreInstruction W:
     {
       sourceFigures += generateLine("Lime", generateSuffix(W, sourceLines));
     }
-    case CalcInstruction B:
+    case CountInstruction B:
     {
       sourceFigures += generateLine("Yellow", generateSuffix(B, sourceLines));      
     }    
-    case EventInstruction E:
+    case FetchInstruction E:
     {
       sourceFigures += generateLine("Chocolate", generateSuffix(E, sourceLines));
     }
-    case SkipInstruction S:
+    case CompareInstruction S:
     {
     sourceFigures += generateLine("Silver", generateSuffix(S, sourceLines));
     }
@@ -71,7 +81,7 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
     {
       sourceFigures += generateLine("Tomato", generateSuffix(L, sourceLines));
     }
-    case SingleInstruction E:
+    case CalcInstruction E:
     {
        sourceFigures += generateLine("SpringGreen", generateSuffix(E, sourceLines));
     }   
@@ -82,6 +92,10 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
     case IOInstruction I:
     {
       sourceFigures += generateLine("Orange", generateSuffix(I, sourceLines));
+    }
+    case SingleInstruction S:
+    {
+      sourceFigures += generateLine("Lightpink", generateSuffix(S, sourceLines));
     }
   }  
   debugPrint("Rendering Figure, <size(sourceFigures)>/<size(sourceLines)> lines unallocated.");
@@ -119,15 +133,15 @@ Tree removeBoilerPlate(Tree parseTree)
       }
       insert(CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* post>` ;     
     }
-    //case (CodeBlock) `<CompiledInstruction* pre> <SkipInstruction firstNop> <SkipInstruction secondNop> <CompiledInstruction* post>`:
-    //{
-    //  debugPrint("Removing multiple nop");
-    //  while((CodeBlock)`<SkipInstruction moreNop><CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction post>`)
-    //  {
-    //    post = newPost;
-    //  }
-    //  insert((CodeBlock) `<CompiledInstruction* pre> <SkipInstruction firstNop> <CompiledInstruction* post>`);
-    //}    
+    case (CodeBlock) `<CompiledInstruction* pre> <SkipInstruction firstNop> <SkipInstruction secondNop> <CompiledInstruction* post>`:
+    {
+      debugPrint("Removing multiple nop");
+      while((CodeBlock)`<SkipInstruction moreNop><CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction post>`)
+      {
+        post = newPost;
+      }
+      insert((CodeBlock) `<CompiledInstruction* pre> <SkipInstruction firstNop> <CompiledInstruction* post>`);
+    }    
     //case (CodeBlock) `<
     //CompiledInstruction* pre> <LogicInstruction logic> <SkipInstruction Nop> <CompiledInstruction* post>`:
     //{

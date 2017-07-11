@@ -45,7 +45,8 @@ lexical Description = [a-zA-Z0-9\ ]* !>> [a-zA-Z0-9\ ];
 
 
 lexical ActionInstruction =  assign:AssignInstruction
-                            | FetchInstruction                                                        
+                            | FetchInstruction 
+                            | StoreInstruction                                                       
                             ;
 
 lexical ConditionInstruction = LogicInstruction
@@ -55,11 +56,11 @@ lexical ConditionInstruction = LogicInstruction
 // Lowest level instructions
 lexical EmptyLine = SourceLineNumber NewLine ;
 
-// Not sure about instruction 10...
-                      
+// These must all be present in the switch case                      
 lexical SkipInstruction = SourcePrefix "00" WhiteSpace NewLine;                        
 lexical EventInstruction = SourcePrefix "01" WhiteSpace BitAddress NewLine ;                        
-lexical AssignInstruction = SourcePrefix ("02" | "03" | "08" | "09" | "10" | "14") WhiteSpace (BitAddress | WordAddress) NewLine ;
+lexical AssignInstruction = SourcePrefix ("02" | "03" | "08" | "09" ) WhiteSpace BitAddress NewLine ;
+lexical StoreInstruction = SourcePrefix ( "10" | "14" ) WhiteSpace (BitAddress | WordAddress) NewLine;
 lexical CountInstruction = SourcePrefix ("06" | "07") WhiteSpace WordAddress NewLine;
 lexical FetchInstruction = SourcePrefix ("11" | "12" | "13") WhiteSpace WordAddress NewLine;
 lexical CompareInstruction = SourcePrefix "15" WhiteSpace WordAddress NewLine ;
@@ -68,6 +69,7 @@ lexical CalcInstruction = SourcePrefix ("20" | "21" | "22" | "23" ) WhiteSpace (
 lexical JumpInstruction = SourcePrefix ("24" | "25" | "29" | "30") WhiteSpace WordAddress NewLine;
 lexical IOInstruction = SourcePrefix ( "31" | "27" ) WhiteSpace WordAddress NewLine;
 lexical SingleInstruction = SourcePrefix "26" WhiteSpace NewLine ;
+
 lexical SourcePrefix = SourceLineNumber ProgramLineNumber ;
 
 lexical ProgramLineNumber = FiveDigits WhiteSpace ;
