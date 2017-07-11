@@ -1,0 +1,17 @@
+00033                   ! This complete will will be removed
+00033                   ! First, some empty lines are here (Comments)
+00033                   ! Over here, a lot of condition logic... but, ends with a nop.
+00044 00018 16 00001.2    AND 001.2 !10 sec. puls
+00045 00019 01 00510.2    TRIG  510.2
+00049 00022 01 00510.3    TRIG  510.3
+00071 00043 00            NOP 57
+00071 00043 00            
+00033                   ! Over here, multiple nops...
+00071 00043 00            
+00071 00043 00            
+00071 00043 00            
+00071 00043 00            
+00071 00043 00            
+00071 00043 00            
+00071 00043 00            
+00071 00043 00            

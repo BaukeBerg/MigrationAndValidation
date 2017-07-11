@@ -24,7 +24,16 @@ private bool preProcess = true;
 void highLightSources(Tree parseTree) = highLightSources(parseTree, []);
 void highLightSources(Tree parseTree, list[str] sourceLines)
 {
-  
+  list[Figure] sourceFigures = generateFigures(parseTree, sourceLines);
+  debugPrint("Rendering Figure, <size(sourceFigures)>/<size(sourceLines)> lines unallocated.");
+  render(vcat(sourceFigures));
+}
+
+list[Figure] generateFigures(str fileName) = generateFigures(parseCompiledFile(fileName), readFileLines(compiledFile(fileName)));
+
+
+list[Figure] generateFigures(Tree parseTree, list[str] sourceLines)
+{
   list[Figure] sourceFigures = [];
   if(true == preProcess)
   {
@@ -98,8 +107,7 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
       sourceFigures += generateLine("Lightpink", generateSuffix(S, sourceLines));
     }
   }  
-  debugPrint("Rendering Figure, <size(sourceFigures)>/<size(sourceLines)> lines unallocated.");
-  render(vcat(sourceFigures));  
+  return sourceFigures;
 }
 
 bool singleLine(&T inputData) = 1 == size(inputData);
@@ -142,12 +150,21 @@ Tree removeBoilerPlate(Tree parseTree)
       }
       insert((CodeBlock) `<CompiledInstruction* pre> <SkipInstruction firstNop> <CompiledInstruction* post>`);
     }    
-    //case (CodeBlock) `<
-    //CompiledInstruction* pre> <LogicInstruction logic> <SkipInstruction Nop> <CompiledInstruction* post>`:
-    //{
-    //  debugPrint("Removing empty statement <Nop>");
-    //  insert((CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* post>`);
-    //} 
+    case (CodeBlock) `<
+    CompiledInstruction* pre> <ConditionInstruction condition> <SkipInstruction Nop> <CompiledInstruction* post>`:
+    {
+      original = size(pre)+size(post)+2;
+      debugPrint("Found an empty exection <original>");      
+      while((CodeBlock)`<
+            CompiledInstruction* newPre><
+            ConditionInstruction newC>` 
+            := (CodeBlock)`<CompiledInstruction *pre>`)
+            { 
+              pre = newPre;
+            }
+      debugPrint("Removed <original-size(pre)-size(post)> lines");
+      insert((CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* post>`);
+    } 
   }
   return parseTree;  
 }
@@ -256,7 +273,7 @@ Tree extractModel(Tree tree) = innermost visit(tree)
   case (CodeBlock)`<
   CompiledInstruction* pre><SourcePrefix source>16 00000.1<WhiteSpace ws><NewLine newLine><
   SourcePrefix fetchPrefix>12 <WordAddress constantValue><NewLine newLine2><  
-  WordInstruction store><
+  StoreInstruction store><
   CompiledInstruction* post>` :
   {
     addLogicBlock(<"Memory Constant", ["<source>16 00000.1","<fetchPrefix>12 <constantValue><newLine2>","<store>"]>);
