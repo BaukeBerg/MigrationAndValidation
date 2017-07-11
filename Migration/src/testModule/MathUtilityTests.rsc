@@ -13,6 +13,8 @@ test bool testInLimitsCenter() = expectTrue(inLimits(0, 5, 10), "5 lies between 
 test bool testInLimitsLowerBound() = expectTrue(inLimits(0, 0, 10), "0 lies at lower bound 0");
 test bool testInLimitsUpperBound() = expectTrue(inLimits(0, 10, 10), "10 lies at upper bound 10");
 
+test bool testLimitsString() = expectTrue(inLimits("0", "0", "1"), "0 is at lower bound");
+
 test bool testInLimitsBelowLowerBound() = expectFalse(inLimits(0, -5, 10), "-5 lies below lower bound 0");
 test bool testInLimitsAboveUpperBound() = expectFalse(inLimits(0, 15, 10), "15 lies above upper bound 10");
 

@@ -7,6 +7,9 @@ import util::Math;
 &T limit(&T lowerBound, &T actualValue, &T upperBound) = min(max(actualValue, lowerBound), upperBound);
 bool inLimits(&T lowerBound, &T actualValue, &T upperBound) = actualValue == limit(lowerBound, actualValue, upperBound);
 
+&T max(&T first, &T second) = first == min(first,second) ? second : first;
+&T min(&T first, &T second) = first < second ? first : second ;
+
 int shiftLeft(bool initialValue, int positions) = initialValue ? shiftLeft(1, positions) : 0 ;
 int shiftLeft(int initialValue, int positions) = shiftRight(initialValue, -1 * positions);
 int shiftRight(int initialValue, int positions) = floor(initialValue / pow(2.0000000000000000000000000, positions));
