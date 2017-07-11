@@ -57,9 +57,9 @@ list[Figure] generateFigures(Tree parseTree, list[str] sourceLines)
         sourceFigures += generateLine("LightGrey", generateSuffix(E, sourceLines));
       }
     }
-    case EventInstruction ECB:
+    case ExtractedCodeBlock ECB:
     {
-      sourceFigures += generateLine("Sandybrown", "<ECB>"); 
+      sourceFigures += generateLine("Sandybrown", "<getLineNumber(ECB)>: <ECB>"); 
     }
     
     case EventInstruction E:
@@ -219,9 +219,7 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
       actions += ["<newA>"];
     }
     debugPrint("Finally, store model block and insert remainder");
-    constructLogic("Event");    
-    insert(Block(pre,post));
-    
+    handleBlock("Event", pre, post);
   }
   
   case (CodeBlock)`<
@@ -246,8 +244,7 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
       pre = newPre;
       conditions = ["<newC>"] + conditions;      
     }
-    constructLogic("Assign Statement");
-    insert((CodeBlock)`<CompiledInstruction* pre><CompiledInstruction* post>`);
+    handleBlock("Assign Statement", pre, post);    
   }
 
   /// FullStore
@@ -263,19 +260,18 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
   SourcePrefix p8>14 <WordAddress w8><NewLine nl8><
   CompiledInstruction* post>`:
   {
-    Conditions = [];
+    conditions = [];
     while((CodeBlock)`<CompiledInstruction* newPre><
                       ConditionInstruction newC>`
                       :=
                       (CodeBlock)`<CompiledInstruction* pre>`)
     {
       pre = newPre;
-      Conditions = ["<newC>"] + Conditions; 
+      conditions = ["<newC>"] + conditions; 
     }
-    Actions = ["<p1>13 <w1>", "<p2>13 <w2>", "<p3>13 <w3>", "<p4>13 <w4>", "<p5>14 <w5>", "<p6>14 <w6>", "<p7>14 <w7>", "<p8>14 <w8>"] ;
+    actions = ["<p1>13 <w1>", "<p2>13 <w2>", "<p3>13 <w3>", "<p4>13 <w4>", "<p5>14 <w5>", "<p6>14 <w6>", "<p7>14 <w7>", "<p8>14 <w8>"] ;
     debugPrint("Adding 4-address FetchAndStore");
-  	constructLogic("4-address Fetch and Store");
-  	insert((CodeBlock)`<CompiledInstruction *pre><CompiledInstruction* post>`);
+  	handleBlock("4-address Fetch and Store", pre, post);  	
   }
 
   /// This syntax fragment extracts assignment of a constant in memory
@@ -293,8 +289,7 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
     }
     Conditions = ["<source>16 00000.1<ws>"];
     Actions = ["<fetchPrefix>12 <constantValue><newLine2>", "<store>"];
-    constructLogic("Memory Constant");
-    insert(Block(pre,post));
+    handleBlock("Memory Constant", pre, post);    
   }
 
   /// This syntax fragment extracts pulses from the sources
@@ -304,18 +299,21 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
   AssignInstruction pulseTarget><
   CompiledInstruction* post>` :
   {
-    addLogicBlock(<"Timer Pulse", ["<source>16 00001<bitVal>","<fetchPrefix>01 <pulseSource><newLine2>","<pulseTarget>"]>);
-    insert((CodeBlock)`<CompiledInstruction* pre><CompiledInstruction* post>`);
+    handleBlock(<"Timer Pulse", ["<source>16 00001<bitVal>","<fetchPrefix>01 <pulseSource><newLine2>","<pulseTarget>"]>, pre, post);    
   }
 
   /// Handle the LSTIO END combinations, and after that, some loose LSTIO instructions...
   case (CodeBlock) `<CompiledInstruction* pre> <IOInstruction lstio> <IOInstruction end> <CompiledInstruction* post>` :
   {
     debugPrint("Adding IO-readout to model");
-    constructLogic("IO-readout");  
-    Conditions = ExtractConditions(pre);  
-    Actions = ["<lstio>", "<end>"];    
-    insert(Block(pre, post));
+    //debugPrint("Size of pre: <size(pre)>");
+    //result = ExtractConditions(pre);
+    //conditions = result.statements;
+    //pre = result.syntaxPart;    
+    //debugPrint("Size of pre: <size(pre)>");
+    //actions = ["<lstio>", "<end>"];    
+    //  
+    insert(composeBlock(pre, post));
   }
   
   case (CodeBlock) `<CompiledInstruction* pre><IOInstruction lstio><CompiledInstruction* post>` :
@@ -329,48 +327,47 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
   case (CodeBlock) `<CompiledInstruction* pre><ConditionInstruction condition><ExecuteInstruction execute><CompiledInstruction* post>` :
   {
     debugPrint("Adding an generic if then ... block");
-    debugPrint("size of conditions: <size(conditions)>");
-    <conditions, pre> = extractConditions(pre);
-    conditions += ["<condition>"];
-    debugPrint("size of conditions: <size(conditions)>");
-    <actions, post> = ExtractActions(post);
-    constructLogic("Generic action block");
-    insert(Block(pre,post));
+    <conditions, pre> = extractConditions(pre, condition);
+    <actions, post> = extractActions(execute, post);
+    handleBlock("Generic action block", pre, post);    
   }  
     
 };
 
-ExtractionResult ExtractConditions(CompiledInstruction *pre)
+ExtractionResult extractConditions(CompiledInstruction *pre) = extractConditions(pre, []);
+ExtractionResult extractConditions(CompiledInstruction *pre, ConditionInstruction condition) = extractConditions(pre, ["<condition>"]);
+ExtractionResult extractConditions(CompiledInstruction *pre, list[Statement] conditions)
 {
-  Statements = [];
+  statements = conditions;
   while((CodeBlock)`<CompiledInstruction* newPre><
                     ConditionInstruction newC>`
                     := (CodeBlock)`<CompiledInstruction *pre>`)
   {
-    Statements = ["<newC>"] + Statements;
+    debugPrint("extra statement <newC>");
+    statements = ["<newC>"] + statements;
+    pre = newPre;
   }                    
-  return <Statements, pre>;
+  return <statements, pre>;
 }
 
-ExtractionResult ExtractActions(CompiledInstruction *post)
+ExtractionResult extractActions(CompiledInstruction *post) = extractActions([], post);
+ExtractionResult extractActions(ExecuteInstruction execute, CompiledInstruction *post) = extractActions(["<execute>"], post);
+ExtractionResult extractActions(list[Statement] actions, CompiledInstruction *post)
 {
-  Actions = [];
   while((CodeBlock)`<ExecuteInstruction execute><
                     CompiledInstruction *newPost>`
                     := (CodeBlock)`<CompiledInstruction *post>`)
   {
     post = newPost;
-    Actions += ["<execute>"]; 
+    actions += ["<execute>"]; 
   }  
-  return <Actions, post>;
+  return <actions, post>;
 }
 
-CodeBlock Block(CompiledInstruction* pre, CompiledInstruction* post)
+void handleBlock(str description, CompiledInstruction *pre, CompiledInstruction *post)
 {
-  strFirst = parse(#FiveDigits, right("<first>", 5, "0"));
-  strLast = parse(#FiveDigits, right("<last>", 5, "0"));
-  description = parse(#Description, blockType);
-  return((CodeBlock)`<CompiledInstruction* pre>CodeBlock: <FiveDigits strFirst>-<FiveDigits strLast> is <Description description><CompiledInstruction* post>`);  
+  constructLogic(description);
+  insert(composeBlock(pre,post));  
 }
 
 void constructLogic(str description)
@@ -378,9 +375,26 @@ void constructLogic(str description)
   first = getProgramCounter(head(conditions));
   last = getProgramCounter(head(reverse(actions)));
   blockType = description;
-  addLogicBlock(<first, last, description, conditions, actions>);
+  addLogicBlock(<first, last, description, conditions, actions>); 
 }
 
+CodeBlock composeBlock(CompiledInstruction* pre, CompiledInstruction* post)
+{
+  codeBlock = "";
+  try
+  {  
+    strFirst = parse(#FiveDigits, right("<first>", 5, "0"));
+    strLast = parse(#FiveDigits, right("<last>", 5, "0"));
+    description = parse(#Description, blockType);
+    codeBlock = (ExtractedCodeBlock)`CodeBlock: <FiveDigits strFirst>-<FiveDigits strLast> is <Description description>`;
+    return (CodeBlock)`<CompiledInstruction* pre><ExtractedCodeBlock codeBlock><CompiledInstruction* post>`;
+  }
+  catch:
+  {
+    debugPrint("parsing failure...");
+  }
+  return (CodeBlock)`<CompiledInstruction* pre><CompiledInstruction* post>`;
+}
 
 str generateSuffix(ExtractedCodeBlock Block, list[str] sourceLines) = "<Block>: <Block>";
 
@@ -408,6 +422,12 @@ int getProgramCounter(str lineToCheck)
   {
     return -1;
   }  
+}
+
+int getLineNumber(ExtractedCodeBlock ECB)
+{
+  debugPrint("<ECB>");
+  return parseInt("<ECB>");
 }
 
 int getLineNumber(&T item)

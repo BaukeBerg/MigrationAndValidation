@@ -32,6 +32,8 @@ test bool testComments() = isUnAmbiguous(parseComments());
 test bool testSample() = isUnAmbiguous(parseCompiledFile("first50.compiled"));
 test bool testTotal() = isUnAmbiguous(parseTotalFile());
 
+test bool testFirst500() = isUnAmbiguous(parseCompiledFile("first500.compiled"));
+
 Tree parseComments() = parseCompiledFile("comments.compiled");
 Tree parseTotalFile() = parseCompiledFile("DR_TOT_3.compiled");
 
