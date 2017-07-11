@@ -14,7 +14,7 @@ test bool testParsingRoutine() = expectEqual(0, parsePdsSource("simpleRoutine"))
 test bool testParsingPartialSource() = expectEqual(0, parsePdsSource("SmallPart.PRG"));
 test bool testParsingTotalSource() = expectEqual(0, parsePdsSource("DR_TOT_3.PRG"));
 
-test bool testFetchWord() = isCorrect("00051 00024 12 00000    \r\n", #WordInstruction);
+test bool testFetchWord() = isCorrect("00051 00024 12 00000    \r\n", #FetchInstruction);
 test bool testFetchCompiled() = isCorrect("00051 00024 12 00000    \r\n", #CompiledInstruction);
 
 test bool testParsingLabels() = isCorrect("L02840:2840L12769:12769L03429:3429L12902:12902\r\nL10103:10103L04037:4037", #start[LabelList]);
@@ -39,15 +39,15 @@ test bool testLocation()
   return expectEqual(1, LineNumber, "Line number of comment should be 1");
 }
 
-test bool testLogicInstruction1() = isCorrect("00008 00000 31 00003    \r\n", #LogicInstruction);
-test bool testLogicInstruction21() = isCorrect("00008 00000 21 00003    \r\n", #LogicInstruction);
-test bool testLogicInstruction22() = isCorrect("00008 00000 22 00003    \r\n", #LogicInstruction);
-test bool testLogicInstruction23() = isCorrect("00008 00000 23 00003    \r\n", #LogicInstruction);
-test bool testLogicInstruction26() = isCorrect("00008 00000 26 00003    \r\n", #LogicInstruction);
-test bool testLogicInstruction27() = isCorrect("00008 00000 27 00003    \r\n", #LogicInstruction);
+test bool testLogicInstruction1() = isCorrect("00008 00000 31 00003    \r\n", #IOInstruction);
+test bool testLogicInstruction21() = isCorrect("00008 00000 21 00003    \r\n", #ExecuteInstruction);
+test bool testLogicInstruction22() = isCorrect("00008 00000 22 00003    \r\n", #ExecuteInstruction);
+test bool testLogicInstruction23() = isCorrect("00008 00000 23 00003    \r\n", #ExecuteInstruction);
+test bool testLogicInstruction26() = isCorrect("00008 00000 26 \r\n", #SingleInstruction);
+test bool testLogicInstruction27() = isCorrect("00008 00000 27 00003    \r\n", #IOInstruction);
 
 // Jumps should not be parseable by #LogicInstrcuction to remove ambiguity
-test bool testLogicJump1() = expectFalse(isCorrect("00008 00000 24 00003    \r\n", #LogicInstruction));
-test bool testLogicJump2() = expectFalse(isCorrect("00008 00000 25 00003    \r\n", #LogicInstruction));
-test bool testLogicJump3() = expectFalse(isCorrect("00008 00000 28 00003    \r\n", #LogicInstruction));
-test bool testLogicJump4() = expectFalse(isCorrect("00008 00000 29 00003    \r\n", #LogicInstruction));
+test bool testLogicJump1() = expectFalse(isCorrect("00008 00000 24 00003    \r\n", #ConditionInstruction));
+test bool testLogicJump2() = expectFalse(isCorrect("00008 00000 25 00003    \r\n", #ConditionInstruction));
+test bool testLogicJump3() = expectFalse(isCorrect("00008 00000 28 00003    \r\n", #ConditionInstruction));
+test bool testLogicJump4() = expectFalse(isCorrect("00008 00000 29 00003    \r\n", #ConditionInstruction));
