@@ -8,6 +8,7 @@ import List;
 import Parser;
 import PC20Syntax;
 import String;
+import Stripper;
 import SymbolTable;
 
 import utility::Debugging;
@@ -34,16 +35,12 @@ test bool testSimplePair()
   return true;
 }
 
-test bool testSimpleLabel()
-{
-  lines = compile("SimpleLabel.PRG", symbols).compiledLines;
-  referenceData = take(size(lines), readFileLines(generatedFile("strippedLines")));
-  return expectEqual(referenceData, lines);
-}
-
+test bool testSimpleLabel() = handleCompare(compile("SimpleLabel.PRG", symbols).compiledLines);
 test bool testComparing() = handleCompare(compile("LabelOffset.PRG", symbols).compiledLines);
 test bool testFirstOneHundred() = handleCompare(compile("FirstOneHundred.PRG", symbols).compiledLines);
 test bool testNopBlankLine() = expectEqual(readFileLines(testFile("BlankLineComparison.PRN")), compile("BlankLineIssue.PRG", symbols).compiledLines);   
+
+// SKIP
 
 test bool testCompileFull()
 {  
@@ -62,7 +59,9 @@ test bool testCompileFullWithSources()
   result = handleCompareWithSources(compileWithSources("DR_TOT_3.PRG", symbols).compiledLines);
   printDuration("Compiling including original sources.");
   return result;
- }
+}
+
+// UNSKIP
 
 list[str] fetchResult = ["00001 00000 12 00001    ", "00002 00001 12 00002    "];
 
@@ -70,7 +69,7 @@ test bool testFetching() = expectEqual(fetchResult, compile("FetchConstant.PRG",
 
 bool handleCompare(list[str] compiledLines)
 {
-  referenceData = take(size(compiledLines), readFileLines(generatedFile("strippedLines")));
+  referenceData = take(size(compiledLines), clipAndSave(testFile("DR_TOT_3.PRN")));
   return expectEqual(referenceData, compiledLines);
 }
 
@@ -106,6 +105,7 @@ test bool testInvalidJumpDestination() = expectEqual("ERROR", jumpDestination("N
 str sourceLine = "\tOR\tREG0B61";
 
 str expectedComposition = "\tOR\tREG0B61\t!regeneratie fase 61";
+str compiledLine = "06730 05817 18 00400.1  ";
 
 test bool testJumpDestination() = expectEqual("00400.1", jumpDestination(compiledLine), "jumpDestination filters address from line");
 test bool testSymbolComments() = expectEqual(expectedComposition, composeSourceLine(sourceLine, symbols), "Composing sources should yield compiled line with comment obtained from sybmol table");
