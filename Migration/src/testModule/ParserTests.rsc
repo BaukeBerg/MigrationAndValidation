@@ -1,5 +1,7 @@
 module testModule::ParserTests
 
+// SKIP
+
 import utility::TestUtility;
 
 import FileLocations;
