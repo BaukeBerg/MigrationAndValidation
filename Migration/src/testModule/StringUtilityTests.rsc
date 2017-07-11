@@ -23,6 +23,8 @@ test bool testClipStringWithSplit() = expectEqual("Hello\r\nGoodBye", clipString
 test bool testParseInt() = expectEqual(-1, parseInt("hallo"));
 test bool testParseInt() = expectEqual(30, parseInt("30"));
 
+test bool testParseBlock() = expectEqual(133, parseInt("CodeBlock: 00133-00135 is Generic action block"), "Should find the first number");
+
 
 // Add some tests to make sure parseInt does not mistake input for binary, octal or hexadecimal
 test bool testParseIntBinary() = expectEqual(10, parseInt("00010"), "Check that 10 is reported instead of 3");
