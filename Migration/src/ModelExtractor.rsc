@@ -21,6 +21,8 @@ import Decorator;
 private bool displayEmptyLines = true;
 private bool preProcess = true;
 
+alias ExtractionResult = tuple[list[Statement] statements, CompiledInstruction *syntaxPart];
+
 void highLightSources(Tree parseTree) = highLightSources(parseTree, []);
 void highLightSources(Tree parseTree, list[str] sourceLines)
 {
@@ -30,8 +32,6 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
 }
 
 list[Figure] generateFigures(str fileName) = generateFigures(parseCompiledFile(fileName), readFileLines(compiledFile(fileName)));
-
-
 list[Figure] generateFigures(Tree parseTree, list[str] sourceLines)
 {
   list[Figure] sourceFigures = [];
@@ -47,7 +47,7 @@ list[Figure] generateFigures(Tree parseTree, list[str] sourceLines)
   { 
     case SkipInstruction S:
     {
-      sourceFigures += generateLine("LightSeaGreen", generateSuffix(S, sourceLines));
+      sourceFigures += generateLine("Silver", generateSuffix(S, sourceLines));
     }
   
     case EmptyLine E:
@@ -84,7 +84,7 @@ list[Figure] generateFigures(Tree parseTree, list[str] sourceLines)
     }
     case CompareInstruction S:
     {
-    sourceFigures += generateLine("Silver", generateSuffix(S, sourceLines));
+    sourceFigures += generateLine("LightSeaGreen", generateSuffix(S, sourceLines));
     }
     case LogicInstruction L:
     {
@@ -177,41 +177,52 @@ str nl = "\n";
 str blockType;
 
 Tree extractModelTest(Tree tree) = innermost visit(tree)
-{  
-     case (CodeBlock) `<CompiledInstruction* pre><
-     EventInstruction C><
-     CompiledInstruction* post>`:
+{
+  case (CodeBlock) `<CompiledInstruction* pre><
+    JumpInstruction J><CompiledInstruction* post>`:
+  {
+    while((CodeBlock)`<CompiledInstruction *newPre><
+      ConditionInstruction newP>` 
+    := (CodeBlock)`<CompiledInstruction* pre>`)
     {
-      debugPrint("Found an event");
-      actions = [];
-      conditions = ["<C>"];
-      debugPrint("Let\'s examine all previous conditions");
-      while((CodeBlock)`<CompiledInstruction* newPre><
-                         ConditionInstruction newC>` 
-          := (CodeBlock)`<CompiledInstruction *pre>`)
-      {
-        conditions = ["<newC>"] + conditions;
-        pre = newPre;
-      }
-      debugPrint("Let\'s example all following conditions");
-      while((CodeBlock)`<ConditionInstruction newC><CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction *post>`)
-      {
-        conditions += ["<newC>"];
-        post = newPost;
-      }
-      debugPrint("Now harvest all actions");
-      while((CodeBlock)`<ActionInstruction newA><CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction *post>`)
-      {
-        post = newPost;
-        actions += ["<newA>"];
-      }
-      debugPrint("Finally, store model block and insert remainder");
-      constructLogic("Event");
-      strFirst = parse(#FiveDigits, right("<first>", 5, "0"));
-      strLast = parse(#FiveDigits, right("<last>", 5, "0"));
-      description = parse(#Description, blockType);
-      insert((CodeBlock)`<CompiledInstruction* pre>CodeBlock: <FiveDigits strFirst>-<FiveDigits strLast> is <Description description><CompiledInstruction* post>`);
+      debugPrint("Extracting action: <newP>");
+      pre = newPre;
+    }    
+    insert((CodeBlock)`<CompiledInstruction* pre><CompiledInstruction* post>`); 
+  } 
+     
+  case (CodeBlock) `<CompiledInstruction* pre><
+    EventInstruction C><
+    CompiledInstruction* post>`:
+  {
+    debugPrint("Found an event");
+    actions = [];
+    conditions = ["<C>"];
+    debugPrint("Let\'s examine all previous conditions");
+    while((CodeBlock)`<CompiledInstruction* newPre><
+                       ConditionInstruction newC>` 
+      := (CodeBlock)`<CompiledInstruction *pre>`)
+    {
+      conditions = ["<newC>"] + conditions;
+      pre = newPre;
     }
+    debugPrint("Let\'s example all following conditions");
+    while((CodeBlock)`<ConditionInstruction newC><CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction *post>`)
+    {
+      conditions += ["<newC>"];
+      post = newPost;
+    }
+    debugPrint("Now harvest all actions");
+    while((CodeBlock)`<ExecuteInstruction newA><CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction *post>`)
+    {
+      post = newPost;
+      actions += ["<newA>"];
+    }
+    debugPrint("Finally, store model block and insert remainder");
+    constructLogic("Event");    
+    insert(Block(pre,post));
+    
+  }
   
   case (CodeBlock)`<
   CompiledInstruction* pre><
@@ -220,8 +231,7 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
   CompiledInstruction* post>`:
   {
     conditions = ["<C>"];
-    actions = ["<A>"];
-    
+    actions = ["<A>"];    
     while((CodeBlock)`<AssignInstruction newA><
                       CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction *post>`)
                       { 
@@ -229,7 +239,7 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
                         actions += ["<newA>"];
                       }
    
-   while((CodeBlock)`<CompiledInstruction *newPre><
+    while((CodeBlock)`<CompiledInstruction *newPre><
                    ConditionInstruction newC>` := (CodeBlock)`<CompiledInstruction *pre>`)
     {
       debugPrint("previous pre size: <size(pre)>");
@@ -239,21 +249,10 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
     constructLogic("Assign Statement");
     insert((CodeBlock)`<CompiledInstruction* pre><CompiledInstruction* post>`);
   }
-};
-  
-void constructLogic(str description)
-{
-  first = getProgramCounter(head(conditions));
-  last = getProgramCounter(head(reverse(actions)));
-  blockType = description;
-  addLogicBlock(<first, last, description, conditions, actions>);
-}
-  
-Tree extractModel(Tree tree) = innermost visit(tree)
-{
+
   /// FullStore
   case (CodeBlock)`<
-  CompiledInstruction* pre><
+  CompiledInstruction* pre><  
   SourcePrefix p1>13 <WordAddress w1><NewLine nl1><
   SourcePrefix p2>13 <WordAddress w2><NewLine nl2><
   SourcePrefix p3>13 <WordAddress w3><NewLine nl3><
@@ -264,8 +263,18 @@ Tree extractModel(Tree tree) = innermost visit(tree)
   SourcePrefix p8>14 <WordAddress w8><NewLine nl8><
   CompiledInstruction* post>`:
   {
+    Conditions = [];
+    while((CodeBlock)`<CompiledInstruction* newPre><
+                      ConditionInstruction newC>`
+                      :=
+                      (CodeBlock)`<CompiledInstruction* pre>`)
+    {
+      pre = newPre;
+      Conditions = ["<newC>"] + Conditions; 
+    }
+    Actions = ["<p1>13 <w1>", "<p2>13 <w2>", "<p3>13 <w3>", "<p4>13 <w4>", "<p5>14 <w5>", "<p6>14 <w6>", "<p7>14 <w7>", "<p8>14 <w8>"] ;
     debugPrint("Adding 4-address FetchAndStore");
-  	addLogicBlock(<"4-address Fetch and Store", ["<p1>13 <w1>", "<p2>13 <w2>", "<p3>13 <w3>", "<p4>13 <w4>", "<p5>14 <w5>", "<p6>14 <w6>", "<p7>14 <w7>", "<p8>14 <w8>"]>);
+  	constructLogic("4-address Fetch and Store");
   	insert((CodeBlock)`<CompiledInstruction *pre><CompiledInstruction* post>`);
   }
 
@@ -276,8 +285,16 @@ Tree extractModel(Tree tree) = innermost visit(tree)
   StoreInstruction store><
   CompiledInstruction* post>` :
   {
-    addLogicBlock(<"Memory Constant", ["<source>16 00000.1","<fetchPrefix>12 <constantValue><newLine2>","<store>"]>);
-    insert((CodeBlock)`<CompiledInstruction* pre><CompiledInstruction* post>`);
+    if((CodeBlock)`<CompiledInstruction newPre><
+                   ConditionInstruction newC>`
+                   := (CodeBlock)`<ConditionInstruction pre>`)
+    {
+      fail; // Only unconditional AND 0.1' s are matched. No preconditions
+    }
+    Conditions = ["<source>16 00000.1<ws>"];
+    Actions = ["<fetchPrefix>12 <constantValue><newLine2>", "<store>"];
+    constructLogic("Memory Constant");
+    insert(Block(pre,post));
   }
 
   /// This syntax fragment extracts pulses from the sources
@@ -291,35 +308,79 @@ Tree extractModel(Tree tree) = innermost visit(tree)
     insert((CodeBlock)`<CompiledInstruction* pre><CompiledInstruction* post>`);
   }
 
-  // Logic instructions with an equal => Unconditional assign
-  case (CodeBlock) `<CompiledInstruction* pre><LogicInstruction logic><CompiledInstruction* between><AssignInstruction assign><CompiledInstruction* post>` :
-  {
-    if((isEmpty(between) || (all(line <- between, line is logic))))
-    {
-      debugPrint("Adding Unconditional assign instruction to model");      
-      addLogicBlock(<"Unconditional assign", ["<logic>"] + ["<line>" | line <- between ] + ["<assign>"]>);
-      insert((CodeBlock)`<CompiledInstruction* pre><CompiledInstruction* post>`);
-    }
-    else
-    {
-      fail;
-    }       
-  }  
   /// Handle the LSTIO END combinations, and after that, some loose LSTIO instructions...
   case (CodeBlock) `<CompiledInstruction* pre> <IOInstruction lstio> <IOInstruction end> <CompiledInstruction* post>` :
   {
     debugPrint("Adding IO-readout to model");
-    addLogicBlock(<"IO-readout", ["<lstio>", "<end>"]>);    
-    insert((CodeBlock)`<CompiledInstruction* pre><CompiledInstruction* post>`);
+    constructLogic("IO-readout");  
+    Conditions = ExtractConditions(pre);  
+    Actions = ["<lstio>", "<end>"];    
+    insert(Block(pre, post));
   }
   
   case (CodeBlock) `<CompiledInstruction* pre><IOInstruction lstio><CompiledInstruction* post>` :
   {
-    debugPrint("Removing single IO instruction");
+    debugPrint("Removing single lstIO instruction");
     insert((CodeBlock) `<CompiledInstruction* pre><CompiledInstruction* post>`);    
   }
   
+  // If all else fails, this is just an ordinary If Something => Do Something construction
+  // Logic instructions with an equal => Unconditional assign
+  case (CodeBlock) `<CompiledInstruction* pre><ConditionInstruction condition><ExecuteInstruction execute><CompiledInstruction* post>` :
+  {
+    debugPrint("Adding an generic if then ... block");
+    debugPrint("size of conditions: <size(conditions)>");
+    <conditions, pre> = extractConditions(pre);
+    conditions += ["<condition>"];
+    debugPrint("size of conditions: <size(conditions)>");
+    <actions, post> = ExtractActions(post);
+    constructLogic("Generic action block");
+    insert(Block(pre,post));
+  }  
+    
 };
+
+ExtractionResult ExtractConditions(CompiledInstruction *pre)
+{
+  Statements = [];
+  while((CodeBlock)`<CompiledInstruction* newPre><
+                    ConditionInstruction newC>`
+                    := (CodeBlock)`<CompiledInstruction *pre>`)
+  {
+    Statements = ["<newC>"] + Statements;
+  }                    
+  return <Statements, pre>;
+}
+
+ExtractionResult ExtractActions(CompiledInstruction *post)
+{
+  Actions = [];
+  while((CodeBlock)`<ExecuteInstruction execute><
+                    CompiledInstruction *newPost>`
+                    := (CodeBlock)`<CompiledInstruction *post>`)
+  {
+    post = newPost;
+    Actions += ["<execute>"]; 
+  }  
+  return <Actions, post>;
+}
+
+CodeBlock Block(CompiledInstruction* pre, CompiledInstruction* post)
+{
+  strFirst = parse(#FiveDigits, right("<first>", 5, "0"));
+  strLast = parse(#FiveDigits, right("<last>", 5, "0"));
+  description = parse(#Description, blockType);
+  return((CodeBlock)`<CompiledInstruction* pre>CodeBlock: <FiveDigits strFirst>-<FiveDigits strLast> is <Description description><CompiledInstruction* post>`);  
+}
+
+void constructLogic(str description)
+{
+  first = getProgramCounter(head(conditions));
+  last = getProgramCounter(head(reverse(actions)));
+  blockType = description;
+  addLogicBlock(<first, last, description, conditions, actions>);
+}
+
 
 str generateSuffix(ExtractedCodeBlock Block, list[str] sourceLines) = "<Block>: <Block>";
 
