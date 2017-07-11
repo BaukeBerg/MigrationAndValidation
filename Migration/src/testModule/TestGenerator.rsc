@@ -5,6 +5,7 @@ import FileLocations;
 import IO;
 import String;
 
+import utility::Debugging;
 import utility::FileUtility;
 import utility::HtmlUtility;
 import utility::ListUtility;
@@ -22,13 +23,29 @@ public void generateTestModule()
   fileNames += "\r\n";
   list [str] testCalls = [];
   list[str] functionDefinitions = [];
+  bool skipping = false;
   for(testFile <- testFiles)
-  {
+  { 
+    skipping = false;
     for(line <- readFileLines(testFile))
     {
+      if(startsWith(line, "// SKIP"))
+      {
+        skipping = true;        
+      }
+      else if(startsWith(line, "// UNSKIP"))
+      {
+        skipping = false;      
+      }
       if(startsWith(line, "test bool "))
       {
-        str tryCatchFunction = createTryCatchHarness(stripFileExtension(fileName(testFile)), testMethodName(line));  
+        moduleName = stripFileExtension(fileName(testFile));
+        if(true == skipping)
+        {
+          debugPrint("Skipping test: <moduleName>::<testMethodName(line)>");
+          continue;          
+        }
+        str tryCatchFunction = createTryCatchHarness(moduleName, testMethodName(line));  
         functionDefinitions += tryCatchFunction;
         testCalls += testMethodName(tryCatchFunction);
       }
