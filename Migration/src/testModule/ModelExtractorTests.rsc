@@ -26,7 +26,19 @@ void showFirst200Figure() = showFigure("first200.compiled");
 void showFirst500Figure() = showFigure("first500.compiled");
 void show1kSample() = showFigure("first1000.compiled");
 
-test bool testSamples() = expectEqual(0, size(generateFigures("sampleIssues.compiled")));
+test bool testSamples()
+{
+  prevSetting = displayExtractedBlocks;
+  displayExtractedBlocks = false;
+  figures = generateFigures("sampleIssues.compiled");
+  result = expectEqual(0, size(figures));
+  displayExtractedBlocks = prevSetting;
+  if(false == result)
+  {
+    showFigures(figures);
+  }
+  return result;
+}
 
 test bool testComments() = isUnAmbiguous(parseComments());
 test bool testSample() = isUnAmbiguous(parseCompiledFile("first50.compiled"));
