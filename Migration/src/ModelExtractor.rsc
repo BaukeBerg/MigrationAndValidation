@@ -31,7 +31,7 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
 {
   list[Figure] sourceFigures = generateFigures(parseTree, sourceLines);
   debugPrint("Rendering Figure, <size(sourceFigures)>/<size(sourceLines)> lines unallocated.");
-  showFigure(sourceFigures);  
+  showFigures(sourceFigures);  
 }
 
 void showFigures(list[Figure] sourceFigures) = render(vcat(sourceFigures));
@@ -149,15 +149,6 @@ Tree removeBoilerPlate(Tree parseTree)
       }
       insert(CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* post>` ;     
     }
-    case (CodeBlock) `<CompiledInstruction* pre> <SkipInstruction firstNop> <SkipInstruction secondNop> <CompiledInstruction* post>`:
-    {
-      debugPrint("Removing multiple nop");
-      while((CodeBlock)`<SkipInstruction moreNop><CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction post>`)
-      {
-        post = newPost;
-      }
-      insert((CodeBlock) `<CompiledInstruction* pre> <SkipInstruction firstNop> <CompiledInstruction* post>`);
-    }    
     case (CodeBlock) `<
     CompiledInstruction* pre> <ConditionInstruction condition> <SkipInstruction Nop> <CompiledInstruction* post>`:
     {
@@ -186,6 +177,16 @@ str blockType;
 
 Tree extractModelTest(Tree tree) = innermost visit(tree)
 {
+  case (CodeBlock) `<CompiledInstruction* pre> <SkipInstruction firstNop> <SkipInstruction secondNop> <CompiledInstruction* post>`:
+  {
+    debugPrint("Removing multiple nop");
+    while((CodeBlock)`<SkipInstruction moreNop><CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction post>`)
+    {
+      post = newPost;
+    }
+    insert((CodeBlock) `<CompiledInstruction* pre> <SkipInstruction firstNop> <CompiledInstruction* post>`);
+  }
+  
   case (CodeBlock) `<CompiledInstruction* pre><
     JumpInstruction J><CompiledInstruction* post>`:
   {
