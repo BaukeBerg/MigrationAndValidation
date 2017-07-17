@@ -22,6 +22,7 @@ import Decorator;
 public bool displayEmptyLines = true;
 public bool preProcess = true;
 public bool printExtraction = false;
+public bool displayExtractedBlocks = true;
 
 alias ExtractionResult = tuple[list[Statement] statements, CompiledInstruction *syntaxPart];
 
@@ -30,8 +31,10 @@ void highLightSources(Tree parseTree, list[str] sourceLines)
 {
   list[Figure] sourceFigures = generateFigures(parseTree, sourceLines);
   debugPrint("Rendering Figure, <size(sourceFigures)>/<size(sourceLines)> lines unallocated.");
-  render(vcat(sourceFigures));
+  showFigure(sourceFigures);  
 }
+
+void showFigures(list[Figure] sourceFigures) = render(vcat(sourceFigures));
 
 list[Figure] generateFigures(str fileName) = generateFigures(parseCompiledFile(fileName), readFileLines(compiledFile(fileName)));
 list[Figure] generateFigures(Tree parseTree, list[str] sourceLines)
@@ -61,7 +64,10 @@ list[Figure] generateFigures(Tree parseTree, list[str] sourceLines)
     }
     case ExtractedCodeBlock ECB:
     {
-      sourceFigures += generateLine("Sandybrown", "<lineInfo(ECB)><ECB>"); 
+      if(true == displayExtractedBlocks)
+      {
+        sourceFigures += generateLine("Sandybrown", "<lineInfo(ECB)><ECB>");
+      } 
     }
     
     case EventInstruction E:
