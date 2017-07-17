@@ -14,4 +14,8 @@
 00071 00043 00            
 00071 00043 00            
 00071 00043 00            
-00071 00043 00            
+00071 00043 00           
+00001                     ! This is an event, without PostConditions
+00040 00015 16 00001.1    AND KNIPPER
+00041 00016 01 00510.1    TRIG  510.1
+00042 00017 02 00511.1    EQL S_1SEC  !triggerpuls 1,0 sec.
