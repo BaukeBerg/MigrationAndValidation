@@ -1,7 +1,10 @@
 module utility::Debugging
 
 import DateTime;
+import FileLocations;
 import IO;
+
+import utility::FileUtility;
 
 bool debuggingEnabled = true; 
 
@@ -28,6 +31,12 @@ public void startDuration()
 {
   debugPrint("Starting duration...");
   localDateTime = now();  
+}
+
+public void handleError(str errorToLog)
+{
+  debugPrint(errorToLog);
+  addToFile(generatedFile("rascal.err"), "<errorToLog>\r\n");
 }
 
 public void printDuration() = printDuration("", localDateTime);

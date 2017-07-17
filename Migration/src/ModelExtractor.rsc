@@ -18,8 +18,10 @@ import utility::StringUtility;
 
 import Decorator;
 
-private bool displayEmptyLines = true;
-private bool preProcess = true;
+// Option switches
+public bool displayEmptyLines = true;
+public bool preProcess = true;
+public bool printExtraction = false;
 
 alias ExtractionResult = tuple[list[Statement] statements, CompiledInstruction *syntaxPart];
 
@@ -185,7 +187,7 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
       ConditionInstruction newP>` 
     := (CodeBlock)`<CompiledInstruction* pre>`)
     {
-      debugPrint("Extracting action: <newP>");
+      debugPrint("Extracting action: <newP>", printExtraction);
       pre = newPre;
     }    
     insert((CodeBlock)`<CompiledInstruction* pre><CompiledInstruction* post>`); 
@@ -198,7 +200,7 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
     debugPrint("Found an event");
     actions = [];
     conditions = ["<C>"];
-    debugPrint("Let\'s examine all previous conditions");
+    debugPrint("Let\'s examine all previous conditions", printExtraction);
     while((CodeBlock)`<CompiledInstruction* newPre><
                        ConditionInstruction newC>` 
       := (CodeBlock)`<CompiledInstruction *pre>`)
@@ -206,19 +208,19 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
       conditions = ["<newC>"] + conditions;
       pre = newPre;
     }
-    debugPrint("Let\'s example all following conditions");
+    debugPrint("Let\'s example all following conditions", printExtraction);
     while((CodeBlock)`<ConditionInstruction newC><CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction *post>`)
     {
       conditions += ["<newC>"];
       post = newPost;
     }
-    debugPrint("Now harvest all actions");
+    debugPrint("Now harvest all actions", printExtraction);
     while((CodeBlock)`<ExecuteInstruction newA><CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction *post>`)
     {
       post = newPost;
       actions += ["<newA>"];
     }
-    debugPrint("Finally, store model block and insert remainder");
+    debugPrint("Finally, store model block and insert remainder", printExtraction);
     handleBlock("Event", pre, post);
   }
   
@@ -240,7 +242,7 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
     while((CodeBlock)`<CompiledInstruction *newPre><
                    ConditionInstruction newC>` := (CodeBlock)`<CompiledInstruction *pre>`)
     {
-      debugPrint("previous pre size: <size(pre)>");
+      debugPrint("previous pre size: <size(pre)>", printExtraction);
       pre = newPre;
       conditions = ["<newC>"] + conditions;      
     }
@@ -272,8 +274,9 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
       conditions = ["<newC>"] + conditions; 
     }
     actions = ["<p1>13 <w1>", "<p2>13 <w2>", "<p3>13 <w3>", "<p4>13 <w4>", "<p5>14 <w5>", "<p6>14 <w6>", "<p7>14 <w7>", "<p8>14 <w8>"] ;
-    debugPrint("Adding 4-address FetchAndStore");
-  	handleBlock("4-address Fetch and Store", pre, post);  	
+    debugPrint("Adding FetchAndStore", printExtraction);
+    debugPrint("BOem");
+  	handleBlock("4 address Fetch and Store", pre, post);  	
   }
 
   /// This syntax fragment extracts assignment of a constant in memory
@@ -289,10 +292,8 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
     {
       fail; // Only unconditional AND 0.1' s are matched. No preconditions
     }
-    first = parseInt("<source>");
-    last = parseInt("<store>");
-    Conditions = ["<source>16 00000.1<ws>"];
-    Actions = ["<fetchPrefix>12 <constantValue><newLine2>", "<store>"];
+    conditions = ["<source>16 00000.1<ws>"];
+    actions = ["<fetchPrefix>12 <constantValue><newLine2>", "<store>"];
     handleBlock("Memory Constant", pre, post);    
   }
 
@@ -309,7 +310,7 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
   /// Handle the LSTIO END combinations, and after that, some loose LSTIO instructions...
   case (CodeBlock) `<CompiledInstruction* pre> <IOInstruction lstio> <IOInstruction end> <CompiledInstruction* post>` :
   {
-    debugPrint("Adding IO-readout to model");
+    debugPrint("Adding IO-readout to model", printExtraction);
     //debugPrint("Size of pre: <size(pre)>");
     //result = ExtractConditions(pre);
     //conditions = result.statements;
@@ -322,7 +323,7 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
   
   case (CodeBlock) `<CompiledInstruction* pre><IOInstruction lstio><CompiledInstruction* post>` :
   {
-    debugPrint("Removing single lstIO instruction");
+    debugPrint("Removing single lstIO instruction", printExtraction);
     insert((CodeBlock) `<CompiledInstruction* pre><CompiledInstruction* post>`);    
   }
   
@@ -330,7 +331,7 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
   // Logic instructions with an equal => Unconditional assign
   case (CodeBlock) `<CompiledInstruction* pre><ConditionInstruction condition><ExecuteInstruction execute><CompiledInstruction* post>` :
   {
-    debugPrint("Adding an generic if then ... block");
+    debugPrint("Adding an generic if then ... block", printExtraction);
     <conditions, pre> = extractConditions(pre, condition);
     <actions, post> = extractActions(execute, post);
     handleBlock("Generic action block", pre, post);    
@@ -376,6 +377,7 @@ void handleBlock(str description, CompiledInstruction *pre, CompiledInstruction 
 
 void constructLogic(str description)
 {
+  debugPrint("Constructing logic for <description>: <size(conditions)> conditions, <size(actions)> actions.");
   first = getProgramCounter(head(conditions));
   last = getProgramCounter(head(reverse(actions)));
   blockType = description;
@@ -385,17 +387,30 @@ void constructLogic(str description)
 CodeBlock composeBlock(CompiledInstruction* pre, CompiledInstruction* post)
 {
   codeBlock = "";
+  firstLine = right("<first>", 5, "0");
+  lastLine = right("<last>", 5, "0");
   try
   {  
-    strFirst = parse(#FiveDigits, right("<first>", 5, "0"));
-    strLast = parse(#FiveDigits, right("<last>", 5, "0"));
+    strFirst = parse(#FiveDigits, firstLine);
+    strLast = parse(#FiveDigits, lastLine);
     description = parse(#Description, blockType);
     codeBlock = (ExtractedCodeBlock)`CodeBlock: <FiveDigits strFirst>-<FiveDigits strLast> is <Description description>`;
     return (CodeBlock)`<CompiledInstruction* pre><ExtractedCodeBlock codeBlock><CompiledInstruction* post>`;
   }
   catch:
   {
-    debugPrint("parsing failure...");
+    if(!isCorrect(firstLine, #FiveDigits))
+    {
+      handleError("Unable to parse first line as FiveDigits: <firstLine>"); 
+    }
+    if(!isCorrect(lastLine, #FiveDigits))
+    {
+      handleError("Unable to parse last line as FiveDigits: <lastLine>"); 
+    }
+    if(!isCorrect(blockType, #Description))
+    {
+      handleError("Unable to parse description as description: <blockType>");
+    }    
   }
   return (CodeBlock)`<CompiledInstruction* pre><CompiledInstruction* post>`;
 }
