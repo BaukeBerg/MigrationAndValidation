@@ -400,7 +400,7 @@ CodeBlock composeBlock(CompiledInstruction* pre, CompiledInstruction* post)
 
 str generateSuffix(ExtractedCodeBlock Block, list[str] sourceLines) = "<Block>: <Block>";
 
-str generateSuffix(&T item, list[str] sourceLines) = "<getLineNumber(item)>: <lineContent(sourceLines, getLineNumber(item))>";
+str generateSuffix(&T item, list[str] sourceLines) = "<getProgramCounter("<item>")>: <lineContent(sourceLines, getLineNumber(item))>";
 
 str lineContent(list[str] sourceLines, int lineNumber)
 {
