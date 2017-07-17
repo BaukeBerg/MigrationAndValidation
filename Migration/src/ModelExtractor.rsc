@@ -244,6 +244,8 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
       pre = newPre;
       conditions = ["<newC>"] + conditions;      
     }
+    first = getProgramCounter(conditions[0]);
+    last = getProgramCounter(actions[size(actions)-1]);
     handleBlock("Assign Statement", pre, post);    
   }
 
