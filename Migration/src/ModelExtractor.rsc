@@ -59,7 +59,7 @@ list[Figure] generateFigures(Tree parseTree, list[str] sourceLines)
     }
     case ExtractedCodeBlock ECB:
     {
-      sourceFigures += generateLine("Sandybrown", "<getLineNumber(ECB)>: <ECB>"); 
+      sourceFigures += generateLine("Sandybrown", "<lineInfo(ECB)><ECB>"); 
     }
     
     case EventInstruction E:
@@ -287,6 +287,8 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
     {
       fail; // Only unconditional AND 0.1' s are matched. No preconditions
     }
+    first = parseInt("<source>");
+    last = parseInt("<store>");
     Conditions = ["<source>16 00000.1<ws>"];
     Actions = ["<fetchPrefix>12 <constantValue><newLine2>", "<store>"];
     handleBlock("Memory Constant", pre, post);    
@@ -424,10 +426,14 @@ int getProgramCounter(str lineToCheck)
   }  
 }
 
-int getLineNumber(ExtractedCodeBlock ECB)
+str lineInfo(ExtractedCodeBlock ECB)
 {
-  debugPrint("<ECB>");
-  return parseInt("<ECB>");
+  items = split("-", "<ECB>");
+  if(2 <= size(items))
+  {
+    return "<parseInt(items[0])>-<parseInt(items[1])>: ";
+  }
+  return "ERROR: <ECB>: ";
 }
 
 int getLineNumber(&T item)
