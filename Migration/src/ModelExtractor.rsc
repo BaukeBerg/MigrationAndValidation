@@ -201,26 +201,11 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
     actions = [];
     conditions = ["<C>"];
     debugPrint("Let\'s examine all previous conditions", printExtraction);
-    while((CodeBlock)`<CompiledInstruction* newPre><
-                       ConditionInstruction newC>` 
-      := (CodeBlock)`<CompiledInstruction *pre>`)
-    {
-      conditions = ["<newC>"] + conditions;
-      pre = newPre;
-    }
+    <conditions, pre> = extractConditions(pre);    
     debugPrint("Let\'s example all following conditions", printExtraction);
-    while((CodeBlock)`<ConditionInstruction newC><CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction *post>`)
-    {
-      conditions += ["<newC>"];
-      post = newPost;
-    }
+    <conditions, post> = extractConditions(conditions, post);
     debugPrint("Now harvest all actions", printExtraction);
-    while((CodeBlock)`<ExecuteInstruction newA><CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction *post>`)
-    {
-      post = newPost;
-      actions += ["<newA>"];
-    }
-    debugPrint("Finally, store model block and insert remainder", printExtraction);
+    <actions, post> = extractActions(actions, post);        
     handleBlock("Event", pre, post);
   }
   
@@ -308,13 +293,6 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
   case (CodeBlock) `<CompiledInstruction* pre> <IOInstruction lstio> <IOInstruction end> <CompiledInstruction* post>` :
   {
     debugPrint("Adding IO-readout to model", printExtraction);
-    //debugPrint("Size of pre: <size(pre)>");
-    //result = ExtractConditions(pre);
-    //conditions = result.statements;
-    //pre = result.syntaxPart;    
-    //debugPrint("Size of pre: <size(pre)>");
-    //actions = ["<lstio>", "<end>"];    
-    //  
     insert(composeBlock(pre, post));
   }
   
@@ -336,6 +314,17 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
     
 };
 
+ExtractionResult extractConditions(list[Statement] conditions, CompiledInstruction *post)
+{
+  statements = conditions;
+  while((CodeBlock)`<ConditionInstruction newC><CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction *post>`)
+  {
+    statements += ["<newC>"];
+    post = newPost;
+  }
+  return <statements, post>;
+}
+
 ExtractionResult extractConditions(CompiledInstruction *pre) = extractConditions(pre, []);
 ExtractionResult extractConditions(CompiledInstruction *pre, ConditionInstruction condition) = extractConditions(pre, ["<condition>"]);
 ExtractionResult extractConditions(CompiledInstruction *pre, list[Statement] conditions)
@@ -345,7 +334,7 @@ ExtractionResult extractConditions(CompiledInstruction *pre, list[Statement] con
                     ConditionInstruction newC>`
                     := (CodeBlock)`<CompiledInstruction *pre>`)
   {
-    debugPrint("extra statement <newC>");
+    debugPrint("extra condition: <newC>");
     statements = ["<newC>"] + statements;
     pre = newPre;
   }                    
