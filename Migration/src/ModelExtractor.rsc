@@ -274,8 +274,7 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
       conditions = ["<newC>"] + conditions; 
     }
     actions = ["<p1>13 <w1>", "<p2>13 <w2>", "<p3>13 <w3>", "<p4>13 <w4>", "<p5>14 <w5>", "<p6>14 <w6>", "<p7>14 <w7>", "<p8>14 <w8>"] ;
-    debugPrint("Adding FetchAndStore", printExtraction);
-    debugPrint("BOem");
+    debugPrint("Adding FetchAndStore", printExtraction);    
   	handleBlock("4 address Fetch and Store", pre, post);  	
   }
 
