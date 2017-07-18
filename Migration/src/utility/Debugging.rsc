@@ -7,6 +7,7 @@ import IO;
 import utility::FileUtility;
 
 bool debuggingEnabled = true; 
+int printIndex = 0;
 
 
 public void debugPrint(&T itemToPrint, bool printingEnabled)
@@ -21,7 +22,8 @@ public void debugPrint(&T itemToPrint)
 {
   if(debuggingEnabled)
   {
-    println(itemToPrint);
+    println("<printIndex> - <itemToPrint>");
+    printIndex += 1;
   }
 }
 
