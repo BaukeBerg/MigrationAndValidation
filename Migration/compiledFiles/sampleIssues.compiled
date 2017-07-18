@@ -21,3 +21,41 @@
 00040 00015 16 00001.1    AND KNIPPER1
 00040 00015 16 00001.1    AND KNIPPER2
 00042 00017 02 00511.1    EQL S_1SEC  !triggerpuls 1,0 sec.
+12566                         
+12566                    ! HMI UPdate Display                    
+12567 10776 17 00043.1    ANDNT REG0B30 !regeneratiefase 30
+12568 10777 30 00008      JFRF  L10785
+12569 10778 13 02120      FTCHD STP30_0 !setpoint 30 eenheden
+12570 10779 13 02121      FTCHD STP30_1 !setpoint 30 tientallen
+12571 10780 13 02122      FTCHD STP30_2 !setpoint 30 honderdtallen
+12572 10781 13 02123      FTCHD STP30_3 !setpoint 30 duizendtallen
+12573 10782 14 01220      STRD  DSP30_0 !display 30 eenheden
+12574 10783 14 01221      STRD  DSP30_1 !display 30 tientallen
+12575 10784 14 01222      STRD  DSP30_2 !display 30 honderdtallen
+12576 10785 14 01223    L10785  STRD  DSP30_3 !display 30 duizendtallen
+12577                           
+01243                   ! Store PLC Setpoint
+01244 01073 16 00000.1  L01073  AND 000.1
+01245 01074 13 00104      FTCHD DWS1_1  !eenheid DWS
+01246 01075 13 00105      FTCHD DWS1_2  !tiental DWS
+01247 01076 15 01507      COMP  1507  !constante 7
+01248 01077 15 01504      COMP  1504  !constante 4
+01249 01078 10 00003.1    STRB  RESULT  !F=C
+01250                   
+01251 01079 16 00003.1    AND RESULT  !F=C
+01252 01080 30 00013      JFRF  L01093
+01253                   
+01254 01081 16 00003.1    AND RESULT  !F=C
+01255 01082 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+01256 01083 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+01257 01084 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+01258 01085 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+01259 01086 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+01260 01087 14 02188      STRD  STP47_0 !setpoint 47 eenheden
+01261 01088 14 02189      STRD  STP47_1 !setpoint 47 tientallen
+01262 01089 14 02190      STRD  STP47_2 !setpoint 47 honderdtallen
+01263 01090 14 02191      STRD  STP47_3 !setpoint 47 duizendtallen
+01264                   
+01265 01091 17 00000.1    ANDNT 000.1
+01266 01092 00            NOP 1
+01267                                     
