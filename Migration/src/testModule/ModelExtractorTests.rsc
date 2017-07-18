@@ -27,17 +27,19 @@ void showFirst500Figure() = showFigure("first500.compiled");
 void show1kSample() = showFigure("first1000.compiled");
 void showSamples() = showFigure("sampleIssues.compiled");
 
-test bool testSamples()
+test bool testSamples() = testFigures(true, "sampleIssues.compiled");
+test bool testEventBug() = testFigures(false, "eventBug.compiled" );
+
+bool testFigures(bool shouldBeEmpty, str fileName)
 {
-  prevSetting = displayExtractedBlocks;
   displayExtractedBlocks = false;
-  figures = generateFigures("sampleIssues.compiled");
-  result = expectEqual(0, size(figures));
-  displayExtractedBlocks = prevSetting;
+  result = shouldBeEmpty == isEmpty(generateFigures(fileName));
+  displayExtractedBlocks = true;
   if(false == result)
   {
-    showFigures(figures);
+    showFigures(generateFigures(fileName));    
   }
+  
   return result;
 }
 
