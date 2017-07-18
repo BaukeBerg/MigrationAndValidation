@@ -44,8 +44,8 @@ list[Figure] generateFigures(Tree parseTree, list[str] sourceLines)
   if(true == preProcess)
   {
     debugPrint("Removing unnecessary code");   
-    parseTree = removeBoilerPlate(parseTree);
-  }
+    parseTree = removeBoilerPlate(parseTree);    
+  }  
   debugPrint("Trying to extract model data");
   parseTree = extractModelTest(parseTree);  
   debugPrint("Displaying data without a place in the model");
@@ -143,11 +143,13 @@ Tree removeBoilerPlate(Tree parseTree)
   {
     case (CodeBlock) `<CompiledInstruction* pre> <EmptyLine emptyLine> <CompiledInstruction* post>`: 
     {
-      debugPrint("Removing empty line block");
-      while((CodeBlock)`<EmptyLine E><CompiledInstruction *newPost>` := (CodeBlock)`<CompiledInstruction* post>`)
+      emptyLines = [trim("<emptyLine>")];
+      while((CodeBlock)`<EmptyLine emptyLine><CompiledInstruction *newPost>` := (CodeBlock)`<CompiledInstruction* post>`)
       {
         post = newPost;
+        emptyLines += [trim("<emptyLine>")];
       }
+      debugPrint("Removing <size(emptyLines)> empty line(s): <joinList(emptyLines, ", ")>");
       insert(CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* post>` ;     
     }
     case (CodeBlock) `<
@@ -242,35 +244,42 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
     }
     handleBlock("Assign Statement", pre, post);    
   }
-
-  /// Setpoint
+  //
+  //case (CodeBlock)`<
+  //CompiledInstruction* pre><  
+  //CompiledInstruction * post>`:
+  //{ 
+  //  debugPrint("Adding an HMI DisplayUpdate", printExtraction);
+  //  handleBlock("HMI Display Update", pre, post);
+  //}
+  //  
   case (CodeBlock)`<
   CompiledInstruction* pre><  
-  SourcePrefix source>16 00000.1<WhiteSpace ws><NewLine newLine><
-  SourcePrefix c1>13 <WordAddress c1><NewLine cnl1><
-  SourcePrefix c2>13 <WordAddress c2><NewLine cnl2><
-  SourcePrefix c3>15 <WordAddress cmp1><NewLine cnl3><
-  SourcePrefix c4>15 <WordAddress cmp2><NewLine cnl4><
-  SourcePrefix c5>10 <BitAddress str1><NewLine cnl4><
-  SourcePrefix c6>16 00003.1<WhiteSpace ws><NewLine newLine><
-  SourcePrefix c7>16 00003.3<WhiteSpace ws><NewLine newLine><
-  SourcePrefix p1>13 <WordAddress w1><NewLine nl1><
-  SourcePrefix p2>13 <WordAddress w2><NewLine nl2><
-  SourcePrefix p3>13 <WordAddress w3><NewLine nl3><
-  SourcePrefix p4>13 <WordAddress w4><NewLine nl4><
-  SourcePrefix p5>14 <WordAddress w5><NewLine nl5><
-  SourcePrefix p6>14 <WordAddress w6><NewLine nl6><
-  SourcePrefix p7>14 <WordAddress w7><NewLine nl7><
-  SourcePrefix p8>14 <WordAddress w8><NewLine nl8><
+  SourcePrefix source>16 00000.1<WhiteSpace ws><NewLine nl><
+  SourcePrefix spr1>13 <WordAddress c1><NewLine nl><
+  SourcePrefix spr2>13 <WordAddress c2><NewLine nl><
+  SourcePrefix spr3>15 <WordAddress cmp1><NewLine nl><
+  SourcePrefix c4>15 <WordAddress cmp2><NewLine nl><
+  SourcePrefix c5>10 00003.1<WhiteSpace ws><NewLine cnl4><
+  SourcePrefix c6>16 00003.1<WhiteSpace ws><NewLine nl><
+  SourcePrefix c7>16 00003.3<WhiteSpace ws><NewLine nl><
+  SourcePrefix p1>13 <WordAddress w1><NewLine nl><
+  SourcePrefix p2>13 <WordAddress w2><NewLine nl><
+  SourcePrefix p3>13 <WordAddress w3><NewLine nl><
+  SourcePrefix p4>13 <WordAddress w4><NewLine nl><
+  SourcePrefix p5>14 <WordAddress w5><NewLine nl><
+  SourcePrefix p6>14 <WordAddress w6><NewLine nl><
+  SourcePrefix p7>14 <WordAddress w7><NewLine nl><
+  SourcePrefix p8>14 <WordAddress w8><NewLine nl><
   CompiledInstruction* post>`:
   {
     // BvdB -> Add the rest of the conditions! => 
     // BvdB -> Should create a nested block!
-    conditions = ["<source>16 00000.1<ws>"];
+    conditions = ["<source>16 00000.1<ws>", "<spr1>13 <c1>"];
     //conditions = ["<newC>"] + conditions;
     actions = ["<p1>13 <w1>", "<p2>13 <w2>", "<p3>13 <w3>", "<p4>13 <w4>", "<p5>14 <w5>", "<p6>14 <w6>", "<p7>14 <w7>", "<p8>14 <w8>"] ;
     debugPrint("Adding FetchAndStore", printExtraction);    
-  	handleBlock("PSetpoint", pre, post);  	
+  	handleBlock("PLC Store Setpoint", pre, post);  	
   }
   
   /// This syntax fragment extracts assignment of a constant in memory
@@ -435,9 +444,8 @@ void constructLogic(str description)
   }
   catch:
   {
-    HandleError("Unable to construct <eventDescription>: conditions: <joinList(conditions)>, actions: <joinList(actions)>");
-  }
-  
+    handleError("Unable to construct <eventDescription>: conditions: <joinList(conditions)>, actions: <joinList(actions)>");
+  }  
 }
 
 CodeBlock composeBlock(CompiledInstruction* pre, CompiledInstruction* post)
@@ -470,8 +478,6 @@ CodeBlock composeBlock(CompiledInstruction* pre, CompiledInstruction* post)
   }
   return (CodeBlock)`<CompiledInstruction* pre><CompiledInstruction* post>`;
 }
-
-str generateSuffix(ExtractedCodeBlock Block, list[str] sourceLines) = "<Block>: <Block>";
 
 str generateSuffix(&T item, list[str] sourceLines) = "<getProgramCounter("<item>")>: <lineContent(sourceLines, getLineNumber(item))>";
 
