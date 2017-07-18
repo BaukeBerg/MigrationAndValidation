@@ -21,7 +21,7 @@ import Decorator;
 // Option switches
 public bool displayEmptyLines = true;
 public bool preProcess = true;
-public bool printExtraction = false;
+public bool printExtraction = true;
 public bool displayExtractedBlocks = true;
 public bool extractGenerics = false;
 
@@ -104,7 +104,7 @@ list[Figure] generateFigures(Tree parseTree, list[str] sourceLines)
        sourceFigures += generateLine("SpringGreen", generateSuffix(E, sourceLines));
     }   
     case JumpInstruction J:
-    {
+    { 
       sourceFigures += generateLine("Violet", generateSuffix(J, sourceLines));
     }
     case IOInstruction I:
@@ -191,19 +191,7 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
     }
     handleNopBlock(firstNop, unusedOperations, pre,post);    
   }  
-  case (CodeBlock) `<CompiledInstruction* pre><
-    JumpInstruction J><CompiledInstruction* post>`:
-  {
-    while((CodeBlock)`<CompiledInstruction *newPre><
-      ConditionInstruction newP>` 
-    := (CodeBlock)`<CompiledInstruction* pre>`)
-    {
-      debugPrint("Extracting action: <newP>", printExtraction);
-      pre = newPre;
-    }    
-    insert((CodeBlock)`<CompiledInstruction* pre><CompiledInstruction* post>`); 
-  } 
-     
+       
   case (CodeBlock) `<CompiledInstruction* pre><
     EventInstruction C><
     CompiledInstruction* post>`:
@@ -322,6 +310,23 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
     debugPrint("Removing single lstIO instruction", printExtraction);
     insert((CodeBlock) `<CompiledInstruction* pre><CompiledInstruction* post>`);    
   }
+  
+  case (CodeBlock) `<CompiledInstruction* pre><
+    JumpInstruction J><CompiledInstruction* post>`:
+  {
+    conditions = [];
+    actions = ["<J>"];
+    debugPrint("Hitted A Jumpinstruction");
+    while((CodeBlock)`<CompiledInstruction *newPre><
+      ConditionInstruction newP>` 
+    := (CodeBlock)`<CompiledInstruction* pre>`)
+    {
+      conditions += ["<newP>"];
+      debugPrint("Extracting condition: <newP>", printExtraction);
+      pre = newPre;
+    }    
+    handleBlock("Generic Jump", pre,post); 
+  } 
   
   // If all else fails, this is just an ordinary If Something => Do Something construction
   // Logic instructions with an equal => Unconditional assign

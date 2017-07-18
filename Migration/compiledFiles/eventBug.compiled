@@ -1,0 +1,10 @@
+00001                     ! This is an event, without PostConditions
+00040 00001 16 00001.1    AND KNIPPER
+00041 00002 01 00510.1    TRIG  510.1
+00040 00003 16 00001.1    AND KNIPPER1
+00040 00004 16 00001.1    AND KNIPPER2
+00042 00005 02 00511.1    EQL S_1SEC  !triggerpuls 1,0 sec.
+12566                         
+12566                    ! This is no longer part of the event                    
+12567 00006 17 00043.1    ANDNT REG0B30 !regeneratiefase 30
+12568 00007 30 00008      JFRF  L10785
