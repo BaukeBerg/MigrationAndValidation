@@ -39,7 +39,7 @@ list[str] clipLines(list[str] lines)
     }
     catch:
     {
-      println("Error caught when processing <line> around line <size(convertedLines)>, expected size: <endPos>");
+      println("Error caught when processing --|<line>|-- around line <size(convertedLines)>, expected: <endPos>, received: <size(line)>");
       convertedLines += line;
     }
   }
