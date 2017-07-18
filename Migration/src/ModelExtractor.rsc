@@ -23,6 +23,7 @@ public bool displayEmptyLines = true;
 public bool preProcess = true;
 public bool printExtraction = false;
 public bool displayExtractedBlocks = true;
+public bool extractGenerics = false;
 
 alias ExtractionResult = tuple[list[Statement] statements, CompiledInstruction *syntaxPart];
 
@@ -179,14 +180,15 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
 {
   case (CodeBlock) `<CompiledInstruction* pre> <SkipInstruction firstNop> <SkipInstruction secondNop> <CompiledInstruction* post>`:
   {
+    unusedOperations = ["<secondNop>"];
     debugPrint("Removing multiple nop");
     while((CodeBlock)`<SkipInstruction moreNop><CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction post>`)
     {
+      unusedOperations += ["<moreNop>"];
       post = newPost;
     }
-    insert((CodeBlock) `<CompiledInstruction* pre> <SkipInstruction firstNop> <CompiledInstruction* post>`);
-  }
-  
+    handleNopBlock(firstNop, unusedOperations, pre,post);    
+  }  
   case (CodeBlock) `<CompiledInstruction* pre><
     JumpInstruction J><CompiledInstruction* post>`:
   {
@@ -241,9 +243,17 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
     handleBlock("Assign Statement", pre, post);    
   }
 
-  /// FullStore
+  /// Setpoint
   case (CodeBlock)`<
   CompiledInstruction* pre><  
+  SourcePrefix source>16 00000.1<WhiteSpace ws><NewLine newLine><
+  SourcePrefix c1>13 <WordAddress c1><NewLine cnl1><
+  SourcePrefix c2>13 <WordAddress c2><NewLine cnl2><
+  SourcePrefix c3>15 <WordAddress cmp1><NewLine cnl3><
+  SourcePrefix c4>15 <WordAddress cmp2><NewLine cnl4><
+  SourcePrefix c5>10 <BitAddress str1><NewLine cnl4><
+  SourcePrefix c6>16 00003.1<WhiteSpace ws><NewLine newLine><
+  SourcePrefix c7>16 00003.3<WhiteSpace ws><NewLine newLine><
   SourcePrefix p1>13 <WordAddress w1><NewLine nl1><
   SourcePrefix p2>13 <WordAddress w2><NewLine nl2><
   SourcePrefix p3>13 <WordAddress w3><NewLine nl3><
@@ -254,20 +264,15 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
   SourcePrefix p8>14 <WordAddress w8><NewLine nl8><
   CompiledInstruction* post>`:
   {
-    conditions = [];
-    while((CodeBlock)`<CompiledInstruction* newPre><
-                      ConditionInstruction newC>`
-                      :=
-                      (CodeBlock)`<CompiledInstruction* pre>`)
-    {
-      pre = newPre;
-      conditions = ["<newC>"] + conditions; 
-    }
+    // BvdB -> Add the rest of the conditions! => 
+    // BvdB -> Should create a nested block!
+    conditions = ["<source>16 00000.1<ws>"];
+    //conditions = ["<newC>"] + conditions;
     actions = ["<p1>13 <w1>", "<p2>13 <w2>", "<p3>13 <w3>", "<p4>13 <w4>", "<p5>14 <w5>", "<p6>14 <w6>", "<p7>14 <w7>", "<p8>14 <w8>"] ;
     debugPrint("Adding FetchAndStore", printExtraction);    
-  	handleBlock("4 address Fetch and Store", pre, post);  	
+  	handleBlock("PSetpoint", pre, post);  	
   }
-
+  
   /// This syntax fragment extracts assignment of a constant in memory
   case (CodeBlock)`<
   CompiledInstruction* pre><SourcePrefix source>16 00000.1<WhiteSpace ws><NewLine newLine><
@@ -313,10 +318,14 @@ Tree extractModelTest(Tree tree) = innermost visit(tree)
   // Logic instructions with an equal => Unconditional assign
   case (CodeBlock) `<CompiledInstruction* pre><ConditionInstruction condition><ExecuteInstruction execute><CompiledInstruction* post>` :
   {
-    debugPrint("Adding an generic if then ... block", printExtraction);
-    <conditions, pre> = extractConditions(pre, condition);
-    <actions, post> = extractActions(execute, post);
-    handleBlock("Generic action block", pre, post);    
+    if(true == extractGenerics)
+    {
+      debugPrint("Adding an generic if then ... block", printExtraction);
+      <conditions, pre> = extractConditions(pre, condition);
+      <actions, post> = extractActions(execute, post);
+      handleBlock("Generic action block", pre, post);
+    }
+    fail;    
   }  
     
 };
@@ -362,6 +371,51 @@ ExtractionResult extractActions(list[Statement] actions, CompiledInstruction *po
   return <actions, post>;
 }
 
+void handleNopBlock(SkipInstruction firstStatement, list[Statement] unusedStatements, CompiledInstruction *pre, CompiledInstruction *post)
+{
+  constructLogic("AdditionalNop", unusedStatements);
+  insert(composeBlock(pre,firstStatement,post));
+}
+
+void constructLogic(str description, list[Statement] statements)
+{
+  debugPrint("Constructing logic for <description>: <size(statements)>.");
+  first = getProgramCounter(head(statements));
+  last = getProgramCounter(head(reverse(statements)));
+  blockType = description;
+}
+
+CodeBlock composeBlock(CompiledInstruction* pre, SkipInstruction skip, CompiledInstruction* post)
+{
+  codeBlock = "";
+  firstLine = right("<first>", 5, "0");
+  lastLine = right("<last>", 5, "0");
+  try
+  {  
+    strFirst = parse(#FiveDigits, firstLine);
+    strLast = parse(#FiveDigits, lastLine);
+    description = parse(#Description, blockType);
+    codeBlock = (ExtractedCodeBlock)`CodeBlock: <FiveDigits strFirst>-<FiveDigits strLast> is <Description description>`;
+    return (CodeBlock)`<CompiledInstruction* pre><SkipInstruction skip><ExtractedCodeBlock codeBlock><CompiledInstruction* post>`;
+  }
+  catch:
+  {
+    if(!isCorrect(firstLine, #FiveDigits))
+    {
+      handleError("Unable to parse first line as FiveDigits: <firstLine>"); 
+    }
+    if(!isCorrect(lastLine, #FiveDigits))
+    {
+      handleError("Unable to parse last line as FiveDigits: <lastLine>"); 
+    }
+    if(!isCorrect(blockType, #Description))
+    {
+      handleError("Unable to parse description as description: <blockType>");
+    }    
+  }
+  return (CodeBlock)`<CompiledInstruction* pre><SkipInstruction skip><CompiledInstruction* post>`; 
+} 
+
 void handleBlock(str description, CompiledInstruction *pre, CompiledInstruction *post)
 {
   constructLogic(description);
@@ -370,11 +424,20 @@ void handleBlock(str description, CompiledInstruction *pre, CompiledInstruction 
 
 void constructLogic(str description)
 {
-  debugPrint("Constructing logic for <description>: <size(conditions)> conditions, <size(actions)> actions.");
-  first = getProgramCounter(head(conditions));
-  last = getProgramCounter(head(reverse(actions)));
-  blockType = description;
-  addLogicBlock(<first, last, description, conditions, actions>); 
+  eventDescription = "logic for <description>: <size(conditions)> conditions, <size(actions)> actions.";
+  debugPrint("Constructing <eventDescription>");
+  try
+  {
+    first = getProgramCounter(head(conditions));
+    last = getProgramCounter(head(reverse(actions)));
+    blockType = description;
+    addLogicBlock(<first, last, description, conditions, actions>);
+  }
+  catch:
+  {
+    HandleError("Unable to construct <eventDescription>: conditions: <joinList(conditions)>, actions: <joinList(actions)>");
+  }
+  
 }
 
 CodeBlock composeBlock(CompiledInstruction* pre, CompiledInstruction* post)
