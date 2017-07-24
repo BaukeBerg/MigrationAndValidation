@@ -44,7 +44,7 @@ lexical ExtractedCodeBlock = ReadValue
 
 lexical Error = "ERROR-PARSING-BLOCK";               
                            
-lexical ReadValue = EcbPrefix "ReadValue" AddressRange ;
+lexical ReadValue = EcbPrefix "ReadValue " AddressRange ;
 lexical StoreValue = EcbPrefix "StoreValue" AddressRange ;
 lexical CompareValue = EcbPrefix "CompareValue" AddressRange ;
 lexical OtherBlock = EcbPrefix Description;
