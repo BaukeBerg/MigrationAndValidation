@@ -182,11 +182,20 @@ Tree preprocess(Tree tree) = innermost visit(tree)
       post = newPost;
       statements += ["<fetch>"];
     }      
-    debugPrint("ReadValue");
-    insert (CodeBlock)`<CompiledInstruction* pre><CompiledInstruction *post>`;
+    readValue = composeReadValue(statements);
+    insert (CodeBlock)`<CompiledInstruction* pre><ReadValue readValue><CompiledInstruction *post>`;
   }
   
 };
+
+ReadValue composeReadValue(list[str] statements)
+{
+  ecbPrefix = composeEcbPrefix(statements);
+    
+  return parse(#ReadValue, "<ecbPrefix>ReadValue <addressRange(statements)>");
+}
+
+str addressRange(list[str] statements) = "<getAddress(head(statements))>-<getAddress(head(reverse(statements)))>";
 
 Tree extractModelTest(Tree tree) = innermost visit(tree)
 {
@@ -410,15 +419,11 @@ void constructLogic(str description, list[Statement] statements)
 }
 
 CodeBlock composeNopBlock(CompiledInstruction* pre, CompiledInstruction* post)
-{
-  codeBlock = "";
-  firstLine = right("<first>", 5, "0");
-  lastLine = right("<last>", 5, "0");
+{ 
   try
   {  
-    strFirst = parse(#FiveDigits, firstLine);
-    strLast = parse(#FiveDigits, lastLine);    
-    codeBlock = (ExtractedCodeBlock)`CodeBlock: <FiveDigits strFirst>-<FiveDigits strLast> is NopBlock`;
+    ecbPrefix = composeEcbPrefix(first, last);  
+    codeBlock = (ExtractedCodeBlock)`<EcbPrefix ecbPrefix>NopBlock`;
     return (CodeBlock)`<CompiledInstruction* pre><ExtractedCodeBlock codeBlock><CompiledInstruction* post>`;
   }
   catch:
@@ -434,6 +439,16 @@ CodeBlock composeNopBlock(CompiledInstruction* pre, CompiledInstruction* post)
   }
   return ErrorBlock(pre,post); 
 } 
+
+EcbPrefix composeEcbPrefix(list[str] statements) = composeEcbPrefix(getProgramCounter(head(statements)), getProgramCounter(head(reverse(statements))));
+EcbPrefix composeEcbPrefix(int first, int last)
+{
+  firstLine = right("<first>", 5, "0");
+  lastLine = right("<last>", 5, "0");
+  strFirst = parse(#FiveDigits, firstLine);
+  strLast = parse(#FiveDigits, lastLine);
+  return (EcbPrefix)`CodeBlock: <FiveDigits strFirst>-<FiveDigits strLast> is `; 
+}
 
 CodeBlock ErrorBlock(CompiledInstruction* pre, CompiledInstruction *post) = (CodeBlock)`<CompiledInstruction* pre>ERROR-PARSING-BLOCK<CompiledInstruction* post>`;
 
@@ -502,6 +517,18 @@ str lineContent(list[str] sourceLines, int lineNumber)
   catch:
   {
     return "-- Empty --";
+  }
+}
+
+str getAddress(str lineToCheck)
+{
+  try
+  {
+    return substring(lineToCheck, 15,20);
+  }
+  catch:
+  {
+    return "00000";
   }
 }
 
