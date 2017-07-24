@@ -3,12 +3,21 @@ module utility::Debugging
 import DateTime;
 import FileLocations;
 import IO;
+import List;
 
 import utility::FileUtility;
 
 bool debuggingEnabled = true; 
 int printIndex = 0;
 
+public list[str] Errors = [];
+
+bool hasErrors() = 0 < size(Errors);
+
+public void resetErrors()
+{
+ Errors = [];
+}
 
 public void debugPrint(&T itemToPrint, bool printingEnabled)
 {
@@ -38,6 +47,7 @@ public void startDuration()
 public void handleError(str errorToLog)
 {
   debugPrint(errorToLog);
+  Errors += errorToLog;
   addToFile(generatedFile("rascal.err"), "<errorToLog>\r\n");
 }
 

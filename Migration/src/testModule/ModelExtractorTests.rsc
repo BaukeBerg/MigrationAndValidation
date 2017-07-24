@@ -12,6 +12,7 @@ import utility::TestUtility;
 
 import IO;
 import ParseTree;
+import PC20Syntax;
 
 import vis::Figure;
 import vis::ParseTree;
@@ -49,6 +50,22 @@ test bool testTotal() = isUnAmbiguous(parseTotalFile());
 
 test bool testFirst500() = isUnAmbiguous(parseCompiledFile("first500.compiled"));
 
+test bool testErrors() 
+{
+  resetErrors();
+  visit(parseCompiledFile("first100.compiled"))
+  {
+    case (CodeBlock)`<CompiledInstruction *pre><SkipInstruction S><CompiledInstruction *post>`:
+    {
+      ModelExtractor::first = 456846484648868;
+      ModelExtractor::last = 99999999999999999;
+      composeNopBlock(pre, post);
+    }
+  }
+  return expectTrue(hasErrors(), "Parsing invalid data should log an error");
+}
+
+
 Tree parseComments() = parseCompiledFile("comments.compiled");
 Tree parseTotalFile() = parseCompiledFile("DR_TOT_3.compiled");
 
@@ -62,3 +79,5 @@ void generateInstructions(str fileName)
   instructions = padList("", instructions, "\r\n");
   writeFile(generatedFile("<stripFileExtension(fileName)>.instructions"), instructions);
 }
+
+

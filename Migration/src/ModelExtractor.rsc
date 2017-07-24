@@ -45,6 +45,7 @@ list[Figure] generateFigures(Tree parseTree, list[str] sourceLines)
   {
     debugPrint("Removing unnecessary code");   
     parseTree = removeBoilerPlate(parseTree);    
+    parseTree = preprocess(parseTree);
   }  
   debugPrint("Trying to extract model data");
   parseTree = extractModelTest(parseTree);  
@@ -115,6 +116,12 @@ list[Figure] generateFigures(Tree parseTree, list[str] sourceLines)
     {
       sourceFigures += generateLine("Lightpink", generateSuffix(S, sourceLines));
     }
+    
+    case Error E:
+    {
+      handleError("Error in model: <E>");
+      sourceFigures += generateLine("White", "Red", "<E>");
+    }
   }  
   return sourceFigures;
 }
@@ -151,45 +158,48 @@ Tree removeBoilerPlate(Tree parseTree)
       }
       debugPrint("Removing <size(emptyLines)> empty line(s): <joinList(emptyLines, ", ")>");
       insert(CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* post>` ;     
-    }
-    case (CodeBlock) `<
-    CompiledInstruction* pre> <ConditionInstruction condition> <SkipInstruction Nop> <CompiledInstruction* post>`:
-    {
-      original = size(pre)+size(post)+2;
-      debugPrint("Found an empty exection <original>");      
-      while((CodeBlock)`<
-            CompiledInstruction* newPre><
-            ConditionInstruction newC>` 
-            := (CodeBlock)`<CompiledInstruction *pre>`)
-            { 
-              pre = newPre;
-            }
-      debugPrint("Removed <original-size(pre)-size(post)> lines");
-      insert((CodeBlock) `<CompiledInstruction* pre> <CompiledInstruction* post>`);
-    } 
+    }   
   }
   return parseTree;  
 }
 
 list[Statement] actions = [];
 list[Statement] conditions = [];
-int first = 0;
-int last = 0;
+public int first = 0;
+public int last = 0;
 str nl = "\n";
 str blockType;
 
+Tree preprocess(Tree tree) = innermost visit(tree)
+{
+  /// Fetch
+  case (CodeBlock)`<CompiledInstruction* pre> <FetchInstruction fetch> <CompiledInstruction *post>`:
+  {
+    statements = ["<fetch>"];
+    while((CodeBlock)`<FetchInstruction fetch><CompiledInstruction *newPost>`
+      := (CodeBlock)`<CompiledInstruction *post>`)
+    {
+      post = newPost;
+      statements += ["<fetch>"];
+    }      
+    debugPrint("ReadValue");
+    insert (CodeBlock)`<CompiledInstruction* pre><CompiledInstruction *post>`;
+  }
+  
+};
+
 Tree extractModelTest(Tree tree) = innermost visit(tree)
 {
-  case (CodeBlock) `<CompiledInstruction* pre> <SkipInstruction firstNop> <SkipInstruction secondNop> <CompiledInstruction* post>`:
+  case (CodeBlock) `<CompiledInstruction* pre> <SkipInstruction firstNop> <CompiledInstruction* post>`:
   {
-    unusedOperations = ["<secondNop>"];
-    debugPrint("Removing multiple nop");
+    nopInstructions = ["<firstNop>"];
+    debugPrint("Found NopBlock");
     while((CodeBlock)`<SkipInstruction moreNop><CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction post>`)
     {
-      unusedOperations += ["<moreNop>"];
+      nopInstructions += ["<moreNop>"];
       post = newPost;
     }
-    handleNopBlock(firstNop, unusedOperations, pre,post);    
+    handleNopBlock(nopInstructions, pre,post);    
   }  
        
   case (CodeBlock) `<CompiledInstruction* pre><
@@ -385,10 +395,10 @@ ExtractionResult extractActions(list[Statement] actions, CompiledInstruction *po
   return <actions, post>;
 }
 
-void handleNopBlock(SkipInstruction firstStatement, list[Statement] unusedStatements, CompiledInstruction *pre, CompiledInstruction *post)
+void handleNopBlock(list[Statement] unusedStatements, CompiledInstruction *pre, CompiledInstruction *post)
 {
   constructLogic("AdditionalNop", unusedStatements);
-  insert(composeBlock(pre,firstStatement,post));
+  insert(composeNopBlock(pre,post));
 }
 
 void constructLogic(str description, list[Statement] statements)
@@ -399,7 +409,7 @@ void constructLogic(str description, list[Statement] statements)
   blockType = description;
 }
 
-CodeBlock composeBlock(CompiledInstruction* pre, SkipInstruction skip, CompiledInstruction* post)
+CodeBlock composeNopBlock(CompiledInstruction* pre, CompiledInstruction* post)
 {
   codeBlock = "";
   firstLine = right("<first>", 5, "0");
@@ -407,10 +417,9 @@ CodeBlock composeBlock(CompiledInstruction* pre, SkipInstruction skip, CompiledI
   try
   {  
     strFirst = parse(#FiveDigits, firstLine);
-    strLast = parse(#FiveDigits, lastLine);
-    description = parse(#Description, blockType);
-    codeBlock = (ExtractedCodeBlock)`CodeBlock: <FiveDigits strFirst>-<FiveDigits strLast> is <Description description>`;
-    return (CodeBlock)`<CompiledInstruction* pre><SkipInstruction skip><ExtractedCodeBlock codeBlock><CompiledInstruction* post>`;
+    strLast = parse(#FiveDigits, lastLine);    
+    codeBlock = (ExtractedCodeBlock)`CodeBlock: <FiveDigits strFirst>-<FiveDigits strLast> is NopBlock`;
+    return (CodeBlock)`<CompiledInstruction* pre><ExtractedCodeBlock codeBlock><CompiledInstruction* post>`;
   }
   catch:
   {
@@ -421,14 +430,12 @@ CodeBlock composeBlock(CompiledInstruction* pre, SkipInstruction skip, CompiledI
     if(!isCorrect(lastLine, #FiveDigits))
     {
       handleError("Unable to parse last line as FiveDigits: <lastLine>"); 
-    }
-    if(!isCorrect(blockType, #Description))
-    {
-      handleError("Unable to parse description as description: <blockType>");
-    }    
+    }        
   }
-  return (CodeBlock)`<CompiledInstruction* pre><SkipInstruction skip><CompiledInstruction* post>`; 
+  return ErrorBlock(pre,post); 
 } 
+
+CodeBlock ErrorBlock(CompiledInstruction* pre, CompiledInstruction *post) = (CodeBlock)`<CompiledInstruction* pre>ERROR-PARSING-BLOCK<CompiledInstruction* post>`;
 
 void handleBlock(str description, CompiledInstruction *pre, CompiledInstruction *post)
 {

@@ -31,13 +31,30 @@ syntax CompiledInstruction = empty:EmptyLine
                            | SkipInstruction                            
                            | io:IOInstruction
                            | SingleInstruction // Instruction without address
-                           | ExtractedCodeBlock                           
-                                                       
+                           | ExtractedCodeBlock              
+                           | Error            
                            ;
                            
-lexical ExtractedCodeBlock = "CodeBlock: " FiveDigits "-" FiveDigits " is " Description;
+lexical ExtractedCodeBlock = ReadValue
+                           | StoreValue
+                           | CompareValue
+                           | NopBlock
+                           | OtherBlock
+                           ;
 
-lexical Description = [a-zA-Z0-9\ ]* !>> [a-zA-Z0-9\ ];
+lexical Error = "ERROR-PARSING-BLOCK";               
+                           
+lexical ReadValue = EcbPrefix "ReadValue" AddressRange ;
+lexical StoreValue = EcbPrefix "StoreValue" AddressRange ;
+lexical CompareValue = EcbPrefix "CompareValue" AddressRange ;
+lexical OtherBlock = EcbPrefix Description;
+lexical NopBlock = EcbPrefix "NopBlock" ;
+
+lexical EcbPrefix = "CodeBlock: " FiveDigits "-" FiveDigits " is "; 
+lexical AddressRange = FiveDigits "-" FiveDigits;
+
+
+lexical Description = "--" [a-zA-Z0-9\ ]* !>> [a-zA-Z0-9\ ] "--"; // -- -- added to remove ambiguity
 
 
 lexical ExecuteInstruction =  assign:AssignInstruction
