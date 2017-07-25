@@ -1,11 +1,13 @@
 module ModelExtractor
 
+import EcbHandler;
 import FileLocations;
 import IO;
 import PlcModel;
 import Parser;
 import ParseTree;
 import PC20Syntax;
+import PreProcessor;
 import String;
 
 import vis::Figure;
@@ -13,6 +15,7 @@ import vis::ParseTree;
 import vis::Render;
 
 import utility::Debugging;
+import utility::InstructionUtility;
 import utility::ListUtility;
 import utility::StringUtility;
 
@@ -66,12 +69,23 @@ list[Figure] generateFigures(Tree parseTree, list[str] sourceLines)
     }
     case ExtractedCodeBlock ECB:
     {
+      debugPrint("Hitted an ECB");
+      str colorName = "SandyBrown";
       if(true == displayExtractedBlocks)
       {
-        sourceFigures += generateLine("Sandybrown", "<lineInfo(ECB)><ECB>");
-      } 
-    }
-    
+        ECB = visit(ECB)
+        {
+          case ColorName C:
+          {
+            colorName = substring("<C>", 2, size("<C>")-2);
+            insert((ColorName)`++++`);
+         }
+        }         
+        debugPrint("Generating Line"); 
+        str EcbStr = replaceAll("<ECB>", "++++", "");
+        sourceFigures += generateLine(colorName, "<lineInfo(ECB)><EcbStr>");
+      }       
+    }    
     case EventInstruction E:
     {
        sourceFigures += generateLine("OliveDrab", generateSuffix(E, sourceLines));
@@ -88,6 +102,7 @@ list[Figure] generateFigures(Tree parseTree, list[str] sourceLines)
     {
       sourceFigures += generateLine("Yellow", generateSuffix(B, sourceLines));      
     }    
+    
     case FetchInstruction E:
     {
       sourceFigures += generateLine("Chocolate", generateSuffix(E, sourceLines));
@@ -123,12 +138,15 @@ list[Figure] generateFigures(Tree parseTree, list[str] sourceLines)
       sourceFigures += generateLine("White", "Red", "<E>");
     }
   }  
+  debugPrint("Visiting done, returning figures");
   return sourceFigures;
 }
 
 bool singleLine(&T inputData) = 1 == size(inputData);
 bool hasContent(&T inputData) = (false == isEmpty(inputData));
 bool isEmpty(&T inputData) = (0 == size(inputData));
+
+int size(str inputData) = String::size(inputData);
 
 int size(&T inputData)
 {
@@ -169,43 +187,6 @@ public int first = 0;
 public int last = 0;
 str nl = "\n";
 str blockType;
-
-Tree preprocess(Tree tree) = innermost visit(tree)
-{
-  /// Fetch
-  case (CodeBlock)`<CompiledInstruction* pre> <FetchInstruction fetch> <CompiledInstruction *post>`:
-  {
-    statements = ["<fetch>"];
-    while((CodeBlock)`<FetchInstruction fetch><CompiledInstruction *newPost>`
-      := (CodeBlock)`<CompiledInstruction *post>`)
-    {
-      post = newPost;
-      statements += ["<fetch>"];
-    }      
-    readValue = composeReadValue(statements);
-    insert (CodeBlock)`<CompiledInstruction* pre><ReadValue readValue><CompiledInstruction *post>`;
-  }
-  /// Store
-  case (CodeBlock)`<CompiledInstruction* pre> <StoreInstruction store> <CompiledInstruction *post>`:
-  {
-    statements = ["<store>"];
-    while((CodeBlock)`<StoreInstruction store><CompiledInstruction *newPost>`
-      := (CodeBlock)`<CompiledInstruction *post>`)
-    {
-      post = newPost;
-      statements += ["<store>"];
-    }      
-    writeValue = composeWriteValue(statements);
-    insert (CodeBlock)`<CompiledInstruction* pre><WriteValue writeValue><CompiledInstruction *post>`;
-  }
-  
-};
-
-// (partial) model representations
-ReadValue composeReadValue(list[str] statements) = parse(#ReadValue, "<composeEcbPrefix(statements)>ReadValue <addressRange(statements)>");
-WriteValue composeWriteValue(list[str] statements) = parse(#WriteValue, "<composeEcbPrefix(statements)>WriteValue <addressRange(statements)>");
-
-str addressRange(list[str] statements) = "<getAddress(head(statements))>-<getAddress(head(reverse(statements)))>";
 
 Tree extractModelTest(Tree tree) = innermost visit(tree)
 {
@@ -432,7 +413,7 @@ CodeBlock composeNopBlock(CompiledInstruction* pre, CompiledInstruction* post)
 { 
   try
   {  
-    ecbPrefix = composeEcbPrefix(first, last);  
+    ecbPrefix = composeEcbPrefix("Grey", first, last);  
     codeBlock = (ExtractedCodeBlock)`<EcbPrefix ecbPrefix>NopBlock`;
     return (CodeBlock)`<CompiledInstruction* pre><ExtractedCodeBlock codeBlock><CompiledInstruction* post>`;
   }
@@ -449,16 +430,6 @@ CodeBlock composeNopBlock(CompiledInstruction* pre, CompiledInstruction* post)
   }
   return ErrorBlock(pre,post); 
 } 
-
-EcbPrefix composeEcbPrefix(list[str] statements) = composeEcbPrefix(getProgramCounter(head(statements)), getProgramCounter(head(reverse(statements))));
-EcbPrefix composeEcbPrefix(int first, int last)
-{
-  firstLine = right("<first>", 5, "0");
-  lastLine = right("<last>", 5, "0");
-  strFirst = parse(#FiveDigits, firstLine);
-  strLast = parse(#FiveDigits, lastLine);
-  return (EcbPrefix)`CodeBlock: <FiveDigits strFirst>-<FiveDigits strLast> is `; 
-}
 
 CodeBlock ErrorBlock(CompiledInstruction* pre, CompiledInstruction *post) = (CodeBlock)`<CompiledInstruction* pre>ERROR-PARSING-BLOCK<CompiledInstruction* post>`;
 
@@ -529,50 +500,3 @@ str lineContent(list[str] sourceLines, int lineNumber)
     return "-- Empty --";
   }
 }
-
-str getAddress(str lineToCheck)
-{
-  try
-  {
-    return substring(lineToCheck, 15,20);
-  }
-  catch:
-  {
-    return "00000";
-  }
-}
-
-int getProgramCounter(str lineToCheck)
-{
-  try
-  {
-    return parseInt(substring(lineToCheck, 6,11));
-  }
-  catch:
-  {
-    return -1;
-  }  
-}
-
-str lineInfo(ExtractedCodeBlock ECB)
-{
-  items = split("-", "<ECB>");
-  if(2 <= size(items))
-  {
-    return "<parseInt(items[0])>-<parseInt(items[1])>: ";
-  }
-  return "ERROR: <ECB>: ";
-}
-
-int getLineNumber(&T item)
-{
-  try
-  {
-    return item@\loc.begin.line;
-  }
-  catch:
-  {
-    return -1 ;
-  }
-}
-

@@ -50,11 +50,11 @@ lexical CompareValue = EcbPrefix "CompareValue" AddressRange ;
 lexical OtherBlock = EcbPrefix Description;
 lexical NopBlock = EcbPrefix "NopBlock" ;
 
-lexical EcbPrefix = "CodeBlock: " FiveDigits "-" FiveDigits " is "; 
+lexical EcbPrefix = ColorName "CodeBlock: " FiveDigits "-" FiveDigits " is "; 
+lexical ColorName = "++" [a-zA-Z0-9\ ]* !>> [a-zA-Z0-9\ ] "++" ; // * * added to remove ambiguity
 lexical AddressRange = FiveDigits "-" FiveDigits;
-
-
 lexical Description = "--" [a-zA-Z0-9\ ]* !>> [a-zA-Z0-9\ ] "--"; // -- -- added to remove ambiguity
+ 
 
 
 lexical ExecuteInstruction =  assign:AssignInstruction
@@ -77,7 +77,9 @@ lexical EmptyLine = SourceLineNumber NewLine ;
 lexical SkipInstruction = SourcePrefix "00" WhiteSpace NewLine;                        
 lexical EventInstruction = SourcePrefix "01" WhiteSpace BitAddress NewLine ;                        
 lexical AssignInstruction = SourcePrefix ("02" | "03" | "08" | "09" ) WhiteSpace BitAddress NewLine ;
-lexical StoreInstruction = SourcePrefix ( "10" | "14" ) WhiteSpace (BitAddress | WordAddress) NewLine;
+lexical StoreInstruction = StoreBit | StoreValue ;
+lexical StoreBit = SourcePrefix "10" WhiteSpace BitAddress NewLine;
+lexical StoreValue = SourcePrefix "14" WhiteSpace WordAddress NewLine;
 lexical CountInstruction = SourcePrefix ("06" | "07") WhiteSpace WordAddress NewLine;
 lexical FetchInstruction = SourcePrefix ("11" | "12" | "13") WhiteSpace (BitAddress | WordAddress) NewLine;
 lexical CompareInstruction = SourcePrefix "15" WhiteSpace WordAddress NewLine ;
