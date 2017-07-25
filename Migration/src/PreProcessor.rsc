@@ -52,6 +52,13 @@ Tree preprocess(Tree tree) = innermost visit(tree)
     insert (CodeBlock)`<CompiledInstruction* pre><CompareValue compareValue><CompiledInstruction *post>`;
   }  
   
+  /// Compare
+  case (CodeBlock)`<CompiledInstruction* pre> <ReadValue read> <CompareValue compare> <CompiledInstruction *post>`:
+  {
+    compareValue = composeCompareValue(read, compare);
+    insert (CodeBlock)`<CompiledInstruction* pre><CompareValue compareValue><CompiledInstruction *post>`;
+  }
+  
   /// Assign
   case (CodeBlock)`<CompiledInstruction *pre> <ReadValue read> <WriteValue write> <CompiledInstruction *post>`:
   {
@@ -64,12 +71,20 @@ Tree preprocess(Tree tree) = innermost visit(tree)
 ReadValue composeReadValue(list[str] statements) = parse(#ReadValue, "<composeEcbPrefix("Chocolate", statements)>ReadValue <addressRange(statements)>");
 WriteValue composeWriteValue(list[str] statements) = parse(#WriteValue, "<composeEcbPrefix("Lime", statements)>WriteValue <addressRange(statements)>");
 CompareValue composeCompareValue(list[str] statements) = parse(#CompareValue, "<composeEcbPrefix("LightSeaGreen", statements)>CompareValue <addressRange(statements)>");
+CompareValue composeCompareValue(ReadValue readValue, CompareValue compareValue)
+{
+  inputAddress = addressRange(readValue);
+  outputAddress = addressRange(compareValue);  
+  return parse(#CompareValue, "<composeEcbPrefix("LightSeaGreen", firstInteger(inputAddress), lastInteger(outputAddress))>CompareValue <inputAddress> to <outputAddress>");
+}
+
 AssignValue composeAssign(ReadValue readValue, WriteValue writeValue) 
 {
   inputAddress = addressRange(readValue);
   outputAddress = addressRange(writeValue);  
   return parse(#AssignValue, "<composeEcbPrefix("Lime", firstInteger(inputAddress), lastInteger(outputAddress))>AssignValue <inputAddress> to <outputAddress>");
 }
+
 
 
  
