@@ -40,7 +40,7 @@ test bool testParseIntOctal() = expectEqual(70, parseInt("00070"), "Check that 7
 test bool testParseIntHexadecimal() = expectEqual(31, parseInt("0x0001F"), "Check that hex input is considered valid");
 test bool testParseIntHexadecimal() = expectEqual(255, parseInt("0x000ff"), "Check that hex input is considered valid");
 test bool testIntegers() = expectEqual([123,456,678], extractIntegers("00123,00456,00678"), "Automatically composes list of integers from string");
-
+test bool testNumericList() = expectEqual([1,10,43,1234,100], extractIntegers("Any Str1ng conta10ning the data 43 will simply get it done1234. even hexadec0x64imals!"));
 test bool testStripLeadingSingleChar() = expectEqual("400.1", stripLeading("00400.1", "0"), "stripLeading should remove all leading 0\'s");
 test bool testStripLeadingNoChar() = expectEqual("00400.1", stripLeading("00400.1", "5"), "stripLeading should return original string");
 test bool testLargeToken() = expectEqual("00.1", stripLeading("00400.1", "004"), "multiple characters are removed with similar syntax");
