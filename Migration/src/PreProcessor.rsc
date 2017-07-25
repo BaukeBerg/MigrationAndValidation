@@ -10,6 +10,19 @@ import utility::StringUtility;
 
 Tree preprocess(Tree tree) = innermost visit(tree)
 {
+  /// NopBlock
+  case (CodeBlock) `<CompiledInstruction* pre> <SkipInstruction firstNop> <CompiledInstruction* post>`:
+  {
+    firstInstruction = lastInstruction = firstNop;
+    while((CodeBlock)`<SkipInstruction lastNop><CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction post>`)
+    {
+      lastInstruction = lastNop;
+      post = newPost;
+    }
+    nopBlock = composeNopBlock(getProgramCounter("<firstInstruction>"), getProgramCounter("<lastInstruction>"));
+    insert(CodeBlock)`<CompiledInstruction* pre><NopBlock nopBlock><CompiledInstruction* post>`;    
+  } 
+
   /// Fetch
   case (CodeBlock)`<CompiledInstruction* pre> <FetchInstruction fetch> <CompiledInstruction *post>`:
   {
@@ -59,12 +72,33 @@ Tree preprocess(Tree tree) = innermost visit(tree)
     insert (CodeBlock)`<CompiledInstruction* pre><CompareValue compareValue><CompiledInstruction *post>`;
   }
   
+  // AndEqual: AND 0.1, Compare, store to B, AND B == AND (Compare)
+  case (CodeBlock)`<CompiledInstruction* pre><
+  SourcePrefix spx>16 00000.1<WhiteSpace ws><NewLine nl><
+  CompareValue compare><
+  StoreBit store><
+  AndInstruction readData><
+  CompiledInstruction *post>`:
+  {
+    if(bitAddress(store) == bitAddress(readData))
+    {
+      andEqual = composeAndEqual(getProgramCounter("<spx>"), getProgramCounter("<readData>"), compare);
+      insert((CodeBlock)`<CompiledInstruction* pre><AndEqual andEqual><CompiledInstruction *post>`);
+    }
+    else
+    {
+      fail;
+    }
+  }
+  
   /// Assign
   case (CodeBlock)`<CompiledInstruction *pre> <ReadValue read> <WriteValue write> <CompiledInstruction *post>`:
   {
     assignValue = composeAssign(read, write);
     insert((CodeBlock)`<CompiledInstruction* pre><AssignValue assignValue> <CompiledInstruction *post>`);  
   }
+  
+  
 };
 
 // (partial) model representations
@@ -84,6 +118,9 @@ AssignValue composeAssign(ReadValue readValue, WriteValue writeValue)
   outputAddress = addressRange(writeValue);  
   return parse(#AssignValue, "<composeEcbPrefix("Lime", firstInteger(inputAddress), lastInteger(outputAddress))>AssignValue <inputAddress> to <outputAddress>");
 }
+
+AndEqual composeAndEqual(int first, int last, CompareValue compare) = parse(#AndEqual, "<composeEcbPrefix("Tomato", first, last)>AndEqual <addressRange(compare)> to <addressRange(compare)>"); 
+NopBlock composeNopBlock(int first, int last) = parse(#NopBlock, "<composeEcbPrefix("LightGrey", first, last)>NopBlock");
 
 
 

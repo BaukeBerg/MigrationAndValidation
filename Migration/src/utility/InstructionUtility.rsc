@@ -45,6 +45,19 @@ str getAddress(str lineToCheck)
   }
 }
 
+str bitAddress(&T instruction)
+{
+  visit(instruction)
+  {
+    case BitAddress B:
+    {
+      return "<B>";
+    }
+  }
+  handleError("No bitaddress present: <instruction>");
+  return "00000.0";
+}
+
 int getProgramCounter(str lineToCheck)
 {
   try

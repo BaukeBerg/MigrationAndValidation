@@ -41,6 +41,7 @@ lexical ExtractedCodeBlock = ReadValue
                            | NopBlock
                            | AssignValue
                            | OtherBlock
+                           | AndEqual
                            ;
 
 lexical Error = "ERROR-PARSING-BLOCK";               
@@ -49,6 +50,7 @@ lexical ReadValue = EcbPrefix "ReadValue " AddressRange ;
 lexical WriteValue = EcbPrefix "WriteValue " AddressRange ;
 lexical CompareValue = EcbPrefix "CompareValue " (AddressRange | (AddressRange " to " AddressRange));
 lexical AssignValue = EcbPrefix "AssignValue " AddressRange " to " AddressRange ;
+lexical AndEqual = EcbPrefix "AndEqual " AddressRange " to " AddressRange;
 lexical OtherBlock = EcbPrefix Description;
 lexical NopBlock = EcbPrefix "NopBlock" ;
 
@@ -85,7 +87,8 @@ lexical StoreValue = SourcePrefix "14" WhiteSpace WordAddress NewLine;
 lexical CountInstruction = SourcePrefix ("06" | "07") WhiteSpace WordAddress NewLine;
 lexical FetchInstruction = SourcePrefix ("11" | "12" | "13") WhiteSpace (BitAddress | WordAddress) NewLine;
 lexical CompareInstruction = SourcePrefix "15" WhiteSpace WordAddress NewLine ;
-lexical LogicInstruction = SourcePrefix ("16" | "17" | "18" | "19") WhiteSpace BitAddress NewLine ;                                  
+lexical LogicInstruction = AndInstruction | SourcePrefix ( "17" | "18" | "19") WhiteSpace BitAddress NewLine;
+lexical AndInstruction = SourcePrefix "16" WhiteSpace BitAddress NewLine;                                   
 lexical CalcInstruction = SourcePrefix ("20" | "21" | "22" | "23" ) WhiteSpace (BitAddress | WordAddress) NewLine;
 lexical JumpInstruction = SourcePrefix ("24" | "25" | "29" | "30") WhiteSpace WordAddress NewLine;
 lexical IOInstruction = SourcePrefix ( "31" | "27" ) WhiteSpace WordAddress NewLine;
