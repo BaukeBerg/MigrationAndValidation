@@ -36,7 +36,7 @@ syntax CompiledInstruction = empty:EmptyLine
                            ;
                            
 lexical ExtractedCodeBlock = ReadValue
-                           | StoreValue
+                           | WriteValue
                            | CompareValue
                            | NopBlock
                            | OtherBlock
@@ -45,7 +45,7 @@ lexical ExtractedCodeBlock = ReadValue
 lexical Error = "ERROR-PARSING-BLOCK";               
                            
 lexical ReadValue = EcbPrefix "ReadValue " AddressRange ;
-lexical StoreValue = EcbPrefix "StoreValue" AddressRange ;
+lexical WriteValue = EcbPrefix "WriteValue " AddressRange ;
 lexical CompareValue = EcbPrefix "CompareValue" AddressRange ;
 lexical OtherBlock = EcbPrefix Description;
 lexical NopBlock = EcbPrefix "NopBlock" ;

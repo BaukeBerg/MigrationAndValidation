@@ -185,15 +185,25 @@ Tree preprocess(Tree tree) = innermost visit(tree)
     readValue = composeReadValue(statements);
     insert (CodeBlock)`<CompiledInstruction* pre><ReadValue readValue><CompiledInstruction *post>`;
   }
+  /// Store
+  case (CodeBlock)`<CompiledInstruction* pre> <StoreInstruction store> <CompiledInstruction *post>`:
+  {
+    statements = ["<store>"];
+    while((CodeBlock)`<StoreInstruction store><CompiledInstruction *newPost>`
+      := (CodeBlock)`<CompiledInstruction *post>`)
+    {
+      post = newPost;
+      statements += ["<store>"];
+    }      
+    writeValue = composeWriteValue(statements);
+    insert (CodeBlock)`<CompiledInstruction* pre><WriteValue writeValue><CompiledInstruction *post>`;
+  }
   
 };
 
-ReadValue composeReadValue(list[str] statements)
-{
-  ecbPrefix = composeEcbPrefix(statements);
-    
-  return parse(#ReadValue, "<ecbPrefix>ReadValue <addressRange(statements)>");
-}
+// (partial) model representations
+ReadValue composeReadValue(list[str] statements) = parse(#ReadValue, "<composeEcbPrefix(statements)>ReadValue <addressRange(statements)>");
+WriteValue composeWriteValue(list[str] statements) = parse(#WriteValue, "<composeEcbPrefix(statements)>WriteValue <addressRange(statements)>");
 
 str addressRange(list[str] statements) = "<getAddress(head(statements))>-<getAddress(head(reverse(statements)))>";
 
