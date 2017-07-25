@@ -1,7 +1,9 @@
 module utility::StringUtility
 
+import List;
 import String;
 
+import utility::ListUtility;
 import utility::MathUtility;
 
 int parseInt(&T inputObject)
@@ -9,7 +11,7 @@ int parseInt(&T inputObject)
   inputString = "<inputObject>";
   try
   { 
-    return toInt(firstInteger(inputString));
+    return firstInteger(inputString);
   }
   catch:
   {     
@@ -17,8 +19,10 @@ int parseInt(&T inputObject)
   }
 }
 
-public str firstInteger(str inputString)
 {
+
+public str firstIntegerString(str inputString)
+{ 
   isHex = isHexaDecimal(inputString);
   newString = "";
   for(n <- [firstNumeric(inputString) .. size(inputString)])

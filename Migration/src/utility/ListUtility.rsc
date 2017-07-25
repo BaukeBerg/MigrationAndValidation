@@ -4,6 +4,9 @@ import String;
 import List;
 import util::Math;
 
+&T first(list[&T] items) = head(items);
+&T last(list[&T] items) = head(reverse(items));
+
 bool contains(list[&T] items, &T item) = -1 != indexOf(items, item);
 
 list[&T] generateList(int listSize, &T defaultValue) = [ defaultValue | n <- [0 .. listSize]]; 

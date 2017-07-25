@@ -25,7 +25,8 @@ test bool testParseInt() = expectEqual(30, parseInt("30"));
 
 test bool testParseBlock() = expectEqual(133, parseInt("CodeBlock: 00133-00135 is Generic action block"), "Should find the first number");
 
-test bool testFirstString() = expectEqual("133", firstInteger("CodeBlock: 00133-00135 is Generic action block"), "Should find the first numeric token");
+test bool testFirstInt() = expectEqual(133, firstInteger("CodeBlock: 00133-00135 is Generic action block"), "Should find the first numeric token");
+test bool testLastInt() = expectEqual(135, lastInteger("CodeBlock: 00133-00135 is Generic action block"), "Should find the last numeric token");
 
 test bool testInvalidHex() = expectFalse(isHexaDecimal("CodeBlock: 00133-00135 is Generic action block"));
 test bool testValidHex() = expectTrue(isHexaDecimal("CodeBlock: 0x00133-00135 is Generic action block"));
@@ -38,6 +39,7 @@ test bool testParseIntBinary() = expectEqual(10, parseInt("00010"), "Check that 
 test bool testParseIntOctal() = expectEqual(70, parseInt("00070"), "Check that 70 is reported instead of 56");
 test bool testParseIntHexadecimal() = expectEqual(31, parseInt("0x0001F"), "Check that hex input is considered valid");
 test bool testParseIntHexadecimal() = expectEqual(255, parseInt("0x000ff"), "Check that hex input is considered valid");
+test bool testIntegers() = expectEqual([123,456,678], extractIntegers("00123,00456,00678"), "Automatically composes list of integers from string");
 
 test bool testStripLeadingSingleChar() = expectEqual("400.1", stripLeading("00400.1", "0"), "stripLeading should remove all leading 0\'s");
 test bool testStripLeadingNoChar() = expectEqual("00400.1", stripLeading("00400.1", "5"), "stripLeading should return original string");
