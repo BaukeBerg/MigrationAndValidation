@@ -8,7 +8,16 @@ import String;
 
 import utility::StringUtility;
 
-str addressRange(list[str] statements) = "<getAddress(head(statements))>-<getAddress(head(reverse(statements)))>";
+str addressRange(list[str] statements)
+{
+  str range = getAddress(head(statements));
+  for(statement <- tail(statements))
+  {
+    range += ",<getAddress(statement)>";
+  }
+  return range;
+} 
+ 
 
 str getAddress(str lineToCheck)
 {
