@@ -53,3 +53,11 @@ test bool testLogicJump1() = expectFalse(isCorrect("00008 00000 24 00003    \r\n
 test bool testLogicJump2() = expectFalse(isCorrect("00008 00000 25 00003    \r\n", #ConditionInstruction));
 test bool testLogicJump3() = expectFalse(isCorrect("00008 00000 28 00003    \r\n", #ConditionInstruction));
 test bool testLogicJump4() = expectFalse(isCorrect("00008 00000 29 00003    \r\n", #ConditionInstruction));
+
+test bool testAddressRangeSingle() = expectTrue(isCorrect("00000", #AddressRange), "Single address is not separated by comma");
+test bool testAddressRangeDual() = expectTrue(isCorrect("00000,00001", #AddressRange), "Multiple addresses are separated by comma");
+test bool testAddressRangeTriple() = expectTrue(isCorrect("00000,00001,00002", #AddressRange), "Multiple addresses are separated by comma");
+test bool testAddressRangeQuadruple() = expectTrue(isCorrect("00000,00001,00002,00005", #AddressRange), "Multiple addresses are separated by comma");
+test bool testAddressRangeInvalidDigits() = expectFalse(isCorrect("00000,00001,0002,00005", #AddressRange), "Less than 5 digits is an error");
+test bool testAddressRangeInvalidSeparator() = expectFalse(isCorrect("00000,00001,00002,00005,", #AddressRange), "Trailing comma produces an error");
+
