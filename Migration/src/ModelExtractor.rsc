@@ -82,8 +82,10 @@ list[Figure] generateFigures(Tree parseTree, list[str] sourceLines)
          }
         }         
         debugPrint("Generating Line"); 
+        strLineInfo = lineInfo(ECB);
         str EcbStr = replaceAll("<ECB>", "++++", "");
-        sourceFigures += generateLine(colorName, "<lineInfo(ECB)><EcbStr>");
+        EcbStr = stringToken(EcbStr, " is ", "");        
+        sourceFigures += generateLine(colorName, "<strLineInfo><EcbStr>");
       }       
     }    
     case EventInstruction E:
