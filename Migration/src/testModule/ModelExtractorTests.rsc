@@ -59,7 +59,7 @@ test bool testErrors()
     {
       ModelExtractor::first = 456846484648868;
       ModelExtractor::last = 99999999999999999;
-      composeNopBlock(pre, post);
+      composeNopBlock(["<S>"], pre, post);
     }
   }
   return expectTrue(hasErrors(), "Parsing invalid data should log an error");
