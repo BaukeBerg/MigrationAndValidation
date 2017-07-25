@@ -4,8 +4,10 @@ module utility::InstructionUtility
 
 import List;
 import ParseTree;
+import PC20Syntax;
 import String;
 
+import utility::Debugging;
 import utility::StringUtility;
 
 str addressRange(list[str] statements)
@@ -17,7 +19,19 @@ str addressRange(list[str] statements)
   }
   return range;
 } 
- 
+
+str addressRange(&T ECB)
+{
+  visit(ECB)
+  {
+    case AddressRange A:
+    {
+      return "<A>";
+    }
+  }
+  handleError("No addressrange found in block: <ECB>");
+  return "";
+} 
 
 str getAddress(str lineToCheck)
 {
