@@ -19,7 +19,27 @@ int parseInt(&T inputObject)
   }
 }
 
+public int firstInteger(str inputString) = first(extractIntegers(inputString));
+public int lastInteger(str inputString) = last(extractIntegers(inputString));
+
+list[int] extractIntegers(str inputString)
 {
+  list[int] integers = [];  
+  try
+  {
+    while(1 > 0)
+    { 
+      firstItem = firstIntegerString(inputString);   
+      integers += toInt(firstItem);
+      inputString = stringToken(inputString, firstItem, "");
+    }
+  }
+  catch:
+  {
+    ; // Will throw exception when handling exceptional toInt(), thus stopping the loop
+  }
+  return integers;  
+}
 
 public str firstIntegerString(str inputString)
 { 
