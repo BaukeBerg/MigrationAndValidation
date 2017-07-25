@@ -46,7 +46,7 @@ lexical Error = "ERROR-PARSING-BLOCK";
                            
 lexical ReadValue = EcbPrefix "ReadValue " AddressRange ;
 lexical WriteValue = EcbPrefix "WriteValue " AddressRange ;
-lexical CompareValue = EcbPrefix "CompareValue" AddressRange ;
+lexical CompareValue = EcbPrefix "CompareValue " AddressRange ;
 lexical OtherBlock = EcbPrefix Description;
 lexical NopBlock = EcbPrefix "NopBlock" ;
 
