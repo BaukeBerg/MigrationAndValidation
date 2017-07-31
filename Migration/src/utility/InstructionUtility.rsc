@@ -20,6 +20,8 @@ str addressRange(list[str] statements)
   return range;
 } 
 
+str addressRange(&T firstPart, &T secondPart) = "<addressRange(firstPart)> to <addressRange(secondPart)>";
+
 str addressRange(&T ECB)
 {
   visit(ECB)
