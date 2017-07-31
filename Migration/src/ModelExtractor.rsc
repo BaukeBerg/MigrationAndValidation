@@ -21,6 +21,8 @@ import utility::StringUtility;
 
 import Decorator;
 
+alias GraphicalBlock = tuple[SourceRange range, Figure graphics];
+
 // Option switches
 public bool displayEmptyLines = true;
 public bool preProcess = true;
@@ -33,17 +35,17 @@ alias ExtractionResult = tuple[list[Statement] statements, CompiledInstruction *
 void highLightSources(Tree parseTree) = highLightSources(parseTree, []);
 void highLightSources(Tree parseTree, list[str] sourceLines)
 {
-  list[Figure] sourceFigures = generateFigures(parseTree, sourceLines);
+  sourceFigures = generateFigures(parseTree, sourceLines);
   debugPrint("Rendering Figure, <size(sourceFigures)>/<size(sourceLines)> lines unallocated.");
   showFigures(sourceFigures);  
 }
 
-void showFigures(list[Figure] sourceFigures) = render(vcat(sourceFigures));
+void showFigures(list[GraphicalBlock] sourceFigures) = render(vcat(sourceFigures.graphics));
 
-list[Figure] generateFigures(str fileName) = generateFigures(parseCompiledFile(fileName), readFileLines(compiledFile(fileName)));
-list[Figure] generateFigures(Tree parseTree, list[str] sourceLines)
+list[GraphicalBlock] generateFigures(str fileName) = generateFigures(parseCompiledFile(fileName), readFileLines(compiledFile(fileName)));
+list[GraphicalBlock] generateFigures(Tree parseTree, list[str] sourceLines)
 {
-  list[Figure] sourceFigures = [];
+  sourceFigures = [];
   if(true == preProcess)
   {
     debugPrint("Removing unnecessary code");   
@@ -144,6 +146,51 @@ list[Figure] generateFigures(Tree parseTree, list[str] sourceLines)
   return sourceFigures;
 }
 
+GraphicalBlock generateLine(str backGround, str content) = generateLine(backGround, "black", content);
+GraphicalBlock generateLine(str backGround, str fontColor, str content) = <extractRange(content), generateLineFigure(backGround, fontColor, content)>;
+
+int updateModelRange(int lastProgramCount, SourceRange blockToCheck)
+{
+  errorPrefix = "Error at <lastProgramCount> with argument <blockToCheck>:" ;
+  distance = blockToCheck.firstLine - lastProgramCount;
+  if(blockToCheck.firstLine < lastProgramCount)
+  {
+    handleError("<errorPrefix> Sourcecode counter is decrementing");
+  }
+  else if(1 != distance)
+  {
+    handleError("<errorPrefix> Missing <distance-1> source lines");
+  }
+  else if(blockToCheck.firstLine > blockToCheck.lastLine)    
+  {
+    handleError("<errorPrefix> Program counter range is decrementing: <blockTocheck>");
+  }
+  return blockToCheck.lastLine;
+}
+
+SourceRange extractRange(str inputSources)
+{
+  stringTokens = split(":", inputSources);
+  integers = extractIntegers(head(stringTokens));
+  programCounterAmount = size(integers);
+  switch(programCounterAmount)
+  {
+    case 1:
+    {
+      return <integers[0], integers[0]>;
+    }
+    case 2:
+    {
+      return <integers[0], integers[1]>;
+    }  
+    default:
+    {
+      handleError("Invalid amount of integers received: <programCounterAmount> in <inputSources>");
+      return <-1, -1>;
+    }      
+  }  
+}  
+ 
 bool singleLine(&T inputData) = 1 == size(inputData);
 bool hasContent(&T inputData) = (false == isEmpty(inputData));
 bool isEmpty(&T inputData) = (0 == size(inputData));
