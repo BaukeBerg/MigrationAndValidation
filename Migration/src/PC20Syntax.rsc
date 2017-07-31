@@ -54,7 +54,8 @@ lexical AndEqual = EcbPrefix "AndEqual " AddressRange " to " AddressRange;
 lexical OtherBlock = EcbPrefix Description;
 lexical NopBlock = EcbPrefix "NopBlock" ;
 
-lexical EcbPrefix = ColorName "CodeBlock: " FiveDigits "-" FiveDigits " is "; 
+lexical EcbPrefix = ColorName "CodeBlock: " SourceRange " is ";
+lexical SourceRange = FiveDigits "-" FiveDigits ; 
 lexical ColorName = "++" [a-zA-Z0-9\ ]* !>> [a-zA-Z0-9\ ] "++" ; // * * added to remove ambiguity
 lexical AddressRange = FiveDigits | (FiveDigits ",")+ FiveDigits;
 lexical Description = "--" [a-zA-Z0-9\ ]* !>> [a-zA-Z0-9\ ] "--"; // -- -- added to remove ambiguity
