@@ -1,5 +1,6 @@
 module ModelExtractor
 
+import DataTypes;
 import EcbHandler;
 import FileLocations;
 import IO;
