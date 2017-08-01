@@ -90,7 +90,7 @@ str getAddress(&T instruction)
   {
     case WordAddress W:
     {
-      return "<W>";
+      return trim("<W>");
     }
   }
   return "99999";
