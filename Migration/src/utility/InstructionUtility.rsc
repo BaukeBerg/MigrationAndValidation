@@ -43,7 +43,7 @@ str getAddress(str lineToCheck)
   }
   catch:
   {
-    return "00000";
+    return "99999";
   }
 }
 
@@ -57,7 +57,7 @@ str bitAddress(&T instruction)
     }
   }
   handleError("No bitaddress present: <instruction>");
-  return "00000.0";
+  return "99999.9";
 }
 
 int getProgramCounter(str lineToCheck)
@@ -82,4 +82,16 @@ int getLineNumber(&T item)
   {
     return -1 ;
   }
+}
+
+str getAddress(&T instruction)
+{
+  visit(instruction)
+  {
+    case WordAddress W:
+    {
+      return "<W>";
+    }
+  }
+  return "99999";
 }
