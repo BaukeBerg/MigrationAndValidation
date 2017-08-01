@@ -6,6 +6,7 @@ import ParseTree;
 import List;
 import String;
 
+import utility::Debugging;
 import utility::InstructionUtility;
 import utility::StringUtility;
 
@@ -19,14 +20,23 @@ private EcbPrefix composeEcbPrefix(str colorName, int first, int last)
   return (EcbPrefix)`<ColorName lineColor>CodeBlock: <SourceLineRange sourceRange> is `; 
 }
 
-SourceLineRange composeSourceRange(int firstLine, int lastLine) = parse(#SourceLineRange, "<right("<firstLine>", 5, "0")>-<right("<lastLine>", 5, "0")>");
- 
-str lineInfo(ExtractedCodeBlock ECB)
+SourceLineRange composeSourceLineRange(SourceRange sourceRange) = composeSourceLineLange(sourceRange.firstLine, sourceRange.lastLine);
+SourceLineRange composeSourceLineRange(int firstLine, int lastLine) = parse(#SourceLineRange, "<right("<firstLine>", 5, "0")>-<right("<lastLine>", 5, "0")>");
+
+SourceRange composeSourceRange(&T firstBlock, &T secondBlock) = <composeSourceRange(firstBlock).firstLine, composeSourceRange(secondBlock).lastLine>;
+SourceRange composeSourceRange(&T codeBlock) 
 {
-  items = split("-", "<ECB>");
-  if(2 <= size(items))
+  visit(codeBlock)
   {
-    return "<parseInt(items[0])>-<parseInt(items[1])>: ";
-  }
-  return "ERROR: <ECB>: ";
+    case(SourceLineRange)`<FiveDigits firstLine>-<FiveDigits lastLine>`:
+    {
+      return <parseInt(firstLine), parseInt(lastLine)>;
+    }    
+    default:
+    {
+      ; // Required in order to make concrete syntax match
+    }
+  }  
+  return <-1,-1>;
 }
+
