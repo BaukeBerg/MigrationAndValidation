@@ -56,10 +56,12 @@ bool expectEqual(str expected, str actual)
 bool expectEqual(&T expected, &T actual) = expectEqual(expected, actual, "");
 bool expectEqual(&T expected, &T actual, str messageOnFailure)
 {
-  if(expected != actual)
+  strExpected = "<expected>";
+  strActual = "<actual>";
+  if(strExpected != strActual)
   {
-    iprintln("Expected: <expected>");
-    iprintln("Received: <actual>");
+    iprintln("Expected (<size(strExpected)>): <strExpected>");
+    iprintln("Received (<size(strActual)>): <strActual>");
     iprintln(messageOnFailure);            
     return false;
   }
