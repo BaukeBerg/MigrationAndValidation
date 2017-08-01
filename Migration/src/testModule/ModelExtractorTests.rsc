@@ -55,7 +55,7 @@ Tree parseComments() = parseCompiledFile("comments.compiled");
 Tree parseTotalFile() = parseCompiledFile("DR_TOT_3.compiled");
 
 void showTree(str fileName) = renderParsetree(parseCompiledFile(fileName));
-void showFigure(str fileName) = highLightSources(parseCompiledFile(fileName), readFileLines(compiledFile(fileName)));
+bool showFigure(str fileName) = highLightSources(parseCompiledFile(fileName), readFileLines(compiledFile(fileName)));
 
 
 void generateInstructions(str fileName)
