@@ -40,6 +40,7 @@ lexical ExtractedCodeBlock = ReadValue
                            | CompareValue
                            | NopBlock
                            | AssignValue
+                           | AssignConstant
                            | OtherBlock
                            | AndEqual
                            ;
@@ -50,6 +51,7 @@ lexical ReadValue = EcbPrefix "ReadValue " AddressRange ;
 lexical WriteValue = EcbPrefix "WriteValue " AddressRange ;
 lexical CompareValue = EcbPrefix "CompareValue " (AddressRange | (AddressRange " to " AddressRange));
 lexical AssignValue = EcbPrefix "AssignValue " AddressRange " to " AddressRange ;
+lexical AssignConstant = EcbPrefix "AssignConstant " ConstantValue " to " AddressRange ;
 lexical AndEqual = EcbPrefix "AndEqual " AddressRange " to " AddressRange;
 lexical OtherBlock = EcbPrefix Description;
 lexical NopBlock = EcbPrefix "NopBlock" ;
@@ -58,12 +60,14 @@ lexical EcbPrefix = ColorName "CodeBlock: " SourceLineRange " is ";
 lexical SourceLineRange = FiveDigits "-" FiveDigits ; 
 lexical ColorName = "++" [a-zA-Z0-9\ ]* !>> [a-zA-Z0-9\ ] "++" ; // * * added to remove ambiguity
 lexical AddressRange = FiveDigits | (FiveDigits ",")+ FiveDigits;
+lexical ConstantValue = FiveDigits ;
 lexical Description = "--" [a-zA-Z0-9\ ]* !>> [a-zA-Z0-9\ ] "--"; // -- -- added to remove ambiguity
  
 
 
 lexical ExecuteInstruction =  assign:AssignInstruction
-                            | FetchInstruction 
+                            | FetchInstruction
+                            | FetchConstantInstruction 
                             | StoreInstruction    
                             | jump:JumpInstruction
                             | CountInstruction
@@ -86,7 +90,8 @@ lexical StoreInstruction = StoreBit | StoreValue ;
 lexical StoreBit = SourcePrefix "10" WhiteSpace BitAddress NewLine;
 lexical StoreValue = SourcePrefix "14" WhiteSpace WordAddress NewLine;
 lexical CountInstruction = SourcePrefix ("06" | "07") WhiteSpace WordAddress NewLine;
-lexical FetchInstruction = SourcePrefix ("11" | "12" | "13") WhiteSpace (BitAddress | WordAddress) NewLine;
+lexical FetchInstruction = SourcePrefix ("11" | "13" ) WhiteSpace (BitAddress | WordAddress) NewLine;
+lexical FetchConstantInstruction = SourcePrefix "12" WhiteSpace WordAddress NewLine;
 lexical CompareInstruction = SourcePrefix "15" WhiteSpace WordAddress NewLine ;
 lexical LogicInstruction = AndInstruction | SourcePrefix ( "17" | "18" | "19") WhiteSpace BitAddress NewLine;
 lexical AndInstruction = SourcePrefix "16" WhiteSpace BitAddress NewLine;                                   
