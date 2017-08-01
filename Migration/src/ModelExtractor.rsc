@@ -85,10 +85,9 @@ list[GraphicalBlock] generateFigures(Tree parseTree, list[str] sourceLines)
          }
         }         
         debugPrint("Generating Line"); 
-        strLineInfo = lineInfo(ECB);
         str EcbStr = replaceAll("<ECB>", "++++", "");
         EcbStr = stringToken(EcbStr, " is ", "");        
-        sourceFigures += generateLine(colorName, "<strLineInfo><EcbStr>");
+        sourceFigures += generateLine(colorName, "<lineInfo(composeSourceRange(ECB))><EcbStr>");
       }       
     }    
     case EventInstruction E:
@@ -191,6 +190,8 @@ SourceRange extractRange(str inputSources)
     }      
   }  
 }  
+ 
+str lineInfo(SourceRange range) = "<range.firstLine>-<range.lastLine>: ";
  
 bool singleLine(&T inputData) = 1 == size(inputData);
 bool hasContent(&T inputData) = (false == isEmpty(inputData));
