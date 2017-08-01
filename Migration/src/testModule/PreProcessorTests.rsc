@@ -16,7 +16,7 @@ public WriteValue sampleWrite = parse(#WriteValue, "++++CodeBlock: 00025-00038 i
 
 test bool testComposingAssignConstant() = expectEqual(expectedBlock, composeAssignConstant(sampleFetch, sampleWrite), "Fetch constant + WriteValue composes to assignConstant");
 
-test bool testComposingPrefix() = expectEqual(expectedPrefix, composeEcbPrefix("Lime", sampleFetch, sampleWrite));
+test bool testComposingPrefix() = expectEqual(expectedPrefix, composeEcbPrefix("Lime", composeSourceRange(sampleFetch, sampleWrite)));
 
 test bool testComposingRange() = expectEqual(<24, 38>, composeSourceRange(sampleFetch, sampleWrite));
 test bool testComposingValue() = expectEqual("00000", getAddress(sampleFetch));

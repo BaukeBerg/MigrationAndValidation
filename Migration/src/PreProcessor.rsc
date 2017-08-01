@@ -23,7 +23,6 @@ Tree preprocess(Tree tree) = innermost visit(tree)
     nopBlock = composeNopBlock(composeSourceRange(firstInstruction, lastInstruction));
     insert(CodeBlock)`<CompiledInstruction* pre><NopBlock nopBlock><CompiledInstruction* post>`;    
   } 
-
   /// Fetch
   case (CodeBlock)`<CompiledInstruction* pre> <FetchInstruction fetch> <CompiledInstruction *post>`:
   {
@@ -38,6 +37,22 @@ Tree preprocess(Tree tree) = innermost visit(tree)
     insert (CodeBlock)`<CompiledInstruction* pre><ReadValue readValue><CompiledInstruction *post>`;
   }
   
+  
+  /// FetchConstant
+  case (CodeBlock)`<CompiledInstruction* pre> <FetchConstantInstruction fetch> <WriteValue store> <CompiledInstruction *post>`:
+  {
+    try
+    {
+      assignConstant = composeAssignConstant(fetch, store);
+      insert(CodeBlock)`<CompiledInstruction* pre><AssignConstant assignConstant><CompiledInstruction* post>`;
+    }
+    catch:
+    {
+      handleError("failed to compose <fetch> <store>");
+      fail;
+    }    
+  }
+    
   /// Store
   case (CodeBlock)`<CompiledInstruction* pre> <StoreValue store> <CompiledInstruction *post>`:
   {
@@ -106,5 +121,8 @@ WriteValue composeWriteValue(list[str] statements) = parse(#WriteValue, "<compos
 CompareValue composeCompareValue(list[str] statements) = parse(#CompareValue, "<composeEcbPrefix("LightSeaGreen", statements)>CompareValue <addressRange(statements)>");
 CompareValue composeCompareValue(ReadValue readValue, CompareValue compareValue) = parse(#CompareValue, "<composeEcbPrefix("LightSeaGreen", composeSourceRange(readValue, compareValue))>CompareValue <addressRange(readValue, compareValue)>");
 AssignValue composeAssign(ReadValue readValue, WriteValue writeValue) = parse(#AssignValue, "<composeEcbPrefix("Lime", composeSourceRange(readValue, writeValue))>AssignValue <addressRange(readValue, writeValue)>");
+AssignConstant composeAssignConstant(FetchConstantInstruction readConstant, WriteValue writeValue) = parse(#AssignConstant, "<composeEcbPrefix("Lime", composeSourceRange(readConstant, writeValue))>AssignConstant <getAddress(readConstant)> to <addressRange(writeValue)>");
 AndEqual composeAndEqual(SourceRange programLines, CompareValue compare) = parse(#AndEqual, "<composeEcbPrefix("Tomato", programLines)>AndEqual <addressRange(compare)> to <addressRange(compare)>"); 
 NopBlock composeNopBlock(SourceRange programLines) = parse(#NopBlock, "<composeEcbPrefix("LightGrey", programLines)>NopBlock");
+
+
