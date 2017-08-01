@@ -39,7 +39,12 @@ SourceRange composeSourceRange(&T codeBlock)
     case(SourceLineRange)`<FiveDigits firstLine>-<FiveDigits lastLine>`:
     {
       return <parseInt(firstLine), parseInt(lastLine)>;
-    }    
+    }
+    case(ProgramLineNumber)`<FiveDigits programCount><WhiteSpace ws>`:
+    {
+      lineNumber = parseInt(programCount);
+      return <lineNumber,lineNumber>;
+    }        
     default:
     {
       ; // Required in order to make concrete syntax match
