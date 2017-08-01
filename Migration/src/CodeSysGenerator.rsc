@@ -7,8 +7,9 @@ import PC20Syntax;
 import String;
 import SymbolTable;
 
-
+import utility::Debugging;
 import utility::FileUtility;
+import utility::StringUtility;
 
 alias PlcProgram = tuple[Variables declarations, Statements programLines];
 alias Variables = list[str];
@@ -22,7 +23,45 @@ void generateFile(str outputPath, Tree plcModel)
 
 PlcProgram extractInformation(Tree plcModel)
 {
-  return <[],[]>;
+  programLines = [];
+  visit(plcModel)
+  {
+    case AssignConstant A:
+    {
+      programLines += extractStatements(A);
+    }
+  }
+  return <[],programLines>;
+}
+
+Statements extractStatements(AssignConstant A)
+{
+  constantValue = -1;
+  statements = ["(* <A> *)"];
+  variables = [];
+  debugPrint("Generating asssing <A>");
+  visit(A)
+  {
+    case ConstantValue C:
+    {
+      constantValue = parseInt("<C>");     
+    }
+    case AddressRange A:
+    {
+      visit(A)
+      {
+        case FiveDigits F:
+        {
+          variables += "<F>";
+        }
+      }
+    }      
+  }
+  for(variable <- variables)
+  {
+    statements += "<variable> := <constantValue> ;";  
+  }
+  return statements;
 }
 
 void generateProgram(str outputPath, PlcProgram program) = writeToFile(generatedFile(outputPath), generateOutput(program));
@@ -46,4 +85,5 @@ str extractVariable(symbol plcSymbol)
   return "\t<name> : <dataType> <suffix>";
 }
 
-str typeString(str address) = contains(address, ".") ? "BOOL" : "INT" ; 
+str typeString(str address) = contains(address, ".") ? "BOOL" : "INT" ;
+ 
