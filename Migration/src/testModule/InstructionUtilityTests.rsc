@@ -1,5 +1,8 @@
 module testModule::InstructionUtilityTests
 
+import ParseTree;
+import PC20Syntax;
+
 import utility::InstructionUtility;
 import utility::TestUtility;
 
@@ -23,3 +26,6 @@ test bool testAddressRange() = expectEqual(expectedRange, addressRange(sampleInp
 
 test bool testSplittedAddressRange() = expectEqual(expectedComposedRange, addressRange(sampleInput, writeRange));
 
+public FetchConstantInstruction sampleFetch = parse(#FetchConstantInstruction, "00051 00024 12 02340 \r\n");
+
+test bool testAddressValue() = expectEqual("02340", getAddress(sampleFetch), "Fetching data from parsed types should work");
