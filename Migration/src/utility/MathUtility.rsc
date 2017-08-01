@@ -4,8 +4,8 @@ import IO;
 
 import util::Math;
 
-&T limit(&T lowerBound, &T actualValue, &T upperBound) = min(max(actualValue, lowerBound), upperBound);
 bool inLimits(&T lowerBound, &T actualValue, &T upperBound) = actualValue == limit(lowerBound, actualValue, upperBound);
+&T limit(&T lowerBound, &T actualValue, &T upperBound) = min(max(actualValue, lowerBound), upperBound);
 
 &T max(&T first, &T second) = first == min(first,second) ? second : first;
 &T min(&T first, &T second) = first < second ? first : second ;
