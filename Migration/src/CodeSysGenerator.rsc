@@ -4,6 +4,9 @@ import FileLocations;
 import List;
 import ParseTree;
 import PC20Syntax;
+import String;
+import SymbolTable;
+
 
 import utility::FileUtility;
 
@@ -28,3 +31,14 @@ list[str] generateOutput(PlcProgram program)
   totalFile += "END_PROGRAM";
   return totalFile;
 } 
+
+Variables convertSymbols(symbolTable symbols) = [ extractVariable(plcSymbol) | plcSymbol <- symbols ];
+
+str extractVariable(symbol plcSymbol)
+{
+  dataType = typeString(plcSymbol.address);
+  suffix = "; (* <plcSymbol.address> <plcSymbol.comment> *)";
+  return "\t<plcSymbol.name> : <dataType> <suffix>";
+}
+
+str typeString(str address) = contains(address, ".") ? "BOOL" : "INT" ; 
