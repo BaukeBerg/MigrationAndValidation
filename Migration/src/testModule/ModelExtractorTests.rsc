@@ -46,10 +46,11 @@ bool testFigures(bool shouldBeEmpty, str fileName)
 
 test bool testComments() = isUnAmbiguous(parseComments());
 test bool testSample() = isUnAmbiguous(parseCompiledFile("first50.compiled"));
+
+// SKIP
 test bool testTotal() = isUnAmbiguous(parseTotalFile());
-
+// UNSKIP
 test bool testFirst500() = isUnAmbiguous(parseCompiledFile("first500.compiled"));
-
 Tree parseComments() = parseCompiledFile("comments.compiled");
 Tree parseTotalFile() = parseCompiledFile("DR_TOT_3.compiled");
 
@@ -63,5 +64,15 @@ void generateInstructions(str fileName)
   instructions = padList("", instructions, "\r\n");
   writeFile(generatedFile("<stripFileExtension(fileName)>.instructions"), instructions);
 }
+
+test bool testSmallModel() = expectTrue(validateModelFile("first100.compiled"), "Sample of original file is valid");
+test bool testInvalidModel() = expectFalse(validateModelFile("sampleIssues.compiled"), "File with code snippets should result in several errors");
+
+// SKIP
+
+test bool testCompleteModel() = expectTrue(validateModelFile("DR_TOT_3.compiled"), "Total file check");
+
+// UNSKIP
+bool validateModelFile(str fileName) = examineModelCompleteness(generateFigures(parseCompiledFile(fileName), []));
 
 

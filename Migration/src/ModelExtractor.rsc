@@ -22,7 +22,9 @@ import utility::StringUtility;
 
 import Decorator;
 
+alias GraphicalModel = list[GraphicalBlock];
 alias GraphicalBlock = tuple[SourceRange range, Figure graphics];
+
 
 // Option switches
 public bool displayEmptyLines = true;
@@ -33,18 +35,19 @@ public bool extractGenerics = false;
 
 alias ExtractionResult = tuple[list[Statement] statements, CompiledInstruction *syntaxPart];
 
-void highLightSources(Tree parseTree) = highLightSources(parseTree, []);
-void highLightSources(Tree parseTree, list[str] sourceLines)
+bool highLightSources(Tree parseTree) = highLightSources(parseTree, []);
+bool highLightSources(Tree parseTree, list[str] sourceLines)
 {
-  sourceFigures = generateFigures(parseTree, sourceLines);
+  sourceFigures = generateFigures(parseTree, sourceLines);  
   debugPrint("Rendering Figure, <size(sourceFigures)>/<size(sourceLines)> lines unallocated.");
-  showFigures(sourceFigures);  
+  showFigures(sourceFigures);
+  return examineModelCompleteness(sourceFigures);   
 }
 
-void showFigures(list[GraphicalBlock] sourceFigures) = render(vcat(sourceFigures.graphics));
+void showFigures(GraphicalModel sourceModel) = render(vcat(sourceModel.graphics));
 
-list[GraphicalBlock] generateFigures(str fileName) = generateFigures(parseCompiledFile(fileName), readFileLines(compiledFile(fileName)));
-list[GraphicalBlock] generateFigures(Tree parseTree, list[str] sourceLines)
+GraphicalModel generateFigures(str fileName) = generateFigures(parseCompiledFile(fileName), readFileLines(compiledFile(fileName)));
+GraphicalModel generateFigures(Tree parseTree, list[str] sourceLines)
 {
   sourceFigures = [];
   if(true == preProcess)
@@ -148,6 +151,17 @@ list[GraphicalBlock] generateFigures(Tree parseTree, list[str] sourceLines)
 
 GraphicalBlock generateLine(str backGround, str content) = generateLine(backGround, "black", content);
 GraphicalBlock generateLine(str backGround, str fontColor, str content) = <extractRange(content), generateLineFigure(backGround, fontColor, content)>;
+
+bool examineModelCompleteness(GraphicalModel extractedModel)
+{
+  currentCount = -1;
+  resetErrors();
+  for(range <- extractedModel.range)
+  {
+    currentCount = updateModelRange(currentCount, range);
+  }
+  return false == hasErrors();
+}
 
 int updateModelRange(int lastProgramCount, SourceRange blockToCheck)
 {
