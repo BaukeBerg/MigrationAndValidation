@@ -110,9 +110,13 @@ GraphicalModel generateFigures(Tree parseTree, list[str] sourceLines)
       sourceFigures += generateLine("Yellow", generateSuffix(B, sourceLines));      
     }    
     
-    case FetchInstruction E:
+    case FetchInstruction F:
     {
-      sourceFigures += generateLine("Chocolate", generateSuffix(E, sourceLines));
+      sourceFigures += generateLine("Chocolate", generateSuffix(F, sourceLines));
+    }
+    case FetchConstantInstruction F:
+    {
+      sourceFigures += generateLine("Chocolate", generateSuffix(F, sourceLines));
     }
     case CompareInstruction S:
     {
