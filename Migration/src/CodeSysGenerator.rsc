@@ -20,8 +20,12 @@ void generateFile(str outputPath, Tree plcModel)
   generateProgram(outputPath, program);
 }
 
-void generateProgram(str outputPath, PlcProgram program) = writeFile(generatedFile(outputFile, generateOutput(program)));
+PlcProgram extractInformation(Tree plcModel)
+{
+  return <[],[]>;
+}
 
+void generateProgram(str outputPath, PlcProgram program) = writeToFile(generatedFile(outputPath), generateOutput(program));
 list[str] generateOutput(PlcProgram program)
 {
   totalFile = ["PROGRAM PLC_PRG", "VAR"];
@@ -36,9 +40,10 @@ Variables convertSymbols(symbolTable symbols) = [ extractVariable(plcSymbol) | p
 
 str extractVariable(symbol plcSymbol)
 {
+  name = replaceAll(plcSymbol.name, ",", "_");
   dataType = typeString(plcSymbol.address);
   suffix = "; (* <plcSymbol.address> <plcSymbol.comment> *)";
-  return "\t<plcSymbol.name> : <dataType> <suffix>";
+  return "\t<name> : <dataType> <suffix>";
 }
 
 str typeString(str address) = contains(address, ".") ? "BOOL" : "INT" ; 
