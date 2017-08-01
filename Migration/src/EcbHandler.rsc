@@ -8,21 +8,29 @@ import String;
 
 import utility::Debugging;
 import utility::InstructionUtility;
+import utility::ListUtility;
 import utility::StringUtility;
 
+EcbPrefix EcbError = parse(#EcbPrefix,"++Red++CodeBlock: 99999-00000 is ");
+
 // Module handles the specific insertion of code blocks back into the model tree
-EcbPrefix composeEcbPrefix(str colorName, list[str] statements) = composeEcbPrefix(colorName, getProgramCounter(head(statements)), getProgramCounter(head(reverse(statements))));
-EcbPrefix composeEcbPrefix(str colorName, SourceRange range) = composeEcbPrefix(colorName, range.firstLine, range.lastLine);
-private EcbPrefix composeEcbPrefix(str colorName, int first, int last)
+EcbPrefix composeEcbPrefix(str colorName, list[str] statements) = composeEcbPrefix(colorName, <getProgramCounter(first(statements)), getProgramCounter(last(statements))>);
+EcbPrefix composeEcbPrefix(str colorName, SourceRange range)
 {
-  lineColor = parse(#ColorName, "++<colorName>++");  
-  sourceRange = composeSourceRange(first, last);
-  return (EcbPrefix)`<ColorName lineColor>CodeBlock: <SourceLineRange sourceRange> is `; 
+  try
+  {
+    lineColor = parse(#ColorName, "++<colorName>++");  
+    sourceRange = composeSourceLineRange(range);
+    return (EcbPrefix)`<ColorName lineColor>CodeBlock: <SourceLineRange sourceRange> is `;
+  }
+  catch:
+  {
+    handleError("Unable to generate prefix: <colorName> with range: <range>");
+    return EcbError;
+  } 
 }
 
-SourceLineRange composeSourceLineRange(SourceRange sourceRange) = composeSourceLineLange(sourceRange.firstLine, sourceRange.lastLine);
-SourceLineRange composeSourceLineRange(int firstLine, int lastLine) = parse(#SourceLineRange, "<right("<firstLine>", 5, "0")>-<right("<lastLine>", 5, "0")>");
-
+SourceLineRange composeSourceLineRange(SourceRange sourceRange) = parse(#SourceLineRange, "<right("<sourceRange.firstLine>", 5, "0")>-<right("<sourceRange.lastLine>", 5, "0")>");
 SourceRange composeSourceRange(&T firstBlock, &T secondBlock) = <composeSourceRange(firstBlock).firstLine, composeSourceRange(secondBlock).lastLine>;
 SourceRange composeSourceRange(&T codeBlock) 
 {
