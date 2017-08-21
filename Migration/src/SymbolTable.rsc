@@ -116,20 +116,50 @@ str convertVariable(Variable V, symbolTable table)
   {
     return symbol.address;
   }
-  return UnknownIdentifier(V);
+  return unknownIdentifier(V);
 }
 
-str retrieveComment(str Address, symbolTable table)
+str retrieveComment(str variableName, symbolTable table)
 {
-  for(symbol <- table, Address == symbol.name)
+  for(symbol <- table, variableName == symbol.name)
   {
     return symbol.comment;
   }
-  return UnknownIdentifier(Address);
+  return unknownIdentifier(variableName);
 }
 
-str UnknownIdentifier(&T identifier)
+bool contains(str address, symbolTable table)
 {
-  println("Unknown Identifier: <identifier>");
+  address = stripLeading(address, "0");
+  for(symbol <- table, firstIntegerString(symbol.address) ==  firstIntegerString(address))
+  {
+    return true;
+  }
+  return false;
+}
+
+bool isBoolean(str address, symbolTable table)
+{
+  address = stripLeading(address, "0");
+  debugPrint("finding <address>");
+  for(symbol <- table, address == symbol.address)
+  {
+    return false;
+  }
+  return contains(address, table);
+}
+
+str retrieveVariableName(str address, symbolTable table)
+{
+  for(symbol <- table, address == symbol.address)
+  {
+    return symbol.name;
+  }
+  return unknownIdentifier(address);
+}
+
+str unknownIdentifier(&T identifier)
+{
+  debugPrint("Unknown Identifier: <identifier>");
   return "UNKNOWN-IDENTIFIER";
 }
