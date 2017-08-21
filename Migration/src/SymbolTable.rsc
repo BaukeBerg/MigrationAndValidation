@@ -128,15 +128,7 @@ str retrieveComment(str variableName, symbolTable table)
   return unknownIdentifier(variableName);
 }
 
-bool contains(str address, symbolTable table)
-{
-  address = stripLeading(address, "0");
-  for(symbol <- table, firstIntegerString(symbol.address) ==  firstIntegerString(address))
-  {
-    return true;
-  }
-  return false;
-}
+bool isWord(str address, symbolTable table) = (true == contains(address, table)) && (false == isBoolean(address, table));
 
 bool isBoolean(str address, symbolTable table)
 {
@@ -147,6 +139,16 @@ bool isBoolean(str address, symbolTable table)
     return false;
   }
   return contains(address, table);
+}
+
+bool contains(str address, symbolTable table)
+{
+  address = stripLeading(address, "0");
+  for(symbol <- table, firstIntegerString(symbol.address) ==  firstIntegerString(address))
+  {
+    return true;
+  }
+  return false;
 }
 
 str retrieveVariableName(str address, symbolTable table)
