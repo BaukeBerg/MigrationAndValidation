@@ -12,7 +12,9 @@ bool inLimits(&T lowerBound, &T actualValue, &T upperBound) = actualValue == lim
 
 int shiftLeft(bool initialValue, int positions) = initialValue ? shiftLeft(1, positions) : 0 ;
 int shiftLeft(int initialValue, int positions) = shiftRight(initialValue, -1 * positions);
-int shiftRight(int initialValue, int positions) = floor(initialValue / pow(2.0000000000000000000000000, positions));
+int shiftRight(int initialValue, int positions) = floor(initialValue / maskValue[positions]);
+
+public map[int, real] maskValue = ( n : pow(2.0000000000000000000000000, n) | n <- [-100..101]);
 
 bool getBit(int intValue, int bitPosition) = 0 < mask(intValue, shiftLeft(1,bitPosition));
 
