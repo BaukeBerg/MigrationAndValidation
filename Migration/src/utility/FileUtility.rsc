@@ -64,22 +64,24 @@ void resetFile(loc file)
   }
 }
 
-void writeToFile(loc file, list[&T] text)
+void writeToFile(loc file, list[&T] items)
 {
   resetFile(file);
-  addToFile(file, text);
+  addToFile(file, items);
 }
 
-void addToFile(loc file, list[&T] text)
+void addToFile(loc file, list[&T] items)
 {
-  for(line <- [0..size(text)])
+  str totalText = "";
+  for(line <- [0..size(items)])
   {
     if(0 == line % 100)
     {
-      println("<100.0 * line/size(text)>%");  
+      println("<100.0 * line/size(items)>%");  
     }
-    addToFile(file, "<text[line]>\r\n");
+    totalText += "<items[line]>\r\n";
   }
+  addToFile(file, totalText);
 }
 
 void addToFile(loc file, str text) = exists(file) ? appendToFile(file, text) : writeFile(file, text);
