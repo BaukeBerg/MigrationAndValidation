@@ -132,8 +132,7 @@ bool isWord(str address, symbolTable table) = (true == contains(address, table))
 
 bool isBoolean(str address, symbolTable table)
 {
-  address = stripLeading(address, "0");
-  debugPrint("finding <address>");
+  address = stripLeading(address, "0");  
   for(symbol <- table, address == symbol.address)
   {
     return false;
@@ -157,5 +156,5 @@ str unknownIdentifier(&T identifier)
 }
 
 bool contains(str address, symbolTable table) = [] != retrieveAddressList(address, table);
-list[str] retrieveAddressList(str address, symbolTable table) = [ symbol.address | symbol <- table, firstIntegerString(symbol.address) ==  firstIntegerString(address) ] ;
+list[str] retrieveAddressList(str address, symbolTable table) = [ symbol.address | symbol <- table, parseInt(symbol.address) ==  parseInt(address) ] ;
 
