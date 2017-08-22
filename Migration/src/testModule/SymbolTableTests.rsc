@@ -28,3 +28,8 @@ test bool testWordAddress() = expectFalse(isBoolean("01218", symbols), "A word-b
 test bool testUnusedWordAddress() = expectFalse(isWord("00079", symbols), "An unused word address should return false");
 test bool testUsedWordAddress() = expectTrue(isWord("01218", symbols), "A word-based address should return true");
 test bool testUsedBitAddress() = expectFalse(isWord("00320", symbols), "A bit address should return false");
+
+list[str] expectedAddressList = ["320.0", "320.1", "320.2", "320.3"] ;
+
+test bool testRetrievingAddresses() = expectEqual(expectedAddressList, retrieveAddressList("00320", symbols), "Looking up an address should return bit addresses");
+

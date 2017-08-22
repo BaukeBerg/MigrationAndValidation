@@ -141,16 +141,6 @@ bool isBoolean(str address, symbolTable table)
   return contains(address, table);
 }
 
-bool contains(str address, symbolTable table)
-{
-  address = stripLeading(address, "0");
-  for(symbol <- table, firstIntegerString(symbol.address) ==  firstIntegerString(address))
-  {
-    return true;
-  }
-  return false;
-}
-
 str retrieveVariableName(str address, symbolTable table)
 {
   for(symbol <- table, address == symbol.address)
@@ -165,3 +155,7 @@ str unknownIdentifier(&T identifier)
   debugPrint("Unknown Identifier: <identifier>");
   return "UNKNOWN-IDENTIFIER";
 }
+
+bool contains(str address, symbolTable table) = [] != retrieveAddressList(address, table);
+list[str] retrieveAddressList(str address, symbolTable table) = [ symbol.address | symbol <- table, firstIntegerString(symbol.address) ==  firstIntegerString(address) ] ;
+
