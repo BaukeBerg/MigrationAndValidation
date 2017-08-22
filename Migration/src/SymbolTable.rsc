@@ -104,7 +104,7 @@ symbol generateDeclaration(str defaultName, &T D)
     }
     case Address A:
     {
-      extractedSymbol.address = "<trim("<A>")>";
+      extractedSymbol.address = "<stripLeading(trim("<A>"), "0")>";
     }     
   }  
   return extractedSymbol;     
@@ -156,5 +156,33 @@ str unknownIdentifier(&T identifier)
 }
 
 bool contains(str address, symbolTable table) = [] != retrieveAddressList(address, table);
-list[str] retrieveAddressList(str address, symbolTable table) = [ symbol.address | symbol <- table, parseInt(symbol.address) ==  parseInt(address) ] ;
+list[str] retrieveAddressList(str address, symbolTable table)
+{
+  symbols = [];
+  targetAddress = stripLeading(address, "0");
+  for(symbol <- table)
+  {
+    actualAddress = wordAddress(symbol.address);
+    if(targetAddress == actualAddress)
+    {
+      symbols += symbol.address;
+    }
+    else if(targetAddress < actualAddress)
+    {
+      break;
+    }    
+  }
+  return symbols;
+}    
+
+// Local optimization due to bad performance of the firstInteger() on loop based calls
+str wordAddress(str address)
+{
+  dotPos = findFirst(address, ".");
+  if(-1 != dotPos)
+  {
+    return substring(address, 0, dotPos);
+  }
+  return address;    
+}
 
