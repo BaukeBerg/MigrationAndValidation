@@ -24,8 +24,6 @@ symbol integer = <"numeric", "100", "!Numeric">;
 test bool testBooleanVariable() = expectEqual(sampleBool, extractVariable(boolean), "boolean types are distinguished based on the .");
 test bool testIntegerVariable() = expectEqual(sampleInt, extractVariable(integer), "int values are converted based on the missing int");
 
-public Variables allSymbols = convertSymbols(loadSymbols("DR_TOT_3"));
-
 symbol faultyName = <"S_0,1SEC","511.0","!triggerpuls 0,1 sec.">;
 str expectedResult = "\tS_0_1SEC : BOOL ; (* 511.0 !triggerpuls 0,1 sec. *)";
 
@@ -50,10 +48,30 @@ list[str] expectedStatements = ["(* <constantString> *)",
                                 "00332 := 0 ;",
                                 "00333 := 0 ;"];
 
-test bool testAssignConversion() = expectEqual(expectedStatements, extractStatements(constant), "generating a block is the commented value followed by the statements");
+test bool testAssignConversion() = expectEqual(expectedStatements, extractStatements(constant, symbols), "generating a block is the commented value followed by the statements");
+
+public symbolTable symbols = loadSymbols("DR_TOT_3");
+
+list[str] expectedResetBitStatements = ["320.0 := false ;",
+                                    "320.1 := false ;",
+                                    "320.2 := false ;",
+                                    "320.3 := false ;"];
+                                    
+list[str] expectedResetValidStatements = ["321.0 := true ;",
+                                    "321.1 := false ;",
+                                    "321.2 := true ;",
+                                    "321.3 := false ;"];
+                                                                                                            
+           
+           
+                                    
+test bool testBitConversionWithZero() = expectEqual(expectedResetBitStatements, evaluateAssign(symbols, "00320", 0), "resetting bits word-wise must expand to bitwyse addressing");
+test bool testBitConversionWithValue() = expectEqual(expectedResetValidStatements, evaluateAssign(symbols, "00321", 5), "setting this value should set bit .1 and bit .3");
 
 test bool allSymbolDeclarations()
 {
-  generateProgram("AllSymbols.EXP", <allSymbols, extractStatements(constant)>);
+  generateProgram("AllSymbols.EXP", <convertSymbols(symbols), extractStatements(constant)>);
   return true;
 } 
+
+

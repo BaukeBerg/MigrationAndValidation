@@ -9,36 +9,37 @@ import SymbolTable;
 
 import utility::Debugging;
 import utility::FileUtility;
+import utility::MathUtility;
 import utility::StringUtility;
 
 alias PlcProgram = tuple[Variables declarations, Statements programLines];
 alias Variables = list[str];
 alias Statements = list[str];
 
-void generateFile(str outputPath, Tree plcModel)
+void generateFile(str outputPath, Tree plcModel, symbolTable symbols)
 {
-  PlcProgram program = extractInformation(plcModel);
+  PlcProgram program = extractInformation(plcModel, symbols);
   generateProgram(outputPath, program);
 }
 
-PlcProgram extractInformation(Tree plcModel)
+PlcProgram extractInformation(Tree plcModel, symbolTable symbols)
 {
   programLines = [];
   visit(plcModel)
   {
     case AssignConstant A:
     {
-      programLines += extractStatements(A);
+      programLines += extractStatements(A, symbols);
     }
   }
-  return <[],programLines>;
+  return <convertSymbols(symbols),programLines>;
 }
 
-Statements extractStatements(AssignConstant A)
+Statements extractStatements(AssignConstant A, symbolTable symbols)
 {
   constantValue = -1;
   statements = ["(* <A> *)"];
-  variables = [];
+  addresses = [];
   debugPrint("Generating asssing <A>");
   visit(A)
   {
@@ -52,17 +53,33 @@ Statements extractStatements(AssignConstant A)
       {
         case FiveDigits F:
         {
-          variables += "<F>";
+          addresses += "<F>";
         }
       }
     }      
   }
-  for(variable <- variables)
+  for(address <- addresses)
   {
-    statements += "<variable> := <constantValue> ;";  
+    statements += evaluateAssign(symbols, address, constantValue);  
   }
   return statements;
 }
+
+Statements evaluateAssign(symbolTable symbols, str address, int constantValue)
+{
+  if(true == isBoolean(address, symbols))
+  {
+    Statements statements = [];
+    for(bitAddress <- retrieveAddressList(address, symbols))
+    {
+      statements += assignBit(bitAddress, constantValue);
+    }
+    return statements;
+  }
+  return ["<address> := <constantValue> ;"];
+}
+
+str assignBit(str bitAddress, constantValue) = "<bitAddress> := <getBit(constantValue, lastInteger(bitAddress))> ;";
 
 void generateProgram(str outputPath, PlcProgram program) = writeToFile(generatedFile(outputPath), generateOutput(program));
 list[str] generateOutput(PlcProgram program)
