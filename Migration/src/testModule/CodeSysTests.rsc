@@ -33,45 +33,40 @@ str constantString = "++Lime++CodeBlock: 00024-00038 is AssignConstant 00000 to 
 public AssignConstant constant = parse(#AssignConstant, constantString);
 
 list[str] expectedStatements = ["(* <constantString> *)",
-                                "00320 := 0 ;",
-                                "00321 := 0 ;", 
-                                "00322 := 0 ;",
-                                "00323 := 0 ;",
-                                "00324 := 0 ;",
-                                "00325 := 0 ;",
-                                "00326 := 0 ;",
-                                "00327 := 0 ;",
-                                "00328 := 0 ;",
-                                "00329 := 0 ;",
-                                "00330 := 0 ;",
-                                "00331 := 0 ;",
-                                "00332 := 0 ;",
-                                "00333 := 0 ;"];
+                                "320 := 0 ;",
+                                "321 := 0 ;", 
+                                "322 := 0 ;",
+                                "323 := 0 ;",
+                                "324 := 0 ;",
+                                "325 := 0 ;",
+                                "326 := 0 ;",
+                                "327 := 0 ;",
+                                "328 := 0 ;",
+                                "329 := 0 ;",
+                                "330 := 0 ;",
+                                "331 := 0 ;",
+                                "332 := 0 ;",
+                                "333 := 0 ;"];
 
 test bool testAssignConversion() = expectEqual(expectedStatements, extractStatements(constant, symbols), "generating a block is the commented value followed by the statements");
 
 public symbolTable symbols = loadSymbols("DR_TOT_3");
 
-list[str] expectedResetBitStatements = ["320.0 := false ;",
-                                    "320.1 := false ;",
-                                    "320.2 := false ;",
-                                    "320.3 := false ;"];
+list[str] expectedResetBitStatements = ["ALARM01 := false ; (* !spoeldruk te hoog *)",
+                                    "ALARM02 := false ; (* !stuurlucht gestoord *)",
+                                    "ALARM03 := false ; (* !stuurspanning gestoord *)",
+                                    "ALARM04 := false ; (* !vuilwatertank bijna leeg *)"];
                                     
-list[str] expectedResetValidStatements = ["321.0 := true ;",
-                                    "321.1 := false ;",
-                                    "321.2 := true ;",
-                                    "321.3 := false ;"];
-                                                                                                            
-           
-           
-                                    
+list[str] expectedResetValidStatements = ["ALARM05 := true ; (* !vuilwatertank leeg *)",
+                                    "ALARM05 := false ; (* !geleidbaarheid na spoelen *)",
+                                    "ALARM05 := true ; (* !filtercapaciteit te laag *)",
+                                    "ALARM05 := false ; (* !concentraat afvoer gestoord *)"];
+                                         
 test bool testBitConversionWithZero() = expectEqual(expectedResetBitStatements, evaluateAssign(symbols, "00320", 0), "resetting bits word-wise must expand to bitwyse addressing");
 test bool testBitConversionWithValue() = expectEqual(expectedResetValidStatements, evaluateAssign(symbols, "00321", 5), "setting this value should set bit .1 and bit .3");
 
 test bool allSymbolDeclarations()
 {
-  generateProgram("AllSymbols.EXP", <convertSymbols(symbols), extractStatements(constant)>);
+  generateProgram("AllSymbols.EXP", <convertSymbols(symbols), extractStatements(constant, symbols)>);
   return true;
 } 
-
-

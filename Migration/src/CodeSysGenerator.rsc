@@ -1,6 +1,7 @@
 module CodeSysGenerator
 
 import FileLocations;
+import IO;
 import List;
 import ParseTree;
 import PC20Syntax;
@@ -53,7 +54,7 @@ Statements extractStatements(AssignConstant A, symbolTable symbols)
       {
         case FiveDigits F:
         {
-          addresses += "<F>";
+          addresses += "<stripLeading("<F>", "0")>";
         }
       }
     }      
@@ -72,14 +73,14 @@ Statements evaluateAssign(symbolTable symbols, str address, int constantValue)
     Statements statements = [];
     for(bitAddress <- retrieveAddressList(address, symbols))
     {
-      statements += assignBit(bitAddress, constantValue);
+      variableName = retrieveVariableName(bitAddress, symbols);
+      println(variableName);
+      statements += "<variableName> := <getBit(constantValue, lastInteger(bitAddress))> ; (* <retrieveComment(variableName, symbols)> *)";
     }
     return statements;
   }
   return ["<address> := <constantValue> ;"];
 }
-
-str assignBit(str bitAddress, constantValue) = "<bitAddress> := <getBit(constantValue, lastInteger(bitAddress))> ;";
 
 void generateProgram(str outputPath, PlcProgram program) = writeToFile(generatedFile(outputPath), generateOutput(program));
 list[str] generateOutput(PlcProgram program)
