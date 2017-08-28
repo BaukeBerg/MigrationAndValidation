@@ -14,6 +14,7 @@ import utility::StringUtility;
 EcbPrefix EcbError = parse(#EcbPrefix,"++Red++CodeBlock: 99999-00000 is ");
 
 // Module handles the specific insertion of code blocks back into the model tree
+default EcbPrefix composeEcbPrefix(str colorName, list[&T] statements) = composeEcbPrefix(colorName, convertToString(statements));
 EcbPrefix composeEcbPrefix(str colorName, list[str] statements) = composeEcbPrefix(colorName, <getProgramCounter(first(statements)), getProgramCounter(last(statements))>);
 EcbPrefix composeEcbPrefix(str colorName, SourceRange range)
 {
