@@ -53,7 +53,7 @@ str bitAddress(&T instruction)
   {
     case BitAddress B:
     {
-      return "<B>";
+      return trim("<B>");
     }
   }
   handleError("No bitaddress present: <instruction>");
