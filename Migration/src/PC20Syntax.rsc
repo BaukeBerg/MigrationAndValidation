@@ -44,6 +44,8 @@ lexical ExtractedCodeBlock = ReadValue
                            | OtherBlock
                            | AndEqual
                            | LogicCondition
+                           | TriggerBlock
+                           | BitTrigger
                            ;
 
 lexical Error = "ERROR-PARSING-BLOCK";               
@@ -54,12 +56,16 @@ lexical CompareValue = EcbPrefix "CompareValue " (AddressRange | (AddressRange "
 lexical AssignValue = EcbPrefix "AssignValue " AddressRange " to " AddressRange ;
 lexical AssignConstant = EcbPrefix "AssignConstant " ConstantValue " to " AddressRange ;
 lexical AndEqual = EcbPrefix "AndEqual " AddressRange " to " AddressRange;
-lexical LogicCondition = EcbPrefix "LogicCondition " LogicStatement+ ;
+lexical LogicCondition = EcbPrefix "LogicCondition " LogicExpression;
 lexical OtherBlock = EcbPrefix Description;
 lexical NopBlock = EcbPrefix "NopBlock" ;
+lexical TriggerBlock = EcbPrefix "Trigger " TriggerExpression;
+lexical BitTrigger = EcbPrefix "BitTrigger" BitAddress " by " TriggerExpression ;
+lexical TriggerExpression = BitAddress "=\> " LogicExpression ;
 
-lexical LogicStatement = LogicOperation? WhiteSpace BitAddress ;
-lexical LogicOperation = "NOT" | "AND" | "OR" | "AND NOT" | "OR NOT" ;
+lexical LogicExpression = LogicStatement+ ;
+lexical LogicStatement = LogicOperation? BitAddress ;
+lexical LogicOperation = "NOT " | "AND " | "OR " | "AND NOT " | "OR NOT " ;
 
 lexical EcbPrefix = ColorName "CodeBlock: " SourceLineRange " is ";
 lexical SourceLineRange = FiveDigits "-" FiveDigits ; 
@@ -88,7 +94,8 @@ lexical EmptyLine = SourceLineNumber NewLine ;
 // These must all be present in the switch case                      
 lexical SkipInstruction = SourcePrefix "00" WhiteSpace NewLine;                        
 lexical EventInstruction = SourcePrefix "01" WhiteSpace BitAddress NewLine ;                        
-lexical AssignInstruction = SourcePrefix ("02" | "03" | "08" | "09" ) WhiteSpace BitAddress NewLine ;
+lexical AssignInstruction = AssignBit |SourcePrefix ( "03" | "08" | "09" ) WhiteSpace BitAddress NewLine ;
+lexical AssignBit = SourcePrefix "02" WhiteSpace BitAddress NewLine;
 lexical StoreInstruction = StoreBit | StoreValue ;
 lexical StoreBit = SourcePrefix "10" WhiteSpace BitAddress NewLine;
 lexical StoreValue = SourcePrefix "14" WhiteSpace WordAddress NewLine;
@@ -102,6 +109,7 @@ lexical CalcInstruction = SourcePrefix ("20" | "21" | "22" | "23" ) WhiteSpace (
 lexical JumpInstruction = SourcePrefix ("24" | "25" | "29" | "30") WhiteSpace WordAddress NewLine;
 lexical IOInstruction = SourcePrefix ( "31" | "27" ) WhiteSpace WordAddress NewLine;
 lexical SingleInstruction = SourcePrefix "26" WhiteSpace NewLine ;
+
 
 lexical SourcePrefix = SourceLineNumber ProgramLineNumber ;
 

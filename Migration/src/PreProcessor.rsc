@@ -121,6 +121,21 @@ Tree preprocess(Tree tree) = innermost visit(tree)
     insert((CodeBlock)`<CompiledInstruction* pre><LogicCondition logicBlock><CompiledInstruction *post>`);
   }
   
+  /// Trigger
+  case (CodeBlock) `<CompiledInstruction* pre><LogicCondition condition><EventInstruction trigger><CompiledInstruction* post>`:
+  {
+    triggerBlock = composeTrigger(condition, trigger);
+    insert((CodeBlock)`<CompiledInstruction* pre><TriggerBlock triggerBlock><CompiledInstruction *post>`);
+  }
+  
+  /// BitTrigger
+  case (CodeBlock) `<CompiledInstruction* pre><TriggerBlock triggerBlock><AssignBit assignBit><CompiledInstruction* post>`:
+  {
+    bitTrigger = composeBitTrigger(triggerBlock, assignBit);
+    debugPrint("inserting trigger: <bitTrigger>");
+    insert((CodeBlock)`<CompiledInstruction* pre><BitTrigger bitTrigger><CompiledInstruction *post>`);
+  } 
+  
   /// Assign
   case (CodeBlock)`<CompiledInstruction *pre> <ReadValue read> <WriteValue write> <CompiledInstruction *post>`:
   {
@@ -139,6 +154,42 @@ AssignConstant composeAssignConstant(FetchConstantInstruction readConstant, Writ
 AndEqual composeAndEqual(SourceRange programLines, CompareValue compare) = parse(#AndEqual, "<composeEcbPrefix("Tomato", programLines)>AndEqual <addressRange(compare)> to <addressRange(compare)>"); 
 NopBlock composeNopBlock(SourceRange programLines) = parse(#NopBlock, "<composeEcbPrefix("LightGrey", programLines)>NopBlock");
 LogicCondition composeLogicCondition(list[LogicInstruction] statements) = parse(#LogicCondition, "<composeEcbPrefix("Tomato", statements)>LogicCondition <formatLogic(statements)>");
+TriggerBlock composeTrigger(LogicCondition condition, EventInstruction trigger) = parse(#TriggerBlock, "<composeEcbPrefix("OliveDrab", composeSourceRange(condition, trigger))>Trigger <bitAddress(trigger)> =\> <extractCondition(condition)>");
+BitTrigger composeBitTrigger(TriggerBlock trigger, AssignBit triggerBit) = parse(#BitTrigger, "<composeEcbPrefix("Cyan", composeSourceRange(trigger, triggerBit))>BitTrigger <composeBitTrigger(trigger, bitAddress(triggerBit))>");
+
+str composeBitTrigger(TriggerBlock trigger, str address)
+{
+  debugPrint("Composing: <address> and <trigger>");
+  triggerAddress ="";
+  expression = "";
+  visit(trigger)
+  {
+    case TriggerExpression LE:
+    {
+      expression = "<LE>";
+    }
+    case BitAddress BA:
+    {
+      triggerAddress = trim("<BA>");
+    }
+  }
+  return "<triggerAddress> by <expression>"; 
+}
+
+
+str extractCondition(LogicCondition logic)
+{
+  visit(logic)
+  {
+    case LogicExpression L:
+    {
+      return "<L>";
+    }
+  }
+  error = "Invalid logic whilst evaluating expressin: <logic>";
+  handleError(error); 
+  return error;
+}
 
 str formatLogic(list[LogicInstruction] statements)
 {

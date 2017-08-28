@@ -42,7 +42,7 @@ bool highLightSources(Tree parseTree, list[str] sourceLines)
   modelComplete = examineModelCompleteness(sourceFigures);
   if(modelComplete)
   {
-    debugPrint("Model is complete, converted <size(sourceLines)> SLOC to <size(sourceFigures)> of ECB");
+    debugPrint("Model is complete, converted <size(sourceLines)> SLOC to <size(sourceFigures)> ECB");
   }    
   showFigures(sourceFigures);
   return modelComplete;
