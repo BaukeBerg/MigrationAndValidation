@@ -30,3 +30,7 @@ list[str] mergedList = ["One Bird", "Two Stones", "Three Horses"];
 test bool mergeLists() = expectEqual(mergedList, mergeList(firstList, secondList), "Merging should glue same indexes together");
 
 test bool testGenerating() = expectEqual([1,1,1], generateList(3,1), "Generating a list should work");
+
+list[str] expectedBooleanList = ["true", "true", "false", "true"];
+
+test bool testConverting() = expectEqual(expectedBooleanList, convertToString([true, true, false, true]), "Converting to string should yield the names");

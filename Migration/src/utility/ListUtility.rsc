@@ -35,6 +35,8 @@ list[&T] mergeList(list[&T] first, list[&T] second) = [ first[n] + second[n] | n
 
 list[str] padList(str prefix, list[str] lines, str suffix) = ["<prefix><line><suffix>" | line <- lines];
 
+list[str] convertToString(list[&T] items) = [ "<item>" | item <- items ] ;
+
 // Join list to plain string
 str joinList(list[&T] lines) = joinList(lines, "\r\n");
 str joinList(list[&T] lines, str token)
