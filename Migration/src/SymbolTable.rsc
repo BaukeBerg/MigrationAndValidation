@@ -159,18 +159,18 @@ bool contains(str address, symbolTable table) = [] != retrieveAddressList(addres
 list[str] retrieveAddressList(str address, symbolTable table)
 {
   symbols = [];
-  targetAddress = stripLeading(address, "0");
+  targetAddress = wordAddress(stripLeading(address, "0"));
   for(symbol <- table)
   {
     actualAddress = wordAddress(symbol.address);
     if(targetAddress == actualAddress)
     {
       symbols += symbol.address;
-    }
-    else if(targetAddress < actualAddress)
-    {
-      break;
-    }    
+      if(4 == size(symbols))
+      {
+        break;
+      }
+    }        
   }
   return symbols;
 }    
