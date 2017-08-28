@@ -39,9 +39,13 @@ bool highLightSources(Tree parseTree) = highLightSources(parseTree, []);
 bool highLightSources(Tree parseTree, list[str] sourceLines)
 {
   sourceFigures = generateFigures(parseTree, sourceLines);  
-  debugPrint("Rendering Figure, <size(sourceFigures)>/<size(sourceLines)> lines unallocated.");
+  modelComplete = examineModelCompleteness(sourceFigures);
+  if(modelComplete)
+  {
+    debugPrint("Model is complete, converted <size(sourcelines)> SLOC to <size(sourceFigures)> of ECB");
+  }    
   showFigures(sourceFigures);
-  return examineModelCompleteness(sourceFigures);   
+  return modelComplete;
 }
 
 void showFigures(GraphicalModel sourceModel) = render(vcat(sourceModel.graphics));
@@ -58,7 +62,7 @@ GraphicalModel generateFigures(Tree parseTree, list[str] sourceLines)
   }  
   debugPrint("Trying to extract model data");
   //parseTree = extractModelTest(parseTree);  
-  debugPrint("Displaying data without a place in the model");
+  debugPrint("Displaying model data");
   visit(parseTree)
   { 
     case SkipInstruction S:
