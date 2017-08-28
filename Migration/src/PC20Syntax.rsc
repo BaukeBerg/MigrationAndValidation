@@ -43,6 +43,7 @@ lexical ExtractedCodeBlock = ReadValue
                            | AssignConstant
                            | OtherBlock
                            | AndEqual
+                           | LogicCondition
                            ;
 
 lexical Error = "ERROR-PARSING-BLOCK";               
@@ -53,8 +54,12 @@ lexical CompareValue = EcbPrefix "CompareValue " (AddressRange | (AddressRange "
 lexical AssignValue = EcbPrefix "AssignValue " AddressRange " to " AddressRange ;
 lexical AssignConstant = EcbPrefix "AssignConstant " ConstantValue " to " AddressRange ;
 lexical AndEqual = EcbPrefix "AndEqual " AddressRange " to " AddressRange;
+lexical LogicCondition = EcbPrefix "LogicCondition " LogicStatement+ ;
 lexical OtherBlock = EcbPrefix Description;
 lexical NopBlock = EcbPrefix "NopBlock" ;
+
+lexical LogicStatement = LogicOperation? WhiteSpace BitAddress ;
+lexical LogicOperation = "NOT" | "AND" | "OR" | "AND NOT" | "OR NOT" ;
 
 lexical EcbPrefix = ColorName "CodeBlock: " SourceLineRange " is ";
 lexical SourceLineRange = FiveDigits "-" FiveDigits ; 
@@ -62,8 +67,6 @@ lexical ColorName = "++" [a-zA-Z0-9\ ]* !>> [a-zA-Z0-9\ ] "++" ; // * * added to
 lexical AddressRange = FiveDigits | (FiveDigits ",")+ FiveDigits;
 lexical ConstantValue = FiveDigits ;
 lexical Description = "--" [a-zA-Z0-9\ ]* !>> [a-zA-Z0-9\ ] "--"; // -- -- added to remove ambiguity
- 
-
 
 lexical ExecuteInstruction =  assign:AssignInstruction
                             | FetchInstruction
