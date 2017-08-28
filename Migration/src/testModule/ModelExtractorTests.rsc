@@ -31,6 +31,11 @@ bool showSamples() = showFigure("sampleIssues.compiled");
 test bool testSamples() = testFigures(true, "sampleIssues.compiled");
 test bool testEventBug() = testFigures(false, "eventBug.compiled" );
 
+
+// Specific implementation patterns
+bool showTrigger() = showFigure("trigger.compiled");
+bool showLogic() = showFigure("logicCondition.compiled");
+
 bool testFigures(bool shouldBeEmpty, str fileName)
 {
   displayExtractedBlocks = false;
@@ -39,8 +44,7 @@ bool testFigures(bool shouldBeEmpty, str fileName)
   if(false == result)
   {
     showFigures(generateFigures(fileName));    
-  }
-  
+  }  
   return result;
 }
 
