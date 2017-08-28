@@ -4,6 +4,7 @@ import DataTypes;
 import EcbHandler;
 import ParseTree;
 import PC20Syntax;
+import String;
 
 import utility::Debugging;
 import utility::InstructionUtility;
@@ -36,8 +37,7 @@ Tree preprocess(Tree tree) = innermost visit(tree)
     readValue = composeReadValue(statements);
     insert (CodeBlock)`<CompiledInstruction* pre><ReadValue readValue><CompiledInstruction *post>`;
   }
-  
-  
+ 
   /// FetchConstant
   case (CodeBlock)`<CompiledInstruction* pre> <FetchConstantInstruction fetch> <WriteValue store> <CompiledInstruction *post>`:
   {
@@ -107,6 +107,20 @@ Tree preprocess(Tree tree) = innermost visit(tree)
     }
   }
   
+  /// LogicCondition
+  case (CodeBlock) `<CompiledInstruction* pre> <LogicInstruction logic> <CompiledInstruction* post>`:
+  {
+    statements = [logic];
+    while((CodeBlock)`<LogicInstruction logic><CompiledInstruction* newPost>`
+    := (CodeBlock)`<CompiledInstruction* post>`)
+    {
+      post = newPost;
+      statements += [logic];      
+    }
+    logicBlock = composeLogicCondition(statements);
+    insert((CodeBlock)`<CompiledInstruction* pre><LogicCondition logicBlock><CompiledInstruction *post>`);
+  }
+  
   /// Assign
   case (CodeBlock)`<CompiledInstruction *pre> <ReadValue read> <WriteValue write> <CompiledInstruction *post>`:
   {
@@ -124,5 +138,62 @@ AssignValue composeAssign(ReadValue readValue, WriteValue writeValue) = parse(#A
 AssignConstant composeAssignConstant(FetchConstantInstruction readConstant, WriteValue writeValue) = parse(#AssignConstant, "<composeEcbPrefix("Lime", composeSourceRange(readConstant, writeValue))>AssignConstant <getAddress(readConstant)> to <addressRange(writeValue)>");
 AndEqual composeAndEqual(SourceRange programLines, CompareValue compare) = parse(#AndEqual, "<composeEcbPrefix("Tomato", programLines)>AndEqual <addressRange(compare)> to <addressRange(compare)>"); 
 NopBlock composeNopBlock(SourceRange programLines) = parse(#NopBlock, "<composeEcbPrefix("LightGrey", programLines)>NopBlock");
+LogicCondition composeLogicCondition(list[LogicInstruction] statements) = parse(#LogicCondition, "<composeEcbPrefix("Tomato", statements)>LogicCondition <formatLogic(statements)>");
+
+str formatLogic(list[LogicInstruction] statements)
+{
+  firstStatement = true;
+  totalCondition = "" ;
+  for(statement <- statements)
+  {
+    localCondition = "";
+    debugPrint("visiting <statement>");    
+    visit(statement)
+    {
+      case (LogicInstruction)`<SourcePrefix prefix>16 <BitAddress address><NewLine nl>`:
+      {
+        if(false == firstStatement)
+        {
+          localCondition += "AND ";
+        } 
+        localCondition += "<trim("<address>")> ";
+        firstStatement = false;
+      }
+      case (LogicInstruction)`<SourcePrefix prefix>17 <BitAddress address><NewLine nl>`:
+      {
+        if(false == firstStatement)
+        {
+          localCondition += "AND ";
+        } 
+        localCondition += "NOT <trim("<address>")> ";
+        firstStatement = false;   
+      }
+      case (LogicInstruction)`<SourcePrefix prefix>18 <BitAddress address><NewLine nl>`:
+      {
+        if(false == firstStatement)
+        {
+          localCondition += "OR ";          
+        }
+        localCondition += "<trim("<address>")> ";
+        firstStatement = false;
+      }
+      case (LogicInstruction)`<SourcePrefix prefix>19 <BitAddress address><NewLine nl>`:
+      {
+        if(false == firstStatement)
+        {
+          localCondition += "OR ";
+        }
+        localCondition += "NOT <trim("<address>")> ";
+        firstStatement = false;      
+      }
+            
+      default:
+        ;
+    }  
+    totalCondition += localCondition;  
+  }
+  debugPrint("total condition: <totalCondition>");
+  return totalCondition;
+}
 
 

@@ -1,6 +1,7 @@
 module testModule::PreProcessorTests
 
 import EcbHandler;
+import Parser;
 import ParseTree;
 import PC20Syntax;
 import PreProcessor;
@@ -20,3 +21,12 @@ test bool testComposingPrefix() = expectEqual(expectedPrefix, composeEcbPrefix("
 
 test bool testComposingRange() = expectEqual(<24, 38>, composeSourceRange(sampleFetch, sampleWrite));
 test bool testComposingValue() = expectEqual("00000", getAddress(sampleFetch));
+
+//public LogicCondition logicCondition = parse(#LogicCondition, "++++CodeBlock: 00025-00027 is LogicCondition ");
+
+test bool testLogicBlock()
+{
+  logicTree = parseCompiledFile("logicCondition.compiled");
+  logicTree = preprocess(logicTree);
+  return true;
+}
