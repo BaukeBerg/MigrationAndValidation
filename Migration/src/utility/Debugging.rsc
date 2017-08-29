@@ -21,7 +21,7 @@ public void resetErrors()
 
 public &T debugPrint(str infoMessage, &T itemToPrint)
 {
-  debugPrint("<infoMessage>: <itemToPrint>");
+  debugPrint("<infoMessage> <itemToPrint>");
   return itemToPrint;
 }
 
