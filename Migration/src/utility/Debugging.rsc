@@ -19,21 +19,23 @@ public void resetErrors()
  Errors = [];
 }
 
-public void debugPrint(&T itemToPrint, bool printingEnabled)
+public &T debugPrint(&T itemToPrint, bool printingEnabled)
 {
   if(printingEnabled)
   {
     debugPrint(itemToPrint);
   }
+  return itemToPrint;
 }
 
-public void debugPrint(&T itemToPrint)
+public &T debugPrint(&T itemToPrint)
 {
   if(debuggingEnabled)
   {
     println("<printIndex> - <itemToPrint>");
     printIndex += 1;
   }
+  return itemToPrint;
 }
 
 datetime localDateTime = now(); 
