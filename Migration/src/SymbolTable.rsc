@@ -13,7 +13,7 @@ import utility::ListUtility;
 import utility::StringUtility;
 
 alias symbolTable = list[symbol];
-alias symbol = tuple[str name, str address, str comment];
+alias symbol = tuple[str name, str address, str comment, str dataType];
 
 private bool printSymbolInfo = false;
 
@@ -44,11 +44,11 @@ symbolTable readSymbolTableFromFile(loc fileToParse)
     {
       case 2:
       {      
-        table += <items[0], items[1], "">;
+        table += <items[0], items[1], "", "">;
       }
       case 3:
       {
-        table += <items[0], items[1], items[2]>;
+        table += <items[0], items[1], items[2], "">;
       }
     }
   }
@@ -94,7 +94,7 @@ symbolTable generateSymbolTable(str fileName)
 symbol processDeclaration(&T D) = generateDeclaration("", D);
 symbol generateDeclaration(str defaultName, &T D)
 {
-  symbol extractedSymbol = <defaultName, "", "">;
+  symbol extractedSymbol = <defaultName, "", "", "">;
   visit(D)
   {
     case VariableName N:
