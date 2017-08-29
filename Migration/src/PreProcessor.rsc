@@ -131,6 +131,7 @@ Tree preprocess(Tree tree) = innermost visit(tree)
   /// BitTrigger
   case (CodeBlock) `<CompiledInstruction* pre><TriggerBlock triggerBlock><AssignBit assignBit><CompiledInstruction* post>`:
   {
+    // Make sure to include multiple assigns as well!
     bitTrigger = composeBitTrigger(triggerBlock, assignBit);
     debugPrint("inserting trigger: <bitTrigger>");
     insert((CodeBlock)`<CompiledInstruction* pre><BitTrigger bitTrigger><CompiledInstruction *post>`);
@@ -160,20 +161,15 @@ BitTrigger composeBitTrigger(TriggerBlock trigger, AssignBit triggerBit) = parse
 str composeBitTrigger(TriggerBlock trigger, str address)
 {
   debugPrint("Composing: <address> and <trigger>");
-  triggerAddress ="";
   expression = "";
   visit(trigger)
   {
     case TriggerExpression LE:
     {
-      expression = "<LE>";
-    }
-    case BitAddress BA:
-    {
-      triggerAddress = trim("<BA>");
-    }
+      return "<address> by <LE>";
+    }    
   }
-  return "<triggerAddress> by <expression>"; 
+  return "UNKNOWN-TRIGGER-EXPRESSION"; 
 }
 
 
