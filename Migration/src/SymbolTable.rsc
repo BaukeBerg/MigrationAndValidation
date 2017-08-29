@@ -121,7 +121,7 @@ str convertVariable(Variable V, symbolTable table)
 
 str retrieveComment(str variableName, symbolTable table)
 {
-  variableName = stripLeading(trim(variableName), "0");
+  variableName = clipAndStrip(variableName);
   for(symbol <- table, (variableName == symbol.name) || (variableName == symbol.address))
   {
     return symbol.comment;
@@ -133,7 +133,7 @@ bool isWord(str address, symbolTable table) = (true == contains(address, table))
 
 bool isBoolean(str address, symbolTable table)
 {
-  address = stripLeading(address, "0");  
+  address = clipAndStrip(address);  
   for(symbol <- table, address == symbol.address)
   {
     return false;
@@ -143,12 +143,15 @@ bool isBoolean(str address, symbolTable table)
 
 str retrieveVariableName(str address, symbolTable table)
 {
+  address = clipAndStrip(address);
   for(symbol <- table, address == symbol.address)
   {
     return symbol.name;
   }
   return unknownIdentifier(address);
 }
+
+str clipAndStrip(str variableInfo) = stripLeading(trim(variableInfo), "0");
 
 str unknownIdentifier(&T identifier)
 {
