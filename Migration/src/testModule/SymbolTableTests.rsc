@@ -33,3 +33,4 @@ list[str] expectedAddressList = ["320.0", "320.1", "320.2", "320.3"] ;
 
 test bool testRetrievingAddresses() = expectEqual(expectedAddressList, retrieveAddressList("00320", symbols), "Looking up an address should return bit addresses");
 
+test bool retrieveCommentByAddress() = expectEqual("!10 sec. puls", retrieveComment("00001.2", symbols), "Comments can be retrieved by querying with the address");
