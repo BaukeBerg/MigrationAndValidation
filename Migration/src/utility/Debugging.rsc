@@ -19,6 +19,12 @@ public void resetErrors()
  Errors = [];
 }
 
+public &T debugPrint(str infoMessage, &T itemToPrint)
+{
+  debugPrint("<infoMessage>: <itemToPrint>");
+  return itemToPrint;
+}
+
 public &T debugPrint(&T itemToPrint, bool printingEnabled)
 {
   if(printingEnabled)

@@ -38,4 +38,7 @@ test bool testGenericMethod()
 test bool testInliningDebug() = expectEqual("ThisIsASample", debugPrint("ThisIsASample"), "Calling debugPrint simply returns the item, allowing faster inlining");
 test bool testWithFlagArgument() = expectEqual("SecondSample", debugPrint("SecondSample", false), "Will not print, but always returns the passed value"); 
   
+test bool testInliningAddition() = expectEqual("Printed", debugPrint("Info message", "Printed"), "Printing only returns the printable part, not the description");
+
+
 
