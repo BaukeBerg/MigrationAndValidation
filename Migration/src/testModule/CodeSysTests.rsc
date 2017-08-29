@@ -1,7 +1,11 @@
 module testModule::CodeSysTests
 
 import CodeSysGenerator;
+import FileLocations;
+import IO;
 import ParseTree;
+import Parser;
+import PreProcessor;
 import PC20Syntax;
 import SymbolTable;
 import String;
@@ -15,17 +19,17 @@ PlcProgram emptyModel = <[], []>;
 
 test bool testGeneratingEmptyProgram() = expectEqual(emptyProgram, generateOutput(emptyModel));
 
-str sampleBool = "\ttheBool : BOOL ; (* 0.1 !IAmBool *)";
+str sampleBool = "  theBool : BOOL ; (* 0.1 !IAmBool *)";
 symbol boolean = <"theBool", "0.1", "!IAmBool", "">;
 
-str sampleInt = "\tnumeric : INT ; (* 100 !Numeric *)";
+str sampleInt = "  numeric : INT ; (* 100 !Numeric *)";
 symbol integer = <"numeric", "100", "!Numeric", "">;
 
 test bool testBooleanVariable() = expectEqual(sampleBool, extractVariable(boolean), "boolean types are distinguished based on the .");
 test bool testIntegerVariable() = expectEqual(sampleInt, extractVariable(integer), "int values are converted based on the missing int");
 
 symbol faultyName = <"S_0,1SEC","511.0","!triggerpuls 0,1 sec.", "">;
-str expectedResult = "\tS_0_1SEC : BOOL ; (* 511.0 !triggerpuls 0,1 sec. *)";
+str expectedResult = "  S_0_1SEC : BOOL ; (* 511.0 !triggerpuls 0,1 sec. *)";
 
 test bool testInvalidChars() = expectEqual(expectedResult, extractVariable(faultyName), "Invalid chars are replaced by underscores");
 
@@ -55,8 +59,17 @@ test bool allSymbolDeclarations()
 
 symbol triggerSymbol = <"TRIGGER_510.1", "00123.0", "- BDR0B23", "R_TRIG">;
 
-test bool testConvertingTrigger() = expectEqual("\tTRIGGER_510_1 : R_TRIG ; (* 00123.0 - BDR0B23 *)", extractVariable(triggerSymbol), "Converting symbol with pre-filled in datatype should yield that type");
+// Small parts
+test bool testFirstOneHundred() = testGenerating("first100.compiled");
 
+bool testGenerating(str inputFile)
+{
+  processedTree = preprocess(parseCompiledFile(inputFile));
+  str outputFile = "<stripFileExtension(inputFile)>.EXP";
+  generateFile(outputFile, processedTree, symbols);
+  return true;
+}
 
-
- 
+// Simple patterns 
+test bool testConvertingTrigger() = expectEqual("  TRIGGER_510_1 : R_TRIG ; (* 00123.0 - BDR0B23 *)", extractVariable(triggerSymbol), "Converting symbol with pre-filled in datatype should yield that type");
+test bool testRTrigGeneration() = expectEqual(readFileLines(testFile("triggerResult.exp")), extractInformation(preprocess(parseCompiledFile("trigger.compiled")), symbols).programLines, "Generating a trigger should yield exactly this result");
