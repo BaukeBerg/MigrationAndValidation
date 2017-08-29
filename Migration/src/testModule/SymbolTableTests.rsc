@@ -35,3 +35,4 @@ test bool testRetrievingAddresses() = expectEqual(expectedAddressList, retrieveA
 
 test bool retrieveCommentByShortAddress() = expectEqual("!10 sec. puls", retrieveComment("1.2", symbols), "Comments can be retrieved by querying with the address");
 test bool retrieveCommentByLongAddress() = expectEqual("!10 sec. puls", retrieveComment("00001.2", symbols), "Comments can be retrieved by querying with the address");
+test bool retrieveCommentAddressWithSpaces() = expectEqual("!10 sec. puls", retrieveComment("   00001.2 ", symbols), "Comments can be retrieved by querying with the address");
