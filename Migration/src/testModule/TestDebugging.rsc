@@ -3,6 +3,7 @@ module testModule::TestDebugging
 import DateTime;
 
 import utility::Debugging;
+import utility::TestUtility;
 
 // Not real tests, just calling the functions to make sure no exceptions are buried in the module.
 // Also these 'tests' can serve as a way to show users how to use these modules.
@@ -33,3 +34,8 @@ test bool testGenericMethod()
   debugPrint(theTime, false);
   return true;
 }
+
+test bool testInliningDebug() = expectEqual("ThisIsASample", debugPrint("ThisIsASample"), "Calling debugPrint simply returns the item, allowing faster inlining");
+test bool testWithFlagArgument() = expectEqual("SecondSample", debugPrint("SecondSample", false), "Will not print, but always returns the passed value"); 
+  
+
