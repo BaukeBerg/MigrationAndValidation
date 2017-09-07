@@ -4,3 +4,4 @@ TRIGGER_00510_2
   CLK := 00001.2, (* !10 sec. puls *)
   Q => S_10SEC, (* !triggerpuls 10 sec. *)
 );
+  

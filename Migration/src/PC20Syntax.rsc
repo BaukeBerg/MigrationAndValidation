@@ -62,7 +62,8 @@ lexical NopBlock = EcbPrefix "NopBlock" ;
 lexical TriggerBlock = EcbPrefix "Trigger " TriggerExpression;
 lexical BitTrigger = EcbPrefix "BitTrigger" TriggerTarget " by " TriggerExpression ;
 lexical TriggerTarget = BitAddress ;
-lexical TriggerExpression = BitAddress "=\> " LogicExpression ;
+lexical TriggerExpression = TriggerResult "=\> " LogicExpression ;
+lexical TriggerResult = BitAddress;
 
 lexical LogicExpression = LogicStatement+ ;
 lexical LogicStatement = LogicOperation? BitAddress ;
