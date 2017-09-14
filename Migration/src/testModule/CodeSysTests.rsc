@@ -1,10 +1,13 @@
 module testModule::CodeSysTests
 
 import CodeSysGenerator;
+import CodesysSyntax;
+import CodesysTypes;
 import FileLocations;
 import IO;
 import ParseTree;
 import Parser;
+import ParserBase;
 import PreProcessor;
 import PC20Syntax;
 import SymbolTable;
@@ -73,3 +76,14 @@ bool testGenerating(str inputFile)
 // Simple patterns 
 test bool testConvertingTrigger() = expectEqual("  TRIGGER_510_1 : R_TRIG ; (* 00123.0 - BDR0B23 *)", extractVariable(triggerSymbol), "Converting symbol with pre-filled in datatype should yield that type");
 test bool testRTrigGeneration() = expectEqual(readFileLines(testFile("triggerResult.exp")), extractInformation(preprocess(parseCompiledFile("trigger.compiled")), symbols).programLines, "Generating a trigger should yield exactly this result");
+
+// Symbol parsing
+test bool testParsingSymbols()
+{
+  variables = convertSymbols(symbols);
+  simplified = parseVariables(variables); 
+  return true;
+}
+
+test bool testVariable() = expectTrue(isCorrect(parse(#Variable, "unreferenced_1:BOOL;(* 1.0 !0.1 sec. puls *)")));
+test bool testComment() = expectTrue(isCorrect("(* 1.0 !0.1 sec. puls *)", #Comment));

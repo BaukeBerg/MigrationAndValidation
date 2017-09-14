@@ -161,6 +161,36 @@ list[str] generateOutput(PlcProgram program)
   return totalFile;
 } 
 
+
+Variables simplifyVariables(symbolTable symbols) = simplifyVariables(convertSymbols(symbols));
+Variables simplifyVariables(Variables variables)
+{
+  innermost visit(parseVariables(variables))
+  {
+    case (PlcVariableList)`<PlcVariable* prev><
+                            IntName intName><Numeric number>_0 : INT ; (*<CommentContent comment0>*)<NewLine nl><
+                            IntName intName><Numeric number>_1 : INT ; (*<CommentContent comment1>*)<NewLine nl><
+                            IntName intName><Numeric number>_2 : INT ; (*<CommentContent comment2>*)<NewLine nl><
+                            IntName intName><Numeric number>_3 : INT ; (*<CommentContent comment3>*)<NewLine nl><
+                            PlcVariable* rest>`:
+    {
+      debugPrint("Plc variable found: <intName>_<number>");
+      debugPrint("Comment1: <comment0>");
+      debugPrint("Comment2: <comment1>");
+      debugPrint("Comment3: <comment2>");
+      debugPrint("Comment4: <comment3>");
+      textual = parse(#Name, "<intName>_<number>");      
+      comment = parse(#DeclarationAndComment, ": INT ; (* <trim("<comment0>")> - <trim("<comment1>")> - <trim("<comment2>")> - <trim("<comment3>")> *)<nl>");
+      insert((PlcVariableList)`<PlcVariable* prev><TextualName textual><DeclarationAndComment comment><PlcVariable* rest>`);
+    }    
+    default:
+    {
+      ;
+    }    
+  }
+  return variables;
+}
+
 Tree parseVariables(symbolTable symbols) = parseVariables(convertSymbols(symbols));
 Tree parseVariables(Variables variables)
 {
