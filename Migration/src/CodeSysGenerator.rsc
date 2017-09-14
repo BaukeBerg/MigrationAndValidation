@@ -161,11 +161,10 @@ list[str] generateOutput(PlcProgram program)
   return totalFile;
 } 
 
-
 Variables simplifyVariables(symbolTable symbols) = simplifyVariables(convertSymbols(symbols));
 Variables simplifyVariables(Variables variables)
 {
-  innermost visit(parseVariables(variables))
+  variableTree = innermost visit(parseVariables(variables))
   {
     case (PlcVariableList)`<PlcVariable* prev><
                             IntName intName><Numeric number>_0 : INT ; (*<CommentContent comment0>*)<NewLine nl><
@@ -180,16 +179,90 @@ Variables simplifyVariables(Variables variables)
       debugPrint("Comment3: <comment2>");
       debugPrint("Comment4: <comment3>");
       textual = parse(#Name, "<intName>_<number>");      
-      comment = parse(#DeclarationAndComment, ": INT ; (* <trim("<comment0>")> - <trim("<comment1>")> - <trim("<comment2>")> - <trim("<comment3>")> *)<nl>");
+      comment = parse(#DeclarationAndComment, " : INT ; (* <trim("<comment0>")> - <trim("<comment1>")> - <trim("<comment2>")> - <trim("<comment3>")> *)");
       insert((PlcVariableList)`<PlcVariable* prev><TextualName textual><DeclarationAndComment comment><PlcVariable* rest>`);
-    }    
+    }  
+    
+    // Array of Booleans
+    case (PlcVariableList)`<PlcVariable *prev><
+                           UpperCaseChars name><Numeric number><DeclarationAndComment details><
+                           PlcVariable *next>`:
+    {
+      debugPrint("Array start: <name>");
+      firstIndex = parseInt(index);
+      actualIndex = firstIndex+1;
+      nextIndex = parse(#Numeric, "<actualIndex>"); 
+      while( (PlcVariableList)`<UpperCaseChars name><Numeric nextIndex><DeclarationAndComment details><PlcVariable *newNext>` := (PlcVariableList)`<PlcVariable *next>`)
+      {
+        next = newNext;
+        actualIndex += 1;
+        nextIndex = parse(#Numeric, "<actualIndex>");       
+      }
+      arrayType = "NONE";
+      visit(details)
+      {
+        case Type theType:
+        {
+          debugPrint("Type: <theType>");
+          arrayType = trim("<theType>");
+        }
+        default:
+        {
+          ;
+        }
+      }      
+      array = parse(#PlcArray, "<name>_<firstIndex>_<actualIndex> : ARRAY[<firstIndex>..<actualIndex>] OF <arrayType> ; (* Extracted aray *)") ; 
+      insert((PlcVariableList)`<PlcVariable *prev><PlcArray array><PlcVariable *next>`);      
+    }
+    
+    
+    // Array of Intgers  
+    case (PlcVariableList)`<PlcVariable* prev><
+                           UpperCaseChars name>_<Numeric index><DeclarationAndComment details><
+                           PlcVariable *next>`:
+    {
+      debugPrint("Array start: <name>");
+      firstIndex = parseInt(index);
+      actualIndex = firstIndex+1;
+      nextIndex = parse(#Numeric, "<actualIndex>"); 
+      while( (PlcVariableList)`<UpperCaseChars name>_<Numeric nextIndex><DeclarationAndComment details><PlcVariable *newNext>` := (PlcVariableList)`<PlcVariable *next>`)
+      {
+        next = newNext;
+        actualIndex += 1;
+        nextIndex = parse(#Numeric, "<actualIndex>");       
+      }
+      arrayType = "NONE";
+      visit(details)
+      {
+        case Type theType:
+        {
+          debugPrint("Type: <theType>");
+          arrayType = trim("<theType>");
+        }
+        default:
+        {
+          ;
+        }
+      }      
+      array = parse(#PlcArray, "<name>_<firstIndex>_<actualIndex> : ARRAY[<firstIndex>..<actualIndex>] OF <arrayType> ; (* Extracted aray *)") ; 
+      insert((PlcVariableList)`<PlcVariable *prev><PlcArray array><PlcVariable *next>`);    
+    }
     default:
     {
       ;
     }    
+  };
+  variables = [];
+  visit(variableTree)
+  {
+    case PlcVariable Var:
+    {
+      variables += trim("<Var>");
+    }
   }
-  return variables;
+  return variables; 
 }
+
 
 Tree parseVariables(symbolTable symbols) = parseVariables(convertSymbols(symbols));
 Tree parseVariables(Variables variables)
