@@ -9,7 +9,7 @@ syntax SymbolDeclaration
   | unnamed: "=" Address addr Comment? comment
   ;
   
-lexical Label = [a-z A-Z _] [a-z A-Z 0-9 _]* !>> [a-z A-Z 0-9 _];
+lexical Label = [a-zA-Z_] [a-zA-Z0-9_,]* !>> [a-zA-Z0-9_,];
 
 lexical Address
   = bit: [0-9]+ "." [0-3]
@@ -17,4 +17,4 @@ lexical Address
   ;
   
 lexical Comment
-  = "!" ([a] | ![a])* $;
+  = "!" ![\n]* $;
