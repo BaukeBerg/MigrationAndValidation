@@ -1,4 +1,4 @@
-module SymbolTable
+module Environment
 
 import FileLocations;
 import IO;
@@ -12,12 +12,12 @@ import utility::FileUtility;
 import utility::ListUtility;
 import utility::StringUtility;
 
-alias symbolTable = list[symbol];
-alias symbol = tuple[str name, str address, str comment, str dataType];
+alias SymbolTable = list[Symbol];
+alias Symbol = tuple[str name, str address, str comment, str dataType];
 
 private bool printSymbolInfo = false;
 
-symbolTable loadSymbols(str symbolFile)
+SymbolTable loadSymbols(str symbolFile)
 {  
   symbolFile = stripFileExtension(symbolFile);
   cachedFile = generatedFile("<symbolFile>.symbolTable");
@@ -33,9 +33,9 @@ symbolTable loadSymbols(str symbolFile)
 }
 
 
-symbolTable readSymbolTableFromFile(loc fileToParse)
+SymbolTable readSymbolTableFromFile(loc fileToParse)
 {
-  symbolTable table = [];
+  table = [];
   list[str] fileContent = readFileLines(fileToParse);
   for(line <- fileContent) 
   {
@@ -57,7 +57,7 @@ symbolTable readSymbolTableFromFile(loc fileToParse)
 
 str splitter = "@" ;
 
-void writeSymbolTableToFile(loc fileToSave, symbolTable tableToSave)
+void writeSymbolTableToFile(loc fileToSave, SymbolTable tableToSave)
 {
   totalSymbols = [];
   for(symbol <- tableToSave)
@@ -67,7 +67,7 @@ void writeSymbolTableToFile(loc fileToSave, symbolTable tableToSave)
   writeToFile(fileToSave, totalSymbols);  
 }
 
-symbolTable generateSymbolTable(str fileName)
+SymbolTable generateSymbolTable(str fileName)
 {
   symbolTable = [];
   unreferencedIndex = 1 ;
@@ -91,8 +91,8 @@ symbolTable generateSymbolTable(str fileName)
   return symbolTable;
 }
 
-symbol processDeclaration(&T D) = generateDeclaration("", D);
-symbol generateDeclaration(str defaultName, &T D)
+Symbol processDeclaration(&T D) = generateDeclaration("", D);
+Symbol generateDeclaration(str defaultName, &T D)
 {
   symbol extractedSymbol = <defaultName, "", "", "">;
   visit(D)
@@ -110,7 +110,7 @@ symbol generateDeclaration(str defaultName, &T D)
   return extractedSymbol;     
 }
 
-str convertVariable(Variable V, symbolTable table)
+str convertVariable(Variable V, SymbolTable table)
 {
   for(symbol <- table, trim("<V>") == symbol.name)
   {
@@ -119,7 +119,7 @@ str convertVariable(Variable V, symbolTable table)
   return unknownIdentifier(V);
 }
 
-str retrieveComment(str variableName, symbolTable table)
+str retrieveComment(str variableName, SymbolTable table)
 {
   variableName = clipAndStrip(variableName);
   for(symbol <- table, (variableName == symbol.name) || (variableName == symbol.address))
@@ -129,9 +129,9 @@ str retrieveComment(str variableName, symbolTable table)
   return unknownIdentifier(variableName);
 }
 
-bool isWord(str address, symbolTable table) = (true == contains(address, table)) && (false == isBoolean(address, table));
+bool isWord(str address, SymbolTable table) = (true == contains(address, table)) && (false == isBoolean(address, table));
 
-bool isBoolean(str address, symbolTable table)
+bool isBoolean(str address, SymbolTable table)
 {
   address = clipAndStrip(address);  
   for(symbol <- table, address == symbol.address)
@@ -141,7 +141,7 @@ bool isBoolean(str address, symbolTable table)
   return contains(address, table);
 }
 
-str retrieveVariableName(str address, symbolTable table)
+str retrieveVariableName(str address, SymbolTable table)
 {
   address = clipAndStrip(address);
   for(symbol <- table, address == symbol.address)
@@ -159,8 +159,8 @@ str unknownIdentifier(&T identifier)
   return "UNKNOWN-IDENTIFIER";
 }
 
-bool contains(str address, symbolTable table) = [] != retrieveAddressList(address, table);
-list[str] retrieveAddressList(str address, symbolTable table)
+bool contains(str address, SymbolTable table) = [] != retrieveAddressList(address, table);
+list[str] retrieveAddressList(str address, SymbolTable table)
 {
   symbols = [];
   targetAddress = wordAddress(stripLeading(address, "0"));

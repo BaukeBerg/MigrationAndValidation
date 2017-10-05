@@ -3,7 +3,7 @@ module testModule::SymbolTableTests
 import FileLocations;
 import Parser;
 import PC20Syntax;
-import SymbolTable;
+import Environment;
 
 import utility::TestUtility;
 

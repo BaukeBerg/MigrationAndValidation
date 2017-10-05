@@ -6,7 +6,7 @@ import List;
 import ParseTree;
 import PC20Syntax;
 import String;
-import SymbolTable;
+import Environment;
 import CodesysSyntax;
 import CodesysTypes;
 
@@ -16,13 +16,15 @@ import utility::ListUtility;
 import utility::MathUtility;
 import utility::StringUtility;
 
-void generateFile(str outputPath, Tree plcModel, symbolTable symbols)
+import vis::ParseTree;
+
+void generateFile(str outputPath, Tree plcModel, SymbolTable symbols)
 {
   PlcProgram program = extractInformation(plcModel, symbols);
   generateProgram(outputPath, program);
 }
 
-PlcProgram extractInformation(Tree plcModel, symbolTable symbols)
+PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
 {
   programLines = [];
   Variables variableList = convertSymbols(symbols);
@@ -46,7 +48,7 @@ PlcProgram extractInformation(Tree plcModel, symbolTable symbols)
   return <variableList,programLines>;
 }
 
-tuple[str declaration, list[str] statements] evaluateTrigger(BitTrigger B, symbolTable symbols)
+tuple[str declaration, list[str] statements] evaluateTrigger(BitTrigger B, SymbolTable symbols)
 {
   symbol variableInfo = <"", "", "", "R_TRIG">;
   statements = ["(* <B>*)"];
@@ -85,7 +87,7 @@ tuple[str declaration, list[str] statements] evaluateTrigger(BitTrigger B, symbo
   return <extractVariable(variableInfo), statements>;
 }
 
-Statements extractStatements(AssignConstant A, symbolTable symbols)
+Statements extractStatements(AssignConstant A, SymbolTable symbols)
 {
   constantValue = -1;
   statements = ["(* <A> *)"];
@@ -115,7 +117,7 @@ Statements extractStatements(AssignConstant A, symbolTable symbols)
   return statements;
 }
 
-str formatComment(LogicExpression logicExpression, symbolTable symbols)
+str formatComment(LogicExpression logicExpression, SymbolTable symbols)
 {
   addresses = [];
   visit(logicExpression)
@@ -134,7 +136,7 @@ str formatComment(LogicExpression logicExpression, symbolTable symbols)
   
 }
 
-Statements evaluateAssign(symbolTable symbols, str address, int constantValue)
+Statements evaluateAssign(SymbolTable symbols, str address, int constantValue)
 {
   if(true == isBoolean(address, symbols))
   {
@@ -161,7 +163,7 @@ list[str] generateOutput(PlcProgram program)
   return totalFile;
 } 
 
-Variables simplifyVariables(symbolTable symbols) = simplifyVariables(convertSymbols(symbols));
+Variables simplifyVariables(SymbolTable symbols) = simplifyVariables(convertSymbols(symbols));
 Variables simplifyVariables(Variables variables)
 {
   variableTree = innermost visit(parseVariables(variables))
@@ -178,21 +180,22 @@ Variables simplifyVariables(Variables variables)
       debugPrint("Comment2: <comment1>");
       debugPrint("Comment3: <comment2>");
       debugPrint("Comment4: <comment3>");
-      textual = parse(#Name, "<intName>_<number>");      
+      textual = parse(#Name, "<trim("<intName>")>_<trim("<number>")>");      
       comment = parse(#DeclarationAndComment, " : INT ; (* <trim("<comment0>")> - <trim("<comment1>")> - <trim("<comment2>")> - <trim("<comment3>")> *)");
       insert((PlcVariableList)`<PlcVariable* prev><TextualName textual><DeclarationAndComment comment><PlcVariable* rest>`);
     }  
     
     // Array of Booleans
     case (PlcVariableList)`<PlcVariable *prev><
-                           UpperCaseChars name><Numeric number><DeclarationAndComment details><
+                           UpperCaseChars name>_<Numeric number><DeclarationAndComment details><
                            PlcVariable *next>`:
     {
       debugPrint("Array start: <name>");
-      firstIndex = parseInt(index);
+      firstIndex = parseInt(number);   
+      debugPrint("First index: <firstIndex>");   
       actualIndex = firstIndex+1;
-      nextIndex = parse(#Numeric, "<actualIndex>"); 
-      while( (PlcVariableList)`<UpperCaseChars name><Numeric nextIndex><DeclarationAndComment details><PlcVariable *newNext>` := (PlcVariableList)`<PlcVariable *next>`)
+      nextIndex = parse(#Numeric, "<actualIndex>");
+      while( (PlcVariableList)`<UpperCaseChars name>_<Numeric number><DeclarationAndComment details><PlcVariable *newNext>` := (PlcVariableList)`<PlcVariable *next>`)
       {
         next = newNext;
         actualIndex += 1;
@@ -211,47 +214,13 @@ Variables simplifyVariables(Variables variables)
           ;
         }
       }      
-      array = parse(#PlcArray, "<name>_<firstIndex>_<actualIndex> : ARRAY[<firstIndex>..<actualIndex>] OF <arrayType> ; (* Extracted aray *)") ; 
+      stringToParse = "<name>_<firstIndex>_<actualIndex> : ARRAY[<firstIndex>..<actualIndex>] OF <arrayType> ; (* Extracted aray *)";
+      debugPrint("Array lay-out: <stringToParse>");
+      array = parse(#PlcArray, stringToParse) ; 
       insert((PlcVariableList)`<PlcVariable *prev><PlcArray array><PlcVariable *next>`);      
-    }
-    
-    
-    // Array of Intgers  
-    case (PlcVariableList)`<PlcVariable* prev><
-                           UpperCaseChars name>_<Numeric index><DeclarationAndComment details><
-                           PlcVariable *next>`:
-    {
-      debugPrint("Array start: <name>");
-      firstIndex = parseInt(index);
-      actualIndex = firstIndex+1;
-      nextIndex = parse(#Numeric, "<actualIndex>"); 
-      while( (PlcVariableList)`<UpperCaseChars name>_<Numeric nextIndex><DeclarationAndComment details><PlcVariable *newNext>` := (PlcVariableList)`<PlcVariable *next>`)
-      {
-        next = newNext;
-        actualIndex += 1;
-        nextIndex = parse(#Numeric, "<actualIndex>");       
-      }
-      arrayType = "NONE";
-      visit(details)
-      {
-        case Type theType:
-        {
-          debugPrint("Type: <theType>");
-          arrayType = trim("<theType>");
-        }
-        default:
-        {
-          ;
-        }
-      }      
-      array = parse(#PlcArray, "<name>_<firstIndex>_<actualIndex> : ARRAY[<firstIndex>..<actualIndex>] OF <arrayType> ; (* Extracted aray *)") ; 
-      insert((PlcVariableList)`<PlcVariable *prev><PlcArray array><PlcVariable *next>`);    
-    }
-    default:
-    {
-      ;
     }    
   };
+  renderParsetree(variableTree);
   variables = [];
   visit(variableTree)
   {
@@ -264,7 +233,7 @@ Variables simplifyVariables(Variables variables)
 }
 
 
-Tree parseVariables(symbolTable symbols) = parseVariables(convertSymbols(symbols));
+Tree parseVariables(SymbolTable symbols) = parseVariables(convertSymbols(symbols));
 Tree parseVariables(Variables variables)
 {
   totalText = joinList(variables);
@@ -272,9 +241,9 @@ Tree parseVariables(Variables variables)
   return parseText(totalText, #start[CodesysVariables]);  
 }
 
-Variables convertSymbols(symbolTable symbols) = [ extractVariable(plcSymbol) | plcSymbol <- symbols ];
+Variables convertSymbols(SymbolTable symbols) = [ extractVariable(plcSymbol) | plcSymbol <- symbols ];
 
-str extractVariable(symbol plcSymbol)
+str extractVariable(Symbol plcSymbol)
 {
   dataType = plcSymbol.dataType;
   if("" == dataType)

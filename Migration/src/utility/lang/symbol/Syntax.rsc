@@ -2,19 +2,19 @@ module utility::lang::symbol::Syntax
 
 layout LS = [\ \t \n \r]* !>> [\ \t \n \r];
 
-start syntax SymbolTable = SymbolDeclaration* symbols;
+start syntax NewSymbolTable = NewSymbolDeclaration* symbols;
 
-syntax SymbolDeclaration
-  = named: Label name "=" Address addr Comment? comment 
-  | unnamed: "=" Address addr Comment? comment
+syntax NewSymbolDeclaration
+  = named: NewLabel name "=" NewAddress addr NewComment? comment 
+  | unnamed: "=" NewAddress addr NewComment? comment
   ;
   
-lexical Label = [a-zA-Z_] [a-zA-Z0-9_,]* !>> [a-zA-Z0-9_,];
+lexical NewLabel = [a-zA-Z_] [a-zA-Z0-9_,]* !>> [a-zA-Z0-9_,];
 
-lexical Address
+lexical NewAddress
   = bit: [0-9]+ "." [0-3]
   | integer: [0-9]+ !>> [0-9]
   ;
   
-lexical Comment
+lexical NewComment
   = "!" ![\n]* $;

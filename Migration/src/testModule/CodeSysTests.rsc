@@ -10,7 +10,7 @@ import Parser;
 import ParserBase;
 import PreProcessor;
 import PC20Syntax;
-import SymbolTable;
+import Environment;
 import String;
 
 import utility::FileUtility;
@@ -23,15 +23,15 @@ PlcProgram emptyModel = <[], []>;
 test bool testGeneratingEmptyProgram() = expectEqual(emptyProgram, generateOutput(emptyModel));
 
 str sampleBool = "  theBool : BOOL ; (* 0.1 !IAmBool *)";
-symbol boolean = <"theBool", "0.1", "!IAmBool", "">;
+Symbol boolean = <"theBool", "0.1", "!IAmBool", "">;
 
 str sampleInt = "  numeric : INT ; (* 100 !Numeric *)";
-symbol integer = <"numeric", "100", "!Numeric", "">;
+Symbol integer = <"numeric", "100", "!Numeric", "">;
 
 test bool testBooleanVariable() = expectEqual(sampleBool, extractVariable(boolean), "boolean types are distinguished based on the .");
 test bool testIntegerVariable() = expectEqual(sampleInt, extractVariable(integer), "int values are converted based on the missing int");
 
-symbol faultyName = <"S_0,1SEC","511.0","!triggerpuls 0,1 sec.", "">;
+Symbol faultyName = <"S_0,1SEC","511.0","!triggerpuls 0,1 sec.", "">;
 str expectedResult = "  S_0_1SEC : BOOL ; (* 511.0 !triggerpuls 0,1 sec. *)";
 
 test bool testInvalidChars() = expectEqual(expectedResult, extractVariable(faultyName), "Invalid chars are replaced by underscores");
@@ -39,7 +39,7 @@ test bool testInvalidChars() = expectEqual(expectedResult, extractVariable(fault
 str constantString = "++Lime++CodeBlock: 00024-00038 is AssignConstant 00000 to 00320,00321,00322,00323,00324,00325,00326,00327,00328,00329,00330,00331,00332,00333";
 public AssignConstant constant = parse(#AssignConstant, constantString);
 
-public symbolTable symbols = loadSymbols("DR_TOT_3");
+public SymbolTable symbols = loadSymbols("DR_TOT_3");
 
 list[str] expectedResetBitStatements = ["ALARM01 := false ; (* !spoeldruk te hoog *)",
                                     "ALARM02 := false ; (* !stuurlucht gestoord *)",
@@ -60,7 +60,7 @@ test bool allSymbolDeclarations()
   return true;
 }
 
-symbol triggerSymbol = <"TRIGGER_510.1", "00123.0", "- BDR0B23", "R_TRIG">;
+Symbol triggerSymbol = <"TRIGGER_510.1", "00123.0", "- BDR0B23", "R_TRIG">;
 
 // Small parts
 test bool testFirstOneHundred() = testGenerating("first100.compiled");

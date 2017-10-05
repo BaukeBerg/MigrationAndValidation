@@ -136,13 +136,13 @@ lexical ComposedLabel = Label ":" LineNumber NewLine? !>> "\r" ;
 
 // This block defines the syntax for a symbol table
 
-start syntax PlcSymbols = Symbol+ ;
+start syntax PlcSymbols = PlcSymbol+ ;
 
-syntax Symbol = Declaration
-              | UnreferencedDeclaration
-              | PdsComment
-              | NewLine           
-              ; 
+syntax PlcSymbol = Declaration
+                 | UnreferencedDeclaration
+                 | PdsComment
+                 | NewLine           
+                  ; 
 
 lexical Declaration = VariableName WhiteSpace+ "=" Address ;
 lexical NewLine = "\r\n";

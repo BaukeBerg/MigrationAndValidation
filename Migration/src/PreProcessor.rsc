@@ -29,7 +29,7 @@ Tree preprocess(Tree tree) = innermost visit(tree)
   {
     statements = ["<fetch>"];
     while((CodeBlock)`<FetchInstruction fetch><CompiledInstruction *newPost>`
-      := (CodeBlock)`<CompiledInstruction *post>`)
+      := (CodeBlock)`<CompiledInstruction *post>`) // => 'Code ... post> => Can be changed to just 'post' 
     {
       post = newPost;
       statements += ["<fetch>"];

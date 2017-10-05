@@ -1,6 +1,6 @@
 module testModule::DataModule
 
 // Holds data used for testing
-import SymbolTable;
+import Environment;
 
-public symbolTable symbols = loadSymbols("DR_TOT_3.SYM");
+public SymbolTable symbols = loadSymbols("DR_TOT_3.SYM");
