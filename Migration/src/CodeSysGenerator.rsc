@@ -50,7 +50,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
 
 tuple[str declaration, list[str] statements] evaluateTrigger(BitTrigger B, SymbolTable symbols)
 {
-  symbol variableInfo = <"", "", "", "R_TRIG">;
+  Symbol variableInfo = <"", "", "", "R_TRIG">;
   statements = ["(* <B>*)"];
   variableName = "";
   LogicExpression logicExpression;
