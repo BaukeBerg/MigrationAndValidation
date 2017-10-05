@@ -19,9 +19,13 @@ public void resetErrors()
  Errors = [];
 }
 
-public &T debugPrint(str infoMessage, &T itemToPrint)
+public default &T debugPrint(str infoMessage, &T itemToPrint) = debugPrint(infoMessage, itemToPrint, true);
+public &T debugPrint(str infoMessage, &T itemToPrint, bool printingEnabled)
 {
-  debugPrint("<infoMessage> <itemToPrint>");
+  if(printingEnabled)
+  {
+    debugPrint("<infoMessage> <itemToPrint>");
+  }
   return itemToPrint;
 }
 
@@ -54,10 +58,13 @@ public void startDuration()
 
 public void handleError(str errorToLog)
 {
+  currentError = "<timeStamp()>: <errorToLog>";
   debugPrint(errorToLog);
-  Errors += errorToLog;
-  addToFile(generatedFile("rascal.err"), "<errorToLog>\r\n");
+  Errors += currentError;
+  addToFile(generatedFile("rascal.err"), "<currentError>\r\n");
 }
+
+public str timeStamp() = printDateTime(now(), "YYYY-MM-dd HH:mm:ss");
 
 public void printDuration() = printDuration("", localDateTime);
 public void printDuration(str prefix) = printDuration(prefix, localDateTime); 
