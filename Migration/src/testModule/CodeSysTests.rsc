@@ -1,5 +1,7 @@
 module testModule::CodeSysTests
 
+extend ParserBase;
+
 import CodeSysGenerator;
 import CodesysSyntax;
 import CodesysTypes;
@@ -85,5 +87,5 @@ test bool testParsingSymbols()
   return true;
 }
 
-test bool testVariable() = expectTrue(isCorrect(parse(#Variable, "unreferenced_1:BOOL;(* 1.0 !0.1 sec. puls *)")));
-test bool testComment() = expectTrue(isCorrect("(* 1.0 !0.1 sec. puls *)", #Comment));
+test bool testVariable() = isCorrect("unreferenced_1:BOOL;(* 1.0 !0.1 sec. puls *)", #PlcVariable);
+test bool testComment() = isCorrect("(* 1.0 !0.1 sec. puls *)", #Comment);
