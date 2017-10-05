@@ -16,11 +16,12 @@ import utility::TestUtility;
 // Both the separate unit tests as
 public void generateTestModule()
 {
-  list[loc] testFiles = enumerateDirFiles(testDir);
+  list[loc] testFiles = enumerateDirFiles(testDir);  
   list[str] fileNames = fileName(testFiles);
   fileNames = stripFileExtension(fileNames);
   fileNames = padList("import \\testModule::", fileNames, ";");
   fileNames += "\r\n";
+  fileNames += "import \\utility::Debugging;\r\n";
   list [str] testCalls = [];
   list[str] functionDefinitions = [];
   bool skipping = false;
@@ -68,7 +69,7 @@ void createTestModule(list[str] modules, list[str] testCalls)
 
 void printResult(bool result) = result ? print("true") : print("false");
 
-str createTryCatchHarness(str moduleName, str methodName) = "test bool try_<moduleName>_<methodName>{ try{ return <createTestCall(moduleName, methodName)>;} catch: { <failTestCall(moduleName, methodName)>; } return false; }";
+str createTryCatchHarness(str moduleName, str methodName) = "test bool try_<moduleName>_<methodName>{ debugPrint(\"Testing <moduleName>::<methodName>\"); try{ return <createTestCall(moduleName, methodName)>;} catch: { <failTestCall(moduleName, methodName)>; } return false; }";
 str createTestCall(str moduleName, str methodName) = "checkAndReport(\"<moduleName>\",\"<methodName>\", testModule::<moduleName>::<methodName>)";
 str failTestCall(str moduleName, str methodName) = "checkAndReport(\"<moduleName>\",\"!!! EXCEPTION IN <methodName> !!!\", false)";
 
@@ -95,7 +96,7 @@ test bool showMeARedCell()
 void initializeTestReport()
 {
   resetFile(testReport);
-  addToFile(testReport, openTable() + caption("Test results @ <printDateTime(now(), "YYYY-MM-dd HH:mm:ss")>"));  
+  addToFile(testReport, openTable() + caption("Test results @ <timeStamp()>"));  
 }
 
 void finalizeTestReport()
