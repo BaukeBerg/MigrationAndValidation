@@ -1,7 +1,5 @@
 module CodesysSyntax
 
-extend ParserBase;
-
 import CodesysTypes;
 import ParseTree;
 
