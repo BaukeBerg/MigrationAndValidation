@@ -9,7 +9,7 @@ import Parser;
 import PC20Syntax;
 import String;
 import Stripper;
-import SymbolTable;
+import Environment;
 
 import utility::Debugging;
 import utility::StringUtility;

@@ -8,7 +8,7 @@ import Parser;
 import PC20Syntax;
 import Prelude;
 import String;
-import SymbolTable;
+import Environment;
 
 import utility::Debugging;
 import utility::FileUtility;
