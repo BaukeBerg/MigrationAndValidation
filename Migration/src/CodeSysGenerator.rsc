@@ -10,6 +10,7 @@ import Environment;
 import CodesysSyntax;
 import CodesysTypes;
 
+
 import utility::Debugging;
 import utility::FileUtility;
 import utility::ListUtility;
@@ -17,6 +18,14 @@ import utility::MathUtility;
 import utility::StringUtility;
 
 import vis::ParseTree;
+
+public map[str,str] systemVariables = ("0.1" : "TRUE",
+                                       "0.2" : "SUPPLY_ERROR", 
+                                       "0.3" : "_CLOCK_10ms",
+                                       "1.0" : "_CLOCK_100ms",
+                                       "1.1" : "_CLOCK_1s",
+                                       "1.2" : "_CLOCK_10s",
+                                       "1.3" : "_CLOCK_60s");
 
 void generateFile(str outputPath, Tree plcModel, SymbolTable symbols)
 {
@@ -78,15 +87,32 @@ tuple[str declaration, list[str] statements] evaluateTrigger(BitTrigger B, Symbo
     }
   }
   
+  clkExp = trim("<logicExpression>");
+  special = specialVariable(trim("<logicExpression>"));
+  if(!isEmpty(special))  
+  {
+    clkExp = special;
+  }    
   statements += formatName(variableInfo.name);
   statements += "(";
-  statements += "  CLK := <trim("<logicExpression>")>, <formatComment(logicExpression, symbols)>";
+  statements += "  CLK := <clkExp>, <formatComment(logicExpression, symbols)>";
   statements += "  Q =\> <retrieveVariableName(variableInfo.address, symbols)>, (* <retrieveComment(variableInfo.address, symbols)> *)";
   statements += ");";
   statements += "  "; 
   return <extractVariable(variableInfo), statements>;
 }
 
+str specialVariable(str expToCheck)
+{
+  try
+  {
+    return systemVariables[clipAndStrip(expToCheck)];
+  }
+  catch:
+  {
+    return "";
+  }
+}
 Statements extractStatements(AssignConstant A, SymbolTable symbols)
 {
   constantValue = -1;
@@ -145,7 +171,7 @@ Statements evaluateAssign(SymbolTable symbols, str address, int constantValue)
     {
       variableName = retrieveVariableName(bitAddress, symbols);
       println(variableName);
-      statements += "<variableName> := <getBit(constantValue, lastInteger(bitAddress))> ; (* <retrieveComment(variableName, symbols)> *)";
+      statements += "<variableName> := <toUpperCase("<getBit(constantValue, lastInteger(bitAddress))>")> ; (* <retrieveComment(variableName, symbols)> *)";
     }
     return statements;
   }
@@ -155,7 +181,7 @@ Statements evaluateAssign(SymbolTable symbols, str address, int constantValue)
 void generateProgram(str outputPath, PlcProgram program) = writeToFile(generatedFile(outputPath), generateOutput(program));
 list[str] generateOutput(PlcProgram program)
 {
-  totalFile = ["PROGRAM PLC_PRG", "VAR"];
+  totalFile = ["PROGRAM PC20_CYCLE", "VAR"];
   totalFile += program.declarations;
   totalFile += "END_VAR";
   totalFile += program.programLines;
@@ -238,7 +264,7 @@ Tree parseVariables(Variables variables)
 {
   totalText = joinList(variables);
   writeFile(generatedFile("lastVarParser.symText"), totalText);
-  return parseText(totalText, #start[CodesysVariables]);  
+  return parse(#start[CodesysVariables], totalText);  
 }
 
 Variables convertSymbols(SymbolTable symbols) = [ extractVariable(plcSymbol) | plcSymbol <- symbols ];
