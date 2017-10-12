@@ -146,7 +146,7 @@ str retrieveVariableName(str address, SymbolTable table)
   address = clipAndStrip(address);
   for(symbol <- table, address == symbol.address)
   {
-    return symbol.name;
+    return replaceAll(symbol.name, ",", "_");
   }
   return unknownIdentifier(address);
 }
