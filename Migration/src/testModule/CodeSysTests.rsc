@@ -18,7 +18,7 @@ import String;
 import utility::FileUtility;
 import utility::TestUtility;
 
-list[str] emptyProgram = ["PROGRAM PLC_PRG", "VAR", "END_VAR", "END_PROGRAM"];
+list[str] emptyProgram = ["PROGRAM PC20_CYCLE", "VAR", "END_VAR", "END_PROGRAM"];
 
 PlcProgram emptyModel = <[], []>;
 
@@ -43,15 +43,15 @@ public AssignConstant constant = parse(#AssignConstant, constantString);
 
 public SymbolTable symbols = loadSymbols("DR_TOT_3");
 
-list[str] expectedResetBitStatements = ["ALARM01 := false ; (* !spoeldruk te hoog *)",
-                                    "ALARM02 := false ; (* !stuurlucht gestoord *)",
-                                    "ALARM03 := false ; (* !stuurspanning gestoord *)",
-                                    "ALARM04 := false ; (* !vuilwatertank bijna leeg *)"];
+list[str] expectedResetBitStatements = ["ALARM01 := FALSE ; (* !spoeldruk te hoog *)",
+                                    "ALARM02 := FALSE ; (* !stuurlucht gestoord *)",
+                                    "ALARM03 := FALSE ; (* !stuurspanning gestoord *)",
+                                    "ALARM04 := FALSE ; (* !vuilwatertank bijna leeg *)"];
                                     
-list[str] expectedResetValidStatements = ["ALARM05 := true ; (* !vuilwatertank leeg *)",
-                                    "ALARM06 := false ; (* !geleidbaarheid na spoelen *)",
-                                    "ALARM07 := true ; (* !filtercapaciteit te laag *)",
-                                    "ALARM08 := false ; (* !concentraat afvoer gestoord *)"];
+list[str] expectedResetValidStatements = ["ALARM05 := TRUE ; (* !vuilwatertank leeg *)",
+                                    "ALARM06 := FALSE ; (* !geleidbaarheid na spoelen *)",
+                                    "ALARM07 := TRUE ; (* !filtercapaciteit te laag *)",
+                                    "ALARM08 := FALSE ; (* !concentraat afvoer gestoord *)"];
                                          
 test bool testBitConversionWithZero() = expectEqual(expectedResetBitStatements, evaluateAssign(symbols, "00320", 0), "resetting bits word-wise must expand to bitwyse addressing");
 test bool testBitConversionWithValue() = expectEqual(expectedResetValidStatements, evaluateAssign(symbols, "00321", 5), "setting this value should set bit .1 and bit .3");
