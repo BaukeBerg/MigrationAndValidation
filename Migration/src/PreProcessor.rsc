@@ -13,7 +13,7 @@ import utility::StringUtility;
 Tree preprocess(Tree tree) = innermost visit(tree)
 {
   /// NopBlock
-  case (CodeBlock) `<CompiledInstruction* pre> <SkipInstruction firstNop> <CompiledInstruction* post>`:
+  case (CodeBlock) `<CompiledInstruction* pre><SkipInstruction firstNop><CompiledInstruction* post>`:
   {
     firstInstruction = lastInstruction = firstNop;
     while((CodeBlock)`<SkipInstruction lastNop><CompiledInstruction* newPost>` := (CodeBlock)`<CompiledInstruction post>`)
@@ -25,7 +25,7 @@ Tree preprocess(Tree tree) = innermost visit(tree)
     insert(CodeBlock)`<CompiledInstruction* pre><NopBlock nopBlock><CompiledInstruction* post>`;    
   } 
   /// Fetch
-  case (CodeBlock)`<CompiledInstruction* pre> <FetchInstruction fetch> <CompiledInstruction *post>`:
+  case (CodeBlock)`<CompiledInstruction* pre><FetchInstruction fetch><CompiledInstruction *post>`:
   {
     statements = ["<fetch>"];
     while((CodeBlock)`<FetchInstruction fetch><CompiledInstruction *newPost>`
@@ -39,7 +39,7 @@ Tree preprocess(Tree tree) = innermost visit(tree)
   }
  
   /// FetchConstant
-  case (CodeBlock)`<CompiledInstruction* pre> <FetchConstantInstruction fetch> <WriteValue store> <CompiledInstruction *post>`:
+  case (CodeBlock)`<CompiledInstruction* pre><FetchConstantInstruction fetch><WriteValue store><CompiledInstruction *post>`:
   {
     try
     {
@@ -54,7 +54,7 @@ Tree preprocess(Tree tree) = innermost visit(tree)
   }
     
   /// Store
-  case (CodeBlock)`<CompiledInstruction* pre> <StoreValue store> <CompiledInstruction *post>`:
+  case (CodeBlock)`<CompiledInstruction* pre><StoreValue store><CompiledInstruction *post>`:
   {
     statements = ["<store>"];
     while((CodeBlock)`<StoreValue store><CompiledInstruction *newPost>`
@@ -68,7 +68,7 @@ Tree preprocess(Tree tree) = innermost visit(tree)
   }
   
   /// Compare
-  case (CodeBlock)`<CompiledInstruction* pre> <CompareInstruction compare> <CompiledInstruction *post>`:
+  case (CodeBlock)`<CompiledInstruction* pre><CompareInstruction compare><CompiledInstruction *post>`:
   {
     statements = ["<compare>"];
     while((CodeBlock)`<CompareInstruction compare><CompiledInstruction *newPost>`
@@ -82,7 +82,7 @@ Tree preprocess(Tree tree) = innermost visit(tree)
   }  
   
   /// Compare
-  case (CodeBlock)`<CompiledInstruction* pre> <ReadValue read> <CompareValue compare> <CompiledInstruction *post>`:
+  case (CodeBlock)`<CompiledInstruction* pre><ReadValue read><CompareValue compare><CompiledInstruction *post>`:
   {
     compareValue = composeCompareValue(read, compare);
     insert (CodeBlock)`<CompiledInstruction* pre><CompareValue compareValue><CompiledInstruction *post>`;
@@ -108,7 +108,7 @@ Tree preprocess(Tree tree) = innermost visit(tree)
   }
   
   /// LogicCondition
-  case (CodeBlock) `<CompiledInstruction* pre> <LogicInstruction logic> <CompiledInstruction* post>`:
+  case (CodeBlock) `<CompiledInstruction* pre><LogicInstruction logic><CompiledInstruction* post>`:
   {
     statements = [logic];
     while((CodeBlock)`<LogicInstruction logic><CompiledInstruction* newPost>`
@@ -138,11 +138,28 @@ Tree preprocess(Tree tree) = innermost visit(tree)
   } 
   
   /// Assign
-  case (CodeBlock)`<CompiledInstruction *pre> <ReadValue read> <WriteValue write> <CompiledInstruction *post>`:
+  case (CodeBlock)`<CompiledInstruction *pre><ReadValue read><WriteValue write><CompiledInstruction *post>`:
   {
     assignValue = composeAssign(read, write);
-    insert((CodeBlock)`<CompiledInstruction* pre><AssignValue assignValue> <CompiledInstruction *post>`);  
+    insert((CodeBlock)`<CompiledInstruction* pre><AssignValue assignValue><CompiledInstruction *post>`);  
   }
+  
+  /// AssignBooleanExpression
+  case (CodeBlock)`<CompiledInstruction *pre><LogicCondition condition><AssignBit bit><CompiledInstruction *post>`:
+  {
+    debugPrint("Found a boolean assign using EQL");
+    bits = [bit] ;
+    while((CodeBlock)`<AssignBit bit><CompiledInstruction *newPost>` 
+      := (CodeBlock)`<CompiledInstruction *post>`)
+    {
+      debugPrint("Total: <size(bits)> bits");
+      bits += bit;
+      post = newPost;
+    }
+    boolExpression = composeBooleanExpression(condition, bits);
+    insert((CodeBlock)`<CompiledInstruction* pre><AssignBooleanExpression boolExpression><CompiledInstruction *post>`);
+  }
+  
 };
 
 // (partial) model representations
@@ -157,6 +174,24 @@ NopBlock composeNopBlock(SourceRange programLines) = parse(#NopBlock, "<composeE
 LogicCondition composeLogicCondition(list[LogicInstruction] statements) = parse(#LogicCondition, "<composeEcbPrefix("Tomato", statements)>LogicCondition <formatLogic(statements)>");
 TriggerBlock composeTrigger(LogicCondition condition, EventInstruction trigger) = parse(#TriggerBlock, "<composeEcbPrefix("OliveDrab", composeSourceRange(condition, trigger))>Trigger <bitAddress(trigger)> =\> <extractCondition(condition)>");
 BitTrigger composeBitTrigger(TriggerBlock trigger, AssignBit triggerBit) = parse(#BitTrigger, "<composeEcbPrefix("Cyan", composeSourceRange(trigger, triggerBit))>BitTrigger <composeBitTrigger(trigger, bitAddress(triggerBit))>");
+AssignBooleanExpression composeBooleanExpression(LogicCondition condition, list[AssignBit] bits )
+{
+  sourceRange = debugPrint(composeSourceRange(condition, last(bits)));
+  condition = debugPrint(extractCondition(condition));
+  bitInfo = "";
+  for(bit <- bits)
+  {
+    visit(bit)
+    {
+      case BitAddress BA:
+      {
+        bitInfo += "<trim("<BA>")> ";
+      }
+    }
+  }
+  total = debugPrint("<composeEcbPrefix("Yellow", sourceRange)>AssignBooleanExpression <condition> to <bitInfo>");
+  return parse(#AssignBooleanExpression, total);
+}
 
 str composeBitTrigger(TriggerBlock trigger, str address)
 {
@@ -179,6 +214,7 @@ str extractCondition(LogicCondition logic)
   {
     case LogicExpression L:
     {
+      debugPrint("-|<L>|-");
       return "<L>";
     }
   }
