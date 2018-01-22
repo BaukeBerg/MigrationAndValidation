@@ -29,7 +29,7 @@ private int nopLength = 15;
 private int compiledStringLength = 24;
 
 // Compile and glue back original input
-CompiledData compileWithSourcesToFile(str sourceFile, symbolTable symbols)
+CompiledData compileWithSourcesToFile(str sourceFile, SymbolTable symbols)
 { 
   compiledData = compileWithSources(sourceFile, symbols) ;
   writeToFile(generatedFile("<sourceFile>.compiled"), compiledData.compiledLines);
@@ -37,14 +37,14 @@ CompiledData compileWithSourcesToFile(str sourceFile, symbolTable symbols)
 }
 
 // Compile with storing of original input
-CompiledData compileWithSources(str sourceFile, symbolTable symbols)
+CompiledData compileWithSources(str sourceFile, SymbolTable symbols)
 {
   totalData = compile(sourceFile, symbols);
   totalData.compiledLines = insertSources(totalData.compiledLines, sourceFile, symbols);  
   return totalData;
 }
 
-list[str] insertSources(list[str] compiledLines, str inputFile, symbolTable symbols)
+list[str] insertSources(list[str] compiledLines, str inputFile, SymbolTable symbols)
 {
   inputData = readFileLines(testFile(inputFile));
   processedLine = -1;
@@ -61,7 +61,7 @@ list[str] insertSources(list[str] compiledLines, str inputFile, symbolTable symb
   return compiledLines;  
 }
 
-str composeSourceLine(str sourceLine, symbolTable symbols)
+str composeSourceLine(str sourceLine, SymbolTable symbols)
 {
   if(-1 == findFirst(sourceLine, "!"))
   {    
@@ -77,7 +77,7 @@ str composeSourceLine(str sourceLine, symbolTable symbols)
 // Compile without storing orignal input
 CompiledData compile(str file) = compile("<file>", "DR_TOT_3.SYM");
 CompiledData compile(str sourceFile, str symbolTableFile) = compile(sourceFile, loadSymbols(symbolTableFile));
-CompiledData compile(str sourceFile, symbolTable symbols)
+CompiledData compile(str sourceFile, SymbolTable symbols)
 {  
   LabelList labels = [];
   progCounter = 0;
@@ -253,7 +253,7 @@ list[str] handleNop(int amount, int lineNumber, int progCounter)
   return instructions;
 }
 
-list[str] handleInstruction(&T I, int lineNumber, int progCounter, symbolTable table)
+list[str] handleInstruction(&T I, int lineNumber, int progCounter, SymbolTable table)
 {
   instruction = -1;
   address = ""; 
