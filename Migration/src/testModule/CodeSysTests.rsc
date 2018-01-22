@@ -64,6 +64,9 @@ test bool allSymbolDeclarations()
 
 Symbol triggerSymbol = <"TRIGGER_510.1", "00123.0", "- BDR0B23", "R_TRIG">;
 
+// Complete program
+test bool testCompleteProgram() = testGenerating("DR_TOT_3.compiled");
+
 // Small parts
 test bool testFirstOneHundred() = testGenerating("first100.compiled");
 
@@ -89,3 +92,5 @@ test bool testParsingSymbols()
 
 test bool testVariable() = isCorrect("unreferenced_1:BOOL;(* 1.0 !0.1 sec. puls *)", #PlcVariable);
 test bool testComment() = isCorrect("(* 1.0 !0.1 sec. puls *)", #Comment);
+
+
