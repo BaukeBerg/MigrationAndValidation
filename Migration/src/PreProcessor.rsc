@@ -189,7 +189,7 @@ AssignBooleanExpression composeBooleanExpression(LogicCondition condition, list[
       }
     }
   }
-  total = debugPrint("<composeEcbPrefix("Yellow", sourceRange)>AssignBooleanExpression <condition> to <bitInfo>");
+  total = debugPrint("<trim("<composeEcbPrefix("Yellow", sourceRange)>AssignBooleanExpression <condition>")> to <bitInfo>");
   return parse(#AssignBooleanExpression, total);
 }
 
