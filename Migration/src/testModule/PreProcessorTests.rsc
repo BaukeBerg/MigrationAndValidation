@@ -12,6 +12,15 @@ import utility::TestUtility;
 str expectedPrefix = "++Lime++CodeBlock: 00024-00038 is " ;
 str expectedBlock = "<expectedPrefix>AssignConstant 00000 to 00320,00321,00322,00323,00324,00325,00326,00327,00328,00329,00330,00331,00332,00333";
 
+str sampleBooleanExpression = 
+"++Blue++CodeBlock: 00039-00042 is AssignBooleanExpression NOT 00000.1 to 12345.1 ";
+
+str sampleMultipleBooleanExpression = 
+"++Blue++CodeBlock: 00039-00042 is AssignBooleanExpression NOT 00000.1 to 12345.1 43234.3 ";
+
+public AssignBooleanExpression booleanExpression = parse(#AssignBooleanExpression, sampleBooleanExpression);
+public AssignBooleanExpression multipleBooleanExpression = parse(#AssignBooleanExpression, sampleMultipleBooleanExpression);
+
 public FetchConstantInstruction sampleFetch = parse(#FetchConstantInstruction, "00051 00024 12 00000 \r\n");
 public WriteValue sampleWrite = parse(#WriteValue, "++++CodeBlock: 00025-00038 is WriteValue 00320,00321,00322,00323,00324,00325,00326,00327,00328,00329,00330,00331,00332,00333");
 
