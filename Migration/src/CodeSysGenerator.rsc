@@ -10,7 +10,6 @@ import Environment;
 import CodesysSyntax;
 import CodesysTypes;
 
-
 import utility::Debugging;
 import utility::FileUtility;
 import utility::ListUtility;
@@ -35,6 +34,7 @@ void generateFile(str outputPath, Tree plcModel, SymbolTable symbols)
 
 PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
 {
+  includedLines = 0;
   programLines = [];
   Variables variableList = convertSymbols(symbols);
   variableList = simplifyVariables(variableList);
@@ -43,18 +43,36 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
   {
     case AssignConstant A:
     {
+      includedLines += extractSize(A);
       programLines += extractStatements(A, symbols);
     }
     
     case BitTrigger B:
     {
+      includedLines += extractSize(B);
       <declaration, statements> = evaluateTrigger(B, symbols);
       variableList += declaration;
       programLines += statements;
     }
     
   }
+  debugPrint("Total line amount included: <includedLines>");
   return <variableList,programLines>;
+}
+
+int extractSize(&T codeBlock)
+{
+  visit(codeBlock)
+  {
+    case SourceLineRange range:
+    {
+      sources = split("-", "<range>");
+      from = parseInt("<sources[0]>");
+      to = parseInt("<sources[1]>");
+      return to - from;
+    }
+  }
+  return 0;       
 }
 
 tuple[str declaration, list[str] statements] evaluateTrigger(BitTrigger B, SymbolTable symbols)
