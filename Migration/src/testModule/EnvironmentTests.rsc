@@ -1,4 +1,4 @@
-module testModule::SymbolTableTests
+module testModule::EnvironmentTests
 
 import FileLocations;
 import Parser;
