@@ -46,6 +46,7 @@ lexical ExtractedCodeBlock = ReadValue
                            | LogicCondition
                            | TriggerBlock
                            | BitTrigger
+                           | AssignBooleanExpression                         
                            ;
 
 lexical Error = "ERROR-PARSING-BLOCK";               
@@ -54,6 +55,7 @@ lexical ReadValue = EcbPrefix "ReadValue " AddressRange ;
 lexical WriteValue = EcbPrefix "WriteValue " AddressRange ;
 lexical CompareValue = EcbPrefix "CompareValue " (AddressRange | (AddressRange " to " AddressRange));
 lexical AssignValue = EcbPrefix "AssignValue " AddressRange " to " AddressRange ;
+lexical AssignBooleanExpression = EcbPrefix "AssignBooleanExpression " LogicStatement "to " BitAddress+ ;
 lexical AssignConstant = EcbPrefix "AssignConstant " ConstantValue " to " AddressRange ;
 lexical AndEqual = EcbPrefix "AndEqual " AddressRange " to " AddressRange;
 lexical LogicCondition = EcbPrefix "LogicCondition " LogicExpression;
