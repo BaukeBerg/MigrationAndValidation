@@ -15,6 +15,7 @@ import PC20Syntax;
 import Environment;
 import String;
 
+import utility::Debugging;
 import utility::FileUtility;
 import utility::TestUtility;
 
@@ -72,7 +73,18 @@ test bool testFirstOneHundred() = testGenerating("first100.compiled");
 
 bool testGenerating(str inputFile)
 {
-  processedTree = preprocess(parseCompiledFile(inputFile));
+  Tree processedTree;
+  procFile = generatedFile("<inputFile>.PreProc"); 
+  if(exists(procFile))
+  {
+    debugPrint("Using cached file");
+    processedTree = parse(#start[PC20_Compiled], readFile(procFile));
+  }
+  else
+  {
+    processedTree = preprocess(parseCompiledFile(inputFile));
+    writeFile(procFile, unparse(processedTree));
+  }
   str outputFile = "<stripFileExtension(inputFile)>.EXP";
   generateFile(outputFile, processedTree, symbols);
   return true;
