@@ -57,7 +57,7 @@ lexical CompareValue = EcbPrefix "CompareValue " (AddressRange | (AddressRange "
 lexical AssignValue = EcbPrefix "AssignValue " AddressRange " to " AddressRange ;
 lexical AssignBooleanExpression = EcbPrefix "AssignBooleanExpression " LogicExpression "to " BitAddress+ ;
 lexical AssignConstant = EcbPrefix "AssignConstant " ConstantValue " to " AddressRange ;
-lexical AndEqual = EcbPrefix "AndEqual " AddressRange " to " AddressRange;
+lexical AndEqual = EcbPrefix "AndEqual " SourceRange " to " TargetRange;
 lexical LogicCondition = EcbPrefix "LogicCondition " LogicExpression;
 lexical OtherBlock = EcbPrefix Description;
 lexical NopBlock = EcbPrefix "NopBlock" ;
@@ -67,6 +67,8 @@ lexical TriggerTarget = BitAddress ;
 lexical TriggerExpression = TriggerResult "=\> " LogicExpression ;
 lexical TriggerResult = BitAddress;
 
+lexical SourceRange = AddressRange;
+lexical TargetRange = AddressRange;
 lexical LogicExpression = LogicStatement+ ;
 lexical LogicStatement = LogicOperation? BitAddress ;
 lexical LogicOperation = "NOT " | "AND " | "OR " | "AND NOT " | "OR NOT " ;
