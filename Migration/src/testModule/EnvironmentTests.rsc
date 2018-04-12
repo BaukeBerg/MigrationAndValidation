@@ -4,6 +4,7 @@ import FileLocations;
 import Parser;
 import PC20Syntax;
 import Environment;
+import String;
 
 import utility::TestUtility;
 
@@ -36,3 +37,14 @@ test bool testRetrievingAddresses() = expectEqual(expectedAddressList, retrieveA
 test bool retrieveCommentByShortAddress() = expectEqual("!10 sec. puls", retrieveComment("1.2", symbols), "Comments can be retrieved by querying with the address");
 test bool retrieveCommentByLongAddress() = expectEqual("!10 sec. puls", retrieveComment("00001.2", symbols), "Comments can be retrieved by querying with the address");
 test bool retrieveCommentAddressWithSpaces() = expectEqual("!10 sec. puls", retrieveComment("   00001.2 ", symbols), "Comments can be retrieved by querying with the address");
+
+// Check correct generation of names
+test bool retrieveVariableNameNormal() = expectEqual("DSP99_3", retrieveVariableName("1499", symbols));
+test bool retrieveVariableNameComment0() = expectEqual("constante_0", retrieveVariableName("1500", symbols));
+test bool retrieveVariableNameComment9() = expectEqual("constante_9", retrieveVariableName("1509", symbols));
+test bool retrieveVariableNameGeneratedFirst() = expectEqual("unnamed_1510", retrieveVariableName("1510", symbols));
+test bool retrieveVariableNameGeneratedSecond() = expectEqual("unnamed_1511", retrieveVariableName("1511", symbols));
+
+test bool retrieveVariableNameGeneratedBitSecond() = expectEqual("unnamed_1511_1", retrieveVariableName("1511.1", symbols));
+
+test bool retrieveVariableNameCheckDifference() = expectUnEqual(retrieveVariableName("1510", symbols), retrieveVariableName("1511", symbols));
