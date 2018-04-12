@@ -70,31 +70,47 @@ void writeSymbolTableToFile(loc fileToSave, SymbolTable tableToSave)
 SymbolTable generateSymbolTable(str fileName)
 {
   symbolTable = [];
-  unreferencedIndex = 1 ;
+  commentDeclarations = 0;
+  unreferencedIndex = 0;
+  unnamed = false;
   visit(generateSymbolTree(fileName))
   {
     case Declaration D:
     {
+      unnamed = false;
       symbolTable += processDeclaration(D);      
     }
     case UnreferencedDeclaration UD:
     {
-      symbolTable += generateDeclaration("unreferenced_<unreferencedIndex>", UD);
-      unreferencedIndex += 1 ;      
+      unnamed = true;
+      addressName = replaceAll(trim("<UD>"), ".", "_");
+      symbolTable += generateDeclaration("unnamed_<addressName>", UD);   
+      unreferencedIndex += 1;         
     } 
     case PdsComment C:
     {
-      symbolTable[size(symbolTable)-1].comment = "<C>";      
+      if(unnamed)
+      {
+        symbolTable[size(symbolTable)-1].name = composeVariableName("<C>");
+        unreferencedIndex -= 1;
+        commentDeclarations += 1;
+        unnamed = false;
+      }
+      symbolTable[size(symbolTable)-1].comment = "<C>";
+            
     }                 
   }
   debugPrint(symbolTable, printSymbolInfo);
+  debugPrint("Total amount of declarations: <size(symbolTable)>");
+  debugPrint("Amount of unnamed variables without comment: <unreferencedIndex>");
+  debugPrint("Amount of unnamed variables with comment: <commentDeclarations>");  
   return symbolTable;
 }
 
 Symbol processDeclaration(&T D) = generateDeclaration("", D);
 Symbol generateDeclaration(str defaultName, &T D)
 {
-  symbol extractedSymbol = <defaultName, "", "", "">;
+  Symbol extractedSymbol = <defaultName, "", "", "">;
   visit(D)
   {
     case VariableName N:
@@ -117,6 +133,13 @@ str convertVariable(Variable V, SymbolTable table)
     return symbol.address;
   }
   return unknownIdentifier(V);
+}
+
+str composeVariableName(str comment)
+{
+  comment = stripLeading(comment, "!");
+  comment = trim(comment);
+  return replaceAll(comment, " ", "_");  
 }
 
 str retrieveComment(str variableName, SymbolTable table)
@@ -155,7 +178,7 @@ str clipAndStrip(str variableInfo) = stripLeading(trim(variableInfo), "0");
 
 str unknownIdentifier(&T identifier)
 {
-  debugPrint("Unknown Identifier: <identifier>");
+  handleError("Unknown Identifier: <identifier>");
   return "UNKNOWN-IDENTIFIER";
 }
 
