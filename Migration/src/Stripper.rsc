@@ -7,9 +7,11 @@ import List;
 import String;
 import utility::FileUtility;
 import utility::Debugging;
+import utility::ListUtility;
 
 // Ability to generate a compiled file without all the comments present.
 void generateStrippedFile(str fileName) = writeToFile(generatedFile("<filename>.stripped"), clippedLines(testFile(fileName)));
+void generateProgrammableFile(str fileName) = writeToFile(generatedFile("<stripFileExtension(fileName)>.program"), removeLineNumbers(readFileLines(generatedFile(fileName))));
 
 list[str] clipAndSave(loc fileName)
 {
@@ -20,6 +22,27 @@ list[str] clipAndSave(loc fileName)
     writeToFile(targetFile ,fileData);
   }
   return fileData;
+}
+
+list[str] removeLineNumbers(list[str] strippedLines)
+{
+  totalLines = [];
+  for(line <- strippedLines)
+  {
+    try
+    {
+      result = trim(substring(line,5));
+      if("" != result)
+      {
+        totalLines += "WL <result>";
+      }
+    }
+    catch:
+    {
+      handleError("Unable to process string: <line>");
+    }
+  }
+  return trimList(totalLines);
 }
 
 list[str] clippedLines(loc fileName) = clipLines(readFileLines(fileName));
