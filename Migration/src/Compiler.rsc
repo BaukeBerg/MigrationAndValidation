@@ -66,7 +66,7 @@ str composeSourceLine(str sourceLine, SymbolTable symbols)
   if(-1 == findFirst(sourceLine, "!"))
   {    
     comment = retrieveComment(jumpDestination(sourceLine), symbols);
-    if(("UNKNOWN-IDENTIFIER" != comment) && (false == isEmpty(comment)))
+    if(("UNKNOWN_IDENTIFIER" != comment) && (false == isEmpty(comment)))
     {
       sourceLine += "\t<comment>";
     } 

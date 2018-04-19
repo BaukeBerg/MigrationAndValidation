@@ -204,7 +204,7 @@ str composeBitTrigger(TriggerBlock trigger, str address)
       return "<address> by <LE>";
     }    
   }
-  return "UNKNOWN-TRIGGER-EXPRESSION"; 
+  return "UNKNOWN_TRIGGER_EXPRESSION"; 
 }
 
 

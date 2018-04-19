@@ -27,7 +27,7 @@ str explode(str packedInput)
   int totalValue = toInt(packedInput, 16);
   int instruction = shiftRight(totalValue, 11); 
   int addressData = mask(totalValue, 0x7FF); 
-  str address = "UNKNOWN-ADDRESS" ;   
+  str address = "UNKNOWN_ADDRESS" ;   
  
   // default format = adress dot bitaddress
   int addressValue = mask(addressData, 0x7FF);
