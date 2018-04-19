@@ -84,7 +84,8 @@ SymbolTable generateSymbolTable(str fileName)
     {
       unnamed = true;
       addressName = replaceAll(trim("<UD>"), ".", "_");
-      symbolTable += generateDeclaration("unnamed_<addressName>", UD);   
+      addressName = replaceAll(addressName, "=", "");
+      symbolTable += generateDeclaration("unnamed_<trim(addressName)>", UD);   
       unreferencedIndex += 1;         
     } 
     case PdsComment C:
