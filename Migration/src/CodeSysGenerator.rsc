@@ -39,31 +39,35 @@ SymbolTable addUndeclaredVariables(SymbolTable symbols, Tree parsedData)
   {
     case WordAddress WA:
     {
-      debugPrint("Querying Word: --|<WA>|--");
       if("UNKNOWN_IDENTIFIER" == retrieveVariableName("<WA>", symbols))
-      {
-        
-        addressName = replaceAll(trim("<clipAndStrip("<WA>")>"), ".", "_");
-        addressName = replaceAll(addressName, "=", "");
-        symbols += [<"unnamed_<trim(addressName)>", clipAndStrip("<WA>"), "", "INT">];
+      { 
+        symbols += composeUnnamedDeclaration("<WA>", "INT");
       }
       
     }
     case BitAddress BA:
     {   
-      debugPrint("Querying Bit: --|<BA>|--");
-      if("UNKNOWN_IDENTIFIER" == retrieveVariableName(debugPrint("<BA>"), symbols))
+      if("UNKNOWN_IDENTIFIER" == retrieveVariableName("<BA>", symbols))
       {
-        addressName = replaceAll(trim("<clipAndStrip("<BA>")>"), ".", "_");
-        addressName = replaceAll(addressName, "=", "");
-        symbols += [<"unnamed_<trim(addressName)>", clipAndStrip("<BA>"), "", "BOOL">];
+        symbols += composeUnnamedDeclaration("<BA>", "BOOL");
+        debugPrint("after addition: <retrieveVariableName("<BA>", symbols)>");
+      
       }
+      
     }
     default:
       ;
       
   }
   return symbols;
+}
+
+Symbol composeUnnamedDeclaration(str inputData, str dataType)
+{
+  debugPrint("Generating declaration for <dataType> <inputData>");
+	addressName = replaceAll(trim("<clipAndStrip(inputData)>"), ".", "_");
+  addressName = replaceAll(addressName, "=", "");    
+  return <"unnamed_<trim(addressName)>", clipAndStrip("<inputData>"), "", dataType>;
 }
 
 PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
