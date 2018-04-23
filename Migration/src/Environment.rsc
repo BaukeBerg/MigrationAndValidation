@@ -175,12 +175,21 @@ str retrieveVariableName(str address, SymbolTable table)
   return unknownIdentifier(address);
 }
 
-str clipAndStrip(str variableInfo) = stripLeading(trim(variableInfo), "0");
+str clipAndStrip(str variableInfo)
+{
+  variableInfo = stripLeading(trim(variableInfo), "0");
+  if(startsWith(variableInfo, "."))
+  {
+    return "0" + variableInfo;
+  }
+  return variableInfo;  
+}
+
 
 str unknownIdentifier(&T identifier)
 {
   handleError("Unknown Identifier: <identifier>");
-  return "UNKNOWN-IDENTIFIER";
+  return "UNKNOWN_IDENTIFIER";
 }
 
 bool contains(str address, SymbolTable table) = [] != retrieveAddressList(address, table);
