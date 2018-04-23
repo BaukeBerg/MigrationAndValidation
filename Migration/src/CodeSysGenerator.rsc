@@ -32,6 +32,40 @@ void generateFile(str outputPath, Tree plcModel, SymbolTable symbols)
   generateProgram(outputPath, program);
 }
 
+SymbolTable addUndeclaredVariables(SymbolTable symbols, Tree parsedData)
+{
+  debugPrint("starting visit");
+  visit(parsedData)
+  {
+    case WordAddress WA:
+    {
+      debugPrint("Querying Word: --|<WA>|--");
+      if("UNKNOWN_IDENTIFIER" == retrieveVariableName("<WA>", symbols))
+      {
+        
+        addressName = replaceAll(trim("<clipAndStrip("<WA>")>"), ".", "_");
+        addressName = replaceAll(addressName, "=", "");
+        symbols += [<"unnamed_<trim(addressName)>", clipAndStrip("<WA>"), "", "INT">];
+      }
+      
+    }
+    case BitAddress BA:
+    {   
+      debugPrint("Querying Bit: --|<BA>|--");
+      if("UNKNOWN_IDENTIFIER" == retrieveVariableName(debugPrint("<BA>"), symbols))
+      {
+        addressName = replaceAll(trim("<clipAndStrip("<BA>")>"), ".", "_");
+        addressName = replaceAll(addressName, "=", "");
+        symbols += [<"unnamed_<trim(addressName)>", clipAndStrip("<BA>"), "", "BOOL">];
+      }
+    }
+    default:
+      ;
+      
+  }
+  return symbols;
+}
+
 PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
 {
   includedLines = 0;
