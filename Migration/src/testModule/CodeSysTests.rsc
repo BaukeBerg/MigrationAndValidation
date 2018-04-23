@@ -82,7 +82,13 @@ bool testGenerating(str inputFile)
   }
   else
   {
-    processedTree = preprocess(parseCompiledFile(inputFile));
+    debugPrint("Parsing input file...");
+    parsedData = parseCompiledFile(inputFile);
+    debugPrint("Adding symbols");
+    symbols = addUndeclaredVariables(symbols, parsedData);
+    debugPrint("Preprocessing");
+    processedTree = preprocess(parsedData);
+    debugPrint("Storing result");
     writeFile(procFile, unparse(processedTree));
   }
   str outputFile = "<stripFileExtension(inputFile)>.EXP";
