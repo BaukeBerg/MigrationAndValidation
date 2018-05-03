@@ -111,4 +111,20 @@ test bool testParsingSymbols()
 test bool testVariable() = isCorrect("unreferenced_1:BOOL;(* 1.0 !0.1 sec. puls *)", #PlcVariable);
 test bool testComment() = isCorrect("(* 1.0 !0.1 sec. puls *)", #Comment);
 
+test bool testEmptyData()
+{
+  SymbolTable table = [];
+  return expectEqual("UNKNOWN_IDENTIFIER", retrieveVariableName("00000.1", table), "Querying an unnamed variable yields Unknown");
+}
 
+test bool testGeneratingBooleanData()
+{
+  SymbolTable table = [composeUnnamedDeclaration("00000.1", "BOOL")];
+  return expectEqual("unnamed_0_1", retrieveVariableName("00.1", table), "Composing data results in data being added variable yields Unknown");
+}
+
+test bool testGeneratingIntegerData()
+{
+  SymbolTable table = [composeUnnamedDeclaration("00035", "INT")];
+  return expectEqual("unnamed_35", retrieveVariableName("035", table), "Composing data results in data being added variable yields Unknown");
+}  
