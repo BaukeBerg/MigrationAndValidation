@@ -72,11 +72,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     {
       if(hasOpenCondition) 
       {
-        if("  " == last(programLines))
-        {
-          programLines = delete(programLines, size(programLines)-1); 
-        }
-        programLines += closeIf(last(programLines));
+        progamLines = closeIf(programLines);
         hasOpenCondition = false;        
       }
       includedLines += extractSize(LC);      
@@ -93,18 +89,42 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
   }
   if(hasOpenCondition) 
   {
-    if("  " == last(programLines))
-    {
-      programLines = delete(programLines, size(programLines)-1); 
-    }
-    programLines += closeIf(last(programLines));
+    programLines = closeIf(programLines);
     hasOpenCondition = false;        
   }
   debugPrint("Total line amount included: <includedLines>");
   return <variableList,programLines>;
 }
 
-Statements closeIf(str lastLine)= (startsWith(lastLine, "IF ") ? ["; (* EMPTY_IF_GUARD *)"] : []) + ["END_IF;", "  "];
+Statements closeIf(Statements programLines)
+{
+  if("  " == last(programLines))
+  {
+    programLines = delete(programLines, size(programLines)-1); 
+  }        
+  programSize = size(programLines);
+  for(line <- [1..programSize])
+  {
+    if(startsWith(programLines[programSize-line], "IF "))
+    {
+      break;
+    }
+    else
+    {
+      programLines[programSize-line] = "  " + programLines[programSize-line];
+    } 
+  }
+  if(startsWith(last(programLines), "IF "))
+  {
+    programLines += ["  ; (* EMPTY_IF_GUARD *)"];
+  }
+  programLines += ["END_IF;", "  "];
+  return programLines;  
+}
+
+
+
+
 
 SymbolTable addUndeclaredVariables(SymbolTable symbols, Tree parsedData)
 {
