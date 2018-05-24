@@ -10,6 +10,7 @@ import String;
 import utility::Debugging;
 import utility::FileUtility;
 import utility::ListUtility;
+import utility::MathUtility;
 import utility::StringUtility;
 
 alias SymbolTable = list[Symbol];
@@ -140,7 +141,12 @@ str composeVariableName(str comment)
 {
   comment = stripLeading(comment, "!");
   comment = trim(comment);
-  return replaceAll(comment, " ", "_");  
+  comment = replaceAll(comment, " ", "_");
+  if(inLimits("0", comment[0], "9"))
+  {
+    comment = "_" + comment;
+  }
+  return comment;
 }
 
 str retrieveComment(str variableName, SymbolTable table)
