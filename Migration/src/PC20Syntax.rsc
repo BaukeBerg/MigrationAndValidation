@@ -53,7 +53,7 @@ lexical Error = "ERROR-PARSING-BLOCK";
                            
 lexical ReadValue = EcbPrefix "ReadValue " AddressRange ;
 lexical WriteValue = EcbPrefix "WriteValue " AddressRange ;
-lexical CompareValue = EcbPrefix "CompareValue " (AddressRange | (AddressRange " to " AddressRange));
+lexical CompareValue = EcbPrefix "CompareValue " (SourceRange | (SourceRange " to " TargetRange));
 lexical AssignValue = EcbPrefix "AssignValue " SourceRange " to " TargetRange ;
 lexical AssignBooleanExpression = EcbPrefix "AssignBooleanExpression " LogicExpression "to " BitAddress+ ;
 lexical AssignConstant = EcbPrefix "AssignConstant " ConstantValue " to " AddressRange ;
