@@ -224,16 +224,28 @@ tuple[str declaration, list[str] statements] evaluateTrigger(BitTrigger B, Symbo
 
 str evaluateExpression(LogicExpression logic, SymbolTable symbols)
 {
-  totalExpression = trim("<logic>");
-  debugPrint("Evaluating logic: --|<totalExpression>|---");
-  special = systemVariable(totalExpression);
-  if(!isEmpty(special))  
+  totalExpression = "";
+  visit(logic)
   {
-    return special;
-  }
-  if(contains(totalExpression, symbols))
-  {
-    return retrieveVariableName(totalExpression, symbols);
+    case LogicOperation LO:
+    {
+      totalExpression += " " + "<LO>";
+    }
+    case BitAddress BA:
+    {
+      localExpression = trim("<BA>");
+      debugPrint("Evaluating logic: --|<localExpression>|---");
+      special = systemVariable(localExpression);
+      if(!isEmpty(special))  
+      {
+        localExpression = special;
+      }
+      else if(contains(localExpression, symbols))
+      {
+        localExpression = retrieveVariableName(localExpression, symbols);
+      }
+      totalExpression += localExpression;      
+    }
   }
   return totalExpression;
 }
@@ -321,27 +333,27 @@ Statements extractStatements(AssignConstant A, SymbolTable symbols)
 
 str formatComment(LogicExpression logicExpression, SymbolTable symbols)
 {
-  addresses = [];
+  commentString = "(* ";
   visit(logicExpression)
   {
     case BitAddress BA:
     {
-      addresses += ["<BA>"];
+      address = clipAndStrip("<BA>");
+      if("" == systemVariable(address))
+      {
+        commentString += retrieveComment(address, symbols);
+      }
+      else
+      {
+        commentString += "SystemVariable";
+      }      
     }
-  }
-  commentString = "(* ";
-  for(address <- addresses)
-  {
-    if("" == systemVariable(address))
+    case LogicOperation LO:
     {
-      commentString += debugPrint("finding data for <address>:","<trim(retrieveComment(address, symbols))> ");
-    }
-    else
-    {
-      commentString += "SystemVariable";
-    }    
+      commentString += " <LO>";
+    } 
   }
-  return commentString + "*)";  
+  return commentString + " *)"; 
 }
 
 Statements evaluateAssign(SymbolTable symbols, str sourceAddress, str targetAddress)
