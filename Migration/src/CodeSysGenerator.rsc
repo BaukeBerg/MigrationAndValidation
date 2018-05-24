@@ -63,6 +63,12 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
       programLines += statements;
     }
     
+    case CompareValue CV:
+    {
+      includedLines += extractSize(CV);
+      programLines += extractStatements(CV, symbols);
+    }
+    
     case LogicCondition LC:
     {
       if(hasOpenCondition) 
@@ -262,6 +268,37 @@ str systemVariable(str expToCheck)
   }
 }
 
+Statements extractStatements(AssignConstant A, SymbolTable symbols)
+{
+  constantValue = -1;
+  statements = ["(* <A> *)"];
+  addresses = [];
+  debugPrint("Generating asssing <A>");
+  visit(A)
+  {
+    case ConstantValue C:
+    {
+      constantValue = parseInt("<C>");     
+    }
+    case AddressRange A:
+    {
+      visit(A)
+      {
+        case FiveDigits F:
+        {
+          addresses += "<stripLeading("<F>", "0")>";
+        }
+      }
+    }      
+  }
+  for(address <- addresses)
+  {
+    statements += evaluateAssign(symbols, address, constantValue);  
+  }
+  statements += "  "; 
+  return statements;
+}
+
 Statements extractStatements(AssignValue A, SymbolTable symbols)
 {
   statements = ["(* <A> *)"];
@@ -300,32 +337,39 @@ Statements extractStatements(AssignValue A, SymbolTable symbols)
   return statements;
 }
 
-Statements extractStatements(AssignConstant A, SymbolTable symbols)
+Statements extractStatements(CompareValue compare, SymbolTable symbols)
 {
-  constantValue = -1;
-  statements = ["(* <A> *)"];
-  addresses = [];
-  debugPrint("Generating asssing <A>");
-  visit(A)
+  sourceAddresses = [];
+  targetAddresses = [];  
+  visit(compare)
   {
-    case ConstantValue C:
+    case SourceRange SR:
     {
-      constantValue = parseInt("<C>");     
-    }
-    case AddressRange A:
-    {
-      visit(A)
+      debugPrint("Range: <SR>");
+      visit(SR)
       {
         case FiveDigits F:
         {
-          addresses += "<stripLeading("<F>", "0")>";
+          sourceAddresses += "<stripLeading("<F>", "0")>";
         }
       }
-    }      
+    }
+    case TargetRange TR:
+    {
+      visit(TR)
+      {
+        case FiveDigits F:
+        {
+          targetAddresses += "<stripLeading("<F>", "0")>";
+        }
+      }
+    }
   }
-  for(address <- addresses)
+  statements = [];
+  for(index <- [0..size(sourceAddresses)])
   {
-    statements += evaluateAssign(symbols, address, constantValue);  
+    debugPrint("Evaluating <index>");
+    statements += "<retrieveVariableName(sourceAddresses[index], symbols)> = <retrieveVariableName(targetAddresses[index], symbols)>";
   }
   statements += "  "; 
   return statements;
