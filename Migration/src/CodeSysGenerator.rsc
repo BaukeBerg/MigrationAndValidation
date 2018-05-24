@@ -38,20 +38,22 @@ SymbolTable addUndeclaredVariables(SymbolTable symbols, Tree parsedData)
   visit(parsedData)
   {
     case WordAddress WA:
-    {
-      if("UNKNOWN_IDENTIFIER" == retrieveVariableName("<WA>", symbols))
+    { 
+      varName = clipAndStrip("<WA>");
+      if(false == contains(varName, symbols))
       { 
-        symbols += composeUnnamedDeclaration("<WA>", "INT");
+        debugPrint("unable to find --|<varName>|--");
+        symbols += composeUnnamedDeclaration(varName, "INT");
       }
       
     }
     case BitAddress BA:
     {   
-      if("UNKNOWN_IDENTIFIER" == retrieveVariableName("<BA>", symbols))
-      {
-        symbols += composeUnnamedDeclaration("<BA>", "BOOL");
-        debugPrint("after addition: <retrieveVariableName("<BA>", symbols)>");
-      
+      varName = clipAndStrip("<BA>");      
+      if(false == contains(varName, symbols))
+      { 
+        debugPrint("unable to find --|<varName>|--");
+        symbols += composeUnnamedDeclaration(varName, "BOOL");        
       }
       
     }
