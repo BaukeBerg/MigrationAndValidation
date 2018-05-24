@@ -67,6 +67,18 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
       programLines += ["(* <NB> *)", "; (* DoNothing *)", "  "];
     }
     
+    case LogicCondition LC:
+    {
+      includedLines += extractSize(LC);      
+      visit(LC)
+      {
+        case LogicExpression LE:
+        {
+          programLines += ["IF <evaluateExpression(LE, symbols)> THEN <formatComment(LE, symbols)>"];
+        }
+      }
+    }
+    
   }
   debugPrint("Total line amount included: <includedLines>");
   return <variableList,programLines>;
@@ -157,18 +169,7 @@ tuple[str declaration, list[str] statements] evaluateTrigger(BitTrigger B, Symbo
     }
   }
   
-  clkExp = trim("<logicExpression>");
-  debugPrint("Evaluating CLK: --|<clkExp>|---");
-  special = specialVariable(clkExp);
-  if(!isEmpty(special))  
-  {
-    clkExp = special;
-  }
-  else if(contains(clkExp, symbols))
-  {
-    clkExp = retrieveVariableName(clkExp, symbols);
-  }    
-        
+  clkExp = evaluateExpression(logicExpression, symbols);
   statements += formatName(variableInfo.name);
   statements += "(";
   statements += "  CLK := <clkExp>, <formatComment(logicExpression, symbols)>";
@@ -178,6 +179,22 @@ tuple[str declaration, list[str] statements] evaluateTrigger(BitTrigger B, Symbo
   return <extractVariable(variableInfo), statements>;
 }
 
+str evaluateExpression(LogicExpression logic, SymbolTable symbols)
+{
+  totalExpression = trim("<logic>");
+  debugPrint("Evaluating logic: --|<totalExpression>|---");
+  special = specialVariable(totalExpression);
+  if(!isEmpty(special))  
+  {
+    return special;
+  }
+  if(contains(totalExpression, symbols))
+  {
+    return retrieveVariableName(totalExpression, symbols);
+  }
+  return totalExpression;
+}
+
 str specialVariable(str expToCheck)
 {
   try
@@ -185,7 +202,7 @@ str specialVariable(str expToCheck)
     return systemVariables[clipAndStrip(expToCheck)];
   }
   catch:
-  {
+  {  
     return "";
   }
 }
@@ -272,7 +289,10 @@ str formatComment(LogicExpression logicExpression, SymbolTable symbols)
   commentString = "(* ";
   for(address <- addresses)
   {
-    commentString += debugPrint("finding data for <address>:","<trim(retrieveComment(address, symbols))> ");    
+    if(!isSpecial(address))
+    {
+      commentString += debugPrint("finding data for <address>:","<trim(retrieveComment(address, symbols))> ");
+    }    
   }
   return commentString + "*)";  
 }
