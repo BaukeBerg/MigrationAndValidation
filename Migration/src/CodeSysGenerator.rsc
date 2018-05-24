@@ -186,11 +186,12 @@ Statements extractStatements(AssignValue A, SymbolTable symbols)
   {
     case SourceRange SR:
     {
+      debugPrint("Range: <SR>");
       visit(SR)
       {
         case FiveDigits F:
         {
-          sourceAddresses += "<stripLeading(<"F">, "0")>";
+          sourceAddresses += "<stripLeading("<F>", "0")>";
         }
       }
     }
@@ -200,14 +201,15 @@ Statements extractStatements(AssignValue A, SymbolTable symbols)
       {
         case FiveDigits F:
         {
-          targetAddresses += "<stripLeading(<"F">, "0")>";
+          targetAddresses += "<stripLeading("<F>", "0")>";
         }
       }
     }
   }
   for(index <- [0..size(sourceAddresses)])
   {
-    statements += evalulateAssign(symbols, sourceAddresses[index], targetAddresses[index]);
+    debugPrint("Evaluating <index>");
+    statements += evaluateAssign(symbols, sourceAddresses[index], targetAddresses[index]);
   }
   return statements;
 }
@@ -264,7 +266,7 @@ Statements evaluateAssign(SymbolTable symbols, str sourceAddress, str targetAddr
 {
   sourceName = retrieveVariableName(sourceAddress, symbols);
   targetName = retrieveVariableName(targetAddress, symbols);
-  return["<targetName> := <sourceName>"];   
+  return["<targetName> := <sourceName>; (* <retrieveComment(sourceAddress, symbols)> ==\>\> <retrieveComment(targetAddress, symbols)> *)"];   
 }
 
 Statements evaluateAssign(SymbolTable symbols, str address, int constantValue)

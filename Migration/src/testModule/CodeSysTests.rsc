@@ -42,12 +42,13 @@ test bool testInvalidChars() = expectEqual(expectedResult, extractVariable(fault
 str valueString = "++Lime++CodeBlock: 00143-00150 is AssignValue 00106,00107,00108,00109 to 02000,02001,02002,02003";
 public AssignValue assignValue = parse(#AssignValue, valueString);
 
-Statements expectedAssignStatements = ["STP00_0 := SETP_0; (* !ingevoerde setpoint eenheden ==\>\> !setpoint 00 eenheden *)",
+Statements expectedAssignStatements = ["(* <valueString> *)",
+                                      "STP00_0 := SETP_0; (* !ingevoerde setpoint eenheden ==\>\> !setpoint 00 eenheden *)",
                                       "STP00_1 := SETP_1; (* !ingevoerde setpoint tientallen ==\>\> !setpoint 00 tientallen *)",
                                       "STP00_2 := SETP_2; (* !ingevoerde setpoint honderdtallen ==\>\> !setpoint 00 honderdtallen *)",
                                       "STP00_3 := SETP_3; (* !ingevoerde setpoint duizendtallen ==\>\> !setpoint 00 duizendtallen *)"];
                                       
-test bool testAssignValues() = expectEqual(expectedAssignStatements, extractStatements(assignValue, symbols), "Checking if assign value correcty generates the code");
+test bool testAssignValues() = expectEqual(expectedAssignStatements, extractStatements(assignValue, symbols), "Checking if assign value correcty generates the code.");
 
 
 str constantString = "++Lime++CodeBlock: 00024-00038 is AssignConstant 00000 to 00320,00321,00322,00323,00324,00325,00326,00327,00328,00329,00330,00331,00332,00333";
