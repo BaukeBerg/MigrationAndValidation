@@ -36,6 +36,7 @@ void generateFile(str outputPath, Tree plcModel, SymbolTable symbols)
 PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
 {
   includedLines = 0;
+  hasOpenCondition = false;
   programLines = [];
   Variables variableList = convertSymbols(symbols);
   //variableList = simplifyVariables(variableList); => Do this with rewrite of symbols
@@ -69,20 +70,41 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     
     case LogicCondition LC:
     {
+      if(hasOpenCondition) 
+      {
+        if("  " == last(programLines))
+        {
+          programLines = delete(programLines, size(programLines)-1); 
+        }
+        programLines += closeIf(last(programLines));
+        hasOpenCondition = false;        
+      }
       includedLines += extractSize(LC);      
       visit(LC)
       {
         case LogicExpression LE:
         {
-          programLines += ["IF <evaluateExpression(LE, symbols)> THEN <formatComment(LE, symbols)>"];
+          programLines += ["(* <LC> *)", "IF <evaluateExpression(LE, symbols)> THEN <formatComment(LE, symbols)>"];
+          hasOpenCondition = true;
         }
       }
     }
     
   }
+  if(hasOpenCondition) 
+  {
+    if("  " == last(programLines))
+    {
+      programLines = delete(programLines, size(programLines)-1); 
+    }
+    programLines += closeIf(last(programLines));
+    hasOpenCondition = false;        
+  }
   debugPrint("Total line amount included: <includedLines>");
   return <variableList,programLines>;
 }
+
+Statements closeIf(str lastLine)= (startsWith(lastLine, "IF ") ? ["; (* EMPTY_IF_GUARD *)"] : []) + ["END_IF;", "  "];
 
 SymbolTable addUndeclaredVariables(SymbolTable symbols, Tree parsedData)
 {
@@ -183,7 +205,7 @@ str evaluateExpression(LogicExpression logic, SymbolTable symbols)
 {
   totalExpression = trim("<logic>");
   debugPrint("Evaluating logic: --|<totalExpression>|---");
-  special = specialVariable(totalExpression);
+  special = systemVariable(totalExpression);
   if(!isEmpty(special))  
   {
     return special;
@@ -195,7 +217,7 @@ str evaluateExpression(LogicExpression logic, SymbolTable symbols)
   return totalExpression;
 }
 
-str specialVariable(str expToCheck)
+str systemVariable(str expToCheck)
 {
   try
   {
@@ -289,9 +311,13 @@ str formatComment(LogicExpression logicExpression, SymbolTable symbols)
   commentString = "(* ";
   for(address <- addresses)
   {
-    if(!isSpecial(address))
+    if("" == systemVariable(address))
     {
       commentString += debugPrint("finding data for <address>:","<trim(retrieveComment(address, symbols))> ");
+    }
+    else
+    {
+      commentString += "SystemVariable";
     }    
   }
   return commentString + "*)";  
