@@ -18,7 +18,8 @@ import utility::StringUtility;
 
 import vis::ParseTree;
 
-public map[str,str] systemVariables = ("0.1" : "TRUE",
+// Those variables are not declared, but are provided by the Framework the code is entered into 
+public map[str,str] systemVariables = ("0.1" : "AlwaysOne",
                                        "0.2" : "SUPPLY_ERROR", 
                                        "0.3" : "_CLOCK_10ms",
                                        "1.0" : "_CLOCK_100ms",
@@ -98,6 +99,12 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
       <declaration, statements> = evaluateTrigger(B, symbols);
       variableList += declaration;
       programLines += statements;
+    }
+    
+    case NopBlock NB:
+    {
+      includedLines += extractSize(NB);
+      programLines += ["(* <NB> *)", "; (* DoNothing *)", "  "];
     }
     
   }
