@@ -72,7 +72,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     {
       if(hasOpenCondition) 
       {
-        progamLines = closeIf(programLines);
+        programLines = closeIf(programLines);
         hasOpenCondition = false;        
       }
       includedLines += extractSize(LC);      
@@ -103,6 +103,7 @@ Statements closeIf(Statements programLines)
     programLines = delete(programLines, size(programLines)-1); 
   }        
   programSize = size(programLines);
+  
   for(line <- [1..programSize])
   {
     if(startsWith(programLines[programSize-line], "IF "))
