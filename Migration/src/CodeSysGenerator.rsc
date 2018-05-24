@@ -151,11 +151,17 @@ tuple[str declaration, list[str] statements] evaluateTrigger(BitTrigger B, Symbo
   }
   
   clkExp = trim("<logicExpression>");
-  special = specialVariable(trim("<logicExpression>"));
+  debugPrint("Evaluating CLK: --|<clkExp>|---");
+  special = specialVariable(clkExp);
   if(!isEmpty(special))  
   {
     clkExp = special;
+  }
+  else if(contains(clkExp, symbols))
+  {
+    clkExp = retrieveVariableName(clkExp, symbols);
   }    
+        
   statements += formatName(variableInfo.name);
   statements += "(";
   statements += "  CLK := <clkExp>, <formatComment(logicExpression, symbols)>";
@@ -211,6 +217,7 @@ Statements extractStatements(AssignValue A, SymbolTable symbols)
     debugPrint("Evaluating <index>");
     statements += evaluateAssign(symbols, sourceAddresses[index], targetAddresses[index]);
   }
+  statements += "  "; 
   return statements;
 }
 
@@ -241,6 +248,7 @@ Statements extractStatements(AssignConstant A, SymbolTable symbols)
   {
     statements += evaluateAssign(symbols, address, constantValue);  
   }
+  statements += "  "; 
   return statements;
 }
 
@@ -279,7 +287,7 @@ Statements evaluateAssign(SymbolTable symbols, str address, int constantValue)
       variableName = retrieveVariableName(bitAddress, symbols);
       println(variableName);
       statements += "<variableName> := <toUpperCase("<getBit(constantValue, lastInteger(bitAddress))>")> ; (* <retrieveComment(variableName, symbols)> *)";
-    }
+    }    
     return statements;
   }
   else
