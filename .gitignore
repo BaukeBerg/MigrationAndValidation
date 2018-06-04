@@ -57,3 +57,6 @@ Codesys/PC20.SDB
 Codesys/PC20.ASD
 Codesys/PC20.SYM
 Codesys/PC2000002ed3r.ECI
+Codesys/PC20.ASD
+*.SDB
+*.SYM
