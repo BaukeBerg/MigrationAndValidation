@@ -52,3 +52,8 @@ Migration/src/generated
 doxygen
 doxyOutput
 PC20Data/OPC_philips-p8-pc20-manual.pdf
+Codesys/PC20.ASD
+Codesys/PC20.SDB
+Codesys/PC20.ASD
+Codesys/PC20.SYM
+Codesys/PC2000002ed3r.ECI
