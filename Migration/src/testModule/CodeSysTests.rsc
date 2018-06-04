@@ -82,6 +82,8 @@ test bool testCompleteProgram() = testGenerating("DR_TOT_3.compiled");
 
 // Small parts
 test bool testFirstOneHundred() = testGenerating("first100.compiled");
+test bool testFirstTwoHundred() = testGenerating("first200.compiled");
+test bool testFirstFiveHundred() = testGenerating("first500.compiled");
 
 bool testGenerating(str inputFile)
 {

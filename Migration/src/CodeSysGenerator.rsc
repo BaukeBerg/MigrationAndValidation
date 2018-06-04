@@ -45,7 +45,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
   {
     case AssignConstant A:
     {
-      includedLines += extractSize(A);
+      includedLines += extractSize(A);      
       programLines += extractStatements(A, symbols);
     }
     
@@ -65,6 +65,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     
     case CompareValue CV:
     {
+      debugPrint("CompareValue");
       includedLines += extractSize(CV);
       programLines += extractStatements(CV, symbols);
     }
@@ -273,7 +274,7 @@ Statements extractStatements(AssignConstant A, SymbolTable symbols)
   constantValue = -1;
   statements = ["(* <A> *)"];
   addresses = [];
-  debugPrint("Generating asssing <A>");
+  debugPrint("Generating assign <A>");
   visit(A)
   {
     case ConstantValue C:
@@ -339,6 +340,7 @@ Statements extractStatements(AssignValue A, SymbolTable symbols)
 
 Statements extractStatements(CompareValue compare, SymbolTable symbols)
 {
+  debugPrint("Evaluation compare: --|<compare>|--");
   sourceAddresses = [];
   targetAddresses = [];  
   visit(compare)
@@ -368,9 +370,17 @@ Statements extractStatements(CompareValue compare, SymbolTable symbols)
   statements = [];
   for(index <- [0..size(sourceAddresses)])
   {
-    debugPrint("Evaluating <index>");
-    statements += "<retrieveVariableName(sourceAddresses[index], symbols)> = <retrieveVariableName(targetAddresses[index], symbols)>";
+    debugPrint("Evaluating compare <index>");
+    str prefix = "  IF";
+    if(index != 0) 
+    {
+      prefix = "AND";
+    }         
+    statements += "<prefix> (<retrieveVariableName(sourceAddresses[index], symbols)> = <retrieveVariableName(targetAddresses[index], symbols)>)";
   }
+  statements += ["THEN"];
+  statements += ["  ; (* Generator line 376; *)"];
+  statements += ["END_IF;"];
   statements += "  "; 
   return statements;
 }
@@ -404,13 +414,14 @@ Statements evaluateAssign(SymbolTable symbols, str sourceAddress, str targetAddr
 {
   sourceName = retrieveVariableName(sourceAddress, symbols);
   targetName = retrieveVariableName(targetAddress, symbols);
-  return["<targetName> := <sourceName>; (* <retrieveComment(sourceAddress, symbols)> ==\>\> <retrieveComment(targetAddress, symbols)> *)"];   
+  return["<targetName> := <sourceName> ; (* <retrieveComment(sourceAddress, symbols)> ==\>\> <retrieveComment(targetAddress, symbols)> *)"];   
 }
 
 Statements evaluateAssign(SymbolTable symbols, str address, int constantValue)
 {
   if(true == isBoolean(address, symbols))
   {
+    debugPrint("Boolean address <address>");
     Statements statements = [];
     for(bitAddress <- retrieveAddressList(address, symbols))
     {
@@ -422,8 +433,8 @@ Statements evaluateAssign(SymbolTable symbols, str address, int constantValue)
   }
   else
   {
+    debugPrint("Integer address <address>");
     variableName = retrieveVariableName(address, symbols);
-    println(variableName);
     return ["<variableName> := <constantValue> ; (* <retrieveComment(variableName, symbols)> *)"];
   }
 }
