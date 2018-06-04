@@ -143,14 +143,14 @@ lexical ComposedLabel = Label ":" LineNumber NewLine? !>> "\r" ;
 start syntax PlcSymbols = PlcSymbol+ ;
 
 syntax PlcSymbol = Declaration
-                 | UnreferencedDeclaration
+                 | UnnamedDeclaration
                  | PdsComment
                  | NewLine           
                   ; 
 
 lexical Declaration = VariableName WhiteSpace+ "=" Address ;
 lexical NewLine = "\r\n";
-lexical UnreferencedDeclaration = "=" Address ;
+lexical UnnamedDeclaration = "=" Address ;
 
 // This block defines the syntax for PDS5 source files
 

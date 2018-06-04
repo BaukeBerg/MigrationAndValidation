@@ -81,7 +81,7 @@ SymbolTable generateSymbolTable(str fileName)
       unnamed = false;
       symbolTable += processDeclaration(D);      
     }
-    case UnreferencedDeclaration UD:
+    case UnnamedDeclaration UD:
     {
       unnamed = true;
       addressName = replaceAll(trim("<UD>"), ".", "_");
