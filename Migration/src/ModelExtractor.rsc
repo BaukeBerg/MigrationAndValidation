@@ -77,7 +77,7 @@ GraphicalModel generateFigures(Tree parseTree, list[str] sourceLines)
         sourceFigures += generateLine("LightGrey", generateSuffix(E, sourceLines));
       }
     }
-    case ExtractedCodeBlock ECB:
+    case ComposedCodeBlock ECB:
     {
       debugPrint("Hitted an ECB");
       str colorName = "SandyBrown";
@@ -336,8 +336,8 @@ CodeBlock composeBlock(CompiledInstruction* pre, CompiledInstruction* post)
     strFirst = parse(#FiveDigits, firstLine);
     strLast = parse(#FiveDigits, lastLine);
     description = parse(#Description, blockType);
-    codeBlock = (ExtractedCodeBlock)`++++CodeBlock: <FiveDigits strFirst>-<FiveDigits strLast> is <Description description>`;
-    return (CodeBlock)`<CompiledInstruction* pre><ExtractedCodeBlock codeBlock><CompiledInstruction* post>`;
+    codeBlock = (ComposedCodeBlock)`++++CodeBlock: <FiveDigits strFirst>-<FiveDigits strLast> is <Description description>`;
+    return (CodeBlock)`<CompiledInstruction* pre><ComposedCodeBlock codeBlock><CompiledInstruction* post>`;
   }
   catch:
   {

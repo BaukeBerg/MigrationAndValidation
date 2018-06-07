@@ -31,11 +31,11 @@ syntax CompiledInstruction = empty:EmptyLine
                            | SkipInstruction                            
                            | io:IOInstruction
                            | SingleInstruction // Instruction without address
-                           | ExtractedCodeBlock              
+                           | ComposedCodeBlock              
                            | Error            
                            ;
                            
-lexical ExtractedCodeBlock = ReadValue
+lexical ComposedCodeBlock = ReadValue
                            | WriteValue
                            | CompareValue
                            | NopBlock
