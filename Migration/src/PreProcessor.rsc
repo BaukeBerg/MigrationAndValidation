@@ -24,12 +24,13 @@ Tree preprocess(Tree tree) = innermost visit(tree)
     nopBlock = composeNopBlock(composeSourceRange(firstInstruction, lastInstruction));
     insert(CodeBlock)`<CompiledInstruction* pre><NopBlock nopBlock><CompiledInstruction* post>`;    
   } 
-  /// Fetch
+  
+  /// ReadValue
   case (CodeBlock)`<CompiledInstruction* pre><FetchInstruction fetch><CompiledInstruction *post>`:
   {
     statements = ["<fetch>"];
     while((CodeBlock)`<FetchInstruction fetch><CompiledInstruction *newPost>`
-      := (CodeBlock)`<CompiledInstruction *post>`) // => 'Code ... post> => Can be changed to just 'post' 
+      := (CodeBlock)`<CompiledInstruction *post>`) 
     {
       post = newPost;
       statements += ["<fetch>"];
@@ -38,7 +39,7 @@ Tree preprocess(Tree tree) = innermost visit(tree)
     insert (CodeBlock)`<CompiledInstruction* pre><ReadValue readValue><CompiledInstruction *post>`;
   }
  
-  /// FetchConstant
+  /// AssignConstant
   case (CodeBlock)`<CompiledInstruction* pre><FetchConstantInstruction fetch><WriteValue store><CompiledInstruction *post>`:
   {
     try
@@ -53,7 +54,7 @@ Tree preprocess(Tree tree) = innermost visit(tree)
     }    
   }
     
-  /// Store
+  /// WriteValue
   case (CodeBlock)`<CompiledInstruction* pre><StoreValue store><CompiledInstruction *post>`:
   {
     statements = ["<store>"];
@@ -137,7 +138,7 @@ Tree preprocess(Tree tree) = innermost visit(tree)
     insert((CodeBlock)`<CompiledInstruction* pre><BitTrigger bitTrigger><CompiledInstruction *post>`);
   } 
   
-  /// Assign
+  /// AssignValue
   case (CodeBlock)`<CompiledInstruction *pre><ReadValue read><WriteValue write><CompiledInstruction *post>`:
   {
     assignValue = composeAssign(read, write);
