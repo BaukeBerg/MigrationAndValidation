@@ -60,3 +60,6 @@ Codesys/PC2000002ed3r.ECI
 Codesys/PC20.ASD
 *.SDB
 *.SYM
+Codesys/PC2000002ed3r.ci
+Codesys/PC20.wibu.ini
+Codesys/DEFAULT.DFR
