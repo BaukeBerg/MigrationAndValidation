@@ -46,18 +46,20 @@ lexical ComposedCodeBlock = ReadValue
                            | LogicCondition
                            | TriggerBlock
                            | BitTrigger
-                           | AssignBooleanExpression                         
+                           | AssignBooleanExpression
+                           | IOSynchronization                         
                            ;
 
 lexical Error = "ERROR-PARSING-BLOCK";               
                            
 lexical ReadValue = EcbPrefix "ReadValue " AddressRange ;
 lexical WriteValue = EcbPrefix "WriteValue " AddressRange ;
-lexical CompareValue = EcbPrefix "CompareValue " (SourceRange | (SourceRange " to " TargetRange));
+lexical CompareValue = EcbPrefix "CompareValue " CompareStatement;
 lexical AssignValue = EcbPrefix "AssignValue " SourceRange " to " TargetRange ;
 lexical AssignBooleanExpression = EcbPrefix "AssignBooleanExpression " LogicExpression "to " BitAddress+ ;
+lexical IOSynchronization = EcbPrefix "IOSynchronization " FiveDigits " to " FiveDigits;
 lexical AssignConstant = EcbPrefix "AssignConstant " ConstantValue " to " AddressRange ;
-lexical AndEqual = EcbPrefix "AndEqual " SourceRange " to " TargetRange;
+lexical AndEqual = EcbPrefix "AndEqual " SourceRange " to " TargetRange " =\> " BitAddress;
 lexical LogicCondition = EcbPrefix "LogicCondition " LogicExpression;
 lexical OtherBlock = EcbPrefix Description;
 lexical NopBlock = EcbPrefix "NopBlock" ;
@@ -67,6 +69,7 @@ lexical TriggerTarget = BitAddress ;
 lexical TriggerExpression = TriggerResult "=\> " LogicExpression ;
 lexical TriggerResult = BitAddress;
 
+lexical CompareStatement = (SourceRange | (SourceRange " to " TargetRange));
 lexical SourceRange = AddressRange;
 lexical TargetRange = AddressRange;
 lexical LogicExpression = LogicStatement+ ;
