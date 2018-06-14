@@ -47,7 +47,8 @@ lexical ComposedCodeBlock = ReadValue
                            | TriggerBlock
                            | BitTrigger
                            | AssignBooleanExpression
-                           | IOSynchronization                         
+                           | IOSynchronization    
+                           | IfBlock                     
                            ;
 
 lexical Error = "ERROR-PARSING-BLOCK";               
@@ -60,6 +61,7 @@ lexical AssignBooleanExpression = EcbPrefix "AssignBooleanExpression " LogicExpr
 lexical IOSynchronization = EcbPrefix "IOSynchronization " FiveDigits " to " FiveDigits;
 lexical AssignConstant = EcbPrefix "AssignConstant " ConstantValue " to " AddressRange ;
 lexical AndEqual = EcbPrefix "AndEqual " SourceRange " to " TargetRange " =\> " BitAddress;
+lexical IfBlock = EcbPrefix "IfBlock " LogicExpression "size " JumpSize;
 lexical LogicCondition = EcbPrefix "LogicCondition " LogicExpression;
 lexical OtherBlock = EcbPrefix Description;
 lexical NopBlock = EcbPrefix "NopBlock" ;
@@ -75,6 +77,7 @@ lexical TargetRange = AddressRange;
 lexical LogicExpression = LogicStatement+ ;
 lexical LogicStatement = LogicOperation? BitAddress ;
 lexical LogicOperation = "NOT " | "AND " | "OR " | "AND NOT " | "OR NOT " ;
+lexical JumpSize = FiveDigits;
 
 lexical EcbPrefix = ColorName "CodeBlock: " SourceLineRange " is ";
 lexical SourceLineRange = FiveDigits "-" FiveDigits ; 

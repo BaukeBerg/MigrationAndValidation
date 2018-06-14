@@ -12,6 +12,13 @@ import utility::StringUtility;
 
 Tree preprocess(Tree tree) = innermost visit(tree)
 {
+  // Toss away empty lines
+  case (CodeBlock) `<CompiledInstruction* pre><EmptyLine _><CompiledInstruction *post>`:
+  {
+    debugPrint("Removing empty line");
+    insert (CodeBlock)`<CompiledInstruction* pre><CompiledInstruction* post>`;
+  }
+
   /// NopBlock
   case (CodeBlock) `<CompiledInstruction* pre><SkipInstruction firstNop><CompiledInstruction* post>`:
   {
@@ -20,7 +27,7 @@ Tree preprocess(Tree tree) = innermost visit(tree)
     {
       lastInstruction = lastNop;
       post = newPost;
-    }
+    }    
     nopBlock = composeNopBlock(composeSourceRange(firstInstruction, lastInstruction));
     insert(CodeBlock)`<CompiledInstruction* pre><NopBlock nopBlock><CompiledInstruction* post>`;    
   } 
@@ -169,6 +176,13 @@ Tree preprocess(Tree tree) = innermost visit(tree)
     insert((CodeBlock)`<CompiledInstruction* pre><AssignBooleanExpression boolExpression><CompiledInstruction *post>`);
   }
   
+  /// IfBlock => Condition with a JUMP 
+  case (CodeBlock)`<CompiledInstruction *pre><LogicCondition logic><JumpInstruction jump><CompiledInstruction *post>`:
+  {
+    debugPrint("Found an IF-block");
+    ifBlock = parse(#IfBlock, debugPrint("If Block:", "<composeEcbPrefix("Brown", composeSourceRange(logic, jump))>IfBlock <logicExpression(logic)> size <trim(jumpSize(jump))>"));
+    insert((CodeBlock)`<CompiledInstruction* pre><IfBlock ifBlock><CompiledInstruction *post>`);
+  }  
 };
 
 // (partial) model representations
@@ -201,6 +215,31 @@ AssignBooleanExpression composeBooleanExpression(LogicCondition condition, list[
   }
   total = debugPrint("<trim("<composeEcbPrefix("Yellow", sourceRange)>AssignBooleanExpression <condition>")> to <bitInfo>");
   return parse(#AssignBooleanExpression, total);
+}
+
+str logicExpression(&T logicItem)
+{
+  visit(logicItem)
+  {
+    case LogicExpression LE:
+    {
+      return "<LE>";
+    } 
+  }
+  return "NO_LOGIC_EXPRESSION";
+}
+
+str jumpSize(&T jumpInstruction)
+{
+  visit(jumpInstruction)
+  {
+    case WordAddress WA:
+    {
+      return "<WA>";
+    }
+  }
+  handleError("No size found");
+  return "NO_SIZE_IN_JUMP";
 }
 
 str compareRange(CompareValue compareValue)
