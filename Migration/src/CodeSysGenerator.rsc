@@ -45,73 +45,97 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
   {
     case EmptyLine EL:
     {
-      programLines += "(* <EL> *)";
+      ;
+      // programLines += "(* <removeNewLines("<EL>")> *)";
+    }
+    
+    case IOSynchronization IO:
+    {
+      programLines += defaultFormat(IO);
     }
     
     case ExecuteInstruction EL:
     {
-      programLines += "(* <EL> *)";
+      programLines += defaultFormat(EL);
     }
     
     case ConditionInstruction EL:
     {
-      programLines += "(* <EL> *)";
+      programLines += defaultFormat(EL);
     }
     
     case SkipInstruction EL:
     {
-      programLines += "(* <EL> *)";
+      programLines += defaultFormat(EL);
     }
     
     case IOInstruction EL:
     {
-      programLines += "(* <EL> *)";
+      programLines += defaultFormat(EL);
     }
     
     case SingleInstruction EL:
     {
-      programLines += "(* <EL> *)";
+      programLines += defaultFormat(EL);
     }
     
     case ConditionInstruction EL:
     {
-      programLines += "(* <EL> *)";
+      programLines += defaultFormat(EL);
     }
     
     case Error EL:
     {
-      programLines += "(* <EL> *)";
+      programLines += defaultFormat(EL);
     }  
     
     /// Composed instructions, used for pattern matching   
     case ReadValue EL:
     {
-      programLines += "(* <EL> *)";
+      programLines += defaultFormat(EL);
     } 
     
     case WriteValue EL:
     {
-      programLines += "(* <EL> *)";
+      programLines += defaultFormat(EL);
     } 
     
     case OtherBlock EL:
     {
-      programLines += "(* <EL> *)";
+      programLines += defaultFormat(EL);
     }   
     
     case TriggerBlock EL:
     {
-      programLines += "(* <EL> *)";
+      programLines += defaultFormat(EL);
     } 
     
-    case AndEqual EL:
+    case AndEqual EL:      
     {
-      programLines += "(* <EL> *)";
-    }         
+      debugPrint("Composing AndEqual");
+      str target = "UNDEFINED_ADDRESS";
+      visit(EL)
+      {
+        case BitAddress BA:
+        {
+          target = "<BA>";
+        }
+      }
+      programLines += ["(* <removeNewLines("<EL>")> *)","(* Target variable comment: <retrieveComment(target, symbols)> *)"];
+      statements = extractStatements(EL, symbols);
+      programLines += ["<retrieveVariableName(target, symbols)> := <statements[0]>"];
+      if(1 < size(statements))
+      {
+        programLines += statements[1..];
+      } 
+      programLines += "; (* End of AndEqual *)";
+      programLines += "  ";
+      includedLines += extractSize(EL);
+    }                
 
     case AssignBooleanExpression EL:
     {
-      programLines += "(* <EL> *)";
+      programLines += defaultFormat(EL);
     }         
         
     case AssignConstant A:
@@ -173,6 +197,9 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
   debugPrint("Total line amount included: <includedLines>");
   return <variableList,programLines>;
 }
+
+str defaultFormat(&T statement) =  "; (* Unexpanded: <removeNewLines("<statement>")> *)";
+str removeNewLines(str inputString) = replaceAll(replaceAll(inputString, "\r", ""), "\n", "");
 
 Statements closeIf(Statements programLines)
 {
@@ -409,7 +436,7 @@ Statements extractStatements(AssignValue A, SymbolTable symbols)
   return statements;
 }
 
-Statements extractStatements(CompareValue compare, SymbolTable symbols)
+Statements extractStatements(&T compare, SymbolTable symbols)
 {
   debugPrint("Evaluation compare: --|<compare>|--");
   sourceAddresses = [];
@@ -438,21 +465,17 @@ Statements extractStatements(CompareValue compare, SymbolTable symbols)
       }
     }
   }
-  statements = [];
+  Statements statements = [];
+  str prefix = "";
   for(index <- [0..size(sourceAddresses)])
   {
-    debugPrint("Evaluating compare <index>");
-    str prefix = "  IF";
-    if(index != 0) 
+    if(index != 0)
     {
-      prefix = "AND";
-    }         
-    statements += "<prefix> (<retrieveVariableName(sourceAddresses[index], symbols)> = <retrieveVariableName(targetAddresses[index], symbols)>)";
-  }
-  statements += ["THEN"];
-  statements += ["  ; (* Generator line 376; *)"];
-  statements += ["END_IF;"];
-  statements += "  "; 
+      prefix = "  AND";
+    }    
+    statements += "<prefix> (<retrieveVariableName(sourceAddresses[index], symbols)> = <retrieveVariableName(targetAddresses[index], symbols)>) (* (<retrieveComment(sourceAddresses[index], symbols)> = <retrieveComment(targetAddresses[index], symbols)>) *)";
+  }  
+  debugPrint("Returning result");
   return statements;
 }
 
