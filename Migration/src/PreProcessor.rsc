@@ -39,6 +39,14 @@ Tree preprocess(Tree tree) = innermost visit(tree)
     insert (CodeBlock)`<CompiledInstruction* pre><ReadValue readValue><CompiledInstruction *post>`;
   }
  
+  /// IOSynchronization
+  case (CodeBlock)`<CompiledInstruction* pre><IOInstruction lstio><IOInstruction endio><CompiledInstruction *post>`:
+  {
+    debugPrint("Found an IO sync");
+    ioSynchronization = composeIOSynchronization(["<lstio>", "<endio>"]);
+    insert (CodeBlock)`<CompiledInstruction* pre><IOSynchronization ioSynchronization><CompiledInstruction *post>`;
+  }
+ 
   /// AssignConstant
   case (CodeBlock)`<CompiledInstruction* pre><FetchConstantInstruction fetch><WriteValue store><CompiledInstruction *post>`:
   {
@@ -89,17 +97,17 @@ Tree preprocess(Tree tree) = innermost visit(tree)
     insert (CodeBlock)`<CompiledInstruction* pre><CompareValue compareValue><CompiledInstruction *post>`;
   }
   
-  // AndEqual: AND 0.1, Compare, store to B, AND B == AND (Compare)
+  // AndEqual => Rename to ' Bit Assign' 
   case (CodeBlock)`<CompiledInstruction* pre><
-  SourcePrefix spx>16 00000.1<WhiteSpace ws><NewLine nl><
-  CompareValue compare><
-  StoreBit store><
-  AndInstruction readData><
-  CompiledInstruction *post>`:
+    LogicCondition logic><
+    CompareValue compare><
+    StoreBit store><    
+    CompiledInstruction *post>`:
   {
-    if(bitAddress(store) == bitAddress(readData))
+    debugPrint("Found Assign Bit statement");
+    if("00000.1" == bitAddress(logic))
     {
-      andEqual = composeAndEqual(composeSourceRange(spx, readData), compare);
+      andEqual = composeAndEqual(composeSourceRange(logic, store), compare, store);
       insert((CodeBlock)`<CompiledInstruction* pre><AndEqual andEqual><CompiledInstruction *post>`);
     }
     else
@@ -167,10 +175,11 @@ Tree preprocess(Tree tree) = innermost visit(tree)
 ReadValue composeReadValue(list[str] statements) = parse(#ReadValue, "<composeEcbPrefix("Chocolate", statements)>ReadValue <addressRange(statements)>");
 WriteValue composeWriteValue(list[str] statements) = parse(#WriteValue, "<composeEcbPrefix("Lime", statements)>WriteValue <addressRange(statements)>");
 CompareValue composeCompareValue(list[str] statements) = parse(#CompareValue, "<composeEcbPrefix("LightSeaGreen", statements)>CompareValue <addressRange(statements)>");
+IOSynchronization composeIOSynchronization(list[str] statements) = parse(#IOSynchronization, debugPrint("Composed IO sync: ", "<composeEcbPrefix("Brown", statements)>IOSynchronization <ioRange(statements)>"));
 CompareValue composeCompareValue(ReadValue readValue, CompareValue compareValue) = parse(#CompareValue, "<composeEcbPrefix("LightSeaGreen", composeSourceRange(readValue, compareValue))>CompareValue <addressRange(readValue, compareValue)>");
 AssignValue composeAssign(ReadValue readValue, WriteValue writeValue) = parse(#AssignValue, "<composeEcbPrefix("Lime", composeSourceRange(readValue, writeValue))>AssignValue <addressRange(readValue, writeValue)>");
 AssignConstant composeAssignConstant(FetchConstantInstruction readConstant, WriteValue writeValue) = parse(#AssignConstant, "<composeEcbPrefix("Lime", composeSourceRange(readConstant, writeValue))>AssignConstant <getAddress(readConstant)> to <addressRange(writeValue)>");
-AndEqual composeAndEqual(SourceRange programLines, CompareValue compare) = parse(#AndEqual, "<composeEcbPrefix("Tomato", programLines)>AndEqual <addressRange(compare)> to <addressRange(compare)>"); 
+AndEqual composeAndEqual(SourceRange programLines, CompareValue compare, StoreBit result) = parse(#AndEqual, debugPrint("AndEqual:", "<composeEcbPrefix("Tomato", programLines)>AndEqual <compareRange(compare)> =\> <bitAddress(result)> ")); 
 NopBlock composeNopBlock(SourceRange programLines) = parse(#NopBlock, "<composeEcbPrefix("LightGrey", programLines)>NopBlock");
 LogicCondition composeLogicCondition(list[LogicInstruction] statements) = parse(#LogicCondition, "<composeEcbPrefix("Tomato", statements)>LogicCondition <formatLogic(statements)>");
 TriggerBlock composeTrigger(LogicCondition condition, EventInstruction trigger) = parse(#TriggerBlock, "<composeEcbPrefix("OliveDrab", composeSourceRange(condition, trigger))>Trigger <bitAddress(trigger)> =\> <extractCondition(condition)>");
@@ -192,6 +201,18 @@ AssignBooleanExpression composeBooleanExpression(LogicCondition condition, list[
   }
   total = debugPrint("<trim("<composeEcbPrefix("Yellow", sourceRange)>AssignBooleanExpression <condition>")> to <bitInfo>");
   return parse(#AssignBooleanExpression, total);
+}
+
+str compareRange(CompareValue compareValue)
+{
+  visit(compareValue)
+  {
+    case CompareStatement CS:
+    {
+      return "<CS>";
+    }    
+  }
+  return handleError("Unable to find info for comparison");
 }
 
 str composeBitTrigger(TriggerBlock trigger, str address)
@@ -280,4 +301,4 @@ str formatLogic(list[LogicInstruction] statements)
   return totalCondition;
 }
 
-
+str ioRange(list[str] statements) = "00000 to 12345";
