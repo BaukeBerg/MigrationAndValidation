@@ -198,11 +198,19 @@ str unknownIdentifier(&T identifier)
   return "UNKNOWN_IDENTIFIER";
 }
 
-bool contains(str address, SymbolTable table) = [] != retrieveAddressList(address, table);
+bool contains(str address, SymbolTable table)
+{
+  presentDeclarations = retrieveAddressList(address, table);
+  if(contains(address, "."))
+  {
+    return address in presentDeclarations;
+  }
+  return 0 < size(presentDeclarations);
+}
 list[str] retrieveAddressList(str address, SymbolTable table)
 {
   symbols = [];
-  targetAddress = wordAddress(stripLeading(address, "0"));
+  targetAddress = debugPrint("Scanning for:", wordAddress(clipAndStrip(address)));
   for(symbol <- table)
   {
     actualAddress = wordAddress(symbol.address);

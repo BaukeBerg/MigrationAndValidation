@@ -22,6 +22,12 @@ test bool retrieveCommentByLabel() = expectEqual("!regeneratiefase 9", retrieveC
 test bool testContainsPartial() = expectTrue(contains("00320", symbols));
 test bool testContainsBit() = expectTrue(contains("00320.1", symbols));
 
+SymbolTable singleSymbol = [<"SomeAddress", "0.1", "Single Sample", "BOOL">];
+
+test bool testZeroBug() = expectTrue(contains("0.1", singleSymbol), "Address zero was not detected, even if present");
+test bool testBitBug() = expectFalse(contains("0.2", singleSymbol), "A bit not present should be filterd out");
+
+
 test bool testBooleans() = expectTrue(isBoolean("00320", symbols), "Address 320 is divided by booleans");
 test bool testUnusedBitAddress() = expectFalse(isBoolean("00079", symbols), "An unused address should return false");
 test bool testWordAddress() = expectFalse(isBoolean("01218", symbols), "A word-based address should return false");
