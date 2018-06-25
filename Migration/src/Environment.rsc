@@ -210,7 +210,7 @@ bool contains(str address, SymbolTable table)
 list[str] retrieveAddressList(str address, SymbolTable table)
 {
   symbols = [];
-  targetAddress = debugPrint("Scanning for:", wordAddress(clipAndStrip(address)));
+  targetAddress = debugPrint("Scanning for:", wordAddress(clipAndStrip(address)), printSymbolInfo);
   for(symbol <- table)
   {
     actualAddress = wordAddress(symbol.address);
