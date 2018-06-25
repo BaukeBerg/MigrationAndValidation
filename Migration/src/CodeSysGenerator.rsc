@@ -19,14 +19,14 @@ import utility::StringUtility;
 import vis::ParseTree;
 
 // Those variables are not declared, but are provided by the Framework the code is entered into 
-public map[str,str] systemVariables = ("0.1" : "AlwaysOne",
-                                       "0.2" : "SUPPLY_ERROR", 
-                                       "0.3" : "_CLOCK_10ms",
-                                       "1.0" : "_CLOCK_100ms",
-                                       "1.1" : "_CLOCK_1s",
-                                       "1.2" : "_CLOCK_10s",
-                                       "1.3" : "_CLOCK_60s");
-
+public SymbolTable systemVariables = [<"AlwaysOne", "0.1", "Constant with value TRUE", "BOOL">,
+                               <"SUPPLY_ERROR", "0.2", "Bit Flag indicating power faiture", "BOOL">,
+                               <"_CLOCK_10ms", "0.3", "10ms interval with 50 percent duty cycle", "BOOL">,
+                               <"_CLOCK_100ms", "1.0", "100ms interval with 50 percent duty cycle", "BOOL">,
+                               <"_CLOCK_1s", "1.1", "1s interval with 50 percent duty cycle", "BOOL">,
+                               <"_CLOCK_10s", "1.2", "10s interval with 50 percent duty cycle", "BOOL">,
+                               <"_CLOCK_60s", "1.3", "60s interval with 50 percent duty cycle", "BOOL">];
+                                
 void generateFile(str outputPath, Tree plcModel, SymbolTable symbols)
 {
   PlcProgram program = extractInformation(plcModel, symbols);
@@ -38,7 +38,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
   includedLines = 0;
   hasOpenCondition = false;
   programLines = [];
-  endIfPositions = [];
+  endIfPositions = [];  
   Variables variableList = convertSymbols(symbols);
   actualProgramCount = 0;
   //variableList = simplifyVariables(variableList); => Do this with rewrite of symbols
@@ -313,6 +313,22 @@ Statements closeIf(Statements programLines)
   return programLines;  
 }
 
+SymbolTable addSystemVariables(SymbolTable symbols)
+{
+  SymbolTable resultTable = systemVariables; 
+  for(symbol <- symbols)
+  {
+    debugPrint("Scanning: <symbol.address>");
+    if(contains(symbol.address, systemVariables))
+    {
+      debugPrint("Skipping: <symbol>");
+      continue;
+    }
+    resultTable += symbol;    
+  }
+  return resultTable;
+}
+
 SymbolTable addUndeclaredVariables(SymbolTable symbols, Tree parsedData)
 {
   debugPrint("starting visit");
@@ -323,17 +339,17 @@ SymbolTable addUndeclaredVariables(SymbolTable symbols, Tree parsedData)
       varName = clipAndStrip("<WA>");
       if(false == contains(varName, symbols))
       { 
-        debugPrint("unable to find --|<varName>|--");
+        debugPrint("unable to find WORD: --|<varName>|--");
         symbols += composeUnnamedDeclaration(varName, "INT");
       }
       
     }
     case BitAddress BA:
     {   
-      varName = clipAndStrip("<BA>");      
+      varName = clipAndStrip("<BA>");            
       if(false == contains(varName, symbols))
       { 
-        debugPrint("unable to find --|<varName>|--");
+        debugPrint("unable to find BIT --|<varName>|--");
         symbols += composeUnnamedDeclaration(varName, "BOOL");        
       }
       
@@ -419,33 +435,10 @@ str evaluateExpression(LogicExpression logic, SymbolTable symbols)
     }
     case BitAddress BA:
     {
-      localExpression = trim("<BA>");
-      debugPrint("Evaluating logic: --|<localExpression>|---");
-      special = systemVariable(localExpression);
-      if(!isEmpty(special))  
-      {
-        localExpression = special;
-      }
-      else if(contains(localExpression, symbols))
-      {
-        localExpression = retrieveVariableName(localExpression, symbols);
-      }
-      totalExpression += localExpression;      
+      totalExpression += retrieveVariableName(trim("<BA>"), symbols);      
     }
   }
   return totalExpression;
-}
-
-str systemVariable(str expToCheck)
-{
-  try
-  {
-    return systemVariables[clipAndStrip(expToCheck)];
-  }
-  catch:
-  {  
-    return "";
-  }
 }
 
 Statements extractStatements(AssignConstant A, SymbolTable symbols)
@@ -568,14 +561,7 @@ str formatComment(LogicExpression logicExpression, SymbolTable symbols)
     case BitAddress BA:
     {
       address = clipAndStrip("<BA>");
-      if("" == systemVariable(address))
-      {
-        commentString += retrieveComment(address, symbols);
-      }
-      else
-      {
-        commentString += "SystemVariable";
-      }      
+      commentString += retrieveComment(address, symbols);
     }
     case LogicOperation LO:
     {
