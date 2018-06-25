@@ -48,10 +48,17 @@ lexical ComposedCodeBlock = ReadValue
                            | BitTrigger
                            | AssignBooleanExpression
                            | IOSynchronization    
-                           | IfBlock                     
+                           | IfBlock  
+                           | QuickJumpOut     
+                           | BlankAndNot              
                            ;
 
 lexical Error = "ERROR-PARSING-BLOCK";               
+
+// Speed optimizations, low level
+// Will be added as a ; (* <Name> *) to the generated code
+lexical QuickJumpOut = EcbPrefix "QuickJumpOut";
+lexical BlankAndNot = EcbPrefix "BlankAndNot";
                            
 lexical ReadValue = EcbPrefix "ReadValue " AddressRange ;
 lexical WriteValue = EcbPrefix "WriteValue " AddressRange ;
@@ -70,6 +77,8 @@ lexical BitTrigger = EcbPrefix "BitTrigger" TriggerTarget " by " TriggerExpressi
 lexical TriggerTarget = BitAddress ;
 lexical TriggerExpression = TriggerResult "=\> " LogicExpression ;
 lexical TriggerResult = BitAddress;
+
+
 
 lexical CompareStatement = (SourceRange | (SourceRange " to " TargetRange));
 lexical SourceRange = AddressRange;
