@@ -57,14 +57,14 @@ public AssignConstant constant = parse(#AssignConstant, constantString);
 public SymbolTable symbols = loadSymbols("DR_TOT_3");
 
 list[str] expectedResetBitStatements = ["ALARM01 := FALSE ; (* !spoeldruk te hoog *)",
-                                    "ALARM02 := FALSE ; (* !stuurlucht gestoord *)",
-                                    "ALARM03 := FALSE ; (* !stuurspanning gestoord *)",
-                                    "ALARM04 := FALSE ; (* !vuilwatertank bijna leeg *)"];
+                                        "ALARM02 := FALSE ; (* !stuurlucht gestoord *)",
+                                        "ALARM03 := FALSE ; (* !stuurspanning gestoord *)",
+                                        "ALARM04 := FALSE ; (* !vuilwatertank bijna leeg *)"];
                                     
 list[str] expectedResetValidStatements = ["ALARM05 := TRUE ; (* !vuilwatertank leeg *)",
-                                    "ALARM06 := FALSE ; (* !geleidbaarheid na spoelen *)",
-                                    "ALARM07 := TRUE ; (* !filtercapaciteit te laag *)",
-                                    "ALARM08 := FALSE ; (* !concentraat afvoer gestoord *)"];
+                                          "ALARM06 := FALSE ; (* !geleidbaarheid na spoelen *)",
+                                          "ALARM07 := TRUE ; (* !filtercapaciteit te laag *)",
+                                          "ALARM08 := FALSE ; (* !concentraat afvoer gestoord *)"];
                                          
 test bool testBitConversionWithZero() = expectEqual(expectedResetBitStatements, evaluateAssign(symbols, "00320", 0), "resetting bits word-wise must expand to bitwyse addressing");
 test bool testBitConversionWithValue() = expectEqual(expectedResetValidStatements, evaluateAssign(symbols, "00321", 5), "setting this value should set bit .1 and bit .3");
@@ -85,11 +85,17 @@ test bool testFirstOneHundred() = testGenerating("first100.compiled");
 test bool testFirstTwoHundred() = testGenerating("first200.compiled");
 test bool testFirstFiveHundred() = testGenerating("first500.compiled");
 
-bool testGenerating(str inputFile)
+public bool useCachedFile = false ; ///< Flag bit which enables / disables the caching mechanism
+
+bool testGenerating(str inputFile) = generateCodesysExport(inputFile);
+
+// This part should move to the CodeSysGenerator module.
+// Because it used the system variable list and handles all the processing steps
+bool generateCodesysExport(str inputFile)
 {
   Tree processedTree;
   procFile = generatedFile("<inputFile>.PreProc"); 
-  if(exists(procFile))
+  if(exists(procFile) && true == useCachedFile)
   {
     debugPrint("Using cached file");
     processedTree = parse(#start[PC20_Compiled], readFile(procFile));
@@ -98,6 +104,9 @@ bool testGenerating(str inputFile)
   {
     debugPrint("Parsing input file...");
     parsedData = parseCompiledFile(inputFile);
+    
+    debugPrint("Adding system variables");
+    symbols = addSystemVariables(symbols);
     debugPrint("Adding symbols");
     symbols = addUndeclaredVariables(symbols, parsedData);
     debugPrint("Preprocessing");
