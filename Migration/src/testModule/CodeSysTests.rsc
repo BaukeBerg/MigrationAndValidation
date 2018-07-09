@@ -78,12 +78,18 @@ test bool allSymbolDeclarations()
 Symbol triggerSymbol = <"TRIGGER_510.1", "00123.0", "- BDR0B23", "R_TRIG">;
 
 // Complete program
-test bool testCompleteProgram() = testGenerating("DR_TOT_3.compiled");
+
 
 // Small parts
 test bool testFirstOneHundred() = testGenerating("first100.compiled");
 test bool testFirstTwoHundred() = testGenerating("first200.compiled");
 test bool testFirstFiveHundred() = testGenerating("first500.compiled");
+test bool testFirstOneThousand() = testGenerating("first1000.compiled");
+test bool testFirstTwoThousand() = testGenerating("first2000.compiled");
+test bool testFirstFiveThousand() = testGenerating("first5000.compiled");
+test bool testFirstTenThousand() = testGenerating("first10000.compiled");
+
+test bool testCompleteProgram() = testGenerating("DR_TOT_3.compiled");
 
 public bool useCachedFile = false ; ///< Flag bit which enables / disables the caching mechanism
 

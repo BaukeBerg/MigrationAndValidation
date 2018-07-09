@@ -227,11 +227,18 @@ list[str] retrieveAddressList(str address, SymbolTable table)
 }    
 
 // Local optimization due to bad performance of the firstInteger() on loop based calls
+// This call takes nearly 50% of the time. Possible improvement
+// the Findfirst takes the longest time!
+// 45s total runtime
+// Moved to findLast => 40s total time
+// Approximately 450 000 calls for 500 lines of code.
+// Maybe this can be optimized?
 str wordAddress(str address)
 {
-  dotPos = findFirst(address, ".");
+  dotPos = findLast(address, ".");
   if(-1 != dotPos)
-  {
+  { 
+    debugPrint("dotPos: <dotPos>");
     return substring(address, 0, dotPos);
   }
   return address;    

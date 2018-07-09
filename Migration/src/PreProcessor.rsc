@@ -179,9 +179,27 @@ Tree preprocess(Tree tree) = innermost visit(tree)
   /// AssignValue
   case (CodeBlock)`<CompiledInstruction *pre><ReadValue read><WriteValue write><CompiledInstruction *post>`:
   {
+    visit(read)
+    {
+      case SourceRange SR:
+      {
+        visit(SR)
+        {
+          case FiveDigits FD:
+          {
+            if(contains("<FD>", "106"))
+            {
+              insert((CodeBlock)`<CompiledInstruction* pre><AssignSetpoint assignSetpoint><CompiledInstruction *post>`);   
+            }
+          }
+        }
+      } 
+    }
     assignValue = composeAssign(read, write);
     insert((CodeBlock)`<CompiledInstruction* pre><AssignValue assignValue><CompiledInstruction *post>`);  
   }
+  
+  
   
   /// AssignBooleanExpression
   case (CodeBlock)`<CompiledInstruction *pre><LogicCondition condition><AssignBit bit><CompiledInstruction *post>`:
