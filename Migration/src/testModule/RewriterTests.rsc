@@ -4,7 +4,7 @@ import EcbHandler;
 import Parser;
 import ParseTree;
 import PC20Syntax;
-import PreProcessor;
+import Rewriter;
 
 import utility::InstructionUtility;
 import utility::TestUtility;

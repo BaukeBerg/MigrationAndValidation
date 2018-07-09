@@ -8,7 +8,7 @@ import PlcModel;
 import Parser;
 import ParseTree;
 import PC20Syntax;
-import PreProcessor;
+import Rewriter;
 import String;
 
 import vis::Figure;

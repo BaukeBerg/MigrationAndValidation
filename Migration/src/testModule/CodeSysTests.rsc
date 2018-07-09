@@ -10,7 +10,7 @@ import IO;
 import ParseTree;
 import Parser;
 import ParserBase;
-import PreProcessor;
+import Rewriter;
 import PC20Syntax;
 import Environment;
 import String;

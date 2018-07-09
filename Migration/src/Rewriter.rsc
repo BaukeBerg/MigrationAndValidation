@@ -1,4 +1,4 @@
-module PreProcessor
+module Rewriter
 
 import DataTypes;
 import EcbHandler;
