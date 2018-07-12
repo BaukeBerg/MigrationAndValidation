@@ -4,6 +4,7 @@ import DateTime;
 import FileLocations;
 import IO;
 import List;
+import String;
 
 import utility::FileUtility;
 
@@ -11,6 +12,7 @@ bool debuggingEnabled = true;
 int printIndex = 0;
 
 public list[str] Errors = [];
+str printFilter = "Insert";
 
 bool hasErrors() = 0 < size(Errors);
 
@@ -40,10 +42,10 @@ public &T debugPrint(&T itemToPrint, bool printingEnabled)
 
 public &T debugPrint(&T itemToPrint)
 {
-  if(debuggingEnabled)
+  if(debuggingEnabled && (isEmpty(printFilter) || startsWith("<itemToPrint>", printFilter)))
   {
-    println("<printIndex> - <itemToPrint>");
-    printIndex += 1;
+  	println("<printIndex> - <itemToPrint>");
+   	printIndex += 1;
   }
   return itemToPrint;
 }
