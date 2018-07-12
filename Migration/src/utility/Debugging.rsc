@@ -12,7 +12,7 @@ bool debuggingEnabled = true;
 int printIndex = 0;
 
 public list[str] Errors = [];
-str printFilter = "Insert";
+str printFilter = "";
 
 bool hasErrors() = 0 < size(Errors);
 
@@ -42,7 +42,7 @@ public &T debugPrint(&T itemToPrint, bool printingEnabled)
 
 public &T debugPrint(&T itemToPrint)
 {
-  if(debuggingEnabled && (isEmpty(printFilter) || startsWith("<itemToPrint>", printFilter)))
+  if(debuggingEnabled && (isEmpty(printFilter) || contains("<itemToPrint>", printFilter)))
   {
   	println("<printIndex> - <itemToPrint>");
    	printIndex += 1;
