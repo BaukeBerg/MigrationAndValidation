@@ -238,7 +238,6 @@ str wordAddress(str address)
   dotPos = findLast(address, ".");
   if(-1 != dotPos)
   { 
-    debugPrint("dotPos: <dotPos>");
     return substring(address, 0, dotPos);
   }
   return address;    
