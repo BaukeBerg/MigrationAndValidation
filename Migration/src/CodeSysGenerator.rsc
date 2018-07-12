@@ -35,6 +35,7 @@ void generateFile(str outputPath, Tree plcModel, SymbolTable symbols)
 
 PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
 {
+  bool openCondition = false;
   includedLines = 0;
   programLines = [];
   startIfPositions = [];
@@ -62,16 +63,21 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     {
       programLines = houseKeeping(IB, startIfPositions, endIfPositions, programLines);
       programLines += defaultFormat(IB)[1..];
-      
+      actualCount = 0;
       visit(IB)
       {
         case LogicExpression LE:
         {
           programLines += ["IF <evaluateExpression(LE, symbols)> THEN <formatComment(LE, symbols)>"];          
         }
+        case SourceLineRange SR:
+        {
+          actualCount = lastInteger("<SR>");
+        }
         case JumpSize JS:
         {
-          endIfPositions += (parseInt(JS) + programCount(IB)); // Notify on what position the END_IF goes
+          endIfPositions += (parseInt(JS) + actualCount); // Notify on what position the END_IF goes
+          debugPrint("Inserted END_IF pos: <last(endIfPositions)>");
         }
       }
       includedLines += extractSize(IB);
@@ -152,7 +158,8 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     
     case AndEqual EL:      
     {
-      programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines);
+      programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines, openCondition);
+      openCondition = false;
       debugPrint("Composing AndEqual");
       str target = "UNDEFINED_ADDRESS";
       visit(EL)
@@ -214,7 +221,8 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     
     case LogicCondition ECB:
     {
-      programLines = houseKeeping(ECB, startIfPositions, endIfPositions, programLines);
+      programLines = houseKeeping(ECB, startIfPositions, endIfPositions, programLines, openCondition);
+      openCondition = false;
       actualProgramCount = programCount(ECB); 
       blockSize = extractSize(ECB);   
       includedLines += extractSize(ECB);      
@@ -222,7 +230,8 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
       {
         case LogicExpression LE:
         {
-          programLines += ["(* !! WARNING !! Separate Logic Condition found. Higly recommended to include in pattern *)", "(* <ECB> *)", "IF <evaluateExpression(LE, symbols)> THEN <formatComment(LE, symbols)>"];      
+          programLines += ["(* !! WARNING !! Separate Logic Condition found. Higly recommended to include in pattern *)", "(* <ECB> *)", "IF <evaluateExpression(LE, symbols)> THEN <formatComment(LE, symbols)>"];
+          openCondition = true;      
         }
       }
     }
@@ -239,13 +248,17 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
   return <variableList,programLines>;
 }
 
-Statements houseKeeping(&T item, list[int] startIfPositions, list[int] endIfPositions, Statements currentProgram)
+Statements houseKeeping(&T item, list[int] startIfPositions, list[int] endIfPositions, Statements currentProgram) = houseKeeping(item, startIfPositions, endIfPositions, currentProgram, false);
+Statements houseKeeping(&T item, list[int] startIfPositions, list[int] endIfPositions, Statements currentProgram, bool terminateCondition)
 {
-  currentCount = programCount(item);
+  currentCount = debugPrint("Insert", programCount(item));
   if(currentCount in endIfPositions)
   {
-    debugPrint("inserting IF-termination");
-    return currentProgram + ["END_IF; "];
+    currentProgram = closeIf(currentProgram);
+  }
+  if(terminateCondition)
+  {
+  	return closeIf(currentProgram);
   }
   return currentProgram;
 }
@@ -289,6 +302,7 @@ str removeNewLines(str inputString) = replaceAll(replaceAll(inputString, "\r", "
 
 Statements closeIf(Statements programLines)
 {
+  count = 1;
   if("  " == last(programLines))
   {
     programLines = delete(programLines, size(programLines)-1); 
@@ -299,12 +313,17 @@ Statements closeIf(Statements programLines)
   {
     if(startsWith(programLines[programSize-line], "IF "))
     {
+      count -= 1;
+    }
+    elseif(contains(programLines[programSize-line], "END_IF;"))
+    {
+      count += 1;
+    }
+    if(count == 0)
+    {
       break;
     }
-    else
-    {
-      programLines[programSize-line] = "  " + programLines[programSize-line];
-    } 
+    programLines[programSize-line] = "  " + programLines[programSize-line];
   }
   if(startsWith(last(programLines), "IF "))
   {
