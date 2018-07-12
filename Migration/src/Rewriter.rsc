@@ -35,7 +35,7 @@ Tree preprocess(Tree tree) = innermost visit(tree)
     JumpInstruction jump><
     CompiledInstruction *post>`:
   {
-    speed = parse(#SpeedOptimization, debugPrint("QuickJumpOut:", "<composeEcbPrefix("Brown", composeSourceRange(prefix, jump))>QuickJumpOut"));
+    speed = parse(#QuickJumpOut, debugPrint("QuickJumpOut:", "<composeEcbPrefix("Brown", composeSourceRange(prefix, jump))>QuickJumpOut"));
     insert(CodeBlock)`<CompiledInstruction *pre><QuickJumpOut speed><CompiledInstruction *post>`;
   } 
 
@@ -179,27 +179,25 @@ Tree preprocess(Tree tree) = innermost visit(tree)
   /// AssignValue
   case (CodeBlock)`<CompiledInstruction *pre><ReadValue read><WriteValue write><CompiledInstruction *post>`:
   {
-    visit(read)
-    {
-      case SourceRange SR:
-      {
-        visit(SR)
-        {
-          case FiveDigits FD:
-          {
-            if(contains("<FD>", "106"))
-            {
-              insert((CodeBlock)`<CompiledInstruction* pre><AssignSetpoint assignSetpoint><CompiledInstruction *post>`);   
-            }
-          }
-        }
-      } 
-    }
+    //visit(read)
+    //{
+    //  case SourceRange SR:
+    //  {
+    //    visit(SR)
+    //    {
+    //      case FiveDigits FD:
+    //      {
+    //        if(contains("<FD>", "106"))
+    //        {
+    //          insert((CodeBlock)`<CompiledInstruction* pre><AssignSetpoint assignSetpoint><CompiledInstruction *post>`);   
+    //        }
+    //      }
+    //    }
+    //  } 
+    //}
     assignValue = composeAssign(read, write);
     insert((CodeBlock)`<CompiledInstruction* pre><AssignValue assignValue><CompiledInstruction *post>`);  
   }
-  
-  
   
   /// AssignBooleanExpression
   case (CodeBlock)`<CompiledInstruction *pre><LogicCondition condition><AssignBit bit><CompiledInstruction *post>`:
@@ -220,14 +218,14 @@ Tree preprocess(Tree tree) = innermost visit(tree)
   /// IfBlock => Condition with a JUMP 
   case (CodeBlock)`<CompiledInstruction *pre><
     LogicCondition logic><
-    JumpInstruction jump><
+    SourcePrefix prefix>30<WhiteSpace _><WordAddress size><NewLine _><
     CompiledInstruction *post>`:
   {
     debugPrint("Found an IF-block");
-    ifBlock = parse(#IfBlock, debugPrint("If Block:", "<composeEcbPrefix("Brown", composeSourceRange(logic, jump))>IfBlock <logicExpression(logic)> size <trim(jumpSize(jump))>"));
+    ifBlock = parse(#IfBlock, debugPrint("If Block:", "<composeEcbPrefix("Brown", composeSourceRange(logic, prefix))>IfBlock <logicExpression(logic)>size <trim("<size>")>"));
     insert((CodeBlock)`<CompiledInstruction* pre><IfBlock ifBlock><CompiledInstruction *post>`);
   } 
-
+  
 };
 
 // (partial) model representations
