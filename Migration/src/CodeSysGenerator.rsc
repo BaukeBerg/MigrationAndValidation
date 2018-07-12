@@ -57,6 +57,15 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
       programLines = houseKeeping(ECB, startIfPositions, endIfPositions, programLines);
       programLines += "(* <ECB> *)";
       programLines += "; (* ANDNT 0.1 NOP is a Blank Instruction *)";
+      visit(ECB)
+      {
+        case SourceLineRange SR:
+        {
+          actualProgramCount = debugPrint("BlankAndNot: ", lastInteger("<SR>"));
+        }
+        default:
+          ;
+      } 
     }
     
     case IfBlock IB:
@@ -156,6 +165,12 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
       programLines += defaultFormat(EL);
     } 
     
+    case QuickJumpOut EL:
+    {
+      programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines);
+      programLines += defaultFormat(EL);
+    }
+    
     case AndEqual EL:      
     {
       programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines, openCondition);
@@ -203,7 +218,8 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
         
     case BitTrigger B:
     {
-      programLines = houseKeeping(B, startIfPositions, endIfPositions, programLines);
+      programLines = houseKeeping(IO, startIfPositions, endIfPositions, programLines, openCondition);
+      openCondition = false;      
       includedLines += extractSize(B);
       <declaration, statements> = evaluateTrigger(B, symbols);
       variableList += declaration;
@@ -244,6 +260,11 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
       programLines += ["(* <ECB> *)", "; (* DoNothing *)", "  "];
     }
   } 
+   
+  programLines = houseKeeping(actualProgramCount+1, startIfPositions, endIfPositions, programLines, openCondition);
+  debugPrint("Condition state: <openCondition>");
+  debugPrint("If positions: <startIfPositions>");
+  debugPrint("EndIf positions: <endIfPositions>");
   debugPrint("Total line amount included: <includedLines>");
   return <variableList,programLines>;
 }
@@ -262,6 +283,8 @@ Statements houseKeeping(&T item, list[int] startIfPositions, list[int] endIfPosi
   }
   return currentProgram;
 }
+
+int programCount(int actualCount) = actualCount;
 
 int programCount(&T programCountItem)
 {
