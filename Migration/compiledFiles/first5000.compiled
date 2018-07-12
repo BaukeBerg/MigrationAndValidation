@@ -2630,3 +2630,2416 @@
 02488 02197 00 
 02488 02198 00 
 02488 02199 00 
+02489                   !                               DR_DSP
+02490                   !       ******
+02491                   !
+02492 02200 16 00000.1    AND 000.1
+02493 02201 12 00000      FTCHC 00
+02494 02202 14 01500      STRD  1500  !constante 0
+02495                   
+02496 02203 16 00000.1    AND 000.1
+02497 02204 12 00001      FTCHC 01
+02498 02205 14 01501      STRD  1501  !constante 1
+02499                   
+02500 02206 16 00000.1    AND 000.1
+02501 02207 12 00002      FTCHC 02
+02502 02208 14 01502      STRD  1502  !constante 2
+02503                   
+02504 02209 16 00000.1    AND 000.1
+02505 02210 12 00003      FTCHC 03
+02506 02211 14 01503      STRD  1503  !constante 3
+02507                   
+02508 02212 16 00000.1    AND 000.1
+02509 02213 12 00004      FTCHC 04
+02510 02214 14 01504      STRD  1504  !constante 4
+02511                   
+02512 02215 16 00000.1    AND 000.1
+02513 02216 12 00005      FTCHC 05
+02514 02217 14 01505      STRD  1505  !constante 5
+02515                   
+02516 02218 16 00000.1    AND 000.1
+02517 02219 12 00006      FTCHC 06
+02518 02220 14 01506      STRD  1506  !constante 6
+02519                   
+02520 02221 16 00000.1    AND 000.1
+02521 02222 12 00007      FTCHC 07
+02522 02223 14 01507      STRD  1507  !constante 7
+02523                   
+02524 02224 16 00000.1    AND 000.1
+02525 02225 12 00008      FTCHC 08
+02526 02226 14 01508      STRD  1508  !constante 8
+02527                   
+02528 02227 16 00000.1    AND 000.1
+02529 02228 12 00009      FTCHC 09
+02530 02229 14 01509      STRD  1509  !constante 9
+02531                   
+02532 02230 17 00121.2    ANDNT LAMPTEST  !lampentest "8"
+02533 02231 30 01900      JFRF  L04131
+02534                   
+02535 02232 16 00000.1    AND 000.1
+02536 02233 13 00110      FTCHD DWS2_1  !eenheid DWS
+02537 02234 13 00111      FTCHD DWS2_2  !tiental DWS
+02538 02235 15 01500      COMP  1500  !constante 0
+02539 02236 15 01500      COMP  1500  !constante 0
+02540 02237 10 00003.0    STRB  RESULT1 !F=C
+02541                   
+02542 02238 16 00003.0    AND RESULT1 !F=C
+02543 02239 30 00012      JFRF  L02251
+02544                   
+02545 02240 16 00003.0    AND RESULT1 !F=C
+02546 02241 13 01100      FTCHD DSP00_0 !display 00 eenheden
+02547 02242 13 01101      FTCHD DSP00_1 !display 00 tientallen
+02548 02243 13 01102      FTCHD DSP00_2 !display 00 honderdtallen
+02549 02244 13 01103      FTCHD DSP00_3 !display 00 duizendtallen
+02550 02245 14 00160      STRD  DISPL_0 !display aansturing eenh.
+02551 02246 14 00161      STRD  DISPL_1 !display aansturing tiental.
+02552 02247 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+02553 02248 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+02554                   
+02555 02249 17 00000.1    ANDNT 000.1
+02556 02250 30 01880      JFRF  L04130
+02557                   
+02558 02251 16 00000.1  L02251  AND 000.1
+02559 02252 13 00110      FTCHD DWS2_1  !eenheid DWS
+02560 02253 13 00111      FTCHD DWS2_2  !tiental DWS
+02561 02254 15 01501      COMP  1501  !constante 1
+02562 02255 15 01500      COMP  1500  !constante 0
+02563 02256 10 00003.0    STRB  RESULT1 !F=C
+02564                   
+02565 02257 16 00003.0    AND RESULT1 !F=C
+02566 02258 30 00012      JFRF  L02270
+02567                   
+02568 02259 16 00003.0    AND RESULT1 !F=C
+02569 02260 13 01104      FTCHD DSP01_0 !display 01 eenheden
+02570 02261 13 01105      FTCHD DSP01_1 !display 01 tientallen
+02571 02262 13 01106      FTCHD DSP01_2 !display 01 honderdtallen
+02572 02263 13 01107      FTCHD DSP01_3 !display 01 duizendtallen
+02573 02264 14 00160      STRD  DISPL_0 !display aansturing eenh.
+02574 02265 14 00161      STRD  DISPL_1 !display aansturing tiental.
+02575 02266 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+02576 02267 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+02577                   
+02578 02268 17 00000.1    ANDNT 000.1
+02579 02269 30 01861      JFRF  L04130
+02580                   
+02581 02270 16 00000.1  L02270  AND 000.1
+02582 02271 13 00110      FTCHD DWS2_1  !eenheid DWS
+02583 02272 13 00111      FTCHD DWS2_2  !tiental DWS
+02584 02273 15 01502      COMP  1502  !constante 2
+02585 02274 15 01500      COMP  1500  !constante 0
+02586 02275 10 00003.0    STRB  RESULT1 !F=C
+02587                   
+02588 02276 16 00003.0    AND RESULT1 !F=C
+02589 02277 30 00012      JFRF  L02289
+02590                   
+02591 02278 16 00003.0    AND RESULT1 !F=C
+02592 02279 13 01108      FTCHD DSP02_0 !display 02 eenheden
+02593 02280 13 01109      FTCHD DSP02_1 !display 02 tientallen
+02594 02281 13 01110      FTCHD DSP02_2 !display 02 honderdtallen
+02595 02282 13 01111      FTCHD DSP02_3 !display 02 duizendtallen
+02596 02283 14 00160      STRD  DISPL_0 !display aansturing eenh.
+02597 02284 14 00161      STRD  DISPL_1 !display aansturing tiental.
+02598 02285 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+02599 02286 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+02600                   
+02601 02287 17 00000.1    ANDNT 000.1
+02602 02288 30 01842      JFRF  L04130
+02603                   
+02604 02289 16 00000.1  L02289  AND 000.1
+02605 02290 13 00110      FTCHD DWS2_1  !eenheid DWS
+02606 02291 13 00111      FTCHD DWS2_2  !tiental DWS
+02607 02292 15 01503      COMP  1503  !constante 3
+02608 02293 15 01500      COMP  1500  !constante 0
+02609 02294 10 00003.0    STRB  RESULT1 !F=C
+02610                   
+02611 02295 16 00003.0    AND RESULT1 !F=C
+02612 02296 30 00012      JFRF  L02308
+02613                   
+02614 02297 16 00003.0    AND RESULT1 !F=C
+02615 02298 13 01112      FTCHD DSP03_0 !display 03 eenheden
+02616 02299 13 01113      FTCHD DSP03_1 !display 03 tientallen
+02617 02300 13 01114      FTCHD DSP03_2 !display 03 honderdtallen
+02618 02301 13 01115      FTCHD DSP03_3 !display 03 duizendtallen
+02619 02302 14 00160      STRD  DISPL_0 !display aansturing eenh.
+02620 02303 14 00161      STRD  DISPL_1 !display aansturing tiental.
+02621 02304 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+02622 02305 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+02623                   
+02624 02306 17 00000.1    ANDNT 000.1
+02625 02307 30 01823      JFRF  L04130
+02626                   
+02627 02308 16 00000.1  L02308  AND 000.1
+02628 02309 13 00110      FTCHD DWS2_1  !eenheid DWS
+02629 02310 13 00111      FTCHD DWS2_2  !tiental DWS
+02630 02311 15 01504      COMP  1504  !constante 4
+02631 02312 15 01500      COMP  1500  !constante 0
+02632 02313 10 00003.0    STRB  RESULT1 !F=C
+02633                   
+02634 02314 16 00003.0    AND RESULT1 !F=C
+02635 02315 30 00012      JFRF  L02327
+02636                   
+02637 02316 16 00003.0    AND RESULT1 !F=C
+02638 02317 13 01116      FTCHD DSP04_0 !display 04 eenheden
+02639 02318 13 01117      FTCHD DSP04_1 !display 04 tientallen
+02640 02319 13 01118      FTCHD DSP04_2 !display 04 honderdtallen
+02641 02320 13 01119      FTCHD DSP04_3 !display 04 duizendtallen
+02642 02321 14 00160      STRD  DISPL_0 !display aansturing eenh.
+02643 02322 14 00161      STRD  DISPL_1 !display aansturing tiental.
+02644 02323 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+02645 02324 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+02646                   
+02647 02325 17 00000.1    ANDNT 000.1
+02648 02326 30 01804      JFRF  L04130
+02649                   
+02650 02327 16 00000.1  L02327  AND 000.1
+02651 02328 13 00110      FTCHD DWS2_1  !eenheid DWS
+02652 02329 13 00111      FTCHD DWS2_2  !tiental DWS
+02653 02330 15 01505      COMP  1505  !constante 5
+02654 02331 15 01500      COMP  1500  !constante 0
+02655 02332 10 00003.0    STRB  RESULT1 !F=C
+02656                   
+02657 02333 16 00003.0    AND RESULT1 !F=C
+02658 02334 30 00012      JFRF  L02346
+02659                   
+02660 02335 16 00003.0    AND RESULT1 !F=C
+02661 02336 13 01120      FTCHD DSP05_0 !display 05 eenheden
+02662 02337 13 01121      FTCHD DSP05_1 !display 05 tientallen
+02663 02338 13 01122      FTCHD DSP05_2 !display 05 honderdtallen
+02664 02339 13 01123      FTCHD DSP05_3 !display 05 duizendtallen
+02665 02340 14 00160      STRD  DISPL_0 !display aansturing eenh.
+02666 02341 14 00161      STRD  DISPL_1 !display aansturing tiental.
+02667 02342 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+02668 02343 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+02669                   
+02670 02344 17 00000.1    ANDNT 000.1
+02671 02345 30 01785      JFRF  L04130
+02672                   
+02673 02346 16 00000.1  L02346  AND 000.1
+02674 02347 13 00110      FTCHD DWS2_1  !eenheid DWS
+02675 02348 13 00111      FTCHD DWS2_2  !tiental DWS
+02676 02349 15 01506      COMP  1506  !constante 6
+02677 02350 15 01500      COMP  1500  !constante 0
+02678 02351 10 00003.0    STRB  RESULT1 !F=C
+02679                   
+02680 02352 16 00003.0    AND RESULT1 !F=C
+02681 02353 30 00012      JFRF  L02365
+02682                   
+02683 02354 16 00003.0    AND RESULT1 !F=C
+02684 02355 13 01124      FTCHD DSP06_0 !display 06 eenheden
+02685 02356 13 01125      FTCHD DSP06_1 !display 06 tientallen
+02686 02357 13 01126      FTCHD DSP06_2 !display 06 honderdtallen
+02687 02358 13 01127      FTCHD DSP06_3 !display 06 duizendtallen
+02688 02359 14 00160      STRD  DISPL_0 !display aansturing eenh.
+02689 02360 14 00161      STRD  DISPL_1 !display aansturing tiental.
+02690 02361 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+02691 02362 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+02692                   
+02693 02363 17 00000.1    ANDNT 000.1
+02694 02364 30 01766      JFRF  L04130
+02695                   
+02696 02365 16 00000.1  L02365  AND 000.1
+02697 02366 13 00110      FTCHD DWS2_1  !eenheid DWS
+02698 02367 13 00111      FTCHD DWS2_2  !tiental DWS
+02699 02368 15 01507      COMP  1507  !constante 7
+02700 02369 15 01500      COMP  1500  !constante 0
+02701 02370 10 00003.0    STRB  RESULT1 !F=C
+02702                   
+02703 02371 16 00003.0    AND RESULT1 !F=C
+02704 02372 30 00012      JFRF  L02384
+02705                   
+02706 02373 16 00003.0    AND RESULT1 !F=C
+02707 02374 13 01128      FTCHD DSP07_0 !display 07 eenheden
+02708 02375 13 01129      FTCHD DSP07_1 !display 07 tientallen
+02709 02376 13 01130      FTCHD DSP07_2 !display 07 honderdtallen
+02710 02377 13 01131      FTCHD DSP07_3 !display 07 duizendtallen
+02711 02378 14 00160      STRD  DISPL_0 !display aansturing eenh.
+02712 02379 14 00161      STRD  DISPL_1 !display aansturing tiental.
+02713 02380 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+02714 02381 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+02715                   
+02716 02382 17 00000.1    ANDNT 000.1
+02717 02383 30 01747      JFRF  L04130
+02718                   
+02719 02384 16 00000.1  L02384  AND 000.1
+02720 02385 13 00110      FTCHD DWS2_1  !eenheid DWS
+02721 02386 13 00111      FTCHD DWS2_2  !tiental DWS
+02722 02387 15 01508      COMP  1508  !constante 8
+02723 02388 15 01500      COMP  1500  !constante 0
+02724 02389 10 00003.0    STRB  RESULT1 !F=C
+02725                   
+02726 02390 16 00003.0    AND RESULT1 !F=C
+02727 02391 30 00012      JFRF  L02403
+02728                   
+02729 02392 16 00003.0    AND RESULT1 !F=C
+02730 02393 13 01132      FTCHD DSP08_0 !display 08 eenheden
+02731 02394 13 01133      FTCHD DSP08_1 !display 08 tientallen
+02732 02395 13 01134      FTCHD DSP08_2 !display 08 honderdtallen
+02733 02396 13 01135      FTCHD DSP08_3 !display 08 duizendtallen
+02734 02397 14 00160      STRD  DISPL_0 !display aansturing eenh.
+02735 02398 14 00161      STRD  DISPL_1 !display aansturing tiental.
+02736 02399 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+02737 02400 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+02738                   
+02739 02401 17 00000.1    ANDNT 000.1
+02740 02402 30 01728      JFRF  L04130
+02741                   
+02742 02403 16 00000.1  L02403  AND 000.1
+02743 02404 13 00110      FTCHD DWS2_1  !eenheid DWS
+02744 02405 13 00111      FTCHD DWS2_2  !tiental DWS
+02745 02406 15 01509      COMP  1509  !constante 9
+02746 02407 15 01500      COMP  1500  !constante 0
+02747 02408 10 00003.0    STRB  RESULT1 !F=C
+02748                   
+02749 02409 16 00003.0    AND RESULT1 !F=C
+02750 02410 30 00012      JFRF  L02422
+02751                   
+02752 02411 16 00003.0    AND RESULT1 !F=C
+02753 02412 13 01136      FTCHD DSP09_0 !display 09 eenheden
+02754 02413 13 01137      FTCHD DSP09_1 !display 09 tientallen
+02755 02414 13 01138      FTCHD DSP09_2 !display 09 honderdtallen
+02756 02415 13 01139      FTCHD DSP09_3 !display 09 duizendtallen
+02757 02416 14 00160      STRD  DISPL_0 !display aansturing eenh.
+02758 02417 14 00161      STRD  DISPL_1 !display aansturing tiental.
+02759 02418 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+02760 02419 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+02761                   
+02762 02420 17 00000.1    ANDNT 000.1
+02763 02421 30 01709      JFRF  L04130
+02764                   
+02765 02422 16 00000.1  L02422  AND 000.1
+02766 02423 13 00110      FTCHD DWS2_1  !eenheid DWS
+02767 02424 13 00111      FTCHD DWS2_2  !tiental DWS
+02768 02425 15 01500      COMP  1500  !constante 0
+02769 02426 15 01501      COMP  1501  !constante 1
+02770 02427 10 00003.0    STRB  RESULT1 !F=C
+02771                   
+02772 02428 16 00003.0    AND RESULT1 !F=C
+02773 02429 30 00012      JFRF  L02441
+02774                   
+02775 02430 16 00003.0    AND RESULT1 !F=C
+02776 02431 13 01140      FTCHD DSP10_0 !display 10 eenheden
+02777 02432 13 01141      FTCHD DSP10_1 !display 10 tientallen
+02778 02433 13 01142      FTCHD DSP10_2 !display 10 honderdtallen
+02779 02434 13 01143      FTCHD DSP10_3 !display 10 duizendtallen
+02780 02435 14 00160      STRD  DISPL_0 !display aansturing eenh.
+02781 02436 14 00161      STRD  DISPL_1 !display aansturing tiental.
+02782 02437 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+02783 02438 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+02784                   
+02785 02439 17 00000.1    ANDNT 000.1
+02786 02440 30 01690      JFRF  L04130
+02787                   
+02788 02441 16 00000.1  L02441  AND 000.1
+02789 02442 13 00110      FTCHD DWS2_1  !eenheid DWS
+02790 02443 13 00111      FTCHD DWS2_2  !tiental DWS
+02791 02444 15 01501      COMP  1501  !constante 1
+02792 02445 15 01501      COMP  1501  !constante 1
+02793 02446 10 00003.0    STRB  RESULT1 !F=C
+02794                   
+02795 02447 16 00003.0    AND RESULT1 !F=C
+02796 02448 30 00012      JFRF  L02460
+02797                   
+02798 02449 16 00003.0    AND RESULT1 !F=C
+02799 02450 13 01144      FTCHD DSP11_0 !display 11 eenheden
+02800 02451 13 01145      FTCHD DSP11_1 !display 11 tientallen
+02801 02452 13 01146      FTCHD DSP11_2 !display 11 honderdtallen
+02802 02453 13 01147      FTCHD DSP11_3 !display 11 duizendtallen
+02803 02454 14 00160      STRD  DISPL_0 !display aansturing eenh.
+02804 02455 14 00161      STRD  DISPL_1 !display aansturing tiental.
+02805 02456 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+02806 02457 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+02807                   
+02808 02458 17 00000.1    ANDNT 000.1
+02809 02459 30 01671      JFRF  L04130
+02810                   
+02811 02460 16 00000.1  L02460  AND 000.1
+02812 02461 13 00110      FTCHD DWS2_1  !eenheid DWS
+02813 02462 13 00111      FTCHD DWS2_2  !tiental DWS
+02814 02463 15 01502      COMP  1502  !constante 2
+02815 02464 15 01501      COMP  1501  !constante 1
+02816 02465 10 00003.0    STRB  RESULT1 !F=C
+02817                   
+02818 02466 16 00003.0    AND RESULT1 !F=C
+02819 02467 30 00012      JFRF  L02479
+02820                   
+02821 02468 16 00003.0    AND RESULT1 !F=C
+02822 02469 13 01148      FTCHD DSP12_0 !display 12 eenheden
+02823 02470 13 01149      FTCHD DSP12_1 !display 12 tientallen
+02824 02471 13 01150      FTCHD DSP12_2 !display 12 honderdtallen
+02825 02472 13 01151      FTCHD DSP12_3 !display 12 duizendtallen
+02826 02473 14 00160      STRD  DISPL_0 !display aansturing eenh.
+02827 02474 14 00161      STRD  DISPL_1 !display aansturing tiental.
+02828 02475 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+02829 02476 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+02830                   
+02831 02477 17 00000.1    ANDNT 000.1
+02832 02478 30 01652      JFRF  L04130
+02833                   
+02834 02479 16 00000.1  L02479  AND 000.1
+02835 02480 13 00110      FTCHD DWS2_1  !eenheid DWS
+02836 02481 13 00111      FTCHD DWS2_2  !tiental DWS
+02837 02482 15 01503      COMP  1503  !constante 3
+02838 02483 15 01501      COMP  1501  !constante 1
+02839 02484 10 00003.0    STRB  RESULT1 !F=C
+02840                   
+02841 02485 16 00003.0    AND RESULT1 !F=C
+02842 02486 30 00012      JFRF  L02498
+02843                   
+02844 02487 16 00003.0    AND RESULT1 !F=C
+02845 02488 13 01152      FTCHD DSP13_0 !display 13 eenheden
+02846 02489 13 01153      FTCHD DSP13_1 !display 13 tientallen
+02847 02490 13 01154      FTCHD DSP13_2 !display 13 honderdtallen
+02848 02491 13 01155      FTCHD DSP13_3 !display 13 duizendtallen
+02849 02492 14 00160      STRD  DISPL_0 !display aansturing eenh.
+02850 02493 14 00161      STRD  DISPL_1 !display aansturing tiental.
+02851 02494 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+02852 02495 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+02853                   
+02854 02496 17 00000.1    ANDNT 000.1
+02855 02497 30 01633      JFRF  L04130
+02856                   
+02857 02498 16 00000.1  L02498  AND 000.1
+02858 02499 13 00110      FTCHD DWS2_1  !eenheid DWS
+02859 02500 13 00111      FTCHD DWS2_2  !tiental DWS
+02860 02501 15 01504      COMP  1504  !constante 4
+02861 02502 15 01501      COMP  1501  !constante 1
+02862 02503 10 00003.0    STRB  RESULT1 !F=C
+02863                   
+02864 02504 16 00003.0    AND RESULT1 !F=C
+02865 02505 30 00012      JFRF  L02517
+02866                   
+02867 02506 16 00003.0    AND RESULT1 !F=C
+02868 02507 13 01156      FTCHD DSP14_0 !display 14 eenheden
+02869 02508 13 01157      FTCHD DSP14_1 !display 14 tientallen
+02870 02509 13 01158      FTCHD DSP14_2 !display 14 honderdtallen
+02871 02510 13 01159      FTCHD DSP14_3 !display 14 duizendtallen
+02872 02511 14 00160      STRD  DISPL_0 !display aansturing eenh.
+02873 02512 14 00161      STRD  DISPL_1 !display aansturing tiental.
+02874 02513 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+02875 02514 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+02876                   
+02877 02515 17 00000.1    ANDNT 000.1
+02878 02516 30 01614      JFRF  L04130
+02879                   
+02880 02517 16 00000.1  L02517  AND 000.1
+02881 02518 13 00110      FTCHD DWS2_1  !eenheid DWS
+02882 02519 13 00111      FTCHD DWS2_2  !tiental DWS
+02883 02520 15 01505      COMP  1505  !constante 5
+02884 02521 15 01501      COMP  1501  !constante 1
+02885 02522 10 00003.0    STRB  RESULT1 !F=C
+02886                   
+02887 02523 16 00003.0    AND RESULT1 !F=C
+02888 02524 30 00012      JFRF  L02536
+02889                   
+02890 02525 16 00003.0    AND RESULT1 !F=C
+02891 02526 13 01160      FTCHD DSP15_0 !display 15 eenheden
+02892 02527 13 01161      FTCHD DSP15_1 !display 15 tientallen
+02893 02528 13 01162      FTCHD DSP15_2 !display 15 honderdtallen
+02894 02529 13 01163      FTCHD DSP15_3 !display 15 duizendtallen
+02895 02530 14 00160      STRD  DISPL_0 !display aansturing eenh.
+02896 02531 14 00161      STRD  DISPL_1 !display aansturing tiental.
+02897 02532 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+02898 02533 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+02899                   
+02900 02534 17 00000.1    ANDNT 000.1
+02901 02535 30 01595      JFRF  L04130
+02902                   
+02903 02536 16 00000.1  L02536  AND 000.1
+02904 02537 13 00110      FTCHD DWS2_1  !eenheid DWS
+02905 02538 13 00111      FTCHD DWS2_2  !tiental DWS
+02906 02539 15 01506      COMP  1506  !constante 6
+02907 02540 15 01501      COMP  1501  !constante 1
+02908 02541 10 00003.0    STRB  RESULT1 !F=C
+02909                   
+02910 02542 16 00003.0    AND RESULT1 !F=C
+02911 02543 30 00012      JFRF  L02555
+02912                   
+02913 02544 16 00003.0    AND RESULT1 !F=C
+02914 02545 13 01164      FTCHD DSP16_0 !display 16 eenheden
+02915 02546 13 01165      FTCHD DSP16_1 !display 16 tientallen
+02916 02547 13 01166      FTCHD DSP16_2 !display 16 honderdtallen
+02917 02548 13 01167      FTCHD DSP16_3 !display 16 duizendtallen
+02918 02549 14 00160      STRD  DISPL_0 !display aansturing eenh.
+02919 02550 14 00161      STRD  DISPL_1 !display aansturing tiental.
+02920 02551 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+02921 02552 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+02922                   
+02923 02553 17 00000.1    ANDNT 000.1
+02924 02554 30 01576      JFRF  L04130
+02925                   
+02926 02555 16 00000.1  L02555  AND 000.1
+02927 02556 13 00110      FTCHD DWS2_1  !eenheid DWS
+02928 02557 13 00111      FTCHD DWS2_2  !tiental DWS
+02929 02558 15 01507      COMP  1507  !constante 7
+02930 02559 15 01501      COMP  1501  !constante 1
+02931 02560 10 00003.0    STRB  RESULT1 !F=C
+02932                   
+02933 02561 16 00003.0    AND RESULT1 !F=C
+02934 02562 30 00012      JFRF  L02574
+02935                   
+02936 02563 16 00003.0    AND RESULT1 !F=C
+02937 02564 13 01168      FTCHD DSP17_0 !display 17 eenheden
+02938 02565 13 01169      FTCHD DSP17_1 !display 17 tientallen
+02939 02566 13 01170      FTCHD DSP17_2 !display 17 honderdtallen
+02940 02567 13 01171      FTCHD DSP17_3 !display 17 duizendtallen
+02941 02568 14 00160      STRD  DISPL_0 !display aansturing eenh.
+02942 02569 14 00161      STRD  DISPL_1 !display aansturing tiental.
+02943 02570 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+02944 02571 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+02945                   
+02946 02572 17 00000.1    ANDNT 000.1
+02947 02573 30 01557      JFRF  L04130
+02948                   
+02949 02574 16 00000.1  L02574  AND 000.1
+02950 02575 13 00110      FTCHD DWS2_1  !eenheid DWS
+02951 02576 13 00111      FTCHD DWS2_2  !tiental DWS
+02952 02577 15 01508      COMP  1508  !constante 8
+02953 02578 15 01501      COMP  1501  !constante 1
+02954 02579 10 00003.0    STRB  RESULT1 !F=C
+02955                   
+02956 02580 16 00003.0    AND RESULT1 !F=C
+02957 02581 30 00012      JFRF  L02593
+02958                   
+02959 02582 16 00003.0    AND RESULT1 !F=C
+02960 02583 13 01172      FTCHD DSP18_0 !display 18 eenheden
+02961 02584 13 01173      FTCHD DSP18_1 !display 18 tientallen
+02962 02585 13 01174      FTCHD DSP18_2 !display 18 honderdtallen
+02963 02586 13 01175      FTCHD DSP18_3 !display 18 duizendtallen
+02964 02587 14 00160      STRD  DISPL_0 !display aansturing eenh.
+02965 02588 14 00161      STRD  DISPL_1 !display aansturing tiental.
+02966 02589 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+02967 02590 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+02968                   
+02969 02591 17 00000.1    ANDNT 000.1
+02970 02592 30 01538      JFRF  L04130
+02971                   
+02972 02593 16 00000.1  L02593  AND 000.1
+02973 02594 13 00110      FTCHD DWS2_1  !eenheid DWS
+02974 02595 13 00111      FTCHD DWS2_2  !tiental DWS
+02975 02596 15 01509      COMP  1509  !constante 9
+02976 02597 15 01501      COMP  1501  !constante 1
+02977 02598 10 00003.0    STRB  RESULT1 !F=C
+02978                   
+02979 02599 16 00003.0    AND RESULT1 !F=C
+02980 02600 30 00012      JFRF  L02612
+02981                   
+02982 02601 16 00003.0    AND RESULT1 !F=C
+02983 02602 13 01176      FTCHD DSP19_0 !display 19 eenheden
+02984 02603 13 01177      FTCHD DSP19_1 !display 19 tientallen
+02985 02604 13 01178      FTCHD DSP19_2 !display 19 honderdtallen
+02986 02605 13 01179      FTCHD DSP19_3 !display 19 duizendtallen
+02987 02606 14 00160      STRD  DISPL_0 !display aansturing eenh.
+02988 02607 14 00161      STRD  DISPL_1 !display aansturing tiental.
+02989 02608 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+02990 02609 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+02991                   
+02992 02610 17 00000.1    ANDNT 000.1
+02993 02611 30 01519      JFRF  L04130
+02994                   
+02995 02612 16 00000.1  L02612  AND 000.1
+02996 02613 13 00110      FTCHD DWS2_1  !eenheid DWS
+02997 02614 13 00111      FTCHD DWS2_2  !tiental DWS
+02998 02615 15 01500      COMP  1500  !constante 0
+02999 02616 15 01502      COMP  1502  !constante 2
+03000 02617 10 00003.0    STRB  RESULT1 !F=C
+03001                   
+03002 02618 16 00003.0    AND RESULT1 !F=C
+03003 02619 30 00012      JFRF  L02631
+03004                   
+03005 02620 16 00003.0    AND RESULT1 !F=C
+03006 02621 13 01180      FTCHD DSP20_0 !display 20 eenheden
+03007 02622 13 01181      FTCHD DSP20_1 !display 20 tientallen
+03008 02623 13 01182      FTCHD DSP20_2 !display 20 honderdtallen
+03009 02624 13 01183      FTCHD DSP20_3 !display 20 duizendtallen
+03010 02625 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03011 02626 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03012 02627 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03013 02628 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03014                   
+03015 02629 17 00000.1    ANDNT 000.1
+03016 02630 30 01500      JFRF  L04130
+03017                   
+03018 02631 16 00000.1  L02631  AND 000.1
+03019 02632 13 00110      FTCHD DWS2_1  !eenheid DWS
+03020 02633 13 00111      FTCHD DWS2_2  !tiental DWS
+03021 02634 15 01501      COMP  1501  !constante 1
+03022 02635 15 01502      COMP  1502  !constante 2
+03023 02636 10 00003.0    STRB  RESULT1 !F=C
+03024                   
+03025 02637 16 00003.0    AND RESULT1 !F=C
+03026 02638 30 00012      JFRF  L02650
+03027                   
+03028 02639 16 00003.0    AND RESULT1 !F=C
+03029 02640 13 01184      FTCHD DSP21_0 !display 21 eenheden
+03030 02641 13 01185      FTCHD DSP21_1 !display 21 tientallen
+03031 02642 13 01186      FTCHD DSP21_2 !display 21 honderdtallen
+03032 02643 13 01187      FTCHD DSP21_3 !display 21 duizendtallen
+03033 02644 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03034 02645 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03035 02646 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03036 02647 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03037                   
+03038 02648 17 00000.1    ANDNT 000.1
+03039 02649 30 01481      JFRF  L04130
+03040                   
+03041 02650 16 00000.1  L02650  AND 000.1
+03042 02651 13 00110      FTCHD DWS2_1  !eenheid DWS
+03043 02652 13 00111      FTCHD DWS2_2  !tiental DWS
+03044 02653 15 01502      COMP  1502  !constante 2
+03045 02654 15 01502      COMP  1502  !constante 2
+03046 02655 10 00003.0    STRB  RESULT1 !F=C
+03047                   
+03048 02656 16 00003.0    AND RESULT1 !F=C
+03049 02657 30 00012      JFRF  L02669
+03050                   
+03051 02658 16 00003.0    AND RESULT1 !F=C
+03052 02659 13 01188      FTCHD DSP22_0 !display 22 eenheden
+03053 02660 13 01189      FTCHD DSP22_1 !display 22 tientallen
+03054 02661 13 01190      FTCHD DSP22_2 !display 22 honderdtallen
+03055 02662 13 01191      FTCHD DSP22_3 !display 22 duizendtallen
+03056 02663 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03057 02664 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03058 02665 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03059 02666 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03060                   
+03061 02667 17 00000.1    ANDNT 000.1
+03062 02668 30 01462      JFRF  L04130
+03063                   
+03064 02669 16 00000.1  L02669  AND 000.1
+03065 02670 13 00110      FTCHD DWS2_1  !eenheid DWS
+03066 02671 13 00111      FTCHD DWS2_2  !tiental DWS
+03067 02672 15 01503      COMP  1503  !constante 3
+03068 02673 15 01502      COMP  1502  !constante 2
+03069 02674 10 00003.0    STRB  RESULT1 !F=C
+03070                   
+03071 02675 16 00003.0    AND RESULT1 !F=C
+03072 02676 30 00012      JFRF  L02688
+03073                   
+03074 02677 16 00003.0    AND RESULT1 !F=C
+03075 02678 13 01192      FTCHD DSP23_0 !display 23 eenheden
+03076 02679 13 01193      FTCHD DSP23_1 !display 23 tientallen
+03077 02680 13 01194      FTCHD DSP23_2 !display 23 honderdtallen
+03078 02681 13 01195      FTCHD DSP23_3 !display 23 duizendtallen
+03079 02682 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03080 02683 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03081 02684 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03082 02685 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03083                   
+03084 02686 17 00000.1    ANDNT 000.1
+03085 02687 30 01443      JFRF  L04130
+03086                   
+03087 02688 16 00000.1  L02688  AND 000.1
+03088 02689 13 00110      FTCHD DWS2_1  !eenheid DWS
+03089 02690 13 00111      FTCHD DWS2_2  !tiental DWS
+03090 02691 15 01504      COMP  1504  !constante 4
+03091 02692 15 01502      COMP  1502  !constante 2
+03092 02693 10 00003.0    STRB  RESULT1 !F=C
+03093                   
+03094 02694 16 00003.0    AND RESULT1 !F=C
+03095 02695 30 00012      JFRF  L02707
+03096                   
+03097 02696 16 00003.0    AND RESULT1 !F=C
+03098 02697 13 01196      FTCHD DSP24_0 !display 24 eenheden
+03099 02698 13 01197      FTCHD DSP24_1 !display 24 tientallen
+03100 02699 13 01198      FTCHD DSP24_2 !display 24 honderdtallen
+03101 02700 13 01199      FTCHD DSP24_3 !display 24 duizendtallen
+03102 02701 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03103 02702 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03104 02703 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03105 02704 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03106                   
+03107 02705 17 00000.1    ANDNT 000.1
+03108 02706 30 01424      JFRF  L04130
+03109                   
+03110 02707 16 00000.1  L02707  AND 000.1
+03111 02708 13 00110      FTCHD DWS2_1  !eenheid DWS
+03112 02709 13 00111      FTCHD DWS2_2  !tiental DWS
+03113 02710 15 01505      COMP  1505  !constante 5
+03114 02711 15 01502      COMP  1502  !constante 2
+03115 02712 10 00003.0    STRB  RESULT1 !F=C
+03116                   
+03117 02713 16 00003.0    AND RESULT1 !F=C
+03118 02714 30 00012      JFRF  L02726
+03119                   
+03120 02715 16 00003.0    AND RESULT1 !F=C
+03121 02716 13 01200      FTCHD DSP25_0 !display 25 eenheden
+03122 02717 13 01201      FTCHD DSP25_1 !display 25 tientallen
+03123 02718 13 01202      FTCHD DSP25_2 !display 25 honderdtallen
+03124 02719 13 01203      FTCHD DSP25_3 !display 25 duizendtallen
+03125 02720 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03126 02721 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03127 02722 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03128 02723 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03129                   
+03130 02724 17 00000.1    ANDNT 000.1
+03131 02725 30 01405      JFRF  L04130
+03132                   
+03133 02726 16 00000.1  L02726  AND 000.1
+03134 02727 13 00110      FTCHD DWS2_1  !eenheid DWS
+03135 02728 13 00111      FTCHD DWS2_2  !tiental DWS
+03136 02729 15 01506      COMP  1506  !constante 6
+03137 02730 15 01502      COMP  1502  !constante 2
+03138 02731 10 00003.0    STRB  RESULT1 !F=C
+03139                   
+03140 02732 16 00003.0    AND RESULT1 !F=C
+03141 02733 30 00012      JFRF  L02745
+03142                   
+03143 02734 16 00003.0    AND RESULT1 !F=C
+03144 02735 13 01204      FTCHD DSP26_0 !display 26 eenheden
+03145 02736 13 01205      FTCHD DSP26_1 !display 26 tientallen
+03146 02737 13 01206      FTCHD DSP26_2 !display 26 honderdtallen
+03147 02738 13 01207      FTCHD DSP26_3 !display 26 duizendtallen
+03148 02739 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03149 02740 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03150 02741 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03151 02742 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03152                   
+03153 02743 17 00000.1    ANDNT 000.1
+03154 02744 30 01386      JFRF  L04130
+03155                   
+03156 02745 16 00000.1  L02745  AND 000.1
+03157 02746 13 00110      FTCHD DWS2_1  !eenheid DWS
+03158 02747 13 00111      FTCHD DWS2_2  !tiental DWS
+03159 02748 15 01507      COMP  1507  !constante 7
+03160 02749 15 01502      COMP  1502  !constante 2
+03161 02750 10 00003.0    STRB  RESULT1 !F=C
+03162                   
+03163 02751 16 00003.0    AND RESULT1 !F=C
+03164 02752 30 00012      JFRF  L02764
+03165                   
+03166 02753 16 00003.0    AND RESULT1 !F=C
+03167 02754 13 01208      FTCHD DSP27_0 !display 27 eenheden
+03168 02755 13 01209      FTCHD DSP27_1 !display 27 tientallen
+03169 02756 13 01210      FTCHD DSP27_2 !display 27 honderdtallen
+03170 02757 13 01211      FTCHD DSP27_3 !display 27 duizendtallen
+03171 02758 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03172 02759 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03173 02760 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03174 02761 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03175                   
+03176 02762 17 00000.1    ANDNT 000.1
+03177 02763 30 01367      JFRF  L04130
+03178                   
+03179 02764 16 00000.1  L02764  AND 000.1
+03180 02765 13 00110      FTCHD DWS2_1  !eenheid DWS
+03181 02766 13 00111      FTCHD DWS2_2  !tiental DWS
+03182 02767 15 01508      COMP  1508  !constante 8
+03183 02768 15 01502      COMP  1502  !constante 2
+03184 02769 10 00003.0    STRB  RESULT1 !F=C
+03185                   
+03186 02770 16 00003.0    AND RESULT1 !F=C
+03187 02771 30 00012      JFRF  L02783
+03188                   
+03189 02772 16 00003.0    AND RESULT1 !F=C
+03190 02773 13 01212      FTCHD DSP28_0 !display 28 eenheden
+03191 02774 13 01213      FTCHD DSP28_1 !display 28 tientallen
+03192 02775 13 01214      FTCHD DSP28_2 !display 28 honderdtallen
+03193 02776 13 01215      FTCHD DSP28_3 !display 28 duizendtallen
+03194 02777 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03195 02778 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03196 02779 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03197 02780 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03198                   
+03199 02781 17 00000.1    ANDNT 000.1
+03200 02782 30 01348      JFRF  L04130
+03201                   
+03202 02783 16 00000.1  L02783  AND 000.1
+03203 02784 13 00110      FTCHD DWS2_1  !eenheid DWS
+03204 02785 13 00111      FTCHD DWS2_2  !tiental DWS
+03205 02786 15 01509      COMP  1509  !constante 9
+03206 02787 15 01502      COMP  1502  !constante 2
+03207 02788 10 00003.0    STRB  RESULT1 !F=C
+03208                   
+03209 02789 16 00003.0    AND RESULT1 !F=C
+03210 02790 30 00012      JFRF  L02802
+03211                   
+03212 02791 16 00003.0    AND RESULT1 !F=C
+03213 02792 13 01216      FTCHD DSP29_0 !display 29 eenheden
+03214 02793 13 01217      FTCHD DSP29_1 !display 29 tientallen
+03215 02794 13 01218      FTCHD DSP29_2 !display 29 honderdtallen
+03216 02795 13 01219      FTCHD DSP29_3 !display 29 duizendtallen
+03217 02796 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03218 02797 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03219 02798 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03220 02799 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03221                   
+03222 02800 17 00000.1    ANDNT 000.1
+03223 02801 30 01329      JFRF  L04130
+03224                   
+03225 02802 16 00000.1  L02802  AND 000.1
+03226 02803 13 00110      FTCHD DWS2_1  !eenheid DWS
+03227 02804 13 00111      FTCHD DWS2_2  !tiental DWS
+03228 02805 15 01500      COMP  1500  !constante 0
+03229 02806 15 01503      COMP  1503  !constante 3
+03230 02807 10 00003.0    STRB  RESULT1 !F=C
+03231                   
+03232 02808 16 00003.0    AND RESULT1 !F=C
+03233 02809 30 00012      JFRF  L02821
+03234                   
+03235 02810 16 00003.0    AND RESULT1 !F=C
+03236 02811 13 01220      FTCHD DSP30_0 !display 30 eenheden
+03237 02812 13 01221      FTCHD DSP30_1 !display 30 tientallen
+03238 02813 13 01222      FTCHD DSP30_2 !display 30 honderdtallen
+03239 02814 13 01223      FTCHD DSP30_3 !display 30 duizendtallen
+03240 02815 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03241 02816 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03242 02817 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03243 02818 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03244                   
+03245 02819 17 00000.1    ANDNT 000.1
+03246 02820 30 01310      JFRF  L04130
+03247                   
+03248 02821 16 00000.1  L02821  AND 000.1
+03249 02822 13 00110      FTCHD DWS2_1  !eenheid DWS
+03250 02823 13 00111      FTCHD DWS2_2  !tiental DWS
+03251 02824 15 01501      COMP  1501  !constante 1
+03252 02825 15 01503      COMP  1503  !constante 3
+03253 02826 10 00003.0    STRB  RESULT1 !F=C
+03254                   
+03255 02827 16 00003.0    AND RESULT1 !F=C
+03256 02828 30 00012      JFRF  L02840
+03257                   
+03258 02829 16 00003.0    AND RESULT1 !F=C
+03259 02830 13 01224      FTCHD DSP31_0 !display 31 eenheden
+03260 02831 13 01225      FTCHD DSP31_1 !display 31 tientallen
+03261 02832 13 01226      FTCHD DSP31_2 !display 31 honderdtallen
+03262 02833 13 01227      FTCHD DSP31_3 !display 31 duizendtallen
+03263 02834 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03264 02835 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03265 02836 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03266 02837 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03267                   
+03268 02838 17 00000.1    ANDNT 000.1
+03269 02839 30 01291      JFRF  L04130
+03270                   
+03271 02840 16 00000.1  L02840  AND 000.1
+03272 02841 13 00110      FTCHD DWS2_1  !eenheid DWS
+03273 02842 13 00111      FTCHD DWS2_2  !tiental DWS
+03274 02843 15 01502      COMP  1502  !constante 2
+03275 02844 15 01503      COMP  1503  !constante 3
+03276 02845 10 00003.0    STRB  RESULT1 !F=C
+03277                   
+03278 02846 16 00003.0    AND RESULT1 !F=C
+03279 02847 30 00012      JFRF  L02859
+03280                   
+03281 02848 16 00003.0    AND RESULT1 !F=C
+03282 02849 13 01228      FTCHD DSP32_0 !display 32 eenheden
+03283 02850 13 01229      FTCHD DSP32_1 !display 32 tientallen
+03284 02851 13 01230      FTCHD DSP32_2 !display 32 honderdtallen
+03285 02852 13 01231      FTCHD DSP32_3 !display 32 duizendtallen
+03286 02853 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03287 02854 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03288 02855 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03289 02856 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03290                   
+03291 02857 17 00000.1    ANDNT 000.1
+03292 02858 30 01272      JFRF  L04130
+03293                   
+03294 02859 16 00000.1  L02859  AND 000.1
+03295 02860 13 00110      FTCHD DWS2_1  !eenheid DWS
+03296 02861 13 00111      FTCHD DWS2_2  !tiental DWS
+03297 02862 15 01503      COMP  1503  !constante 3
+03298 02863 15 01503      COMP  1503  !constante 3
+03299 02864 10 00003.0    STRB  RESULT1 !F=C
+03300                   
+03301 02865 16 00003.0    AND RESULT1 !F=C
+03302 02866 30 00012      JFRF  L02878
+03303                   
+03304 02867 16 00003.0    AND RESULT1 !F=C
+03305 02868 13 01232      FTCHD DSP33_0 !display 33 eenheden
+03306 02869 13 01233      FTCHD DSP33_1 !display 33 tientallen
+03307 02870 13 01234      FTCHD DSP33_2 !display 33 honderdtallen
+03308 02871 13 01235      FTCHD DSP33_3 !display 33 duizendtallen
+03309 02872 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03310 02873 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03311 02874 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03312 02875 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03313                   
+03314 02876 17 00000.1    ANDNT 000.1
+03315 02877 30 01253      JFRF  L04130
+03316                   
+03317 02878 16 00000.1  L02878  AND 000.1
+03318 02879 13 00110      FTCHD DWS2_1  !eenheid DWS
+03319 02880 13 00111      FTCHD DWS2_2  !tiental DWS
+03320 02881 15 01504      COMP  1504  !constante 4
+03321 02882 15 01503      COMP  1503  !constante 3
+03322 02883 10 00003.0    STRB  RESULT1 !F=C
+03323                   
+03324 02884 16 00003.0    AND RESULT1 !F=C
+03325 02885 30 00012      JFRF  L02897
+03326                   
+03327 02886 16 00003.0    AND RESULT1 !F=C
+03328 02887 13 01236      FTCHD DSP34_0 !display 34 eenheden
+03329 02888 13 01237      FTCHD DSP34_1 !display 34 tientallen
+03330 02889 13 01238      FTCHD DSP34_2 !display 34 honderdtallen
+03331 02890 13 01239      FTCHD DSP34_3 !display 34 duizendtallen
+03332 02891 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03333 02892 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03334 02893 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03335 02894 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03336                   
+03337 02895 17 00000.1    ANDNT 000.1
+03338 02896 30 01234      JFRF  L04130
+03339                   
+03340 02897 16 00000.1  L02897  AND 000.1
+03341 02898 13 00110      FTCHD DWS2_1  !eenheid DWS
+03342 02899 13 00111      FTCHD DWS2_2  !tiental DWS
+03343 02900 15 01505      COMP  1505  !constante 5
+03344 02901 15 01503      COMP  1503  !constante 3
+03345 02902 10 00003.0    STRB  RESULT1 !F=C
+03346                   
+03347 02903 16 00003.0    AND RESULT1 !F=C
+03348 02904 30 00012      JFRF  L02916
+03349                   
+03350 02905 16 00003.0    AND RESULT1 !F=C
+03351 02906 13 01240      FTCHD DSP35_0 !display 35 eenheden
+03352 02907 13 01241      FTCHD DSP35_1 !display 35 tientallen
+03353 02908 13 01242      FTCHD DSP35_2 !display 35 honderdtallen
+03354 02909 13 01243      FTCHD DSP35_3 !display 35 duizendtallen
+03355 02910 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03356 02911 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03357 02912 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03358 02913 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03359                   
+03360 02914 17 00000.1    ANDNT 000.1
+03361 02915 30 01215      JFRF  L04130
+03362                   
+03363 02916 16 00000.1  L02916  AND 000.1
+03364 02917 13 00110      FTCHD DWS2_1  !eenheid DWS
+03365 02918 13 00111      FTCHD DWS2_2  !tiental DWS
+03366 02919 15 01506      COMP  1506  !constante 6
+03367 02920 15 01503      COMP  1503  !constante 3
+03368 02921 10 00003.0    STRB  RESULT1 !F=C
+03369                   
+03370 02922 16 00003.0    AND RESULT1 !F=C
+03371 02923 30 00012      JFRF  L02935
+03372                   
+03373 02924 16 00003.0    AND RESULT1 !F=C
+03374 02925 13 01244      FTCHD DSP36_0 !display 36 eenheden
+03375 02926 13 01245      FTCHD DSP36_1 !display 36 tientallen
+03376 02927 13 01246      FTCHD DSP36_2 !display 36 honderdtallen
+03377 02928 13 01247      FTCHD DSP36_3 !display 36 duizendtallen
+03378 02929 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03379 02930 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03380 02931 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03381 02932 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03382                   
+03383 02933 17 00000.1    ANDNT 000.1
+03384 02934 30 01196      JFRF  L04130
+03385                   
+03386 02935 16 00000.1  L02935  AND 000.1
+03387 02936 13 00110      FTCHD DWS2_1  !eenheid DWS
+03388 02937 13 00111      FTCHD DWS2_2  !tiental DWS
+03389 02938 15 01507      COMP  1507  !constante 7
+03390 02939 15 01503      COMP  1503  !constante 3
+03391 02940 10 00003.0    STRB  RESULT1 !F=C
+03392                   
+03393 02941 16 00003.0    AND RESULT1 !F=C
+03394 02942 30 00012      JFRF  L02954
+03395                   
+03396 02943 16 00003.0    AND RESULT1 !F=C
+03397 02944 13 01248      FTCHD DSP37_0 !display 37 eenheden
+03398 02945 13 01249      FTCHD DSP37_1 !display 37 tientallen
+03399 02946 13 01250      FTCHD DSP37_2 !display 37 honderdtallen
+03400 02947 13 01251      FTCHD DSP37_3 !display 37 duizendtallen
+03401 02948 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03402 02949 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03403 02950 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03404 02951 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03405                   
+03406 02952 17 00000.1    ANDNT 000.1
+03407 02953 30 01177      JFRF  L04130
+03408                   
+03409 02954 16 00000.1  L02954  AND 000.1
+03410 02955 13 00110      FTCHD DWS2_1  !eenheid DWS
+03411 02956 13 00111      FTCHD DWS2_2  !tiental DWS
+03412 02957 15 01508      COMP  1508  !constante 8
+03413 02958 15 01503      COMP  1503  !constante 3
+03414 02959 10 00003.0    STRB  RESULT1 !F=C
+03415                   
+03416 02960 16 00003.0    AND RESULT1 !F=C
+03417 02961 30 00012      JFRF  L02973
+03418                   
+03419 02962 16 00003.0    AND RESULT1 !F=C
+03420 02963 13 01252      FTCHD DSP38_0 !display 38 eenheden
+03421 02964 13 01253      FTCHD DSP38_1 !display 38 tientallen
+03422 02965 13 01254      FTCHD DSP38_2 !display 38 honderdtallen
+03423 02966 13 01255      FTCHD DSP38_3 !display 38 duizendtallen
+03424 02967 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03425 02968 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03426 02969 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03427 02970 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03428                   
+03429 02971 17 00000.1    ANDNT 000.1
+03430 02972 30 01158      JFRF  L04130
+03431                   
+03432 02973 16 00000.1  L02973  AND 000.1
+03433 02974 13 00110      FTCHD DWS2_1  !eenheid DWS
+03434 02975 13 00111      FTCHD DWS2_2  !tiental DWS
+03435 02976 15 01509      COMP  1509  !constante 9
+03436 02977 15 01503      COMP  1503  !constante 3
+03437 02978 10 00003.0    STRB  RESULT1 !F=C
+03438                   
+03439 02979 16 00003.0    AND RESULT1 !F=C
+03440 02980 30 00012      JFRF  L02992
+03441                   
+03442 02981 16 00003.0    AND RESULT1 !F=C
+03443 02982 13 01256      FTCHD DSP39_0 !display 39 eenheden
+03444 02983 13 01257      FTCHD DSP39_1 !display 39 tientallen
+03445 02984 13 01258      FTCHD DSP39_2 !display 39 honderdtallen
+03446 02985 13 01259      FTCHD DSP39_3 !display 39 duizendtallen
+03447 02986 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03448 02987 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03449 02988 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03450 02989 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03451                   
+03452 02990 17 00000.1    ANDNT 000.1
+03453 02991 30 01139      JFRF  L04130
+03454                   
+03455 02992 16 00000.1  L02992  AND 000.1
+03456 02993 13 00110      FTCHD DWS2_1  !eenheid DWS
+03457 02994 13 00111      FTCHD DWS2_2  !tiental DWS
+03458 02995 15 01500      COMP  1500  !constante 0
+03459 02996 15 01504      COMP  1504  !constante 4
+03460 02997 10 00003.0    STRB  RESULT1 !F=C
+03461                   
+03462 02998 16 00003.0    AND RESULT1 !F=C
+03463 02999 30 00012      JFRF  L03011
+03464                   
+03465 03000 16 00003.0    AND RESULT1 !F=C
+03466 03001 13 01260      FTCHD DSP40_0 !display 40 eenheden
+03467 03002 13 01261      FTCHD DSP40_1 !display 40 tientallen
+03468 03003 13 01262      FTCHD DSP40_2 !display 40 honderdtallen
+03469 03004 13 01263      FTCHD DSP40_3 !display 40 duizendtallen
+03470 03005 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03471 03006 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03472 03007 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03473 03008 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03474                   
+03475 03009 17 00000.1    ANDNT 000.1
+03476 03010 30 01120      JFRF  L04130
+03477                   
+03478 03011 16 00000.1  L03011  AND 000.1
+03479 03012 13 00110      FTCHD DWS2_1  !eenheid DWS
+03480 03013 13 00111      FTCHD DWS2_2  !tiental DWS
+03481 03014 15 01501      COMP  1501  !constante 1
+03482 03015 15 01504      COMP  1504  !constante 4
+03483 03016 10 00003.0    STRB  RESULT1 !F=C
+03484                   
+03485 03017 16 00003.0    AND RESULT1 !F=C
+03486 03018 30 00012      JFRF  L03030
+03487                   
+03488 03019 16 00003.0    AND RESULT1 !F=C
+03489 03020 13 01264      FTCHD DSP41_0 !display 41 eenheden
+03490 03021 13 01265      FTCHD DSP41_1 !display 41 tientallen
+03491 03022 13 01266      FTCHD DSP41_2 !display 41 honderdtallen
+03492 03023 13 01267      FTCHD DSP41_3 !display 41 duizendtallen
+03493 03024 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03494 03025 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03495 03026 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03496 03027 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03497                   
+03498 03028 17 00000.1    ANDNT 000.1
+03499 03029 30 01101      JFRF  L04130
+03500                   
+03501 03030 16 00000.1  L03030  AND 000.1
+03502 03031 13 00110      FTCHD DWS2_1  !eenheid DWS
+03503 03032 13 00111      FTCHD DWS2_2  !tiental DWS
+03504 03033 15 01502      COMP  1502  !constante 2
+03505 03034 15 01504      COMP  1504  !constante 4
+03506 03035 10 00003.0    STRB  RESULT1 !F=C
+03507                   
+03508 03036 16 00003.0    AND RESULT1 !F=C
+03509 03037 30 00012      JFRF  L03049
+03510                   
+03511 03038 16 00003.0    AND RESULT1 !F=C
+03512 03039 13 01268      FTCHD DSP42_0 !display 42 eenheden
+03513 03040 13 01269      FTCHD DSP42_1 !display 42 tientallen
+03514 03041 13 01270      FTCHD DSP42_2 !display 42 honderdtallen
+03515 03042 13 01271      FTCHD DSP42_3 !display 42 duizendtallen
+03516 03043 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03517 03044 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03518 03045 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03519 03046 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03520                   
+03521 03047 17 00000.1    ANDNT 000.1
+03522 03048 30 01082      JFRF  L04130
+03523                   
+03524 03049 16 00000.1  L03049  AND 000.1
+03525 03050 13 00110      FTCHD DWS2_1  !eenheid DWS
+03526 03051 13 00111      FTCHD DWS2_2  !tiental DWS
+03527 03052 15 01503      COMP  1503  !constante 3
+03528 03053 15 01504      COMP  1504  !constante 4
+03529 03054 10 00003.0    STRB  RESULT1 !F=C
+03530                   
+03531 03055 16 00003.0    AND RESULT1 !F=C
+03532 03056 30 00012      JFRF  L03068
+03533                   
+03534 03057 16 00003.0    AND RESULT1 !F=C
+03535 03058 13 01272      FTCHD DSP43_0 !display 43 eenheden
+03536 03059 13 01273      FTCHD DSP43_1 !display 43 tientallen
+03537 03060 13 01274      FTCHD DSP43_2 !display 43 honderdtallen
+03538 03061 13 01275      FTCHD DSP43_3 !display 43 duizendtallen
+03539 03062 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03540 03063 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03541 03064 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03542 03065 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03543                   
+03544 03066 17 00000.1    ANDNT 000.1
+03545 03067 30 01063      JFRF  L04130
+03546                   
+03547 03068 16 00000.1  L03068  AND 000.1
+03548 03069 13 00110      FTCHD DWS2_1  !eenheid DWS
+03549 03070 13 00111      FTCHD DWS2_2  !tiental DWS
+03550 03071 15 01504      COMP  1504  !constante 4
+03551 03072 15 01504      COMP  1504  !constante 4
+03552 03073 10 00003.0    STRB  RESULT1 !F=C
+03553                   
+03554 03074 16 00003.0    AND RESULT1 !F=C
+03555 03075 30 00012      JFRF  L03087
+03556                   
+03557 03076 16 00003.0    AND RESULT1 !F=C
+03558 03077 13 01276      FTCHD DSP44_0 !display 44 eenheden
+03559 03078 13 01277      FTCHD DSP44_1 !display 44 tientallen
+03560 03079 13 01278      FTCHD DSP44_2 !display 44 honderdtallen
+03561 03080 13 01279      FTCHD DSP44_3 !display 44 duizendtallen
+03562 03081 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03563 03082 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03564 03083 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03565 03084 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03566                   
+03567 03085 17 00000.1    ANDNT 000.1
+03568 03086 30 01044      JFRF  L04130
+03569                   
+03570 03087 16 00000.1  L03087  AND 000.1
+03571 03088 13 00110      FTCHD DWS2_1  !eenheid DWS
+03572 03089 13 00111      FTCHD DWS2_2  !tiental DWS
+03573 03090 15 01505      COMP  1505  !constante 5
+03574 03091 15 01504      COMP  1504  !constante 4
+03575 03092 10 00003.0    STRB  RESULT1 !F=C
+03576                   
+03577 03093 16 00003.0    AND RESULT1 !F=C
+03578 03094 30 00012      JFRF  L03106
+03579                   
+03580 03095 16 00003.0    AND RESULT1 !F=C
+03581 03096 13 01280      FTCHD DSP45_0 !display 45 eenheden
+03582 03097 13 01281      FTCHD DSP45_1 !display 45 tientallen
+03583 03098 13 01282      FTCHD DSP45_2 !display 45 honderdtallen
+03584 03099 13 01283      FTCHD DSP45_3 !display 45 duizendtallen
+03585 03100 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03586 03101 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03587 03102 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03588 03103 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03589                   
+03590 03104 17 00000.1    ANDNT 000.1
+03591 03105 30 01025      JFRF  L04130
+03592                   
+03593 03106 16 00000.1  L03106  AND 000.1
+03594 03107 13 00110      FTCHD DWS2_1  !eenheid DWS
+03595 03108 13 00111      FTCHD DWS2_2  !tiental DWS
+03596 03109 15 01506      COMP  1506  !constante 6
+03597 03110 15 01504      COMP  1504  !constante 4
+03598 03111 10 00003.0    STRB  RESULT1 !F=C
+03599                   
+03600 03112 16 00003.0    AND RESULT1 !F=C
+03601 03113 30 00012      JFRF  L03125
+03602                   
+03603 03114 16 00003.0    AND RESULT1 !F=C
+03604 03115 13 01284      FTCHD DSP46_0 !display 46 eenheden
+03605 03116 13 01285      FTCHD DSP46_1 !display 46 tientallen
+03606 03117 13 01286      FTCHD DSP46_2 !display 46 honderdtallen
+03607 03118 13 01287      FTCHD DSP46_3 !display 46 duizendtallen
+03608 03119 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03609 03120 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03610 03121 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03611 03122 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03612                   
+03613 03123 17 00000.1    ANDNT 000.1
+03614 03124 30 01006      JFRF  L04130
+03615                   
+03616 03125 16 00000.1  L03125  AND 000.1
+03617 03126 13 00110      FTCHD DWS2_1  !eenheid DWS
+03618 03127 13 00111      FTCHD DWS2_2  !tiental DWS
+03619 03128 15 01507      COMP  1507  !constante 7
+03620 03129 15 01504      COMP  1504  !constante 4
+03621 03130 10 00003.0    STRB  RESULT1 !F=C
+03622                   
+03623 03131 16 00003.0    AND RESULT1 !F=C
+03624 03132 30 00012      JFRF  L03144
+03625                   
+03626 03133 16 00003.0    AND RESULT1 !F=C
+03627 03134 13 01288      FTCHD DSP47_0 !display 47 eenheden
+03628 03135 13 01289      FTCHD DSP47_1 !display 47 tientallen
+03629 03136 13 01290      FTCHD DSP47_2 !display 47 honderdtallen
+03630 03137 13 01291      FTCHD DSP47_3 !display 47 duizendtallen
+03631 03138 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03632 03139 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03633 03140 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03634 03141 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03635                   
+03636 03142 17 00000.1    ANDNT 000.1
+03637 03143 30 00987      JFRF  L04130
+03638                   
+03639 03144 16 00000.1  L03144  AND 000.1
+03640 03145 13 00110      FTCHD DWS2_1  !eenheid DWS
+03641 03146 13 00111      FTCHD DWS2_2  !tiental DWS
+03642 03147 15 01508      COMP  1508  !constante 8
+03643 03148 15 01504      COMP  1504  !constante 4
+03644 03149 10 00003.0    STRB  RESULT1 !F=C
+03645                   
+03646 03150 16 00003.0    AND RESULT1 !F=C
+03647 03151 30 00012      JFRF  L03163
+03648                   
+03649 03152 16 00003.0    AND RESULT1 !F=C
+03650 03153 13 01292      FTCHD DSP48_0 !display 48 eenheden
+03651 03154 13 01293      FTCHD DSP48_1 !display 48 tientallen
+03652 03155 13 01294      FTCHD DSP48_2 !display 48 honderdtallen
+03653 03156 13 01295      FTCHD DSP48_3 !display 48 duizendtallen
+03654 03157 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03655 03158 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03656 03159 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03657 03160 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03658                   
+03659 03161 17 00000.1    ANDNT 000.1
+03660 03162 30 00968      JFRF  L04130
+03661                   
+03662 03163 16 00000.1  L03163  AND 000.1
+03663 03164 13 00110      FTCHD DWS2_1  !eenheid DWS
+03664 03165 13 00111      FTCHD DWS2_2  !tiental DWS
+03665 03166 15 01509      COMP  1509  !constante 9
+03666 03167 15 01504      COMP  1504  !constante 4
+03667 03168 10 00003.0    STRB  RESULT1 !F=C
+03668                   
+03669 03169 16 00003.0    AND RESULT1 !F=C
+03670 03170 30 00012      JFRF  L03182
+03671                   
+03672 03171 16 00003.0    AND RESULT1 !F=C
+03673 03172 13 01296      FTCHD DSP49_0 !display 49 eenheden
+03674 03173 13 01297      FTCHD DSP49_1 !display 49 tientallen
+03675 03174 13 01298      FTCHD DSP49_2 !display 49 honderdtallen
+03676 03175 13 01299      FTCHD DSP49_3 !display 49 duizendtallen
+03677 03176 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03678 03177 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03679 03178 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03680 03179 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03681                   
+03682 03180 17 00000.1    ANDNT 000.1
+03683 03181 30 00949      JFRF  L04130
+03684                   
+03685 03182 16 00000.1  L03182  AND 000.1
+03686 03183 13 00110      FTCHD DWS2_1  !eenheid DWS
+03687 03184 13 00111      FTCHD DWS2_2  !tiental DWS
+03688 03185 15 01500      COMP  1500  !constante 0
+03689 03186 15 01505      COMP  1505  !constante 5
+03690 03187 10 00003.0    STRB  RESULT1 !F=C
+03691                   
+03692 03188 16 00003.0    AND RESULT1 !F=C
+03693 03189 30 00012      JFRF  L03201
+03694                   
+03695 03190 16 00003.0    AND RESULT1 !F=C
+03696 03191 13 01300      FTCHD DSP50_0 !display 50 eenheden
+03697 03192 13 01301      FTCHD DSP50_1 !display 50 tientallen
+03698 03193 13 01302      FTCHD DSP50_2 !display 50 honderdtallen
+03699 03194 13 01303      FTCHD DSP50_3 !display 50 duizendtallen
+03700 03195 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03701 03196 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03702 03197 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03703 03198 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03704                   
+03705 03199 17 00000.1    ANDNT 000.1
+03706 03200 30 00930      JFRF  L04130
+03707                   
+03708 03201 16 00000.1  L03201  AND 000.1
+03709 03202 13 00110      FTCHD DWS2_1  !eenheid DWS
+03710 03203 13 00111      FTCHD DWS2_2  !tiental DWS
+03711 03204 15 01501      COMP  1501  !constante 1
+03712 03205 15 01505      COMP  1505  !constante 5
+03713 03206 10 00003.0    STRB  RESULT1 !F=C
+03714                   
+03715 03207 16 00003.0    AND RESULT1 !F=C
+03716 03208 30 00012      JFRF  L03220
+03717                   
+03718 03209 16 00003.0    AND RESULT1 !F=C
+03719 03210 13 01304      FTCHD DSP51_0 !display 51 eenheden
+03720 03211 13 01305      FTCHD DSP51_1 !display 51 tientallen
+03721 03212 13 01306      FTCHD DSP51_2 !display 51 honderdtallen
+03722 03213 13 01307      FTCHD DSP51_3 !display 51 duizendtallen
+03723 03214 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03724 03215 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03725 03216 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03726 03217 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03727                   
+03728 03218 17 00000.1    ANDNT 000.1
+03729 03219 30 00911      JFRF  L04130
+03730                   
+03731 03220 16 00000.1  L03220  AND 000.1
+03732 03221 13 00110      FTCHD DWS2_1  !eenheid DWS
+03733 03222 13 00111      FTCHD DWS2_2  !tiental DWS
+03734 03223 15 01502      COMP  1502  !constante 2
+03735 03224 15 01505      COMP  1505  !constante 5
+03736 03225 10 00003.0    STRB  RESULT1 !F=C
+03737                   
+03738 03226 16 00003.0    AND RESULT1 !F=C
+03739 03227 30 00012      JFRF  L03239
+03740                   
+03741 03228 16 00003.0    AND RESULT1 !F=C
+03742 03229 13 01308      FTCHD DSP52_0 !display 52 eenheden
+03743 03230 13 01309      FTCHD DSP52_1 !display 52 tientallen
+03744 03231 13 01310      FTCHD DSP52_2 !display 52 honderdtallen
+03745 03232 13 01311      FTCHD DSP52_3 !display 52 duizendtallen
+03746 03233 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03747 03234 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03748 03235 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03749 03236 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03750                   
+03751 03237 17 00000.1    ANDNT 000.1
+03752 03238 30 00892      JFRF  L04130
+03753                   
+03754 03239 16 00000.1  L03239  AND 000.1
+03755 03240 13 00110      FTCHD DWS2_1  !eenheid DWS
+03756 03241 13 00111      FTCHD DWS2_2  !tiental DWS
+03757 03242 15 01503      COMP  1503  !constante 3
+03758 03243 15 01505      COMP  1505  !constante 5
+03759 03244 10 00003.0    STRB  RESULT1 !F=C
+03760                   
+03761 03245 16 00003.0    AND RESULT1 !F=C
+03762 03246 30 00012      JFRF  L03258
+03763                   
+03764 03247 16 00003.0    AND RESULT1 !F=C
+03765 03248 13 01312      FTCHD DSP53_0 !display 53 eenheden
+03766 03249 13 01313      FTCHD DSP53_1 !display 53 tientallen
+03767 03250 13 01314      FTCHD DSP53_2 !display 53 honderdtallen
+03768 03251 13 01315      FTCHD DSP53_3 !display 53 duizendtallen
+03769 03252 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03770 03253 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03771 03254 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03772 03255 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03773                   
+03774 03256 17 00000.1    ANDNT 000.1
+03775 03257 30 00873      JFRF  L04130
+03776                   
+03777 03258 16 00000.1  L03258  AND 000.1
+03778 03259 13 00110      FTCHD DWS2_1  !eenheid DWS
+03779 03260 13 00111      FTCHD DWS2_2  !tiental DWS
+03780 03261 15 01504      COMP  1504  !constante 4
+03781 03262 15 01505      COMP  1505  !constante 5
+03782 03263 10 00003.0    STRB  RESULT1 !F=C
+03783                   
+03784 03264 16 00003.0    AND RESULT1 !F=C
+03785 03265 30 00012      JFRF  L03277
+03786                   
+03787 03266 16 00003.0    AND RESULT1 !F=C
+03788 03267 13 01316      FTCHD DSP54_0 !display 54 eenheden
+03789 03268 13 01317      FTCHD DSP54_1 !display 54 tientallen
+03790 03269 13 01318      FTCHD DSP54_2 !display 54 honderdtallen
+03791 03270 13 01319      FTCHD DSP54_3 !display 54 duizendtallen
+03792 03271 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03793 03272 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03794 03273 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03795 03274 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03796                   
+03797 03275 17 00000.1    ANDNT 000.1
+03798 03276 30 00854      JFRF  L04130
+03799                   
+03800 03277 16 00000.1  L03277  AND 000.1
+03801 03278 13 00110      FTCHD DWS2_1  !eenheid DWS
+03802 03279 13 00111      FTCHD DWS2_2  !tiental DWS
+03803 03280 15 01505      COMP  1505  !constante 5
+03804 03281 15 01505      COMP  1505  !constante 5
+03805 03282 10 00003.0    STRB  RESULT1 !F=C
+03806                   
+03807 03283 16 00003.0    AND RESULT1 !F=C
+03808 03284 30 00012      JFRF  L03296
+03809                   
+03810 03285 16 00003.0    AND RESULT1 !F=C
+03811 03286 13 01320      FTCHD DSP55_0 !display 55 eenheden
+03812 03287 13 01321      FTCHD DSP55_1 !display 55 tientallen
+03813 03288 13 01322      FTCHD DSP55_2 !display 55 honderdtallen
+03814 03289 13 01323      FTCHD DSP55_3 !display 55 duizendtallen
+03815 03290 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03816 03291 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03817 03292 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03818 03293 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03819                   
+03820 03294 17 00000.1    ANDNT 000.1
+03821 03295 30 00835      JFRF  L04130
+03822                   
+03823 03296 16 00000.1  L03296  AND 000.1
+03824 03297 13 00110      FTCHD DWS2_1  !eenheid DWS
+03825 03298 13 00111      FTCHD DWS2_2  !tiental DWS
+03826 03299 15 01506      COMP  1506  !constante 6
+03827 03300 15 01505      COMP  1505  !constante 5
+03828 03301 10 00003.0    STRB  RESULT1 !F=C
+03829                   
+03830 03302 16 00003.0    AND RESULT1 !F=C
+03831 03303 30 00012      JFRF  L03315
+03832                   
+03833 03304 16 00003.0    AND RESULT1 !F=C
+03834 03305 13 01324      FTCHD DSP56_0 !display 56 eenheden
+03835 03306 13 01325      FTCHD DSP56_1 !display 56 tientallen
+03836 03307 13 01326      FTCHD DSP56_2 !display 56 honderdtallen
+03837 03308 13 01327      FTCHD DSP56_3 !display 56 duizendtallen
+03838 03309 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03839 03310 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03840 03311 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03841 03312 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03842                   
+03843 03313 17 00000.1    ANDNT 000.1
+03844 03314 30 00816      JFRF  L04130
+03845                   
+03846 03315 16 00000.1  L03315  AND 000.1
+03847 03316 13 00110      FTCHD DWS2_1  !eenheid DWS
+03848 03317 13 00111      FTCHD DWS2_2  !tiental DWS
+03849 03318 15 01507      COMP  1507  !constante 7
+03850 03319 15 01505      COMP  1505  !constante 5
+03851 03320 10 00003.0    STRB  RESULT1 !F=C
+03852                   
+03853 03321 16 00003.0    AND RESULT1 !F=C
+03854 03322 30 00012      JFRF  L03334
+03855                   
+03856 03323 16 00003.0    AND RESULT1 !F=C
+03857 03324 13 01328      FTCHD DSP57_0 !display 57 eenheden
+03858 03325 13 01329      FTCHD DSP57_1 !display 57 tientallen
+03859 03326 13 01330      FTCHD DSP57_2 !display 57 honderdtallen
+03860 03327 13 01331      FTCHD DSP57_3 !display 57 duizendtallen
+03861 03328 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03862 03329 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03863 03330 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03864 03331 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03865                   
+03866 03332 17 00000.1    ANDNT 000.1
+03867 03333 30 00797      JFRF  L04130
+03868                   
+03869 03334 16 00000.1  L03334  AND 000.1
+03870 03335 13 00110      FTCHD DWS2_1  !eenheid DWS
+03871 03336 13 00111      FTCHD DWS2_2  !tiental DWS
+03872 03337 15 01508      COMP  1508  !constante 8
+03873 03338 15 01505      COMP  1505  !constante 5
+03874 03339 10 00003.0    STRB  RESULT1 !F=C
+03875                   
+03876 03340 16 00003.0    AND RESULT1 !F=C
+03877 03341 30 00012      JFRF  L03353
+03878                   
+03879 03342 16 00003.0    AND RESULT1 !F=C
+03880 03343 13 01332      FTCHD DSP58_0 !display 58 eenheden
+03881 03344 13 01333      FTCHD DSP58_1 !display 58 tientallen
+03882 03345 13 01334      FTCHD DSP58_2 !display 58 honderdtallen
+03883 03346 13 01335      FTCHD DSP58_3 !display 58 duizendtallen
+03884 03347 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03885 03348 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03886 03349 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03887 03350 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03888                   
+03889 03351 17 00000.1    ANDNT 000.1
+03890 03352 30 00778      JFRF  L04130
+03891                   
+03892 03353 16 00000.1  L03353  AND 000.1
+03893 03354 13 00110      FTCHD DWS2_1  !eenheid DWS
+03894 03355 13 00111      FTCHD DWS2_2  !tiental DWS
+03895 03356 15 01509      COMP  1509  !constante 9
+03896 03357 15 01505      COMP  1505  !constante 5
+03897 03358 10 00003.0    STRB  RESULT1 !F=C
+03898                   
+03899 03359 16 00003.0    AND RESULT1 !F=C
+03900 03360 30 00012      JFRF  L03372
+03901                   
+03902 03361 16 00003.0    AND RESULT1 !F=C
+03903 03362 13 01336      FTCHD DSP59_0 !display 59 eenheden
+03904 03363 13 01337      FTCHD DSP59_1 !display 59 tientallen
+03905 03364 13 01338      FTCHD DSP59_2 !display 59 honderdtallen
+03906 03365 13 01339      FTCHD DSP59_3 !display 59 duizendtallen
+03907 03366 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03908 03367 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03909 03368 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03910 03369 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03911                   
+03912 03370 17 00000.1    ANDNT 000.1
+03913 03371 30 00759      JFRF  L04130
+03914                   
+03915 03372 16 00000.1  L03372  AND 000.1
+03916 03373 13 00110      FTCHD DWS2_1  !eenheid DWS
+03917 03374 13 00111      FTCHD DWS2_2  !tiental DWS
+03918 03375 15 01500      COMP  1500  !constante 0
+03919 03376 15 01506      COMP  1506  !constante 6
+03920 03377 10 00003.0    STRB  RESULT1 !F=C
+03921                   
+03922 03378 16 00003.0    AND RESULT1 !F=C
+03923 03379 30 00012      JFRF  L03391
+03924                   
+03925 03380 16 00003.0    AND RESULT1 !F=C
+03926 03381 13 01340      FTCHD DSP60_0 !display 60 eenheden
+03927 03382 13 01341      FTCHD DSP60_1 !display 60 tientallen
+03928 03383 13 01342      FTCHD DSP60_2 !display 60 honderdtallen
+03929 03384 13 01343      FTCHD DSP60_3 !display 60 duizendtallen
+03930 03385 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03931 03386 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03932 03387 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03933 03388 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03934                   
+03935 03389 17 00000.1    ANDNT 000.1
+03936 03390 30 00740      JFRF  L04130
+03937                   
+03938 03391 16 00000.1  L03391  AND 000.1
+03939 03392 13 00110      FTCHD DWS2_1  !eenheid DWS
+03940 03393 13 00111      FTCHD DWS2_2  !tiental DWS
+03941 03394 15 01501      COMP  1501  !constante 1
+03942 03395 15 01506      COMP  1506  !constante 6
+03943 03396 10 00003.0    STRB  RESULT1 !F=C
+03944                   
+03945 03397 16 00003.0    AND RESULT1 !F=C
+03946 03398 30 00012      JFRF  L03410
+03947                   
+03948 03399 16 00003.0    AND RESULT1 !F=C
+03949 03400 13 01344      FTCHD DSP61_0 !display 61 eenheden
+03950 03401 13 01345      FTCHD DSP61_1 !display 61 tientallen
+03951 03402 13 01346      FTCHD DSP61_2 !display 61 honderdtallen
+03952 03403 13 01347      FTCHD DSP61_3 !display 61 duizendtallen
+03953 03404 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03954 03405 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03955 03406 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03956 03407 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03957                   
+03958 03408 17 00000.1    ANDNT 000.1
+03959 03409 30 00721      JFRF  L04130
+03960                   
+03961 03410 16 00000.1  L03410  AND 000.1
+03962 03411 13 00110      FTCHD DWS2_1  !eenheid DWS
+03963 03412 13 00111      FTCHD DWS2_2  !tiental DWS
+03964 03413 15 01502      COMP  1502  !constante 2
+03965 03414 15 01506      COMP  1506  !constante 6
+03966 03415 10 00003.0    STRB  RESULT1 !F=C
+03967                   
+03968 03416 16 00003.0    AND RESULT1 !F=C
+03969 03417 30 00012      JFRF  L03429
+03970                   
+03971 03418 16 00003.0    AND RESULT1 !F=C
+03972 03419 13 01348      FTCHD DSP62_0 !display 62 eenheden
+03973 03420 13 01349      FTCHD DSP62_1 !display 62 tientallen
+03974 03421 13 01350      FTCHD DSP62_2 !display 62 honderdtallen
+03975 03422 13 01351      FTCHD DSP62_3 !display 62 duizendtallen
+03976 03423 14 00160      STRD  DISPL_0 !display aansturing eenh.
+03977 03424 14 00161      STRD  DISPL_1 !display aansturing tiental.
+03978 03425 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+03979 03426 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+03980                   
+03981 03427 17 00000.1    ANDNT 000.1
+03982 03428 30 00702      JFRF  L04130
+03983                   
+03984 03429 16 00000.1  L03429  AND 000.1
+03985 03430 13 00110      FTCHD DWS2_1  !eenheid DWS
+03986 03431 13 00111      FTCHD DWS2_2  !tiental DWS
+03987 03432 15 01503      COMP  1503  !constante 3
+03988 03433 15 01506      COMP  1506  !constante 6
+03989 03434 10 00003.0    STRB  RESULT1 !F=C
+03990                   
+03991 03435 16 00003.0    AND RESULT1 !F=C
+03992 03436 30 00012      JFRF  L03448
+03993                   
+03994 03437 16 00003.0    AND RESULT1 !F=C
+03995 03438 13 01352      FTCHD DSP63_0 !display 63 eenheden
+03996 03439 13 01353      FTCHD DSP63_1 !display 63 tientallen
+03997 03440 13 01354      FTCHD DSP63_2 !display 63 honderdtallen
+03998 03441 13 01355      FTCHD DSP63_3 !display 63 duizendtallen
+03999 03442 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04000 03443 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04001 03444 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04002 03445 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04003                   
+04004 03446 17 00000.1    ANDNT 000.1
+04005 03447 30 00683      JFRF  L04130
+04006                   
+04007 03448 16 00000.1  L03448  AND 000.1
+04008 03449 13 00110      FTCHD DWS2_1  !eenheid DWS
+04009 03450 13 00111      FTCHD DWS2_2  !tiental DWS
+04010 03451 15 01504      COMP  1504  !constante 4
+04011 03452 15 01506      COMP  1506  !constante 6
+04012 03453 10 00003.0    STRB  RESULT1 !F=C
+04013                   
+04014 03454 16 00003.0    AND RESULT1 !F=C
+04015 03455 30 00012      JFRF  L03467
+04016                   
+04017 03456 16 00003.0    AND RESULT1 !F=C
+04018 03457 13 01356      FTCHD DSP64_0 !display 64 eenheden
+04019 03458 13 01357      FTCHD DSP64_1 !display 64 tientallen
+04020 03459 13 01358      FTCHD DSP64_2 !display 64 honderdtallen
+04021 03460 13 01359      FTCHD DSP64_3 !display 64 duizendtallen
+04022 03461 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04023 03462 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04024 03463 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04025 03464 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04026                   
+04027 03465 17 00000.1    ANDNT 000.1
+04028 03466 30 00664      JFRF  L04130
+04029                   
+04030 03467 16 00000.1  L03467  AND 000.1
+04031 03468 13 00110      FTCHD DWS2_1  !eenheid DWS
+04032 03469 13 00111      FTCHD DWS2_2  !tiental DWS
+04033 03470 15 01505      COMP  1505  !constante 5
+04034 03471 15 01506      COMP  1506  !constante 6
+04035 03472 10 00003.0    STRB  RESULT1 !F=C
+04036                   
+04037 03473 16 00003.0    AND RESULT1 !F=C
+04038 03474 30 00012      JFRF  L03486
+04039                   
+04040 03475 16 00003.0    AND RESULT1 !F=C
+04041 03476 13 01360      FTCHD DSP65_0 !display 65 eenheden
+04042 03477 13 01361      FTCHD DSP65_1 !display 65 tientallen
+04043 03478 13 01362      FTCHD DSP65_2 !display 65 honderdtallen
+04044 03479 13 01363      FTCHD DSP65_3 !display 65 duizendtallen
+04045 03480 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04046 03481 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04047 03482 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04048 03483 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04049                   
+04050 03484 17 00000.1    ANDNT 000.1
+04051 03485 30 00645      JFRF  L04130
+04052                   
+04053 03486 16 00000.1  L03486  AND 000.1
+04054 03487 13 00110      FTCHD DWS2_1  !eenheid DWS
+04055 03488 13 00111      FTCHD DWS2_2  !tiental DWS
+04056 03489 15 01506      COMP  1506  !constante 6
+04057 03490 15 01506      COMP  1506  !constante 6
+04058 03491 10 00003.0    STRB  RESULT1 !F=C
+04059                   
+04060 03492 16 00003.0    AND RESULT1 !F=C
+04061 03493 30 00012      JFRF  L03505
+04062                   
+04063 03494 16 00003.0    AND RESULT1 !F=C
+04064 03495 13 01364      FTCHD DSP66_0 !display 66 eenheden
+04065 03496 13 01365      FTCHD DSP66_1 !display 66 tientallen
+04066 03497 13 01366      FTCHD DSP66_2 !display 66 honderdtallen
+04067 03498 13 01367      FTCHD DSP66_3 !display 66 duizendtallen
+04068 03499 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04069 03500 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04070 03501 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04071 03502 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04072                   
+04073 03503 17 00000.1    ANDNT 000.1
+04074 03504 30 00626      JFRF  L04130
+04075                   
+04076 03505 16 00000.1  L03505  AND 000.1
+04077 03506 13 00110      FTCHD DWS2_1  !eenheid DWS
+04078 03507 13 00111      FTCHD DWS2_2  !tiental DWS
+04079 03508 15 01507      COMP  1507  !constante 7
+04080 03509 15 01506      COMP  1506  !constante 6
+04081 03510 10 00003.0    STRB  RESULT1 !F=C
+04082                   
+04083 03511 16 00003.0    AND RESULT1 !F=C
+04084 03512 30 00012      JFRF  L03524
+04085                   
+04086 03513 16 00003.0    AND RESULT1 !F=C
+04087 03514 13 01368      FTCHD DSP67_0 !display 67 eenheden
+04088 03515 13 01369      FTCHD DSP67_1 !display 67 tientallen
+04089 03516 13 01370      FTCHD DSP67_2 !display 67 honderdtallen
+04090 03517 13 01371      FTCHD DSP67_3 !display 67 duizendtallen
+04091 03518 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04092 03519 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04093 03520 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04094 03521 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04095                   
+04096 03522 17 00000.1    ANDNT 000.1
+04097 03523 30 00607      JFRF  L04130
+04098                   
+04099 03524 16 00000.1  L03524  AND 000.1
+04100 03525 13 00110      FTCHD DWS2_1  !eenheid DWS
+04101 03526 13 00111      FTCHD DWS2_2  !tiental DWS
+04102 03527 15 01508      COMP  1508  !constante 8
+04103 03528 15 01506      COMP  1506  !constante 6
+04104 03529 10 00003.0    STRB  RESULT1 !F=C
+04105                   
+04106 03530 16 00003.0    AND RESULT1 !F=C
+04107 03531 30 00012      JFRF  L03543
+04108                   
+04109 03532 16 00003.0    AND RESULT1 !F=C
+04110 03533 13 01372      FTCHD DSP68_0 !display 68 eenheden
+04111 03534 13 01373      FTCHD DSP68_1 !display 68 tientallen
+04112 03535 13 01374      FTCHD DSP68_2 !display 68 honderdtallen
+04113 03536 13 01375      FTCHD DSP68_3 !display 68 duizendtallen
+04114 03537 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04115 03538 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04116 03539 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04117 03540 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04118                   
+04119 03541 17 00000.1    ANDNT 000.1
+04120 03542 30 00588      JFRF  L04130
+04121                   
+04122 03543 16 00000.1  L03543  AND 000.1
+04123 03544 13 00110      FTCHD DWS2_1  !eenheid DWS
+04124 03545 13 00111      FTCHD DWS2_2  !tiental DWS
+04125 03546 15 01509      COMP  1509  !constante 9
+04126 03547 15 01506      COMP  1506  !constante 6
+04127 03548 10 00003.0    STRB  RESULT1 !F=C
+04128                   
+04129 03549 16 00003.0    AND RESULT1 !F=C
+04130 03550 30 00012      JFRF  L03562
+04131                   
+04132 03551 16 00003.0    AND RESULT1 !F=C
+04133 03552 13 01376      FTCHD DSP69_0 !display 69 eenheden
+04134 03553 13 01377      FTCHD DSP69_1 !display 69 tientallen
+04135 03554 13 01378      FTCHD DSP69_2 !display 69 honderdtallen
+04136 03555 13 01379      FTCHD DSP69_3 !display 69 duizendtallen
+04137 03556 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04138 03557 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04139 03558 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04140 03559 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04141                   
+04142 03560 17 00000.1    ANDNT 000.1
+04143 03561 30 00569      JFRF  L04130
+04144                   
+04145 03562 16 00000.1  L03562  AND 000.1
+04146 03563 13 00110      FTCHD DWS2_1  !eenheid DWS
+04147 03564 13 00111      FTCHD DWS2_2  !tiental DWS
+04148 03565 15 01500      COMP  1500  !constante 0
+04149 03566 15 01507      COMP  1507  !constante 7
+04150 03567 10 00003.0    STRB  RESULT1 !F=C
+04151                   
+04152 03568 16 00003.0    AND RESULT1 !F=C
+04153 03569 30 00012      JFRF  L03581
+04154                   
+04155 03570 16 00003.0    AND RESULT1 !F=C
+04156 03571 13 01380      FTCHD DSP70_0 !display 70 eenheden
+04157 03572 13 01381      FTCHD DSP70_1 !display 70 tientallen
+04158 03573 13 01382      FTCHD DSP70_2 !display 70 honderdtallen
+04159 03574 13 01383      FTCHD DSP70_3 !display 70 duizendtallen
+04160 03575 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04161 03576 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04162 03577 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04163 03578 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04164                   
+04165 03579 17 00000.1    ANDNT 000.1
+04166 03580 30 00550      JFRF  L04130
+04167                   
+04168 03581 16 00000.1  L03581  AND 000.1
+04169 03582 13 00110      FTCHD DWS2_1  !eenheid DWS
+04170 03583 13 00111      FTCHD DWS2_2  !tiental DWS
+04171 03584 15 01501      COMP  1501  !constante 1
+04172 03585 15 01507      COMP  1507  !constante 7
+04173 03586 10 00003.0    STRB  RESULT1 !F=C
+04174                   
+04175 03587 16 00003.0    AND RESULT1 !F=C
+04176 03588 30 00012      JFRF  L03600
+04177                   
+04178 03589 16 00003.0    AND RESULT1 !F=C
+04179 03590 13 01384      FTCHD DSP71_0 !display 71 eenheden
+04180 03591 13 01385      FTCHD DSP71_1 !display 71 tientallen
+04181 03592 13 01386      FTCHD DSP71_2 !display 71 honderdtallen
+04182 03593 13 01387      FTCHD DSP71_3 !display 71 duizendtallen
+04183 03594 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04184 03595 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04185 03596 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04186 03597 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04187                   
+04188 03598 17 00000.1    ANDNT 000.1
+04189 03599 30 00531      JFRF  L04130
+04190                   
+04191 03600 16 00000.1  L03600  AND 000.1
+04192 03601 13 00110      FTCHD DWS2_1  !eenheid DWS
+04193 03602 13 00111      FTCHD DWS2_2  !tiental DWS
+04194 03603 15 01502      COMP  1502  !constante 2
+04195 03604 15 01507      COMP  1507  !constante 7
+04196 03605 10 00003.0    STRB  RESULT1 !F=C
+04197                   
+04198 03606 16 00003.0    AND RESULT1 !F=C
+04199 03607 30 00012      JFRF  L03619
+04200                   
+04201 03608 16 00003.0    AND RESULT1 !F=C
+04202 03609 13 01388      FTCHD DSP72_0 !display 72 eenheden
+04203 03610 13 01389      FTCHD DSP72_1 !display 72 tientallen
+04204 03611 13 01390      FTCHD DSP72_2 !display 72 honderdtallen
+04205 03612 13 01391      FTCHD DSP72_3 !display 72 duizendtallen
+04206 03613 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04207 03614 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04208 03615 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04209 03616 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04210                   
+04211 03617 17 00000.1    ANDNT 000.1
+04212 03618 30 00512      JFRF  L04130
+04213                   
+04214 03619 16 00000.1  L03619  AND 000.1
+04215 03620 13 00110      FTCHD DWS2_1  !eenheid DWS
+04216 03621 13 00111      FTCHD DWS2_2  !tiental DWS
+04217 03622 15 01503      COMP  1503  !constante 3
+04218 03623 15 01507      COMP  1507  !constante 7
+04219 03624 10 00003.0    STRB  RESULT1 !F=C
+04220                   
+04221 03625 16 00003.0    AND RESULT1 !F=C
+04222 03626 30 00012      JFRF  L03638
+04223                   
+04224 03627 16 00003.0    AND RESULT1 !F=C
+04225 03628 13 01392      FTCHD DSP73_0 !display 73 eenheden
+04226 03629 13 01393      FTCHD DSP73_1 !display 73 tientallen
+04227 03630 13 01394      FTCHD DSP73_2 !display 73 honderdtallen
+04228 03631 13 01395      FTCHD DSP73_3 !display 73 duizendtallen
+04229 03632 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04230 03633 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04231 03634 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04232 03635 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04233                   
+04234 03636 17 00000.1    ANDNT 000.1
+04235 03637 30 00493      JFRF  L04130
+04236                   
+04237 03638 16 00000.1  L03638  AND 000.1
+04238 03639 13 00110      FTCHD DWS2_1  !eenheid DWS
+04239 03640 13 00111      FTCHD DWS2_2  !tiental DWS
+04240 03641 15 01504      COMP  1504  !constante 4
+04241 03642 15 01507      COMP  1507  !constante 7
+04242 03643 10 00003.0    STRB  RESULT1 !F=C
+04243                   
+04244 03644 16 00003.0    AND RESULT1 !F=C
+04245 03645 30 00012      JFRF  L03657
+04246                   
+04247 03646 16 00003.0    AND RESULT1 !F=C
+04248 03647 13 01396      FTCHD DSP74_0 !display 74 eenheden
+04249 03648 13 01397      FTCHD DSP74_1 !display 74 tientallen
+04250 03649 13 01398      FTCHD DSP74_2 !display 74 honderdtallen
+04251 03650 13 01399      FTCHD DSP74_3 !display 74 duizendtallen
+04252 03651 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04253 03652 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04254 03653 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04255 03654 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04256                   
+04257 03655 17 00000.1    ANDNT 000.1
+04258 03656 30 00474      JFRF  L04130
+04259                   
+04260 03657 16 00000.1  L03657  AND 000.1
+04261 03658 13 00110      FTCHD DWS2_1  !eenheid DWS
+04262 03659 13 00111      FTCHD DWS2_2  !tiental DWS
+04263 03660 15 01505      COMP  1505  !constante 5
+04264 03661 15 01507      COMP  1507  !constante 7
+04265 03662 10 00003.0    STRB  RESULT1 !F=C
+04266                   
+04267 03663 16 00003.0    AND RESULT1 !F=C
+04268 03664 30 00012      JFRF  L03676
+04269                   
+04270 03665 16 00003.0    AND RESULT1 !F=C
+04271 03666 13 01400      FTCHD DSP75_0 !display 75 eenheden
+04272 03667 13 01401      FTCHD DSP75_1 !display 75 tientallen
+04273 03668 13 01402      FTCHD DSP75_2 !display 75 honderdtallen
+04274 03669 13 01403      FTCHD DSP75_3 !display 75 duizendtallen
+04275 03670 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04276 03671 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04277 03672 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04278 03673 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04279                   
+04280 03674 17 00000.1    ANDNT 000.1
+04281 03675 30 00455      JFRF  L04130
+04282                   
+04283 03676 16 00000.1  L03676  AND 000.1
+04284 03677 13 00110      FTCHD DWS2_1  !eenheid DWS
+04285 03678 13 00111      FTCHD DWS2_2  !tiental DWS
+04286 03679 15 01506      COMP  1506  !constante 6
+04287 03680 15 01507      COMP  1507  !constante 7
+04288 03681 10 00003.0    STRB  RESULT1 !F=C
+04289                   
+04290 03682 16 00003.0    AND RESULT1 !F=C
+04291 03683 30 00012      JFRF  L03695
+04292                   
+04293 03684 16 00003.0    AND RESULT1 !F=C
+04294 03685 13 01404      FTCHD DSP76_0 !display 76 eenheden
+04295 03686 13 01405      FTCHD DSP76_1 !display 76 tientallen
+04296 03687 13 01406      FTCHD DSP76_2 !display 76 honderdtallen
+04297 03688 13 01407      FTCHD DSP76_3 !display 76 duizendtallen
+04298 03689 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04299 03690 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04300 03691 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04301 03692 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04302                   
+04303 03693 17 00000.1    ANDNT 000.1
+04304 03694 30 00436      JFRF  L04130
+04305                   
+04306 03695 16 00000.1  L03695  AND 000.1
+04307 03696 13 00110      FTCHD DWS2_1  !eenheid DWS
+04308 03697 13 00111      FTCHD DWS2_2  !tiental DWS
+04309 03698 15 01507      COMP  1507  !constante 7
+04310 03699 15 01507      COMP  1507  !constante 7
+04311 03700 10 00003.0    STRB  RESULT1 !F=C
+04312                   
+04313 03701 16 00003.0    AND RESULT1 !F=C
+04314 03702 30 00012      JFRF  L03714
+04315                   
+04316 03703 16 00003.0    AND RESULT1 !F=C
+04317 03704 13 01408      FTCHD DSP77_0 !display 77 eenheden
+04318 03705 13 01409      FTCHD DSP77_1 !display 77 tientallen
+04319 03706 13 01410      FTCHD DSP77_2 !display 77 honderdtallen
+04320 03707 13 01411      FTCHD DSP77_3 !display 77 duizendtallen
+04321 03708 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04322 03709 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04323 03710 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04324 03711 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04325                   
+04326 03712 17 00000.1    ANDNT 000.1
+04327 03713 30 00417      JFRF  L04130
+04328                   
+04329 03714 16 00000.1  L03714  AND 000.1
+04330 03715 13 00110      FTCHD DWS2_1  !eenheid DWS
+04331 03716 13 00111      FTCHD DWS2_2  !tiental DWS
+04332 03717 15 01508      COMP  1508  !constante 8
+04333 03718 15 01507      COMP  1507  !constante 7
+04334 03719 10 00003.0    STRB  RESULT1 !F=C
+04335                   
+04336 03720 16 00003.0    AND RESULT1 !F=C
+04337 03721 30 00012      JFRF  L03733
+04338                   
+04339 03722 16 00003.0    AND RESULT1 !F=C
+04340 03723 13 01412      FTCHD DSP78_0 !display 78 eenheden
+04341 03724 13 01413      FTCHD DSP78_1 !display 78 tientallen
+04342 03725 13 01414      FTCHD DSP78_2 !display 78 honderdtallen
+04343 03726 13 01415      FTCHD DSP78_3 !display 78 duizendtallen
+04344 03727 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04345 03728 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04346 03729 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04347 03730 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04348                   
+04349 03731 17 00000.1    ANDNT 000.1
+04350 03732 30 00398      JFRF  L04130
+04351                   
+04352 03733 16 00000.1  L03733  AND 000.1
+04353 03734 13 00110      FTCHD DWS2_1  !eenheid DWS
+04354 03735 13 00111      FTCHD DWS2_2  !tiental DWS
+04355 03736 15 01509      COMP  1509  !constante 9
+04356 03737 15 01507      COMP  1507  !constante 7
+04357 03738 10 00003.0    STRB  RESULT1 !F=C
+04358                   
+04359 03739 16 00003.0    AND RESULT1 !F=C
+04360 03740 30 00012      JFRF  L03752
+04361                   
+04362 03741 16 00003.0    AND RESULT1 !F=C
+04363 03742 13 01416      FTCHD DSP79_0 !display 79 eenheden
+04364 03743 13 01417      FTCHD DSP79_1 !display 79 tientallen
+04365 03744 13 01418      FTCHD DSP79_2 !display 79 honderdtallen
+04366 03745 13 01419      FTCHD DSP79_3 !display 79 duizendtallen
+04367 03746 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04368 03747 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04369 03748 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04370 03749 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04371                   
+04372 03750 17 00000.1    ANDNT 000.1
+04373 03751 30 00379      JFRF  L04130
+04374                   
+04375 03752 16 00000.1  L03752  AND 000.1
+04376 03753 13 00110      FTCHD DWS2_1  !eenheid DWS
+04377 03754 13 00111      FTCHD DWS2_2  !tiental DWS
+04378 03755 15 01500      COMP  1500  !constante 0
+04379 03756 15 01508      COMP  1508  !constante 8
+04380 03757 10 00003.0    STRB  RESULT1 !F=C
+04381                   
+04382 03758 16 00003.0    AND RESULT1 !F=C
+04383 03759 30 00012      JFRF  L03771
+04384                   
+04385 03760 16 00003.0    AND RESULT1 !F=C
+04386 03761 13 01420      FTCHD DSP80_0 !display 80 eenheden
+04387 03762 13 01421      FTCHD DSP80_1 !display 80 tientallen
+04388 03763 13 01422      FTCHD DSP80_2 !display 80 honderdtallen
+04389 03764 13 01423      FTCHD DSP80_3 !display 80 duizendtallen
+04390 03765 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04391 03766 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04392 03767 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04393 03768 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04394                   
+04395 03769 17 00000.1    ANDNT 000.1
+04396 03770 30 00360      JFRF  L04130
+04397                   
+04398 03771 16 00000.1  L03771  AND 000.1
+04399 03772 13 00110      FTCHD DWS2_1  !eenheid DWS
+04400 03773 13 00111      FTCHD DWS2_2  !tiental DWS
+04401 03774 15 01501      COMP  1501  !constante 1
+04402 03775 15 01508      COMP  1508  !constante 8
+04403 03776 10 00003.0    STRB  RESULT1 !F=C
+04404                   
+04405 03777 16 00003.0    AND RESULT1 !F=C
+04406 03778 30 00012      JFRF  L03790
+04407                   
+04408 03779 16 00003.0    AND RESULT1 !F=C
+04409 03780 13 01424      FTCHD DSP81_0 !display 81 eenheden
+04410 03781 13 01425      FTCHD DSP81_1 !display 81 tientallen
+04411 03782 13 01426      FTCHD DSP81_2 !display 81 honderdtallen
+04412 03783 13 01427      FTCHD DSP81_3 !display 81 duizendtallen
+04413 03784 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04414 03785 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04415 03786 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04416 03787 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04417                   
+04418 03788 17 00000.1    ANDNT 000.1
+04419 03789 30 00341      JFRF  L04130
+04420                   
+04421 03790 16 00000.1  L03790  AND 000.1
+04422 03791 13 00110      FTCHD DWS2_1  !eenheid DWS
+04423 03792 13 00111      FTCHD DWS2_2  !tiental DWS
+04424 03793 15 01502      COMP  1502  !constante 2
+04425 03794 15 01508      COMP  1508  !constante 8
+04426 03795 10 00003.0    STRB  RESULT1 !F=C
+04427                   
+04428 03796 16 00003.0    AND RESULT1 !F=C
+04429 03797 30 00012      JFRF  L03809
+04430                   
+04431 03798 16 00003.0    AND RESULT1 !F=C
+04432 03799 13 01428      FTCHD DSP82_0 !display 82 eenheden
+04433 03800 13 01429      FTCHD DSP82_1 !display 82 tientallen
+04434 03801 13 01430      FTCHD DSP82_2 !display 82 honderdtallen
+04435 03802 13 01431      FTCHD DSP82_3 !display 82 duizendtallen
+04436 03803 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04437 03804 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04438 03805 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04439 03806 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04440                   
+04441 03807 17 00000.1    ANDNT 000.1
+04442 03808 30 00322      JFRF  L04130
+04443                   
+04444 03809 16 00000.1  L03809  AND 000.1
+04445 03810 13 00110      FTCHD DWS2_1  !eenheid DWS
+04446 03811 13 00111      FTCHD DWS2_2  !tiental DWS
+04447 03812 15 01503      COMP  1503  !constante 3
+04448 03813 15 01508      COMP  1508  !constante 8
+04449 03814 10 00003.0    STRB  RESULT1 !F=C
+04450                   
+04451 03815 16 00003.0    AND RESULT1 !F=C
+04452 03816 30 00012      JFRF  L03828
+04453                   
+04454 03817 16 00003.0    AND RESULT1 !F=C
+04455 03818 13 01432      FTCHD DSP83_0 !display 83 eenheden
+04456 03819 13 01433      FTCHD DSP83_1 !display 83 tientallen
+04457 03820 13 01434      FTCHD DSP83_2 !display 83 honderdtallen
+04458 03821 13 01435      FTCHD DSP83_3 !display 83 duizendtallen
+04459 03822 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04460 03823 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04461 03824 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04462 03825 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04463                   
+04464 03826 17 00000.1    ANDNT 000.1
+04465 03827 30 00303      JFRF  L04130
+04466                   
+04467 03828 16 00000.1  L03828  AND 000.1
+04468 03829 13 00110      FTCHD DWS2_1  !eenheid DWS
+04469 03830 13 00111      FTCHD DWS2_2  !tiental DWS
+04470 03831 15 01504      COMP  1504  !constante 4
+04471 03832 15 01508      COMP  1508  !constante 8
+04472 03833 10 00003.0    STRB  RESULT1 !F=C
+04473                   
+04474 03834 16 00003.0    AND RESULT1 !F=C
+04475 03835 30 00012      JFRF  L03847
+04476                   
+04477 03836 16 00003.0    AND RESULT1 !F=C
+04478 03837 13 01436      FTCHD DSP84_0 !display 84 eenheden
+04479 03838 13 01437      FTCHD DSP84_1 !display 84 tientallen
+04480 03839 13 01438      FTCHD DSP84_2 !display 84 honderdtallen
+04481 03840 13 01439      FTCHD DSP84_3 !display 84 duizendtallen
+04482 03841 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04483 03842 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04484 03843 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04485 03844 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04486                   
+04487 03845 17 00000.1    ANDNT 000.1
+04488 03846 30 00284      JFRF  L04130
+04489                   
+04490 03847 16 00000.1  L03847  AND 000.1
+04491 03848 13 00110      FTCHD DWS2_1  !eenheid DWS
+04492 03849 13 00111      FTCHD DWS2_2  !tiental DWS
+04493 03850 15 01505      COMP  1505  !constante 5
+04494 03851 15 01508      COMP  1508  !constante 8
+04495 03852 10 00003.0    STRB  RESULT1 !F=C
+04496                   
+04497 03853 16 00003.0    AND RESULT1 !F=C
+04498 03854 30 00012      JFRF  L03866
+04499                   
+04500 03855 16 00003.0    AND RESULT1 !F=C
+04501 03856 13 01440      FTCHD DSP85_0 !display 85 eenheden
+04502 03857 13 01441      FTCHD DSP85_1 !display 85 tientallen
+04503 03858 13 01442      FTCHD DSP85_2 !display 85 honderdtallen
+04504 03859 13 01443      FTCHD DSP85_3 !display 85 duizendtallen
+04505 03860 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04506 03861 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04507 03862 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04508 03863 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04509                   
+04510 03864 17 00000.1    ANDNT 000.1
+04511 03865 30 00265      JFRF  L04130
+04512                   
+04513 03866 16 00000.1  L03866  AND 000.1
+04514 03867 13 00110      FTCHD DWS2_1  !eenheid DWS
+04515 03868 13 00111      FTCHD DWS2_2  !tiental DWS
+04516 03869 15 01506      COMP  1506  !constante 6
+04517 03870 15 01508      COMP  1508  !constante 8
+04518 03871 10 00003.0    STRB  RESULT1 !F=C
+04519                   
+04520 03872 16 00003.0    AND RESULT1 !F=C
+04521 03873 30 00012      JFRF  L03885
+04522                   
+04523 03874 16 00003.0    AND RESULT1 !F=C
+04524 03875 13 01444      FTCHD DSP86_0 !display 86 eenheden
+04525 03876 13 01445      FTCHD DSP86_1 !display 86 tientallen
+04526 03877 13 01446      FTCHD DSP86_2 !display 86 honderdtallen
+04527 03878 13 01447      FTCHD DSP86_3 !display 86 duizendtallen
+04528 03879 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04529 03880 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04530 03881 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04531 03882 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04532                   
+04533 03883 17 00000.1    ANDNT 000.1
+04534 03884 30 00246      JFRF  L04130
+04535                   
+04536 03885 16 00000.1  L03885  AND 000.1
+04537 03886 13 00110      FTCHD DWS2_1  !eenheid DWS
+04538 03887 13 00111      FTCHD DWS2_2  !tiental DWS
+04539 03888 15 01507      COMP  1507  !constante 7
+04540 03889 15 01508      COMP  1508  !constante 8
+04541 03890 10 00003.0    STRB  RESULT1 !F=C
+04542                   
+04543 03891 16 00003.0    AND RESULT1 !F=C
+04544 03892 30 00012      JFRF  L03904
+04545                   
+04546 03893 16 00003.0    AND RESULT1 !F=C
+04547 03894 13 01448      FTCHD DSP87_0 !display 87 eenheden
+04548 03895 13 01449      FTCHD DSP87_1 !display 87 tientallen
+04549 03896 13 01450      FTCHD DSP87_2 !display 87 honderdtallen
+04550 03897 13 01451      FTCHD DSP87_3 !display 87 duizendtallen
+04551 03898 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04552 03899 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04553 03900 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04554 03901 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04555                   
+04556 03902 17 00000.1    ANDNT 000.1
+04557 03903 30 00227      JFRF  L04130
+04558                   
+04559 03904 16 00000.1  L03904  AND 000.1
+04560 03905 13 00110      FTCHD DWS2_1  !eenheid DWS
+04561 03906 13 00111      FTCHD DWS2_2  !tiental DWS
+04562 03907 15 01508      COMP  1508  !constante 8
+04563 03908 15 01508      COMP  1508  !constante 8
+04564 03909 10 00003.0    STRB  RESULT1 !F=C
+04565                   
+04566 03910 16 00003.0    AND RESULT1 !F=C
+04567 03911 30 00012      JFRF  L03923
+04568                   
+04569 03912 16 00003.0    AND RESULT1 !F=C
+04570 03913 13 01452      FTCHD DSP88_0 !display 88 eenheden
+04571 03914 13 01453      FTCHD DSP88_1 !display 88 tientallen
+04572 03915 13 01454      FTCHD DSP88_2 !display 88 honderdtallen
+04573 03916 13 01455      FTCHD DSP88_3 !display 88 duizendtallen
+04574 03917 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04575 03918 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04576 03919 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04577 03920 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04578                   
+04579 03921 17 00000.1    ANDNT 000.1
+04580 03922 30 00208      JFRF  L04130
+04581                   
+04582 03923 16 00000.1  L03923  AND 000.1
+04583 03924 13 00110      FTCHD DWS2_1  !eenheid DWS
+04584 03925 13 00111      FTCHD DWS2_2  !tiental DWS
+04585 03926 15 01509      COMP  1509  !constante 9
+04586 03927 15 01508      COMP  1508  !constante 8
+04587 03928 10 00003.0    STRB  RESULT1 !F=C
+04588                   
+04589 03929 16 00003.0    AND RESULT1 !F=C
+04590 03930 30 00012      JFRF  L03942
+04591                   
+04592 03931 16 00003.0    AND RESULT1 !F=C
+04593 03932 13 01456      FTCHD DSP89_0 !display 89 eenheden
+04594 03933 13 01457      FTCHD DSP89_1 !display 89 tientallen
+04595 03934 13 01458      FTCHD DSP89_2 !display 89 honderdtallen
+04596 03935 13 01459      FTCHD DSP89_3 !display 89 duizendtallen
+04597 03936 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04598 03937 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04599 03938 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04600 03939 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04601                   
+04602 03940 17 00000.1    ANDNT 000.1
+04603 03941 30 00189      JFRF  L04130
+04604                   
+04605 03942 16 00000.1  L03942  AND 000.1
+04606 03943 13 00110      FTCHD DWS2_1  !eenheid DWS
+04607 03944 13 00111      FTCHD DWS2_2  !tiental DWS
+04608 03945 15 01500      COMP  1500  !constante 0
+04609 03946 15 01509      COMP  1509  !constante 9
+04610 03947 10 00003.0    STRB  RESULT1 !F=C
+04611                   
+04612 03948 16 00003.0    AND RESULT1 !F=C
+04613 03949 30 00012      JFRF  L03961
+04614                   
+04615 03950 16 00003.0    AND RESULT1 !F=C
+04616 03951 13 01460      FTCHD DSP90_0 !display 90 eenheden
+04617 03952 13 01461      FTCHD DSP90_1 !display 90 tientallen
+04618 03953 13 01462      FTCHD DSP90_2 !display 90 honderdtallen
+04619 03954 13 01463      FTCHD DSP90_3 !display 90 duizendtallen
+04620 03955 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04621 03956 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04622 03957 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04623 03958 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04624                   
+04625 03959 17 00000.1    ANDNT 000.1
+04626 03960 30 00170      JFRF  L04130
+04627                   
+04628 03961 16 00000.1  L03961  AND 000.1
+04629 03962 13 00110      FTCHD DWS2_1  !eenheid DWS
+04630 03963 13 00111      FTCHD DWS2_2  !tiental DWS
+04631 03964 15 01501      COMP  1501  !constante 1
+04632 03965 15 01509      COMP  1509  !constante 9
+04633 03966 10 00003.0    STRB  RESULT1 !F=C
+04634                   
+04635 03967 16 00003.0    AND RESULT1 !F=C
+04636 03968 30 00012      JFRF  L03980
+04637                   
+04638 03969 16 00003.0    AND RESULT1 !F=C
+04639 03970 13 01464      FTCHD DSP91_0 !display 91 eenheden
+04640 03971 13 01465      FTCHD DSP91_1 !display 91 tientallen
+04641 03972 13 01466      FTCHD DSP91_2 !display 91 honderdtallen
+04642 03973 13 01467      FTCHD DSP91_3 !display 91 duizendtallen
+04643 03974 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04644 03975 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04645 03976 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04646 03977 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04647                   
+04648 03978 17 00000.1    ANDNT 000.1
+04649 03979 30 00151      JFRF  L04130
+04650                   
+04651 03980 16 00000.1  L03980  AND 000.1
+04652 03981 13 00110      FTCHD DWS2_1  !eenheid DWS
+04653 03982 13 00111      FTCHD DWS2_2  !tiental DWS
+04654 03983 15 01502      COMP  1502  !constante 2
+04655 03984 15 01509      COMP  1509  !constante 9
+04656 03985 10 00003.0    STRB  RESULT1 !F=C
+04657                   
+04658 03986 16 00003.0    AND RESULT1 !F=C
+04659 03987 30 00012      JFRF  L03999
+04660                   
+04661 03988 16 00003.0    AND RESULT1 !F=C
+04662 03989 13 01468      FTCHD DSP92_0 !display 92 eenheden
+04663 03990 13 01469      FTCHD DSP92_1 !display 92 tientallen
+04664 03991 13 01470      FTCHD DSP92_2 !display 92 honderdtallen
+04665 03992 13 01471      FTCHD DSP92_3 !display 92 duizendtallen
+04666 03993 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04667 03994 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04668 03995 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04669 03996 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04670                   
+04671 03997 17 00000.1    ANDNT 000.1
+04672 03998 30 00132      JFRF  L04130
+04673                   
+04674 03999 16 00000.1  L03999  AND 000.1
+04675 04000 13 00110      FTCHD DWS2_1  !eenheid DWS
+04676 04001 13 00111      FTCHD DWS2_2  !tiental DWS
+04677 04002 15 01503      COMP  1503  !constante 3
+04678 04003 15 01509      COMP  1509  !constante 9
+04679 04004 10 00003.0    STRB  RESULT1 !F=C
+04680                   
+04681 04005 16 00003.0    AND RESULT1 !F=C
+04682 04006 30 00012      JFRF  L04018
+04683                   
+04684 04007 16 00003.0    AND RESULT1 !F=C
+04685 04008 13 01472      FTCHD DSP93_0 !display 93 eenheden
+04686 04009 13 01473      FTCHD DSP93_1 !display 93 tientallen
+04687 04010 13 01474      FTCHD DSP93_2 !display 93 honderdtallen
+04688 04011 13 01475      FTCHD DSP93_3 !display 93 duizendtallen
+04689 04012 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04690 04013 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04691 04014 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04692 04015 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04693                   
+04694 04016 17 00000.1    ANDNT 000.1
+04695 04017 30 00113      JFRF  L04130
+04696                   
+04697 04018 16 00000.1  L04018  AND 000.1
+04698 04019 13 00110      FTCHD DWS2_1  !eenheid DWS
+04699 04020 13 00111      FTCHD DWS2_2  !tiental DWS
+04700 04021 15 01504      COMP  1504  !constante 4
+04701 04022 15 01509      COMP  1509  !constante 9
+04702 04023 10 00003.0    STRB  RESULT1 !F=C
+04703                   
+04704 04024 16 00003.0    AND RESULT1 !F=C
+04705 04025 30 00012      JFRF  L04037
+04706                   
+04707 04026 16 00003.0    AND RESULT1 !F=C
+04708 04027 13 01476      FTCHD DSP94_0 !display 94 eenheden
+04709 04028 13 01477      FTCHD DSP94_1 !display 94 tientallen
+04710 04029 13 01478      FTCHD DSP94_2 !display 94 honderdtallen
+04711 04030 13 01479      FTCHD DSP94_3 !display 94 duizendtallen
+04712 04031 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04713 04032 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04714 04033 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04715 04034 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04716                   
+04717 04035 17 00000.1    ANDNT 000.1
+04718 04036 30 00094      JFRF  L04130
+04719                   
+04720 04037 16 00000.1  L04037  AND 000.1
+04721 04038 13 00110      FTCHD DWS2_1  !eenheid DWS
+04722 04039 13 00111      FTCHD DWS2_2  !tiental DWS
+04723 04040 15 01505      COMP  1505  !constante 5
+04724 04041 15 01509      COMP  1509  !constante 9
+04725 04042 10 00003.0    STRB  RESULT1 !F=C
+04726                   
+04727 04043 16 00003.0    AND RESULT1 !F=C
+04728 04044 30 00012      JFRF  L04056
+04729                   
+04730 04045 16 00003.0    AND RESULT1 !F=C
+04731 04046 13 01480      FTCHD DSP95_0 !display 95 eenheden
+04732 04047 13 01481      FTCHD DSP95_1 !display 95 tientallen
+04733 04048 13 01482      FTCHD DSP95_2 !display 95 honderdtallen
+04734 04049 13 01483      FTCHD DSP95_3 !display 95 duizendtallen
+04735 04050 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04736 04051 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04737 04052 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04738 04053 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04739                   
+04740 04054 17 00000.1    ANDNT 000.1
+04741 04055 30 00075      JFRF  L04130
+04742                   
+04743 04056 16 00000.1  L04056  AND 000.1
+04744 04057 13 00110      FTCHD DWS2_1  !eenheid DWS
+04745 04058 13 00111      FTCHD DWS2_2  !tiental DWS
+04746 04059 15 01506      COMP  1506  !constante 6
+04747 04060 15 01509      COMP  1509  !constante 9
+04748 04061 10 00003.0    STRB  RESULT1 !F=C
+04749                   
+04750 04062 16 00003.0    AND RESULT1 !F=C
+04751 04063 30 00012      JFRF  L04075
+04752                   
+04753 04064 16 00003.0    AND RESULT1 !F=C
+04754 04065 13 01484      FTCHD DSP96_0 !display 96 eenheden
+04755 04066 13 01485      FTCHD DSP96_1 !display 96 tientallen
+04756 04067 13 01486      FTCHD DSP96_2 !display 96 honderdtallen
+04757 04068 13 01487      FTCHD DSP96_3 !display 96 duizendtallen
+04758 04069 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04759 04070 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04760 04071 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04761 04072 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04762                   
+04763 04073 17 00000.1    ANDNT 000.1
+04764 04074 30 00056      JFRF  L04130
+04765                   
+04766 04075 16 00000.1  L04075  AND 000.1
+04767 04076 13 00110      FTCHD DWS2_1  !eenheid DWS
+04768 04077 13 00111      FTCHD DWS2_2  !tiental DWS
+04769 04078 15 01507      COMP  1507  !constante 7
+04770 04079 15 01509      COMP  1509  !constante 9
+04771 04080 10 00003.0    STRB  RESULT1 !F=C
+04772                   
+04773 04081 16 00003.0    AND RESULT1 !F=C
+04774 04082 30 00012      JFRF  L04094
+04775                   
+04776 04083 16 00003.0    AND RESULT1 !F=C
+04777 04084 13 01488      FTCHD DSP97_0 !display 97 eenheden
+04778 04085 13 01489      FTCHD DSP97_1 !display 97 tientallen
+04779 04086 13 01490      FTCHD DSP97_2 !display 97 honderdtallen
+04780 04087 13 01491      FTCHD DSP97_3 !display 97 duizendtallen
+04781 04088 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04782 04089 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04783 04090 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04784 04091 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04785                   
+04786 04092 17 00000.1    ANDNT 000.1
+04787 04093 30 00037      JFRF  L04130
+04788                   
+04789 04094 16 00000.1  L04094  AND 000.1
+04790 04095 13 00110      FTCHD DWS2_1  !eenheid DWS
+04791 04096 13 00111      FTCHD DWS2_2  !tiental DWS
+04792 04097 15 01508      COMP  1508  !constante 8
+04793 04098 15 01509      COMP  1509  !constante 9
+04794 04099 10 00003.0    STRB  RESULT1 !F=C
+04795                   
+04796 04100 16 00003.0    AND RESULT1 !F=C
+04797 04101 30 00012      JFRF  L04113
+04798                   
+04799 04102 16 00003.0    AND RESULT1 !F=C
+04800 04103 13 01492      FTCHD DSP98_0 !display 98 eenheden
+04801 04104 13 01493      FTCHD DSP98_1 !display 98 tientallen
+04802 04105 13 01494      FTCHD DSP98_2 !display 98 honderdtallen
+04803 04106 13 01495      FTCHD DSP98_3 !display 98 duizendtallen
+04804 04107 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04805 04108 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04806 04109 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04807 04110 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04808                   
+04809 04111 17 00000.1    ANDNT 000.1
+04810 04112 30 00018      JFRF  L04130
+04811                   
+04812 04113 16 00000.1  L04113  AND 000.1
+04813 04114 13 00110      FTCHD DWS2_1  !eenheid DWS
+04814 04115 13 00111      FTCHD DWS2_2  !tiental DWS
+04815 04116 15 01509      COMP  1509  !constante 9
+04816 04117 15 01509      COMP  1509  !constante 9
+04817 04118 10 00003.0    STRB  RESULT1 !F=C
+04818                   
+04819 04119 16 00003.0    AND RESULT1 !F=C
+04820 04120 30 00010      JFRF  L04130
+04821                   
+04822 04121 16 00003.0    AND RESULT1 !F=C
+04823 04122 13 01496      FTCHD DSP99_0 !display 99 eenheden
+04824 04123 13 01497      FTCHD DSP99_1 !display 99 tientallen
+04825 04124 13 01498      FTCHD DSP99_2 !display 99 honderdtallen
+04826 04125 13 01499      FTCHD DSP99_3 !display 99 duizendtallen
+04827 04126 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04828 04127 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04829 04128 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04830 04129 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04831 04130 00          L04130  NOP 1
+04832                   
+04833 04131 16 00121.2  L04131  AND LAMPTEST  !lampentest "8"
+04834 04132 12 00008      FTCHC 08
+04835 04133 12 00008      FTCHC 08
+04836 04134 12 00008      FTCHC 08
+04837 04135 12 00008      FTCHC 08
+04838 04136 14 00160      STRD  DISPL_0 !display aansturing eenh.
+04839 04137 14 00161      STRD  DISPL_1 !display aansturing tiental.
+04840 04138 14 00162      STRD  DISPL_2 !display aansturing honderdt.
+04841 04139 14 00163      STRD  DISPL_3 !display aansturing duizendt.
+04842 04140 00            NOP 60
+04842 04141 00 
+04842 04142 00 
+04842 04143 00 
+04842 04144 00 
+04842 04145 00 
+04842 04146 00 
+04842 04147 00 
+04842 04148 00 
+04842 04149 00 
+04842 04150 00 
+04842 04151 00 
+04842 04152 00 
+04842 04153 00 
+04842 04154 00 
+04842 04155 00 
+04842 04156 00 
+04842 04157 00 
+04842 04158 00 
+04842 04159 00 
+04842 04160 00 
+04842 04161 00 
+04842 04162 00 
+04842 04163 00 
+04842 04164 00 
+04842 04165 00 
+04842 04166 00 
+04842 04167 00 
+04842 04168 00 
+04842 04169 00 
+04842 04170 00 
+04842 04171 00 
+04842 04172 00 
+04842 04173 00 
+04842 04174 00 
+04842 04175 00 
+04842 04176 00 
+04842 04177 00 
+04842 04178 00 
+04842 04179 00 
+04842 04180 00 
+04842 04181 00 
+04842 04182 00 
+04842 04183 00 
+04842 04184 00 
+04842 04185 00 
+04842 04186 00 
+04842 04187 00 
+04842 04188 00 
+04842 04189 00 
+04842 04190 00 
+04842 04191 00 
+04842 04192 00 
+04842 04193 00 
+04842 04194 00 
+04842 04195 00 
+04842 04196 00 
+04842 04197 00 
+04842 04198 00 
+04842 04199 00 
