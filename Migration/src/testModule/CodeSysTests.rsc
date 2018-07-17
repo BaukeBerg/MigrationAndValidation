@@ -97,6 +97,7 @@ test bool testFirstOneThousand() = testGenerating("first1000.compiled");
 test bool testFirstTwoThousand() = testGenerating("first2000.compiled");
 test bool testFirstFiveThousand() = testGenerating("first5000.compiled");
 test bool testFirstTenThousand() = testGenerating("first10000.compiled");
+test bool testLastFiveThousand() = testGenerating("last5000.compiled");
 
 // Complete program
 test bool testCompleteProgram() = testGenerating("DR_TOT_3.compiled");
