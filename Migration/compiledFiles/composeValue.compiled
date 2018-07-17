@@ -1,0 +1,7 @@
+15489                   
+15490 13453 16 00000.1    AND 000.1
+15491 13454 11 00122.0    FTCHB V1_1_O  !eindschak.afsluiter V 1.1 geopend
+15492 13455 11 00122.1    FTCHB V1_1_C  !eindschak.afsluiter V 1.1 gesloten
+15493 13456 11 00004.1    FTCHB DUMP_1
+15494 13457 11 00141.0    FTCHB V1_1
+15495 13458 14 03001      STRD  3001

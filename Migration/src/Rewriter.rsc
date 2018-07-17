@@ -58,16 +58,23 @@ Tree rewrite(Tree tree) = innermost visit(tree)
     SourcePrefix last>14 <WordAddress wordAddress><NewLine _><
     CompiledInstruction* post>`:
     {
-      firstFetch = first;
-      lastFetch = last;
+      debugPrint("First composeValue");
+      bits = [bitAddress];      
       while((CodeBlock)`<CompiledInstruction* newPre><SourcePrefix current>11 <BitAddress bitAddress><NewLine _>` 
         := (CodeBlock)`<CompiledInstruction pre>`)
       {
         debugPrint("Found an additional FETCHBIT");
-        firstFetch = current;
+        first = current;
+        bits = bitAddress + bits;
         pre = newPre;
       }
-      
+      bitString = "";
+      for(bit <- bits)
+      {
+        bitString += "<trim("<bit>")> ";
+      }
+      composeValue = parse(#ComposeValue, debugPrint("Fetch grammar:", "<composeEcbPrefix("Brown", composeSourceRange(first, last))>ComposeValue <bitString>=\> <trim("<wordAddress>")> "));
+      insert(CodeBlock)`<CompiledInstruction* pre><ComposeValue composeValue><CompiledInstruction* post>`;      
     } 
     
   

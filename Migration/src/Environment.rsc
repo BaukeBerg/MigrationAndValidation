@@ -149,6 +149,8 @@ str composeVariableName(str comment)
   return comment;
 }
 
+tuple[str name, str comment] retrieveInfo(str variableName, SymbolTable table) = <retrieveVariableName(variableName, table), retrieveComment(variableName, table)>;
+
 str retrieveComment(str variableName, SymbolTable table)
 {
   variableName = clipAndStrip(variableName);

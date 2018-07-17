@@ -54,6 +54,7 @@ lexical ComposedCodeBlock = ReadValue
                            | DecrementCounter 
                            | SetBit
                            | ResetBit
+                           | ComposeValue
                            ;
 
 lexical Error = "ERROR-PARSING-BLOCK";               
