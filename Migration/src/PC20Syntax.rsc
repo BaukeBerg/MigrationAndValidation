@@ -41,6 +41,7 @@ lexical ComposedCodeBlock = ReadValue
                            | NopBlock
                            | AssignValue
                            | AssignConstant
+                           | CompareConstant
                            | OtherBlock
                            | AndEqual
                            | LogicCondition
@@ -75,6 +76,7 @@ lexical AssignValue = EcbPrefix "AssignValue " SourceRange " to " TargetRange ;
 lexical AssignBooleanExpression = EcbPrefix "AssignBooleanExpression " LogicExpression "to " BitAddress+ ;
 lexical IOSynchronization = EcbPrefix "IOSynchronization " FiveDigits " to " FiveDigits;
 lexical AssignConstant = EcbPrefix "AssignConstant " ConstantValue " to " AddressRange ;
+lexical CompareConstant = EcbPrefix "CompareConstant " ConstantValue " = " WordAddress "=\>" BitAddress;
 lexical AndEqual = EcbPrefix "AndEqual " SourceRange " to " TargetRange " =\> " BitAddress;
 lexical IfBlock = EcbPrefix "IfBlock " LogicExpression "size " JumpSize;
 lexical LogicCondition = EcbPrefix "LogicCondition " LogicExpression;

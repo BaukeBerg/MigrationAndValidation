@@ -186,6 +186,33 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
       includedLines += extractSize(CV);      
     }
     
+    case CompareConstant CC:
+    {
+      programLines = houseKeeping(CC, startIfPositions, endIfPositions, programLines);
+      programLines += "(* <CC> *)" ;
+      constantValue = compareAddress = <"", "">;
+      visit(CC)
+      {
+        case ConstantValue CV:
+        {
+          constantValue = "<CV>";
+        }
+        
+        case WordAddress WA:
+        {
+          compareAddress = "<WA>";
+        }
+        
+        case BitAddress BA:
+        {
+          targetData = retrieveInfo("<BA>", symbols);
+          sourceData = retrieveInfo(compareAddress, symbols);
+          programLines += "<targetData.name> := (<constantValue> = <sourceData.name>) ; (* <targetData.comment> := (<constantValue> = <sourceData.comment>) *) ";
+        }
+      }
+      includedLines += extractSize(CC);
+    }
+    
     case ResetBit SB:
     {
       programLines = houseKeeping(RB, startIfPositions, endIfPositions, programLines);

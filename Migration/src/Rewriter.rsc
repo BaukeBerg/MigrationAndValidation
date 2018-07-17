@@ -39,6 +39,18 @@ Tree rewrite(Tree tree) = innermost visit(tree)
     insert(CodeBlock)`<CompiledInstruction *pre><QuickJumpOut speed><CompiledInstruction *post>`;
   } 
 
+  /// CompareConstant
+  case (CodeBlock) `<CompiledInstruction *pre><
+    SourcePrefix first>12 <WordAddress constantValue><NewLine _><
+    SourcePrefix _>15 <WordAddress compareValue><NewLine _><
+    SourcePrefix last>10 <BitAddress result><NewLine _><
+    CompiledInstruction *post>`:
+    {
+      compareConstant = parse(#CompareConstant, debugPrint("Compare Constant: ", "<composeEcbPrefix("Brown", composeSourceRange(first, last))>CompareConstant <trim("<constantValue>")> = <trim("<compareValue>")> =\> <trim("<result>")>"));
+      insert(CodeBlock)`<CompiledInstruction* pre><CompareConstant compareConstant><CompiledInstruction *post>`;
+    }
+    
+
   /// NopBlock
   case (CodeBlock) `<CompiledInstruction* pre><SkipInstruction firstNop><CompiledInstruction* post>`:
   {
@@ -52,7 +64,7 @@ Tree rewrite(Tree tree) = innermost visit(tree)
     insert(CodeBlock)`<CompiledInstruction* pre><NopBlock nopBlock><CompiledInstruction* post>`;    
   } 
  
- /// ComposeValue
+  /// ComposeValue
   case (CodeBlock)`<CompiledInstruction* pre><
     SourcePrefix first>11 <BitAddress bitAddress><NewLine _><
     SourcePrefix last>14 <WordAddress wordAddress><NewLine _><
