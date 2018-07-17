@@ -158,8 +158,37 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
         
     }
     
+    case ComposeValue CV:
+    {
+      //programLines = houseKeeping(CV, startIfPositions, endIfPositions, programLines);
+      programLines += "(* <CV> *) ";
+      target = "";
+      bitValues = [];
+      visit(CV)
+      {
+        case WordAddress WA:
+        {
+          target = "<WA>";
+        }
+        case BitAddress BA:
+        {
+          bitValues += ["<BA>"];
+        }        
+      }
+      bitString = "";
+      targetData = retrieveInfo(target, symbols);
+      programLines += "(* <targetData.comment> *)" ; 
+      for(bit <- bitValues)
+      {                
+        bitData = retrieveInfo(bit, symbols);
+        programLines += "<targetData.name>.<indexOf(bitValues, bit)> := <bitData.name> ; (* <bitData.comment> *)";        
+      }
+      includedLines += extractSize(CV);      
+    }
+    
     case ResetBit SB:
     {
+      programLines = houseKeeping(RB, startIfPositions, endIfPositions, programLines);
       programLines += "(* <SB> *)" ;
       visit(SB)
       {
@@ -175,6 +204,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     
     case SetBit SB:
     {
+      programLines = houseKeeping(SB, startIfPositions, endIfPositions, programLines);
       programLines += "(* <SB> *)" ;
       visit(SB)
       {
@@ -342,7 +372,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
       {
         case LogicExpression LE:
         {
-          programLines += ["(* !! WARNING !! Separate Logic Condition found. Higly recommended to include in pattern *)", "(* <ECB> *)", "IF <evaluateExpression(LE, symbols)> THEN <formatComment(LE, symbols)>"];
+          programLines += ["(* <ECB> *)", "IF <evaluateExpression(LE, symbols)> THEN <formatComment(LE, symbols)>"];
           openCondition = true;      
         }
       }
