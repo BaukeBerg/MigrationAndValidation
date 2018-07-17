@@ -1,9 +1,11 @@
 module utility::TestUtility
 
+import FileLocations;
 import IO;
 import List;
 import String;
 
+import utility::FileUtility;
 import utility::ListUtility;
 
 bool expectFalse(bool testMe) = expectFalse(testMe, "");
