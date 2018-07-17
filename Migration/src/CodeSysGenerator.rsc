@@ -215,7 +215,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     
     case ResetBit SB:
     {
-      programLines = houseKeeping(RB, startIfPositions, endIfPositions, programLines);
+      programLines = houseKeeping(SB, startIfPositions, endIfPositions, programLines);
       programLines += "(* <SB> *)" ;
       visit(SB)
       {
