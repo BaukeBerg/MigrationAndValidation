@@ -51,6 +51,15 @@ Tree preprocess(Tree tree) = innermost visit(tree)
     nopBlock = composeNopBlock(composeSourceRange(firstInstruction, lastInstruction));
     insert(CodeBlock)`<CompiledInstruction* pre><NopBlock nopBlock><CompiledInstruction* post>`;    
   } 
+ 
+ /// ComposeValue
+  case (CodeBlock)`<CompiledBlock* pre><
+    SourcePrefix first>11 <BitAddress bitAddress><Newline _><
+    CompiledBlock *post>`:
+    {
+      fail;
+    } 
+    
   
   /// ReadValue
   case (CodeBlock)`<CompiledInstruction* pre><FetchInstruction fetch><CompiledInstruction *post>`:
@@ -64,6 +73,24 @@ Tree preprocess(Tree tree) = innermost visit(tree)
     }      
     readValue = composeReadValue(statements);
     insert (CodeBlock)`<CompiledInstruction* pre><ReadValue readValue><CompiledInstruction *post>`;
+  }
+ 
+  /// ResetBit
+  case (CodeBlock)`<CompiledInstruction* pre><
+    SourcePrefix first>08 <BitAddress address><NewLine _><
+    CompiledInstruction* post>`:
+  {
+    resetBitPattern = parse(#ResetBit, debugPrint("ResetBit", "<composeEcbPrefix("Brown", composeSourceRange(first, first))>ResetBit <trim("<address>")> "));
+    insert (CodeBlock)`<CompiledInstruction* pre><ResetBit resetBitPattern><CompiledInstruction *post>`;
+  }
+ 
+  /// SetBit
+  case (CodeBlock)`<CompiledInstruction* pre><
+    SourcePrefix first>09 <BitAddress address><NewLine _><
+    CompiledInstruction* post>`:
+  {
+    setBitPattern = parse(#SetBit, debugPrint("SetBit", "<composeEcbPrefix("Brown", composeSourceRange(first, first))>SetBit <trim("<address>")> "));
+    insert (CodeBlock)`<CompiledInstruction* pre><SetBit setBitPattern><CompiledInstruction *post>`;
   }
  
   /// IOSynchronization
@@ -159,6 +186,20 @@ Tree preprocess(Tree tree) = innermost visit(tree)
     logicBlock = composeLogicCondition(statements);
     insert((CodeBlock)`<CompiledInstruction* pre><LogicCondition logicBlock><CompiledInstruction *post>`);
   }
+  
+    /// CountDownTimer
+  case (CodeBlock) `<CompiledInstruction* pre><
+  	LogicCondition logic><
+  	SourcePrefix first>06 <WordAddress ones><NewLine _><
+  	SourcePrefix _>06 <WordAddress tens><NewLine _><
+  	SourcePrefix _>06 <WordAddress hundreds><NewLine _><
+  	SourcePrefix _>06 <WordAddress thousands><NewLine _><
+  	SourcePrefix last>10 <BitAddress target><NewLine _><
+  	CompiledInstruction* post>`:
+  	{
+  		decrementCounter = parse(#DecrementCounter, debugPrint("Counter", "<composeEcbPrefix("Lime", composeSourceRange(first, last))>DecrementCounter <trim("<ones>")>,<trim("<tens>")>,<trim("<hundreds>")>,<trim("<thousands>")> =\> <trim("<target>")> "));
+  		insert((CodeBlock)`<CompiledInstruction* pre><LogicCondition logic><DecrementCounter decrementCounter><CompiledInstruction *post>`);  	
+  	}
   
   /// Trigger
   case (CodeBlock) `<CompiledInstruction* pre><LogicCondition condition><EventInstruction trigger><CompiledInstruction* post>`:

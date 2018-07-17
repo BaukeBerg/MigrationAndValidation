@@ -50,7 +50,10 @@ lexical ComposedCodeBlock = ReadValue
                            | IOSynchronization    
                            | IfBlock  
                            | QuickJumpOut     
-                           | BlankAndNot              
+                           | BlankAndNot    
+                           | DecrementCounter 
+                           | SetBit
+                           | ResetBit
                            ;
 
 lexical Error = "ERROR-PARSING-BLOCK";               
@@ -59,9 +62,13 @@ lexical Error = "ERROR-PARSING-BLOCK";
 // Will be added as a ; (* <Name> *) to the generated code
 lexical QuickJumpOut = EcbPrefix "QuickJumpOut";
 lexical BlankAndNot = EcbPrefix "BlankAndNot";
+lexical DecrementCounter = EcbPrefix "DecrementCounter " AddressRange " =\> " BitAddress;
+lexical ComposeValue = EcbPrefix "ComposeValue" BitAddressRange " =\> " WordAddress;
                            
 lexical ReadValue = EcbPrefix "ReadValue " AddressRange ;
 lexical WriteValue = EcbPrefix "WriteValue " AddressRange ;
+lexical SetBit = EcbPrefix "SetBit " BitAddress;
+lexical ResetBit = EcbPrefix "ResetBit " BitAddress;
 lexical CompareValue = EcbPrefix "CompareValue " CompareStatement;
 lexical AssignValue = EcbPrefix "AssignValue " SourceRange " to " TargetRange ;
 lexical AssignBooleanExpression = EcbPrefix "AssignBooleanExpression " LogicExpression "to " BitAddress+ ;
@@ -78,8 +85,6 @@ lexical TriggerTarget = BitAddress ;
 lexical TriggerExpression = TriggerResult "=\> " LogicExpression ;
 lexical TriggerResult = BitAddress;
 
-
-
 lexical CompareStatement = (SourceRange | (SourceRange " to " TargetRange));
 lexical SourceRange = AddressRange;
 lexical TargetRange = AddressRange;
@@ -92,6 +97,7 @@ lexical EcbPrefix = ColorName "CodeBlock: " SourceLineRange " is ";
 lexical SourceLineRange = FiveDigits "-" FiveDigits ; 
 lexical ColorName = "++" [a-zA-Z0-9\ ]* !>> [a-zA-Z0-9\ ] "++" ; // * * added to remove ambiguity
 lexical AddressRange = FiveDigits | (FiveDigits ",")+ FiveDigits;
+lexical BitAddressRange = BitAddress+ !>> BitAddress;
 lexical ConstantValue = FiveDigits ;
 lexical Description = "--" [a-zA-Z0-9\ ]* !>> [a-zA-Z0-9\ ] "--"; // -- -- added to remove ambiguity
 

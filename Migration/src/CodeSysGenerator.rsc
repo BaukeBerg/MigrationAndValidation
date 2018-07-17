@@ -92,6 +92,102 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
       includedLines += extractSize(IB);
     }
     
+    case DecrementCounter DC:
+    {
+      programLines = houseKeeping(IO, startIfPositions, endIfPositions, programLines);
+      programLines += "(* <DC> *)";
+      addresses = [];
+      str target = "";      
+      visit(DC)
+      {
+        case AddressRange AR:
+        {        
+          visit(AR)
+          {
+            case FiveDigits WA:
+            {
+              addresses += ["<WA>"];
+            }
+          }
+        }        
+        case BitAddress BA:
+        {
+          target = "<BA>";
+        }
+      }
+      includedLines += extractSize(DC);
+      
+      if(4 == size(addresses))
+      {
+        ones = retrieveVariableName(addresses[0], symbols);
+        tens = retrieveVariableName(addresses[1], symbols);
+        hundreds = retrieveVariableName(addresses[2], symbols);
+        thousands = retrieveVariableName(addresses[3], symbols);
+        programLines += ["IF <ones> \> 0 THEN (* <retrieveComment("<ones>", symbols)> *)",
+                        "  <ones> := <ones> - 1 ;",
+                        "ELSIF <tens> \> 0 THEN (* <retrieveComment("<tens>", symbols)> *)",
+                        "  <ones> := 9;",
+                        "  <tens> := <tens> - 1 ;",
+                        "ELSIF <hundreds> \> 0 THEN (* <retrieveComment("<hundreds>", symbols)> *)",
+                        "  <ones> := 9;",
+                        "  <tens> := 9;",
+                        "  <hundreds> := <hundreds> - 1 ;",
+                        "ELSIF <thousands> \> 0 THEN (* <retrieveComment("<thousands>", symbols)> *)",
+                        "  <ones> := 9;",
+                        "  <tens> := 9;",
+                        "  <hundreds> := 9;",
+                        "  <thousands> := <thousands> - 1 ;",
+                        "ELSE (* Timer underflow, rolling over to maximum value *)",
+                        "  <ones> := 9;",
+                        "  <tens> := 9;",
+                        "  <hundreds> := 9;",
+                        "  <thousands> := 9;",
+                        "END_IF;",
+                        "<retrieveVariableName("<target>", symbols)> := (0 = <ones>) AND (0 = <tens>) AND (0 = <hundreds>) AND (0 = <thousands>) ; (* <retrieveComment("<target>", symbols)> *)"                        
+                        ];
+               
+      }
+      else
+      {
+        handleError("Invalid counter size: <size(addresses)>");
+        for(i <- addresses)
+        {
+          handleError("Count address: <i>");
+        }
+      }
+        
+    }
+    
+    case ResetBit SB:
+    {
+      programLines += "(* <SB> *)" ;
+      visit(SB)
+      {
+        case BitAddress BA:
+        {          
+          programLines += "<retrieveVariableName("<BA>", symbols)> := FALSE ; (* <retrieveComment("<BA>", symbols)> *)" ;
+        }
+        default:
+          ;
+      }
+      includedLines += 1;
+    }
+    
+    case SetBit SB:
+    {
+      programLines += "(* <SB> *)" ;
+      visit(SB)
+      {
+        case BitAddress BA:
+        {
+          programLines += "<retrieveVariableName("<BA>", symbols)> := TRUE ; (* <retrieveComment("<BA>", symbols)> *)" ;
+        }
+        default:
+          ;
+      }
+      includedLines += 1;
+    }
+    
     case IOSynchronization IO:
     {
       programLines = houseKeeping(IO, startIfPositions, endIfPositions, programLines);
