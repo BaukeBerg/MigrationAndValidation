@@ -10,7 +10,7 @@ import utility::Debugging;
 import utility::InstructionUtility;
 import utility::StringUtility;
 
-Tree preprocess(Tree tree) = innermost visit(tree)
+Tree rewrite(Tree tree) = innermost visit(tree)
 {
   // Toss away empty lines
   case (CodeBlock) `<CompiledInstruction* pre><EmptyLine _><CompiledInstruction *post>`:
@@ -55,9 +55,19 @@ Tree preprocess(Tree tree) = innermost visit(tree)
  /// ComposeValue
   case (CodeBlock)`<CompiledInstruction* pre><
     SourcePrefix first>11 <BitAddress bitAddress><NewLine _><
-    CompiledInstruction *post>`:
+    SourcePrefix last>14 <WordAddress wordAddress><NewLine _><
+    CompiledInstruction* post>`:
     {
-      fail;
+      firstFetch = first;
+      lastFetch = last;
+      while((CodeBlock)`<CompiledInstruction* newPre><SourcePrefix current>11 <BitAddress bitAddress><NewLine _>` 
+        := (CodeBlock)`<CompiledInstruction pre>`)
+      {
+        debugPrint("Found an additional FETCHBIT");
+        firstFetch = current;
+        pre = newPre;
+      }
+      
     } 
     
   

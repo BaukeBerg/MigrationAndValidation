@@ -127,7 +127,7 @@ bool generateCodesysExport(str inputFile)
     debugPrint("Adding symbols");
     symbols = addUndeclaredVariables(symbols, parsedData);
     debugPrint("Preprocessing");
-    processedTree = preprocess(parsedData);
+    processedTree = rewrite(parsedData);
     debugPrint("Storing result");
     writeFile(procFile, unparse(processedTree));
   }

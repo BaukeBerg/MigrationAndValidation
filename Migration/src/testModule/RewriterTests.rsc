@@ -43,7 +43,7 @@ test bool testComposingValue() = expectEqual("00000", getAddress(sampleFetch));
 test bool testLogicBlock()
 {
   logicTree = parseCompiledFile("logicCondition.compiled");
-  logicTree = preprocess(logicTree);
+  logicTree = rewrite(logicTree);
   return true;
 }
 

@@ -58,7 +58,7 @@ GraphicalModel generateFigures(Tree parseTree, list[str] sourceLines)
   {
     debugPrint("Removing unnecessary code");   
     parseTree = removeBoilerPlate(parseTree);    
-    parseTree = preprocess(parseTree);
+    parseTree = rewrite(parseTree);
   }  
   debugPrint("Trying to extract model data");
   //parseTree = extractModelTest(parseTree);  
