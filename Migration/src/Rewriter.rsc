@@ -53,9 +53,9 @@ Tree preprocess(Tree tree) = innermost visit(tree)
   } 
  
  /// ComposeValue
-  case (CodeBlock)`<CompiledBlock* pre><
-    SourcePrefix first>11 <BitAddress bitAddress><Newline _><
-    CompiledBlock *post>`:
+  case (CodeBlock)`<CompiledInstruction* pre><
+    SourcePrefix first>11 <BitAddress bitAddress><NewLine _><
+    CompiledInstruction *post>`:
     {
       fail;
     } 
