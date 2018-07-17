@@ -1,0 +1,7 @@
+(* ++Cyan++CodeBlock: 00018-00020 is BitTrigger 00511.2 by 00510.2 => 00001.2 *)
+TRIGGER_00510_2
+(
+  CLK := _CLOCK_10s, (* !10 sec. puls *)
+  Q => S_10SEC, (* !triggerpuls 10 sec. *)
+);
+  

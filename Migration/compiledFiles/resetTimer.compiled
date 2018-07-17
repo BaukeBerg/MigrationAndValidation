@@ -1,0 +1,12 @@
+11535                   
+11536 09872 17 00044.0    ANDNT REG0B33 !regeneratiefase 33
+11537 09873 13 02156      FTCHD STP39_0 !setpoint 39 eenheden
+11538 09874 13 02157      FTCHD STP39_1 !setpoint 39 tientallen
+11539 09875 13 02158      FTCHD STP39_2 !setpoint 39 honderdtallen
+11540 09876 13 02159      FTCHD STP39_3 !setpoint 39 duizendtallen
+11541 09877 14 01256      STRD  DSP39_0 !display 39 eenheden
+11542 09878 14 01257      STRD  DSP39_1 !display 39 tientallen
+11543 09879 14 01258      STRD  DSP39_2 !display 39 honderdtallen
+11544 09880 14 01259      STRD  DSP39_3 !display 39 duizendtallen
+11545 09881 08 00358.1    SET0  REG0B52 !vertr. controle proceswater fase 33
+11546   

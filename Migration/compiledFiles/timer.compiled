@@ -1,0 +1,11 @@
+06985                   !
+06986                   ! timer 41 t.b.v. afsluiters V12.1, V12.2, V12.3 tijdens fase 7
+06987                   !
+06988 06094 16 00511.1    AND S_1SEC  !triggerpuls 1,0 sec.
+06989 06095 16 00037.2    AND FASE_7  !fase 7
+06990 06096 17 00030.0    ANDNT TIMER_41
+06991 06097 06 01264      CNTD  DSP41_0 !display 41 eenheden
+06992 06098 06 01265      CNTD  DSP41_1 !display 41 tientallen
+06993 06099 06 01266      CNTD  DSP41_2 !display 41 honderdtallen
+06994 06100 06 01267      CNTD  DSP41_3 !display 41 duizendtallen
+06995 06101 10 00030.0    STRB  TIMER_41
