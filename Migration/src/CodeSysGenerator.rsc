@@ -106,8 +106,13 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
         sourceInt = composeInteger(sources, symbols);
         targetInt = composeInteger(targets, symbols);
         targetInfo = retrieveInfo(resultValue, symbols);
+        targetName = targetInfo.name;
         programLines += ["(* <targetInfo.comment> *)", 
-          ]; 
+          "<targetName>.0 := <sourceInt> = <targetInt>; ",
+          "<targetName>.1 := <sourceInt> \< <targetInt>;",
+          "<targetName>.2 := <sourceInt> \> <targetInt>;",
+          "<targetName>.3 := <sourceInt> \<\> <targetInt>;"
+          ];
       }
       
       
