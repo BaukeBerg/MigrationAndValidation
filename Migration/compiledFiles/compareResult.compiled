@@ -1,0 +1,10 @@
+12833                   
+12834 11060 16 00000.1    AND 000.1
+12835 11061 13 01003      FTCHD FLW00_0 !LSB +
+12836 11062 13 01002      FTCHD FLW00_1 !| flow reinwater
+12837 11063 13 01001      FTCHD FLW00_2 !MSB +
+12838 11064 15 02280      COMP  STP70_0 !setpoint 70 eenheden
+12839 11065 15 02281      COMP  STP70_1 !setpoint 70 tientallen
+12840 11066 15 02282      COMP  STP70_2 !setpoint 70 honderdtallen
+12841 11067 14 00370      STRD  FLW0D00 !vergelijkingsresult.
+12842   
