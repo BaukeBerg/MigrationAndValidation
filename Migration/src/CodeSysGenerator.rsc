@@ -121,7 +121,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     case IfBlock IB:
     {
       programLines = houseKeeping(IB, startIfPositions, endIfPositions, programLines);
-      programLines += "<IB>"; // defaultFormat(IB)[1..];
+      programLines += "(* <IB> *)";
       actualCount = 0;
       visit(IB)
       {
