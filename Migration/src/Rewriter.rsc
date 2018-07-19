@@ -183,6 +183,16 @@ Tree rewrite(Tree tree) = innermost visit(tree)
     insert (CodeBlock)`<CompiledInstruction* pre><CompareValue compareValue><CompiledInstruction *post>`;
   }
   
+    /// Compare to Result
+  case (CodeBlock)`<CompiledInstruction* pre><
+    EcbPrefix first>CompareValue <CompareStatement compare><
+    EcbPrefix last>WriteValue <AddressRange target><
+    CompiledInstruction* post>`:
+  {
+    compareWithResult = parse(#CompareWithResult, debugPrint("CompareWithResult: ", "<composeEcbPrefix("Lime", composeSourceRange(first, last))>CompareWithResult <compare> =\> <target> "));
+    insert (CodeBlock)`<CompiledInstruction* pre><CompareWithResult compareWithResult><CompiledInstruction* post>`; 
+  }
+  
   // AndEqual => Rename to ' Bit Assign' 
   case (CodeBlock)`<CompiledInstruction* pre><
     LogicCondition logic><

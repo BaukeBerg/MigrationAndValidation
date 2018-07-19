@@ -38,6 +38,7 @@ syntax CompiledInstruction = empty:EmptyLine
 lexical ComposedCodeBlock = ReadValue
                            | WriteValue
                            | CompareValue
+                           | CompareWithResult
                            | NopBlock
                            | AssignValue
                            | AssignConstant
@@ -72,6 +73,7 @@ lexical WriteValue = EcbPrefix "WriteValue " AddressRange ;
 lexical SetBit = EcbPrefix "SetBit " BitAddress;
 lexical ResetBit = EcbPrefix "ResetBit " BitAddress;
 lexical CompareValue = EcbPrefix "CompareValue " CompareStatement;
+lexical CompareWithResult = EcbPrefix "CompareWithResult "CompareStatement " =\> " WordAddress;
 lexical AssignValue = EcbPrefix "AssignValue " SourceRange " to " TargetRange ;
 lexical AssignBooleanExpression = EcbPrefix "AssignBooleanExpression " LogicExpression "to " BitAddress+ ;
 lexical IOSynchronization = EcbPrefix "IOSynchronization " FiveDigits " to " FiveDigits;

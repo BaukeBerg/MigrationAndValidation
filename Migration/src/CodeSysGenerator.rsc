@@ -65,13 +65,58 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
         }
         default:
           ;
-      } 
+      }
+      includedLines += extractSize(ECB); 
     }
     
+    case CompareWithResult CR:
+    {
+      programLines = houseKeeping(CR, startIfPositions, endIfPositions, programLines);
+      programLines += debugPrint("CR: ", "(* <CR> *)");
+      sources = [];
+      targets = [];
+      resultValue = "";
+      visit(CR)
+      {
+        case CompareStatement Compare:
+        {
+          visit(Compare)
+          {
+            case SourceRange SR:
+            {
+              sources = split(",", "<SR>");
+            } 
+            case TargetRange TR:
+            {
+              targets = split(",", "<TR>");
+            }           
+          }
+        } 
+        case WordAddress WA:
+        {
+          resultValue = trim("<WA>");
+        }       
+      }
+      if(size(sources) != size(targets))
+      {
+        handleError("sources and targets differ: sources: <sources>, targets: <targets>");
+      }
+      else
+      { 
+        sourceInt = composeInteger(sources, symbols);
+        targetInt = composeInteger(targets, symbols);
+        targetInfo = retrieveInfo(resultValue, symbols);
+        programLines += ["(* <targetInfo.comment> *)", 
+          ]; 
+      }
+      
+      
+      includedLines += extractSize(CR);
+    }
     case IfBlock IB:
     {
       programLines = houseKeeping(IB, startIfPositions, endIfPositions, programLines);
-      programLines += defaultFormat(IB)[1..];
+      programLines += "<IB>"; // defaultFormat(IB)[1..];
       actualCount = 0;
       visit(IB)
       {
@@ -420,6 +465,19 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
   debugPrint("EndIf positions: <endIfPositions>");
   debugPrint("Total line amount included: <includedLines>");
   return <variableList,programLines>;
+}
+
+str composeInteger(list[str] targets, SymbolTable symbols)
+{
+  integerStatement = "";
+  multiPlier = 1;
+  for(target <- targets)
+  {
+    targetInfo = retrieveInfo(target, symbols);          
+    integerStatement += "(<targetInfo.name> * <multiPlier>) + ";
+    multiPlier *= 10;
+  }
+  return "(<replaceLast(integerStatement, " + ", "")>)";
 }
 
 Statements houseKeeping(&T item, list[int] startIfPositions, list[int] endIfPositions, Statements currentProgram) = houseKeeping(item, startIfPositions, endIfPositions, currentProgram, false);
