@@ -117,7 +117,8 @@ Symbol generateDeclaration(str defaultName, &T D)
     case VariableName N:
     {
       debugPrint("<N>", printSymbolInfo);
-      extractedSymbol.name = "<trim("<N>")>";
+      extractedSymbol.name = replaceAll("<trim("<N>")>", "__", "_");
+      
     }
     case Address A:
     {
