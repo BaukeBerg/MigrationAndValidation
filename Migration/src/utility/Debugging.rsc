@@ -7,6 +7,7 @@ import List;
 import String;
 
 import utility::FileUtility;
+import utility::StringUtility;
 
 bool debuggingEnabled = true; 
 int printIndex = 0;
@@ -67,14 +68,36 @@ public &T handleError(&T errorToLog)
   return errorToLog;
 }
 
+
+public str fileTimeStamp() = replaceAll(replaceAll(replaceAll(timeStamp(), ":", ""), "-", ""), " ", "_");
 public str timeStamp() = printDateTime(now(), "YYYY-MM-dd HH:mm:ss");
 
 public void printDuration() = printDuration("", localDateTime);
 public void printDuration(str prefix) = printDuration(prefix, localDateTime); 
 
-public str printDuration(datetime startTime) = printDuration("", startTime);
+public void printDuration(datetime startTime) = printDuration("", startTime);
 public void printDuration(str prefix, datetime startTime)
 {
-  debugPrint("<prefix> duration: <createDuration(startTime, now())>");
+  debugPrint("<prefix> <formatDuration()>");
 }
+
+public str formatDuration()
+{
+  suffixes = ["d","h","m","s","ms"];
+  counters = drop(2, extractIntegers("<createDuration(localDateTime, now())>"));
+  firstValid = false;
+  timeString = "";
+  for(index <- [0..size(counters)])
+  {
+    countValue = counters[index];
+    if((0 < countValue)
+      || firstValid)
+    {
+      firstValid = true;
+      timeString += "<countValue><suffixes[index]>";      
+    }
+  }
+  return timeString;
+}
+
 
