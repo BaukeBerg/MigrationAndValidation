@@ -128,6 +128,10 @@ public void validateAndReport(str reportName, PlcProgram program)
       case /END_IF;/:
       {
         indentDepth -= 1;
+        if(0 > indentDepth)
+        {
+          errorList += handleError("Indent depth smaller than 0, code error at line <line>");
+        }
         reportWarnings = true;
       }
       
