@@ -47,13 +47,13 @@ public void validateAndReport(str reportName, PlcProgram program)
       {
         uncoveredPatterns += 1;
         uncoveredPatternLines += firstInteger(endSource) - firstInteger(startSource) + 1;        
-        errorList += debugPrint("Missing pattern <patternType> at <startSource>-<endSource>");
+        errorList += debugPrint("No code generated for pattern <patternType> at <startSource>-<endSource>");
       }
       
       case / Unexpanded: <sourceLine:[0-9]{5}> <programLine:[0-9]{5}> <instruction:[0-9]{2}> /:
       {
         uncoveredInsructionLines += 1;        
-        errorList += debugPrint("Missing instruction <instruction> at sourceLine <sourceLine>, programLine <programLine>");        
+        errorList += debugPrint("No code generated for instruction <instruction> at sourceLine <sourceLine>, programLine <programLine>");        
       }
     }
   }
@@ -92,6 +92,8 @@ public void validateAndReport(str reportName, PlcProgram program)
   indentDepth = 0;
   maxIndentDepth = 0;
   reportWarnings = true;
+  blankLines = 0; 
+  commentedLines = 0;
   for(line <- [0..size(program.programLines)])
   {
     switch(program.programLines[line])
@@ -109,6 +111,18 @@ public void validateAndReport(str reportName, PlcProgram program)
           warningList += debugPrint("Threshold for indent depth exceeded, Possible issue with generating end_if statements around line <line>");
           reportWarnings = false;
         }        
+      }
+      
+      case /^\s*$/:
+      {
+        debugPrint("BlankLine");
+        blankLines += 1;
+      }
+      
+      case /^\s*;?\s*\(\*/:
+      {
+        debugPrint("Commented line");
+        commentedLines += 1;        
       }
       
       case /END_IF;/:
@@ -160,15 +174,23 @@ public void validateAndReport(str reportName, PlcProgram program)
   }
     
   programSize = currentLine - startLine + 1;
-  coverage = (0 < programSize) ? 100.0 * coveredLines / programSize : 0.00 ;  
+  coverage = (0 < programSize) ? 100.0 * coveredLines / programSize : 0.00 ;
+  fileSize = size(program.programLines);
+  linesOfCode = fileSize-commentedLines-blankLines;
+  reduction = formatReal(100.0 - (programSize-linesOfCode / programSize * 100.0), 2);  
   reportLines = [];
   reportLines += debugPrint("-------------------- REPORT --------------------");
   reportLines += debugPrint("Report date time: <timeStamp()>");
   reportLines += debugPrint("Conversion duration: <formatDuration()>");
   reportLines += debugPrint("Program complete: <yesOrNo(100.0 == coverage)>");
-  reportLines += debugPrint("------------------ STATISTICS ------------------");
-  reportLines += debugPrint("Highest counter: <currentLine>");
-  reportLines += debugPrint("Size of program: <programSize> lines");
+  reportLines += debugPrint("------------------ STATISTICS ------------------");  
+  reportLines += debugPrint("Highest index of program counter: <currentLine>");
+  reportLines += debugPrint("Size of program : <programSize> lines");
+  reportLines += debugPrint("Total file size: <fileSize>");
+  reportLines += debugPrint("Amount of blank lines: <blankLines>");
+  reportLines += debugPrint("Amount of commented lines: <commentedLines>");
+  reportLines += debugPrint("Total lines with instructions: <linesOfCode>");
+  reportLines += debugPrint("Reduction of code size: <reduction>%");
   reportLines += debugPrint("Amount of if-statements: <ifCount>");
   reportLines += debugPrint("Maximum indent depth: <maxIndentDepth>");
   reportLines += debugPrint("Covered source range: <coveredLines> lines");
