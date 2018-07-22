@@ -47,3 +47,9 @@ test bool testLargeToken() = expectEqual("00.1", stripLeading("00400.1", "004"),
 
 test bool testPaddedStrings() = expectEqual(332, parseInt("00332      "), "parseInt should be able to trim strings");
 test bool testZeroValue() = expectEqual(0, parseInt("00000        "), "zero with trailing spaces should parse correctly");
+
+// real formatting
+test bool testFormatReal() = expectEqual("0.00", formatReal(0), "defaults to 2 digits");
+test bool testFormatRealClipping() = expectEqual("0.12", formatReal(0.12335), "defaults to 2 digits, clipping the rest");
+test bool testFormatRealSizeArgument() = expectEqual("45678.12335", formatReal(45678.12335, 5), "5 digits");
+test bool testFormatRealPadding() = expectEqual("45678.12300", formatReal(45678.123, 5), "5 digits, padded with 0"); 

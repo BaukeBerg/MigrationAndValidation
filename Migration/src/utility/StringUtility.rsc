@@ -3,8 +3,10 @@ module utility::StringUtility
 import List;
 import String;
 
+import utility::Debugging;
 import utility::ListUtility;
 import utility::MathUtility;
+
 
 int parseInt(&T inputObject)
 {
@@ -80,6 +82,21 @@ public str stripLeading(str inputString, str tokenToRemove)
     inputString = substring(inputString,size(tokenToRemove));
   }
   return inputString;
+}
+
+public str formatReal(real valueToPrint) = formatReal(valueToPrint, 2);
+public str formatReal(int valueToPrint) = formatReal(1.0 * valueToPrint, 2);
+public str formatReal(int valueToPrint, int digits) = formatReal(1.0 * valueToPrint, digits);
+public str formatReal(real valueToPrint, int digits)
+{
+  tokens = split(".", "<valueToPrint>");
+  if(2 != size(tokens))
+  {
+    handleError("Invalid real value passed: <valueToPrint>");
+    return "0.0";
+  }
+  digitText = substring(left(tokens[1], digits, "0"), 0, digits);  
+  return "<tokens[0]>.<digitText>";    
 }
 
 public str stringToken(str stringToCheck, str firstOccurrence, str lastOccurrence) = stringToken(stringToCheck, firstOccurrence, findLast(stringToCheck, lastOccurrence));
