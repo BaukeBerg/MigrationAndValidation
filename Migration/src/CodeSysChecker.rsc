@@ -1,6 +1,7 @@
 module CodeSysChecker
 
 import CodesysTypes;
+import IO;
 import List;
 import String;
 
@@ -85,10 +86,34 @@ public void printReport(PlcProgram program)
     }    
   }
   
+  indentDepth = 0;
+  maxIndentDepth = 0;
+  reportWarnings = true;
   for(line <- program.programLines)
   {
     switch(line)
     {
+      case /IF /:
+      {
+        indentDepth += 1;
+        if(indentDepth > maxIndentDepth)
+        {
+          maxIndentDepth = indentDepth;
+        } 
+        if((indentDepth >= 3)
+          && reportWarnings)
+        {
+          warningList += debugPrint("Threshold for indent depth exceeded, Possible issue with generating end_if statements around line <indexOf(program.programLines, line)>");
+          reportWarnings = false;
+        }        
+      }
+      
+      case /END_IF;/:
+      {
+        indentDepth -= 1;
+        reportWarnings = true;
+      }
+      
       case /UNKNOWN_IDENTIFIER/:
       {
         warningList += debugPrint("Found a missing address at .EXP file line <indexOf(program.programLines, line)>, Program will not compile. Verify the symbolTable generator");
@@ -128,7 +153,7 @@ public void printReport(PlcProgram program)
   }
   if(ifCount != endIfCount)
   {
-    errorList += handleError("not all if-statements are terminated <ifcount> if-statements vs <endIfCount> end_if statements");
+    errorList += handleError("not all if-statements are terminated <ifCount> if-statements vs <endIfCount> end_if statements");
   }
     
   programSize = currentLine - startLine + 1;
@@ -138,6 +163,7 @@ public void printReport(PlcProgram program)
   debugPrint("Highest counter: <currentLine>");
   debugPrint("Size of program: <programSize> lines");
   debugPrint("Amount of if-statements: <ifCount>");
+  debugPrint("Maximum indent depth: <maxIndentDepth>");
   debugPrint("Covered source range: <coveredLines> lines");
   debugPrint("Uncovered patterns: <uncoveredPatterns>, total <uncoveredPatternLines> lines");
   debugPrint("Uncovered instructions: <uncoveredInsructionLines> lines");
