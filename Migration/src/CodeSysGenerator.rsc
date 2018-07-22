@@ -27,10 +27,11 @@ public SymbolTable systemVariables = [<"AlwaysOne", "0.1", "Constant with value 
                                <"_CLOCK_10s", "1.2", "10s interval with 50 percent duty cycle", "BOOL">,
                                <"_CLOCK_60s", "1.3", "60s interval with 50 percent duty cycle", "BOOL">];
                                 
-void generateFile(str outputPath, Tree plcModel, SymbolTable symbols)
+PlcProgram generateFile(str outputPath, Tree plcModel, SymbolTable symbols)
 {
-  PlcProgram program = extractInformation(plcModel, symbols);
+  PlcProgram program = extractInformation(plcModel, symbols);  
   generateProgram(outputPath, program);
+  return program;
 }
 
 PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
@@ -403,6 +404,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     {
       programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines);
       programLines += defaultFormat(EL);
+      
     }         
         
     case AssignConstant A:

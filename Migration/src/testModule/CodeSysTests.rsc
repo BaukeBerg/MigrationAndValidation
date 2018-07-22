@@ -2,6 +2,7 @@ module testModule::CodeSysTests
 
 extend ParserBase;
 
+import CodeSysChecker;
 import CodeSysGenerator;
 import CodesysSyntax;
 import CodesysTypes;
@@ -104,7 +105,7 @@ test bool testCompleteProgram() = testGenerating("DR_TOT_3.compiled");
 
 public bool useCachedFile = false ; ///< Flag bit which enables / disables the caching mechanism
 
-bool testGenerating(str inputFile) = generateCodesysExport(inputFile);
+bool testGenerating(str inputFile) = (size(generateCodesysExport(inputFile).programLines) > 0) && (size(generateCodesysExport(inputFile).declarations) > 0);
 
 
 list[str] addedSymbols = [];
@@ -112,7 +113,8 @@ list[str] addedSymbols = [];
 // Because it used the system variable list and handles all the processing steps
 
 
-bool generateCodesysExport(str inputFile)
+/// Generates the program into the file specified and returns the Declarations and source code lines
+PlcProgram generateCodesysExport(str inputFile)
 {
   Tree processedTree;  
   procFile = generatedFile("<inputFile>.PreProc"); 
@@ -136,8 +138,9 @@ bool generateCodesysExport(str inputFile)
     writeFile(procFile, unparse(processedTree));
   }
   str outputFile = "<stripFileExtension(inputFile)>.EXP";
-  generateFile(outputFile, processedTree, symbols);
-  return true;
+  program = generateFile(outputFile, processedTree, symbols);
+  printReport(program);
+  return program;  
 }
 
 // Simple patterns 
