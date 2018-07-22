@@ -123,7 +123,6 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     {
       programLines = houseKeeping(IB, startIfPositions, endIfPositions, programLines);
       programLines += "(* <IB> *)";
-      actualCount = 0;
       visit(IB)
       {
         case LogicExpression LE:
@@ -132,14 +131,14 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
         }
         case SourceLineRange SR:
         {
-          actualCount = lastInteger("<SR>");
+          actualProgramCount = lastInteger("<SR>");
         }
         case JumpSize JS:
         {
-          endIfPositions += (parseInt(JS) + actualCount); // Notify on what position the END_IF goes
+          endIfPositions += (parseInt(JS) + actualProgramCount); // Notify on what position the END_IF goes
           debugPrint("Inserted END_IF pos: <last(endIfPositions)>");
         }
-      }
+      }      
       includedLines += extractSize(IB);
     }
     
@@ -417,8 +416,10 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     case AssignValue A:
     {
       programLines = houseKeeping(A, startIfPositions, endIfPositions, programLines);
+      actualProgramCount = lastProgramCount(A);
       includedLines += extractSize(A);
       programLines += extractStatements(A, symbols);
+      
     }
         
     case BitTrigger B:
@@ -465,7 +466,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
       programLines += ["(* <ECB> *)", "; (* DoNothing *)", "  "];
     }
   } 
-   
+  
   programLines = houseKeeping(actualProgramCount+1, startIfPositions, endIfPositions, programLines, openCondition);
   debugPrint("Condition state: <openCondition>");
   debugPrint("If positions: <startIfPositions>");
@@ -490,8 +491,9 @@ str composeInteger(list[str] targets, SymbolTable symbols)
 Statements houseKeeping(&T item, list[int] startIfPositions, list[int] endIfPositions, Statements currentProgram) = houseKeeping(item, startIfPositions, endIfPositions, currentProgram, false);
 Statements houseKeeping(&T item, list[int] startIfPositions, list[int] endIfPositions, Statements currentProgram, bool terminateCondition)
 {
-  currentCount = debugPrint("Insert", programCount(item));
-  if(currentCount in endIfPositions)
+  currentCount = debugPrint("Insert", programCount(item));  
+  if((currentCount in endIfPositions)
+   || (currentCount-1) in endIfPositions)  
   {
     currentProgram = closeIf(currentProgram);
   }
@@ -500,6 +502,22 @@ Statements houseKeeping(&T item, list[int] startIfPositions, list[int] endIfPosi
   	return closeIf(currentProgram);
   }
   return currentProgram;
+}
+
+/// Convenience function, since last is provided, first is expected
+int firstProgramCount(&T programItem) = programCount(programItem);
+
+int lastProgramCount(&T programItem)
+{
+  visit(programItem)
+  {
+    case SourceLineRange SR:
+    {
+      return lastInteger("<SR>");
+    }
+  }
+  handleError("No program count in <programItem>");
+  return -1;
 }
 
 int programCount(int actualCount) = actualCount;
