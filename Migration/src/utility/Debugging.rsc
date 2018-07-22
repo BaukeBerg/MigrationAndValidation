@@ -58,12 +58,13 @@ public void startDuration()
   localDateTime = now();  
 }
 
-public void handleError(str errorToLog)
+public &T handleError(&T errorToLog)
 {
   currentError = "<timeStamp()>: <errorToLog>";
   debugPrint(errorToLog);
   Errors += currentError;
   addToFile(generatedFile("rascal.err"), "<currentError>\r\n");
+  return errorToLog;
 }
 
 public str timeStamp() = printDateTime(now(), "YYYY-MM-dd HH:mm:ss");
