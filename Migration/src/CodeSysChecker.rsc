@@ -174,10 +174,10 @@ public void validateAndReport(str reportName, PlcProgram program)
   }
     
   programSize = currentLine - startLine + 1;
-  coverage = (0 < programSize) ? 100.0 * coveredLines / programSize : 0.00 ;
+  coverage = (0 < programSize) ? coveredLines * 100.0 / programSize : 0.00 ;
   fileSize = size(program.programLines);
   linesOfCode = fileSize-commentedLines-blankLines;
-  reduction = formatReal(100.0 - (programSize-linesOfCode / programSize * 100.0), 2);  
+  reduction =  (0 < programSize) ? 100.0 * (programSize - coveredLines) / programSize : 0.00 ;
   reportLines = [];
   reportLines += debugPrint("-------------------- REPORT --------------------");
   reportLines += debugPrint("Report date time: <timeStamp()>");
@@ -190,7 +190,7 @@ public void validateAndReport(str reportName, PlcProgram program)
   reportLines += debugPrint("Amount of blank lines: <blankLines>");
   reportLines += debugPrint("Amount of commented lines: <commentedLines>");
   reportLines += debugPrint("Total lines with instructions: <linesOfCode>");
-  reportLines += debugPrint("Reduction of code size: <reduction>%");
+  reportLines += debugPrint("Reduction of code size: <formatReal(reduction)>%");
   reportLines += debugPrint("Amount of if-statements: <ifCount>");
   reportLines += debugPrint("Maximum indent depth: <maxIndentDepth>");
   reportLines += debugPrint("Covered source range: <coveredLines> lines");
