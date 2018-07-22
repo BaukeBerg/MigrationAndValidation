@@ -106,11 +106,15 @@ public bool useCachedFile = false ; ///< Flag bit which enables / disables the c
 
 bool testGenerating(str inputFile) = generateCodesysExport(inputFile);
 
+
+list[str] addedSymbols = [];
 // This part should move to the CodeSysGenerator module.
 // Because it used the system variable list and handles all the processing steps
+
+
 bool generateCodesysExport(str inputFile)
 {
-  Tree processedTree;
+  Tree processedTree;  
   procFile = generatedFile("<inputFile>.PreProc"); 
   if(exists(procFile) && true == useCachedFile)
   {
@@ -120,12 +124,12 @@ bool generateCodesysExport(str inputFile)
   else
   {
     debugPrint("Parsing input file...");
-    parsedData = parseCompiledFile(inputFile);
-    
+    parsedData = parseCompiledFile(inputFile);    
     debugPrint("Adding system variables");
     symbols = addSystemVariables(symbols);
     debugPrint("Adding symbols");
     symbols = addUndeclaredVariables(symbols, parsedData);
+    addedSymbols = unnamedSymbols(symbols);
     debugPrint("Preprocessing");
     processedTree = rewrite(parsedData);
     debugPrint("Storing result");
