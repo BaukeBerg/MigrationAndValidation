@@ -1,16 +1,19 @@
 module CodeSysChecker
 
 import CodesysTypes;
+import FileLocations;
 import IO;
 import List;
 import String;
 
 import utility::Debugging;
+import utility::FileUtility;
 import utility::StringUtility;
 
 public bool printLists = false;
 
-public void printReport(PlcProgram program)
+public void validateAndReport(PlcProgram program) = validateAndReport("PC20_Cycle", program);
+public void validateAndReport(str reportName, PlcProgram program)
 {
   int currentLine = 0;
   int coveredLines = 0;
@@ -89,9 +92,9 @@ public void printReport(PlcProgram program)
   indentDepth = 0;
   maxIndentDepth = 0;
   reportWarnings = true;
-  for(line <- program.programLines)
+  for(line <- [0..size(program.programLines)])
   {
-    switch(line)
+    switch(program.programLines[line])
     {
       case /IF /:
       {
@@ -103,7 +106,7 @@ public void printReport(PlcProgram program)
         if((indentDepth >= 3)
           && reportWarnings)
         {
-          warningList += debugPrint("Threshold for indent depth exceeded, Possible issue with generating end_if statements around line <indexOf(program.programLines, line)>");
+          warningList += debugPrint("Threshold for indent depth exceeded, Possible issue with generating end_if statements around line <line>");
           reportWarnings = false;
         }        
       }
@@ -116,15 +119,15 @@ public void printReport(PlcProgram program)
       
       case /UNKNOWN_IDENTIFIER/:
       {
-        warningList += debugPrint("Found a missing address at .EXP file line <indexOf(program.programLines, line)>, Program will not compile. Verify the symbolTable generator");
+        warningList += debugPrint("Found a missing address at .EXP file line <line>, Program will not compile. Verify the symbolTable generator");
       }
       case /unnamed_<wordAddress:[0-9]+>_<bitAddress:[0-3]>/:
       {
-        warningList += debugPrint("Found an unnamed bitaddress: <wordAddress>.<bitAddress> at .EXP file line <indexOf(program.programLines, line)>, consider manually declaring it in the .symbolTable file.");
+        warningList += debugPrint("Found an unnamed bitaddress: <wordAddress>.<bitAddress> at .EXP file line <line>, consider manually declaring it in the .symbolTable file.");
       }
       case /unnamed_<wordAddress:[0-9]+>/:
       {
-        warningList += debugPrint("Found an unnamed address: <wordAddress> at .EXP file line <indexOf(program.programLines, line)>, consider manually declaring it in the .symbolTable file.");
+        warningList += debugPrint("Found an unnamed address: <wordAddress> at .EXP file line <line>, consider manually declaring it in the .symbolTable file.");
       }
     }
   }
@@ -158,24 +161,31 @@ public void printReport(PlcProgram program)
     
   programSize = currentLine - startLine + 1;
   coverage = (0 < programSize) ? 100.0 * coveredLines / programSize : 0.00 ;  
-  debugPrint("-------------------- REPORT --------------------");
-  debugPrint("------------------ STATISTICS ------------------");
-  debugPrint("Highest counter: <currentLine>");
-  debugPrint("Size of program: <programSize> lines");
-  debugPrint("Amount of if-statements: <ifCount>");
-  debugPrint("Maximum indent depth: <maxIndentDepth>");
-  debugPrint("Covered source range: <coveredLines> lines");
-  debugPrint("Uncovered patterns: <uncoveredPatterns>, total <uncoveredPatternLines> lines");
-  debugPrint("Uncovered instructions: <uncoveredInsructionLines> lines");
-  debugPrint("Coverage: <coverage>%");
-  debugPrint("-------------------- ERRORS --------------------");
+  reportLines = [];
+  reportLines += debugPrint("-------------------- REPORT --------------------");
+  reportLines += debugPrint("Report date time: <timeStamp()>");
+  reportLines += debugPrint("Conversion duration: <formatDuration()>");
+  reportLines += debugPrint("Program complete: <yesOrNo(100.0 == coverage)>");
+  reportLines += debugPrint("------------------ STATISTICS ------------------");
+  reportLines += debugPrint("Highest counter: <currentLine>");
+  reportLines += debugPrint("Size of program: <programSize> lines");
+  reportLines += debugPrint("Amount of if-statements: <ifCount>");
+  reportLines += debugPrint("Maximum indent depth: <maxIndentDepth>");
+  reportLines += debugPrint("Covered source range: <coveredLines> lines");
+  reportLines += debugPrint("Uncovered patterns: <uncoveredPatterns>, total <uncoveredPatternLines> lines");
+  reportLines += debugPrint("Uncovered instructions: <uncoveredInsructionLines> lines");
+  reportLines += debugPrint("Coverage: <formatReal(coverage,2)>%");
+  reportLines += debugPrint("-------------------- ERRORS --------------------");
   for(error <- errorList)
   {
-    debugPrint(error);    
+    reportLines += debugPrint(error);    
   }
-  debugPrint("------------------- WARNINGS -------------------");
+  reportLines += debugPrint("------------------- WARNINGS -------------------");
   for(warning <- warningList)
   {
-    debugPrint(warning);    
+    reportLines += debugPrint(warning);    
   }
+  writeToFile(generatedFile("<fileTimeStamp()>_<reportName>.txt"), reportLines);
 }
+
+str yesOrNo(bool valueToCheck) = valueToCheck ? "yes!" : "NO" ;
