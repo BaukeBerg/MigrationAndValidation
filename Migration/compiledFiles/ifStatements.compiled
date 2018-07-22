@@ -1,0 +1,34 @@
+12445                   
+12446 10666 16 00042.0    AND REG0B25 !regeneratiefase 25
+12447 10667 30 00008      JFRF  L10675
+12448 10668 13 01492      FTCHD DSP98_0 !display 98 eenheden
+12449 10669 13 01493      FTCHD DSP98_1 !display 98 tientallen
+12450 10670 13 01494      FTCHD DSP98_2 !display 98 honderdtallen
+12451 10671 13 01495      FTCHD DSP98_3 !display 98 duizendtallen
+12452 10672 14 01200      STRD  DSP25_0 !display 25 eenheden
+12453 10673 14 01201      STRD  DSP25_1 !display 25 tientallen
+12454 10674 14 01202      STRD  DSP25_2 !display 25 honderdtallen
+12455 10675 14 01203    L10675  STRD  DSP25_3 !display 25 duizendtallen
+12456                   
+12457 10676 17 00042.0    ANDNT REG0B25 !regeneratiefase 25
+12458 10677 30 00008      JFRF  L10685
+12459 10678 13 02100      FTCHD STP25_0 !setpoint 25 eenheden
+12460 10679 13 02101      FTCHD STP25_1 !setpoint 25 tientallen
+12461 10680 13 02102      FTCHD STP25_2 !setpoint 25 honderdtallen
+12462 10681 13 02103      FTCHD STP25_3 !setpoint 25 duizendtallen
+12463 10682 14 01200      STRD  DSP25_0 !display 25 eenheden
+12464 10683 14 01201      STRD  DSP25_1 !display 25 tientallen
+12465 10684 14 01202      STRD  DSP25_2 !display 25 honderdtallen
+12466 10685 14 01203    L10685  STRD  DSP25_3 !display 25 duizendtallen
+12467                   
+12468 10686 16 00042.1    AND REG0B26 !regeneratiefase 26
+12469 10687 30 00008      JFRF  L10695
+12470 10688 13 01492      FTCHD DSP98_0 !display 98 eenheden
+12471 10689 13 01493      FTCHD DSP98_1 !display 98 tientallen
+12472 10690 13 01494      FTCHD DSP98_2 !display 98 honderdtallen
+12473 10691 13 01495      FTCHD DSP98_3 !display 98 duizendtallen
+12474 10692 14 01204      STRD  DSP26_0 !display 26 eenheden
+12475 10693 14 01205      STRD  DSP26_1 !display 26 tientallen
+12476 10694 14 01206      STRD  DSP26_2 !display 26 honderdtallen
+12477 10695 14 01207    L10695  STRD  DSP26_3 !display 26 duizendtallen
+12478                   
