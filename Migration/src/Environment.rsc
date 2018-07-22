@@ -228,6 +228,9 @@ list[str] retrieveAddressList(str address, SymbolTable table)
   return symbols;
 }    
 
+list[str] unnammedSymbols(SymbolTable symbols) = [ symbol.name | symbol <- symbols, startsWith(symbol.name, "unnamed_")];
+
+
 // Local optimization due to bad performance of the firstInteger() on loop based calls
 // This call takes nearly 50% of the time. Possible improvement
 // the Findfirst takes the longest time!
