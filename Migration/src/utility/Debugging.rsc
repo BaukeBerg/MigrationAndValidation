@@ -54,7 +54,7 @@ datetime localDateTime = now();
 
 public void startDuration() 
 {
-  debugPrint("Starting duration...");
+  debugPrint("Starting duration... (<timeStamp()>)");
   localDateTime = now();  
 }
 
@@ -72,6 +72,9 @@ public str timeStamp() = printDateTime(now(), "YYYY-MM-dd HH:mm:ss");
 public void printDuration() = printDuration("", localDateTime);
 public void printDuration(str prefix) = printDuration(prefix, localDateTime); 
 
-public void printDuration(datetime startTime) = printDuration("", startTime);
-public void printDuration(str prefix, datetime startTime) = println("<prefix> duration: <createDuration(startTime, now())>");
+public str printDuration(datetime startTime) = printDuration("", startTime);
+public void printDuration(str prefix, datetime startTime)
+{
+  debugPrint("<prefix> duration: <createDuration(startTime, now())>");
+}
 

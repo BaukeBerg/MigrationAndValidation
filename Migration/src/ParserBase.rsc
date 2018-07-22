@@ -1,6 +1,6 @@
 module ParserBase
 
-import Ambiguity;
+import analysis::grammars::Ambiguity;
 import IO;
 import FileLocations;
 import ParseTree;
@@ -26,18 +26,18 @@ public int parseFile(loc fileName, &T syntaxType)
       for(line <- ambiguousLines)
       {
         addToFile(ambiguityFile, "<line.text>\r\n"); 
-        println("<line.line>:<line.text>");        
+        debugPrint("<line.line>:<line.text>");        
         iprintln(diagnose(parseText(line.text, syntaxType)));
       }   
     }
     else
     {
-      println("--- SUCCESS on parsing <fileName> ---");
+      debugPrint("--- SUCCESS on parsing <fileName> ---");
     }     
   }
   catch: 
   {
-    println("--- ERROR while parsing <fileName> ---");
+    debugPrint("--- ERROR while parsing <fileName> ---");
     parseResult = 2 ;        
   }  
   return parseResult;

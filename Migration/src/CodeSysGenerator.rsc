@@ -865,7 +865,7 @@ Statements evaluateAssign(SymbolTable symbols, str address, int constantValue)
     for(bitAddress <- retrieveAddressList(address, symbols))
     {
       variableName = retrieveVariableName(bitAddress, symbols);
-      println(variableName);
+      debugPrint(variableName);
       statements += "<variableName> := <toUpperCase("<getBit(constantValue, lastInteger(bitAddress))>")> ; (* <retrieveComment(variableName, symbols)> *)";
     }    
     return statements;

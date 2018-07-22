@@ -305,7 +305,7 @@ list[str] handleInstruction(&T I, int lineNumber, int progCounter, SymbolTable t
     }
   }  
   str returnLine = formatLine(lineNumber, progCounter, instruction, format(address, 5));
-  println(returnLine);  
+  debugPrint(returnLine);  
   return [returnLine];   
 }
 

@@ -310,7 +310,7 @@ void RET()
   }
   catch:
   {
-    println("Returning with an empty stack.... resetting PLC");
+    debugPrint("Returning with an empty stack.... resetting PLC");
     reset();
     return;
   }
