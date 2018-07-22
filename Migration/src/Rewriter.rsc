@@ -38,6 +38,28 @@ Tree rewrite(Tree tree) = innermost visit(tree)
     speed = parse(#QuickJumpOut, debugPrint("QuickJumpOut:", "<composeEcbPrefix("Brown", composeSourceRange(prefix, jump))>QuickJumpOut"));
     insert(CodeBlock)`<CompiledInstruction *pre><QuickJumpOut speed><CompiledInstruction *post>`;
   } 
+  
+  /// Initial IO Sync
+  case (CodeBlock) `<CompiledInstruction* pre><
+    JumpInstruction jump><
+    SingleInstruction ret><
+    CompiledInstruction *post>`:
+  {
+    jumpSubRoutine = parse(#IOJump, "<composeEcbPrefix("Brown", composeSourceRange(jump, ret))>IOJump");
+    insert(CodeBlock)`<CompiledInstruction *pre><IOJump jumpSubRoutine><CompiledInstruction *post>`;
+  }
+  
+  case (CodeBlock) `<CompiledInstruction* pre><
+    SourcePrefix prefix>16 00000.1<WhiteSpace _><NewLine _><
+    JumpInstruction _><
+    JumpInstruction jump><
+    CompiledInstruction *post>`:
+  {
+    jumpSubRoutine = parse(#IOJump, "<composeEcbPrefix("Brown", composeSourceRange(prefix, jump))>IOJump");
+    insert(CodeBlock)`<CompiledInstruction *pre><IOJump jumpSubRoutine><CompiledInstruction *post>`;
+  }
+  
+  
 
   /// CompareConstant
   case (CodeBlock) `<CompiledInstruction *pre><
