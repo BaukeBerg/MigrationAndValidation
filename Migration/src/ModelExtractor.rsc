@@ -4,7 +4,6 @@ import DataTypes;
 import EcbHandler;
 import FileLocations;
 import IO;
-import PlcModel;
 import Parser;
 import ParseTree;
 import PC20Syntax;
