@@ -57,6 +57,7 @@ lexical ComposedCodeBlock = ReadValue
                            | SetBit
                            | ResetBit
                            | ComposeValue
+                           | IOJump
                            ;
 
 lexical Error = "ERROR-PARSING-BLOCK";               
@@ -75,8 +76,9 @@ lexical ResetBit = EcbPrefix "ResetBit " BitAddress;
 lexical CompareValue = EcbPrefix "CompareValue " CompareStatement;
 lexical CompareWithResult = EcbPrefix "CompareWithResult "CompareStatement " =\> " WordAddress;
 lexical AssignValue = EcbPrefix "AssignValue " SourceRange " to " TargetRange ;
-lexical AssignBooleanExpression = EcbPrefix "AssignBooleanExpression " LogicExpression "to " BitAddress+ ;
+lexical AssignBooleanExpression = EcbPrefix "AssignBooleanExpression " LogicExpression "to " BitAddressRange ;
 lexical IOSynchronization = EcbPrefix "IOSynchronization " FiveDigits " to " FiveDigits;
+lexical IOJump = EcbPrefix "IOJump";
 lexical AssignConstant = EcbPrefix "AssignConstant " ConstantValue " to " AddressRange ;
 lexical CompareConstant = EcbPrefix "CompareConstant " ConstantValue " = " WordAddress "=\>" BitAddress;
 lexical AndEqual = EcbPrefix "AndEqual " SourceRange " to " TargetRange " =\> " BitAddress;
