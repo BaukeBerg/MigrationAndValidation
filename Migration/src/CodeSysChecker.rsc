@@ -103,6 +103,33 @@ public void printReport(PlcProgram program)
       }
     }
   }
+  
+  bool endIfFound = false;
+  ifCount = endIfCount = 0;
+  for(line <- reverse(program.programLines))
+  {
+      switch(line)
+      {
+      case /END_IF;/:
+      {
+        endIfFound = true;
+        endIfCount += 1;
+      }  
+      case /IF /:
+      {
+        ifCount += 1;
+        if(!endIfFound)
+        {
+          errorList += handleError("non-terminated IF-statement found at line <indexOf(program.programLines, line)>, program will not compile");          
+        }
+      }
+    }
+    
+  }
+  if(ifCount != endIfCount)
+  {
+    errorList += handleError("not all if-statements are terminated <ifcount> if-statements vs <endIfCount> end_if statements");
+  }
     
   programSize = currentLine - startLine + 1;
   coverage = (0 < programSize) ? 100.0 * coveredLines / programSize : 0.00 ;  
@@ -110,6 +137,7 @@ public void printReport(PlcProgram program)
   debugPrint("------------------ STATISTICS ------------------");
   debugPrint("Highest counter: <currentLine>");
   debugPrint("Size of program: <programSize> lines");
+  debugPrint("Amount of if-statements: <ifCount>");
   debugPrint("Covered source range: <coveredLines> lines");
   debugPrint("Uncovered patterns: <uncoveredPatterns>, total <uncoveredPatternLines> lines");
   debugPrint("Uncovered instructions: <uncoveredInsructionLines> lines");
