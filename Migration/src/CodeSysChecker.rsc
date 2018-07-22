@@ -9,7 +9,7 @@ import utility::StringUtility;
 
 public bool printLists = false;
 
-void printReport(PlcProgram program)
+public void printReport(PlcProgram program)
 {
   int currentLine = 0;
   int coveredLines = 0;
@@ -53,7 +53,9 @@ void printReport(PlcProgram program)
       }
     }
   }
-  
+  bool firstLine = true;
+  int startLine = 0;
+  warningList = [];
   for(line <- program.programLines)
   {
     switch(line)
@@ -64,14 +66,25 @@ void printReport(PlcProgram program)
         endCount = firstInteger(endSource);
         if((startCount - currentLine) != 1)
         {
-          errorList += handleError("Missing part of program between line <currentLine> and <startCount>");          
+          if(firstLine)
+          {
+            warningList += debugPrint("Missing first <startCount> lines of the program");
+          }
+          else
+          {           
+            errorList += handleError("Missing part of program between line <currentLine> and <startCount>");
+          }          
         }
         currentLine = endCount;
+        if(firstLine)
+        {
+          startLine = startCount;
+          firstLine = false;
+        }
       }
     }    
   }
   
-  warningList = [];
   for(line <- program.programLines)
   {
     switch(line)
@@ -91,10 +104,12 @@ void printReport(PlcProgram program)
     }
   }
     
-  coverage = (0 < currentLine) ? 100.0 * coveredLines / currentLine : 0.00 ;
+  programSize = currentLine - startLine + 1;
+  coverage = (0 < programSize) ? 100.0 * coveredLines / programSize : 0.00 ;  
   debugPrint("-------------------- REPORT --------------------");
   debugPrint("------------------ STATISTICS ------------------");
   debugPrint("Highest counter: <currentLine>");
+  debugPrint("Size of program: <programSize> lines");
   debugPrint("Covered source range: <coveredLines> lines");
   debugPrint("Uncovered patterns: <uncoveredPatterns>, total <uncoveredPatternLines> lines");
   debugPrint("Uncovered instructions: <uncoveredInsructionLines> lines");
