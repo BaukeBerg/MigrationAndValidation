@@ -140,8 +140,8 @@ PlcProgram generateCodesysExport(str inputFile)
   }
   str outputFile = "<stripFileExtension(inputFile)>.EXP";
   program = generateFile(outputFile, processedTree, symbols);
-  printReport(program);
-  printDuration("Creating and generating the complete program");
+  validateAndReport(program);  
+  printDuration("Total runtime of the tool: ");
   return program;  
 }
 
