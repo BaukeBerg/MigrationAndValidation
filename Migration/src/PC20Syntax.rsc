@@ -58,6 +58,7 @@ lexical ComposedCodeBlock = ReadValue
                            | ResetBit
                            | ComposeValue
                            | IOJump
+                           | ReadConstant
                            ;
 
 lexical Error = "ERROR-PARSING-BLOCK";               
@@ -76,10 +77,11 @@ lexical ResetBit = EcbPrefix "ResetBit " BitAddress;
 lexical CompareValue = EcbPrefix "CompareValue " CompareStatement;
 lexical CompareWithResult = EcbPrefix "CompareWithResult "CompareStatement " =\> " WordAddress;
 lexical AssignValue = EcbPrefix "AssignValue " SourceRange " to " TargetRange ;
+lexical ReadConstant = EcbPrefix "ReadConstant " ConstantValues ; 
 lexical AssignBooleanExpression = EcbPrefix "AssignBooleanExpression " LogicExpression "to " BitAddressRange ;
 lexical IOSynchronization = EcbPrefix "IOSynchronization " FiveDigits " to " FiveDigits;
 lexical IOJump = EcbPrefix "IOJump";
-lexical AssignConstant = EcbPrefix "AssignConstant " ConstantValue " to " AddressRange ;
+lexical AssignConstant = EcbPrefix "AssignConstant " ConstantValues " to " AddressRange ;
 lexical CompareConstant = EcbPrefix "CompareConstant " ConstantValue " = " WordAddress "=\>" BitAddress;
 lexical AndEqual = EcbPrefix "AndEqual " SourceRange " to " TargetRange " =\> " BitAddress;
 lexical IfBlock = EcbPrefix "IfBlock " LogicExpression "size " JumpSize;
@@ -103,9 +105,9 @@ lexical JumpSize = FiveDigits;
 lexical EcbPrefix = ColorName "CodeBlock: " SourceLineRange " is ";
 lexical SourceLineRange = FiveDigits "-" FiveDigits ; 
 lexical ColorName = "++" [a-zA-Z0-9\ ]* !>> [a-zA-Z0-9\ ] "++" ; // * * added to remove ambiguity
+lexical ConstantValues = FiveDigits | (FiveDigits ",")+ FiveDigits;
 lexical AddressRange = FiveDigits | (FiveDigits ",")+ FiveDigits;
 lexical BitAddressRange = BitAddress+ !>> BitAddress;
-lexical ConstantValue = FiveDigits ;
 lexical Description = "--" [a-zA-Z0-9\ ]* !>> [a-zA-Z0-9\ ] "--"; // -- -- added to remove ambiguity
 
 lexical ExecuteInstruction =  assign:AssignInstruction

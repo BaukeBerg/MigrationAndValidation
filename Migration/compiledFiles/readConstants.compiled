@@ -1,0 +1,33 @@
+05080 04368 16 00225.1    AND VERGR22
+05081 04369 16 00069.0    AND FASE22
+05082 04370 12 00002      FTCHC 02
+05083 04371 12 00007      FTCHC 07
+05084 04372 12 00000      FTCHC 00
+05085 04373 14 00168      STRD  ST1BUF1 !+
+05086 04374 14 00169      STRD  ST2BUF1 !storingscode lichtkrant
+05087 04375 14 00170      STRD  ST3BUF1 !+
+05088                   !
+05089                   ! aanstuurcode storing 23 in lichtkrant laden
+05090                   !
+05091 04376 16 00225.2    AND VERGR23
+05092 04377 16 00068.3    AND FASE23
+05093 04378 12 00003      FTCHC 03
+05094 04379 12 00007      FTCHC 07
+05095 04380 12 00000      FTCHC 00
+05096 04381 14 00168      STRD  ST1BUF1 !+
+05097 04382 14 00169      STRD  ST2BUF1 !storingscode lichtkrant
+05098 04383 14 00170      STRD  ST3BUF1 !+
+05099                   !
+05100                   ! aanstuurcode storing 24 in lichtkrant laden
+05101                   !
+05102 04384 16 00225.3    AND VERGR24
+05103 04385 16 00068.2    AND FASE24
+05104 04386 12 00004      FTCHC 04
+05105 04387 12 00007      FTCHC 07
+05106 04388 12 00000      FTCHC 00
+05107 04389 14 00168      STRD  ST1BUF1 !+
+05108 04390 14 00169      STRD  ST2BUF1 !storingscode lichtkrant
+05109 04391 14 00170      STRD  ST3BUF1 !+
+05110                   !
+05111                   ! aanstuurcode storing 25 in lichtkrant laden
+05112                   !

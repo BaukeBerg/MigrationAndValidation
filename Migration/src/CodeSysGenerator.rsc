@@ -753,15 +753,21 @@ str evaluateExpression(LogicExpression logic, SymbolTable symbols)
 
 Statements extractStatements(AssignConstant A, SymbolTable symbols)
 {
-  constantValue = -1;
+  constantValues = [];
   statements = ["(* <A> *)"];
   addresses = [];
   debugPrint("Generating assign <A>");
   visit(A)
   {
-    case ConstantValue C:
+    case ConstantValues C:
     {
-      constantValue = parseInt("<C>");     
+      visit(C)
+      {
+        case FiveDigits F:
+        {
+          constantValues += parseInt("<F>");
+        }
+      }     
     }
     case AddressRange A:
     {
@@ -774,12 +780,16 @@ Statements extractStatements(AssignConstant A, SymbolTable symbols)
       }
     }      
   }
-  for(address <- addresses)
+  
+  lastConstantIndex = size(constantValues)-1; 
+  debugPrint("amount of addresses: <size(addresses)>, amount of constants: <lastConstantIndex+1>");
+       
+  for(index <- [0..size(addresses)])
   {
-    statements += evaluateAssign(symbols, address, constantValue);  
+    statements += evaluateAssign(symbols, addresses[index], constantValues[min(lastConstantIndex,index)]);  
   }
   statements += "  "; 
-  return statements;
+  return statements;    
 }
 
 Statements extractStatements(AssignValue A, SymbolTable symbols)
@@ -904,7 +914,7 @@ Statements evaluateAssign(SymbolTable symbols, str address, int constantValue)
   }
   else
   {
-    debugPrint("Integer address <address>");
+    debugPrint("Integer address <address>, constantValue <constantValue>");
     variableName = retrieveVariableName(address, symbols);
     return ["<variableName> := <constantValue> ; (* <retrieveComment(variableName, symbols)> *)"];
   }

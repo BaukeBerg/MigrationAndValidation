@@ -152,20 +152,67 @@ Tree rewrite(Tree tree) = innermost visit(tree)
     insert (CodeBlock)`<CompiledInstruction* pre><IOSynchronization ioSynchronization><CompiledInstruction *post>`;
   }
  
-  /// AssignConstant
+  /// FetchConstant
   case (CodeBlock)`<CompiledInstruction* pre><
   FetchConstantInstruction fetch><
-  WriteValue store><
+  CompiledInstruction* post>`:
+  {
+    firstFetch = lastFetch = fetch;
+    constantValues = [];
+    visit(fetch)
+    {
+      case WordAddress WA:
+      {
+        constantValues += "<trim("<WA>")>";
+      }
+    }
+  
+     while((CodeBlock)`<FetchConstantInstruction fetch><CompiledInstruction *newPost>`
+      := (CodeBlock)`<CompiledInstruction *post>`)
+    {
+      post = newPost;
+      lastFetch = fetch;      
+      visit(lastFetch)
+      {
+        case WordAddress WA:
+        {
+          constantValues += "<trim("<WA>")>";
+        }
+      }
+    }
+    constantString = "";
+    for(constant <- constantValues)
+    {
+      constantString += "<trim("<constant>")>,";      
+    }
+    constantString = replaceLast(constantString, ",", "");
+    readConstant = parse(#ReadConstant, debugPrint("<composeEcbPrefix("Lime", composeSourceRange(firstFetch, lastFetch))>ReadConstant <constantString>"));
+    insert(CodeBlock)`<CompiledInstruction* pre><ReadConstant readConstant><CompiledInstruction* post>`;     
+  }
+ 
+  /// AssignConstant
+  case (CodeBlock)`<CompiledInstruction* pre><
+  ReadConstant readConstant><
+  WriteValue writeValue><
   CompiledInstruction *post>`:
   {
+    constantString = "" ;
+    visit(readConstant)
+    {
+      case ConstantValues CV:
+      {
+        constantString = "<CV>";
+      }
+    }
+  
     try
     {
-      assignConstant = composeAssignConstant(fetch, store);
+      assignConstant = parse(#AssignConstant, "<composeEcbPrefix("Lime", composeSourceRange(readConstant, writeValue))>AssignConstant <constantString> to <addressRange(writeValue)>");
       insert(CodeBlock)`<CompiledInstruction* pre><AssignConstant assignConstant><CompiledInstruction* post>`;
     }
     catch:
     {
-      handleError("failed to compose <fetch> <store>");
+      handleError("failed to compose <readConstant> <writeValue>");
       fail;
     }    
   }
@@ -337,7 +384,6 @@ CompareValue composeCompareValue(list[str] statements) = parse(#CompareValue, "<
 IOSynchronization composeIOSynchronization(list[str] statements) = parse(#IOSynchronization, debugPrint("Composed IO sync: ", "<composeEcbPrefix("Brown", statements)>IOSynchronization <ioRange(statements)>"));
 CompareValue composeCompareValue(ReadValue readValue, CompareValue compareValue) = parse(#CompareValue, "<composeEcbPrefix("LightSeaGreen", composeSourceRange(readValue, compareValue))>CompareValue <addressRange(readValue, compareValue)>");
 AssignValue composeAssign(ReadValue readValue, WriteValue writeValue) = parse(#AssignValue, "<composeEcbPrefix("Lime", composeSourceRange(readValue, writeValue))>AssignValue <addressRange(readValue, writeValue)>");
-AssignConstant composeAssignConstant(FetchConstantInstruction readConstant, WriteValue writeValue) = parse(#AssignConstant, "<composeEcbPrefix("Lime", composeSourceRange(readConstant, writeValue))>AssignConstant <getAddress(readConstant)> to <addressRange(writeValue)>");
 AndEqual composeAndEqual(SourceRange programLines, CompareValue compare, StoreBit result) = parse(#AndEqual, debugPrint("AndEqual:", "<composeEcbPrefix("Tomato", programLines)>AndEqual <compareRange(compare)> =\> <bitAddress(result)> ")); 
 NopBlock composeNopBlock(SourceRange programLines) = parse(#NopBlock, "<composeEcbPrefix("LightGrey", programLines)>NopBlock");
 LogicCondition composeLogicCondition(list[LogicInstruction] statements) = parse(#LogicCondition, "<composeEcbPrefix("Tomato", statements)>LogicCondition <formatLogic(statements)>");
