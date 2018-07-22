@@ -298,7 +298,13 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     case IOSynchronization IO:
     {
       programLines = houseKeeping(IO, startIfPositions, endIfPositions, programLines);
-      programLines += defaultFormat(IO);
+      programLines += ["; (* <IO> *)", "(* IO Syncing is handled by the PLC automatically *)"];
+    }
+        
+    case IOJump IO:
+    {
+      programLines = houseKeeping(IO, startIfPositions, endIfPositions, programLines);
+      programLines += ["; (* <IO> *)", "(* IO Syncing is handled by the PLC automatically, so ingore the jump *)"];
     }
     
     case ExecuteInstruction EL:
@@ -322,7 +328,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     case IOInstruction EL:
     {
       programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines);
-      programLines += defaultFormat(EL);
+      programLines += ["(* <trim("<EL>")> ", "; Separate IO instruction are alledgedly used for remote configuration *)"];
     }
     
     case SingleInstruction EL:
@@ -371,7 +377,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     case QuickJumpOut EL:
     {
       programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines);
-      programLines += defaultFormat(EL);
+      programLines += ["(* <EL> *)", "(* Might be replaceable by a IF .. ELSIF .. ELSE or CASE *)"];
     }
     
     case AndEqual EL:      
@@ -402,8 +408,34 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     case AssignBooleanExpression EL:
     {
       programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines);
-      programLines += defaultFormat(EL);
-      
+      programLines += "(* <EL> *)";
+      bitString = "";
+      logicString = "";
+      bitComment = "(* ";
+      logicComment = "";
+      visit(EL)
+      {
+        case BitAddressRange BR:
+        {
+          visit(BR)
+          {
+            case BitAddress BA:
+            {
+              bitInfo = retrieveInfo("<BA>", symbols);
+              bitString += "<bitInfo.name> := ";
+              bitComment += "<bitInfo.comment> ";
+            }
+          } 
+        }
+        
+        case LogicExpression LE:
+        {
+          logicString = "<evaluateExpression(LE, symbols)>";
+          logicComment = "<formatComment(LE, symbols)>";
+        }
+      }
+      bitComment += "*)";
+      programLines += [bitComment, logicComment, "<bitString> <logicString> ; "];      
     }         
         
     case AssignConstant A:
