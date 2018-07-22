@@ -105,6 +105,7 @@ lexical JumpSize = FiveDigits;
 lexical EcbPrefix = ColorName "CodeBlock: " SourceLineRange " is ";
 lexical SourceLineRange = FiveDigits "-" FiveDigits ; 
 lexical ColorName = "++" [a-zA-Z0-9\ ]* !>> [a-zA-Z0-9\ ] "++" ; // * * added to remove ambiguity
+lexical ConstantValue = FiveDigits ; 
 lexical ConstantValues = FiveDigits | (FiveDigits ",")+ FiveDigits;
 lexical AddressRange = FiveDigits | (FiveDigits ",")+ FiveDigits;
 lexical BitAddressRange = BitAddress+ !>> BitAddress;
