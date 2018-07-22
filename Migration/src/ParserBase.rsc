@@ -7,6 +7,7 @@ import ParseTree;
 import vis::ParseTree;
 import String;
 
+import utility::Debugging;
 import utility::FileUtility;
 
 alias sourceLine = tuple[int line, str text] ; 
