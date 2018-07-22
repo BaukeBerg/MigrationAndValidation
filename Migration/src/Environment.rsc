@@ -33,7 +33,6 @@ SymbolTable loadSymbols(str symbolFile)
   return symbols;
 }
 
-
 SymbolTable readSymbolTableFromFile(loc fileToParse)
 {
   table = [];
@@ -149,8 +148,10 @@ str composeVariableName(str comment)
   return comment;
 }
 
+/// Short-hand call for name / comment, is mostly used in the generator
 tuple[str name, str comment] retrieveInfo(str variableName, SymbolTable table) = <retrieveVariableName(variableName, table), retrieveComment(variableName, table)>;
 
+/// Retrieves a comment based on the passed address
 str retrieveComment(str variableName, SymbolTable table)
 {
   variableName = clipAndStrip(variableName);
@@ -178,7 +179,7 @@ str retrieveVariableName(str address, SymbolTable table)
   address = clipAndStrip(address);
   for(symbol <- table, address == symbol.address)
   {
-    return replaceAll(symbol.name, ",", "_");
+    return replaceAll(replaceAll(symbol.name, ",", "_"), "__", "_");
   }
   return unknownIdentifier(address);
 }
