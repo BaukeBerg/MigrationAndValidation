@@ -36,6 +36,7 @@ PlcProgram generateFile(str outputPath, Tree plcModel, SymbolTable symbols)
 
 PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
 {
+  debugPrint("---------- Starting information extraction @ <formatDuration()> ----------");
   bool openCondition = false;
   includedLines = 0;
   programLines = [];
@@ -368,12 +369,6 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
       programLines += defaultFormat(EL);
     }   
     
-    case TriggerBlock EL:
-    {
-      programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines);
-      programLines += defaultFormat(EL);
-    } 
-    
     case QuickJumpOut EL:
     {
       programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines);
@@ -453,16 +448,40 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
       programLines += extractStatements(A, symbols);
       
     }
+     
+    case TriggerBlock T:
+    {
+      programLines = houseKeeping(T, startIfPositions, endIfPositions, programLines, openCondition);
+      openCondition = false;
+      visit(T)
+      {
+        case TriggerExpression TE:
+        {
+          <declaration, statements> = evaluateTrigger(TE, symbols);
+          variableList += extractVariable(declaration);
+          programLines += statements;  
+        }
+      }
+    } 
         
     case BitTrigger B:
     {
-      programLines = houseKeeping(IO, startIfPositions, endIfPositions, programLines, openCondition);
+      programLines = houseKeeping(B, startIfPositions, endIfPositions, programLines, openCondition);
       openCondition = false;      
       includedLines += extractSize(B);
       <declaration, statements> = evaluateTrigger(B, symbols);
       variableList += declaration;
       programLines += statements;
     }
+    
+    case TriggerBlock EL:
+    {
+      programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines, openCondition);
+      openCondition = false;      
+      <declaration, statements> = evaluateTrigger(EL, symbols);
+      variableList += extractVariable(declaration);;
+      programLines += statements;
+    } 
     
     case CompareValue CV:
     {
@@ -694,44 +713,62 @@ int extractSize(&T codeBlock)
   return 0;       
 }
 
-tuple[str declaration, list[str] statements] evaluateTrigger(BitTrigger B, SymbolTable symbols)
+tuple[str, list[str]] evaluateTrigger(BitTrigger B, SymbolTable symbols)
 {
-  Symbol variableInfo = <"", "", "", "R_TRIG">;
+  Symbol triggerInstance = <"", "", "", "">;
   statements = ["(* <B>*)"];
   variableName = "";
+  triggerVariable = <"","">;
+  tuple[str name, str comment] targetInfo = <"","">;
   LogicExpression logicExpression;
+    
   visit(B)
   {
     case TriggerExpression TE:
     {
-      visit(TE)
-      {
-        case TriggerResult TR:
-        { 
-          variableInfo.name = "TRIGGER_<TR>";
-        }  
-        case LogicExpression LE:
-        {
-          logicExpression = LE;          
-        }
-      }
+      <triggerInstance, statements> = evaluateTrigger(TE, symbols);      
     }
+
     case TriggerTarget TT:
     {
-      variableInfo.address = "<TT>";
-      variableName = retrieveVariableName(variableInfo.address, symbols);
-      variableInfo.comment = variableName ;
+      targetInfo = retrieveInfo("<TT>", symbols);      
+    }
+  }
+  statements += "<targetInfo.name> := <triggerInstance.name>.Q ; (* <triggerInstance.comment> *)" ;
+  statements += "  ";    
+  return <extractVariable(triggerInstance), statements>;
+}
+
+
+// Compose R_TRIG declaration for symbols, and composes the calls to the instance
+tuple[Symbol declaration, list[str] statements] evaluateTrigger(TriggerExpression T, SymbolTable symbols)
+{
+  Symbol variableInfo = <"", "", "", "R_TRIG">;
+  statements = [];
+  clkExp = "";
+  tuple[str name, str comment] resultInfo = <"","">;
+  visit(T)
+  {
+    case TriggerResult TR:
+    { 
+      resultInfo = retrieveInfo("<TR>", symbols);
+      variableInfo.name = "TRIGGER_<resultInfo.name>";
+      variableInfo.address = "<TR>";
+      variableInfo.comment = resultInfo.comment;          
+    }
+    
+    case LogicExpression LE:
+    {
+      clkExp = "<evaluateExpression(LE, symbols)>, <formatComment(LE, symbols)>";          
     }
   }
   
-  clkExp = evaluateExpression(logicExpression, symbols);
   statements += formatName(variableInfo.name);
   statements += "(";
-  statements += "  CLK := <clkExp>, <formatComment(logicExpression, symbols)>";
-  statements += "  Q =\> <retrieveVariableName(variableInfo.address, symbols)>, (* <retrieveComment(variableInfo.address, symbols)> *)";
-  statements += ");";
-  statements += "  "; 
-  return <extractVariable(variableInfo), statements>;
+  statements += "  CLK := <clkExp>";
+  statements += "  Q =\> <resultInfo.name>, (* <resultInfo.comment> *)";
+  statements += ");";  
+  return <variableInfo, statements>;
 }
 
 str evaluateExpression(LogicExpression logic, SymbolTable symbols)
@@ -1022,5 +1059,5 @@ str extractVariable(Symbol plcSymbol)
   return "  <formatName(plcSymbol.name)> : <dataType> <suffix>";
 }
 
-str formatName(str variableName) = trim(replaceAll(replaceAll(variableName, ",", "_"), ".", "_"));
+str formatName(str variableName) = trim(replaceAll(replaceAll(replaceAll(variableName, ",", "_"), ".", "_"), "__", "_"));
 str typeString(str address) = contains(address, ".") ? "BOOL" : "INT" ;
