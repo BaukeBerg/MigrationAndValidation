@@ -1,0 +1,15 @@
+10805                   
+10806 09251 16 00388.0    AND WZC0B12 !wizconcommando BEDRIJF + KEUZESCHAK.=SUP
+10807 09252 16 00035.1    AND BDR0B11 !bedrijfsvoorwaarden
+10808 09253 17 00044.2    ANDNT REG0B00 !start regen. fasen 8 t/m 33.1
+10809 09254 01 00389.0    TRIG  WZC0T00 !triggerpuls wizconcommando BEDRIJF
+10810 09255 16 00389.0    AND WZC0T00 !triggerpuls wizconcommando BEDRIJF
+10811 09256 02 00386.0    EQL WZC0B04 !commando BEDRIJF vanuit wizcon
+10812                   
+10813 09257 16 00388.3    AND WZC0B15 !wizconcommando SPUIEN + KEUZESCHAK.=SUPE
+10814 09258 16 00035.1    AND BDR0B11 !bedrijfsvoorwaarden
+10815 09259 17 00044.2    ANDNT REG0B00 !start regen. fasen 8 t/m 33.1
+10816 09260 01 00389.3    TRIG  WZC0T03 !triggerpuls wizconcommando SPUIEN
+10817 09261 16 00389.3    AND WZC0T03 !triggerpuls wizconcommando SPUIEN
+10818 09262 02 00386.3    EQL WZC0B07 !commando SPUIEN vanuit wizcon
+10819                   
