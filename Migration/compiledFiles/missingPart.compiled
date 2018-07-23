@@ -1,0 +1,29 @@
+05850 04993 00 
+05850 04994 00 
+05850 04995 00 
+05850 04996 00 
+05850 04997 00 
+05850 04998 00 
+05850 04999 00 
+05851                   !                               DR_KRT2
+05852                   !       *******
+05853                   !
+05854 05000 16 00076.1    AND ST_AANW !storing aanwezig ?
+05855 05001 16 00113.2    AND STAPDRKN  !doorstappen lichtkrant
+05856 05002 01 00075.1    TRIG  STAP  !triggerpuls
+05857 05003 02 00075.2    EQL DOORSTAP  !fasedoorstappuls door drukknop
+05858                   
+05859 05004 18 00077.2    OR  FASESPRG  !fase overspringen
+05860 05005 18 00075.0    OR  TIMER01
+05861 05006 18 00075.2    OR  DOORSTAP  !fasedoorstappuls door drukknop
+05862 05007 02 00075.3    EQL STAP_1  !fasedoorstappuls
+05863                   
+05864 05008 16 00055.0    AND FASE78
+05865 05009 16 00075.3    AND STAP_1  !fasedoorstappuls
+05866 05010 08 00055.0    SET0  FASE78
+05867                   
+05868 05011 16 00055.1    AND FASE77
+05869 05012 16 00075.3    AND STAP_1  !fasedoorstappuls
+05870 05013 09 00055.0    SET1  FASE78
+05871 05014 08 00055.1    SET0  FASE77
+05872                   

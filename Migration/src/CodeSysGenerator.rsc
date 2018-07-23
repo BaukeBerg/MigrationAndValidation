@@ -452,6 +452,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     case TriggerBlock T:
     {
       programLines = houseKeeping(T, startIfPositions, endIfPositions, programLines, openCondition);
+      programLines += "(* <T> *)";
       openCondition = false;
       visit(T)
       {
@@ -467,6 +468,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     case BitTrigger B:
     {
       programLines = houseKeeping(B, startIfPositions, endIfPositions, programLines, openCondition);
+      programLines += "(* <B> *)";
       openCondition = false;      
       includedLines += extractSize(B);
       <declaration, statements> = evaluateTrigger(B, symbols);
@@ -716,7 +718,7 @@ int extractSize(&T codeBlock)
 tuple[str, list[str]] evaluateTrigger(BitTrigger B, SymbolTable symbols)
 {
   Symbol triggerInstance = <"", "", "", "">;
-  statements = ["(* <B>*)"];
+  statements = [];
   variableName = "";
   triggerVariable = <"","">;
   tuple[str name, str comment] targetInfo = <"","">;
