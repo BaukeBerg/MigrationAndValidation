@@ -387,7 +387,7 @@ AssignValue composeAssign(ReadValue readValue, WriteValue writeValue) = parse(#A
 AndEqual composeAndEqual(SourceRange programLines, CompareValue compare, StoreBit result) = parse(#AndEqual, debugPrint("AndEqual:", "<composeEcbPrefix("Tomato", programLines)>AndEqual <compareRange(compare)> =\> <bitAddress(result)> ")); 
 NopBlock composeNopBlock(SourceRange programLines) = parse(#NopBlock, "<composeEcbPrefix("LightGrey", programLines)>NopBlock");
 LogicCondition composeLogicCondition(list[LogicInstruction] statements) = parse(#LogicCondition, "<composeEcbPrefix("Tomato", statements)>LogicCondition <formatLogic(statements)>");
-TriggerBlock composeTrigger(LogicCondition condition, EventInstruction trigger) = parse(#TriggerBlock, "<composeEcbPrefix("OliveDrab", composeSourceRange(condition, trigger))>Trigger <bitAddress(trigger)> =\> <extractCondition(condition)>");
+TriggerBlock composeTrigger(LogicCondition condition, EventInstruction trigger) = parse(#TriggerBlock, "<composeEcbPrefix("OliveDrab", composeSourceRange(condition, trigger))>TriggerBlock <bitAddress(trigger)> =\> <extractCondition(condition)>");
 BitTrigger composeBitTrigger(TriggerBlock trigger, AssignBit triggerBit) = parse(#BitTrigger, "<composeEcbPrefix("Cyan", composeSourceRange(trigger, triggerBit))>BitTrigger <composeBitTrigger(trigger, bitAddress(triggerBit))>");
 AssignBooleanExpression composeBooleanExpression(LogicCondition condition, list[AssignBit] bits )
 {
