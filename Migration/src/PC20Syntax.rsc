@@ -88,7 +88,7 @@ lexical IfBlock = EcbPrefix "IfBlock " LogicExpression "size " JumpSize;
 lexical LogicCondition = EcbPrefix "LogicCondition " LogicExpression;
 lexical OtherBlock = EcbPrefix Description;
 lexical NopBlock = EcbPrefix "NopBlock" ;
-lexical TriggerBlock = EcbPrefix "Trigger " TriggerExpression;
+lexical TriggerBlock = EcbPrefix "TriggerBlock " TriggerExpression;
 lexical BitTrigger = EcbPrefix "BitTrigger" TriggerTarget " by " TriggerExpression ;
 lexical TriggerTarget = BitAddress ;
 lexical TriggerExpression = TriggerResult "=\> " LogicExpression ;
