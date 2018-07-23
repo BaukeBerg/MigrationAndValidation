@@ -105,12 +105,12 @@ public void validateAndReport(str reportName, PlcProgram program)
         {
           maxIndentDepth = indentDepth;
         } 
-        if((indentDepth >= 3)
+        if((indentDepth >= 5)
           && reportWarnings)
         {
-          warningList += debugPrint("Threshold for indent depth exceeded, Possible issue with generating end_if statements around line <line>");
-          reportWarnings = false;
+          warningList += debugPrint("Threshold for indent depth exceeded, Possible issue with generating end_if statements around line <line>");          
         }        
+        reportWarnings = indentDepth < 5;
       }
       
       case /^\s*$/:
