@@ -59,8 +59,6 @@ Tree rewrite(Tree tree) = innermost visit(tree)
     insert(CodeBlock)`<CompiledInstruction *pre><IOJump jumpSubRoutine><CompiledInstruction *post>`;
   }
   
-  
-
   /// CompareConstant
   case (CodeBlock) `<CompiledInstruction *pre><
     SourcePrefix first>12 <WordAddress constantValue><NewLine _><
@@ -295,7 +293,20 @@ Tree rewrite(Tree tree) = innermost visit(tree)
     insert((CodeBlock)`<CompiledInstruction* pre><LogicCondition logicBlock><CompiledInstruction *post>`);
   }
   
-    /// CountDownTimer
+  /// DecrementMinuteCounter
+  case (CodeBlock) `<CompiledInstruction* pre><
+    LogicCondition logic><
+    SourcePrefix first>06 <WordAddress ones><NewLine _><
+    SourcePrefix _>06 <WordAddress tens><NewLine _><
+    SourcePrefix last>10 <BitAddress target><NewLine _><
+    CompiledInstruction* post>`:
+    {
+     decrementCounter = parse(#DecrementCounter, debugPrint("Counter", "<composeEcbPrefix("Lime", composeSourceRange(first, last))>DecrementCounter <trim("<ones>")>,<trim("<tens>")> =\> <trim("<target>")> "));
+     insert((CodeBlock)`<CompiledInstruction* pre><LogicCondition logic><DecrementCounter decrementCounter><CompiledInstruction *post>`);
+    }
+
+  
+  /// DecrementSecondCounter
   case (CodeBlock) `<CompiledInstruction* pre><
   	LogicCondition logic><
   	SourcePrefix first>06 <WordAddress ones><NewLine _><
