@@ -142,7 +142,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
       }      
       includedLines += extractSize(IB);
     }
-    
+       
     case DecrementCounter DC:
     {
       programLines = houseKeeping(IO, startIfPositions, endIfPositions, programLines);
@@ -167,8 +167,23 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
         }
       }
       includedLines += extractSize(DC);
-      
-      if(4 == size(addresses))
+      if(2 == size(addresses))
+      {
+        ones = retrieveVariableName(addresses[0], symbols);
+        tens = retrieveVariableName(addresses[1], symbols);
+        programLines += ["IF <ones> \> 0 THEN (* <retrieveComment("<ones>", symbols)> *)",
+                        "  <ones> := <ones> - 1 ;",
+                        "ELSIF <tens> \> 0 THEN (* <retrieveComment("<tens>", symbols)> *)",
+                        "  <ones> := 9;",
+                        "  <tens> := <tens> - 1 ;",
+                        "ELSE (* Timer underflow, rolling over to maximum value *)",
+                        "  <ones> := 9;",
+                        "  <tens> := 9;",                        
+                        "END_IF;",
+                        "<retrieveVariableName("<target>", symbols)> := (0 = <ones>) AND (0 = <tens>) ; (* <retrieveComment("<target>", symbols)> *)"
+                        ];
+      }
+      else if(4 == size(addresses))
       {
         ones = retrieveVariableName(addresses[0], symbols);
         tens = retrieveVariableName(addresses[1], symbols);
@@ -368,6 +383,13 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
       programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines);
       programLines += defaultFormat(EL);
     }   
+    
+    case TemporalStorage EL:
+    {
+      programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines);
+      programLines += defaultFormat(EL);
+    }
+    
     
     case QuickJumpOut EL:
     {
