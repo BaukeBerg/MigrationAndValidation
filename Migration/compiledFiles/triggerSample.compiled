@@ -1,0 +1,17 @@
+10960                   
+10961 09364 17 00036.0    ANDNT BDR0B01 !bedrijfsfase 1
+10962 09365 01 00052.2    TRIG  BDR0T02 !triggerpuls laden timer fase 2
+10963 09366 30 00004      JFRF  L09370
+10964 09367 13 02008      FTCHD STP02_0 !setpoint 02 eenheden
+10965 09368 13 02009      FTCHD STP02_1 !setpoint 02 tientallen
+10966 09369 13 02010      FTCHD STP02_2 !setpoint 02 honderdtallen
+10967 09370 13 02011    L09370  FTCHD STP02_3 !setpoint 02 duizendtallen
+10968                   
+10969 09371 17 00036.1    ANDNT BDR0B02 !bedrijfsfase 2
+10970 09372 01 00052.3    TRIG  BDR0T03 !triggerpuls laden timer fase 3
+10971 09373 30 00004      JFRF  L09377
+10972 09374 13 02012      FTCHD STP03_0 !setpoint 03 eenheden
+10973 09375 13 02013      FTCHD STP03_1 !setpoint 03 tientallen
+10974 09376 13 02014      FTCHD STP03_2 !setpoint 03 honderdtallen
+10975 09377 13 02015    L09377  FTCHD STP03_3 !setpoint 03 duizendtallen
+10976                   
