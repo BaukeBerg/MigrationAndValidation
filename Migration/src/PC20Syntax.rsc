@@ -59,6 +59,7 @@ lexical ComposedCodeBlock = ReadValue
                            | ComposeValue
                            | IOJump
                            | ReadConstant
+                           | TemporalStorage
                            ;
 
 lexical Error = "ERROR-PARSING-BLOCK";               
@@ -69,7 +70,8 @@ lexical QuickJumpOut = EcbPrefix "QuickJumpOut";
 lexical BlankAndNot = EcbPrefix "BlankAndNot";
 lexical DecrementCounter = EcbPrefix "DecrementCounter " AddressRange " =\> " BitAddress;
 lexical ComposeValue = EcbPrefix "ComposeValue" BitAddressRange " =\> " WordAddress;
-                           
+lexical TemporalStorage = EcbPrefix "TemporalStorage " AddressRange " by " TriggerExpression;       
+                                  
 lexical ReadValue = EcbPrefix "ReadValue " AddressRange ;
 lexical WriteValue = EcbPrefix "WriteValue " AddressRange ;
 lexical SetBit = EcbPrefix "SetBit " BitAddress;
@@ -93,6 +95,7 @@ lexical BitTrigger = EcbPrefix "BitTrigger" TriggerTarget " by " TriggerExpressi
 lexical TriggerTarget = BitAddress ;
 lexical TriggerExpression = TriggerResult "=\> " LogicExpression ;
 lexical TriggerResult = BitAddress;
+
 
 lexical CompareStatement = (SourceRange | (SourceRange " to " TargetRange));
 lexical SourceRange = AddressRange;

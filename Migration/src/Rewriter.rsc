@@ -386,6 +386,39 @@ Tree rewrite(Tree tree) = innermost visit(tree)
     insert((CodeBlock)`<CompiledInstruction* pre><IfBlock ifBlock><CompiledInstruction *post>`);
   } 
   
+  /// Temporal Storage  
+  case (CodeBlock)`<CompiledInstruction *pre><
+    TriggerBlock trigger><
+    JumpInstruction _><
+    ReadValue read><
+    CompiledInstruction* post>`:
+    {
+      triggerExp = "";
+      readValue = "";
+      visit(trigger)
+      {
+        case TriggerExpression TE:
+        {
+          triggerExp = "<TE>";
+        }
+      }
+      visit(read)
+      {
+        case AddressRange AR:
+        {
+          readValue = "<AR>";
+        }
+      }      
+      debugPrint("Temporal storage hitted!");
+      if(isEmpty(readValue) || isEmpty(triggerExp))
+      {
+        handleError("Invalid storage. read: <readValue> by Trigger: <triggerExp>");
+      }
+      temporalStorage = parse(#TemporalStorage, debugPrint("TemporalStorage:", "<composeEcbPrefix("Brown", composeSourceRange(trigger,read))>TemporalStorage <readValue> by <triggerExp>"));
+      insert (CodeBlock)`<CompiledInstruction* pre><TemporalStorage temporalStorage><CompiledInstruction* post>`;
+    } 
+  
+  
 };
 
 // (partial) model representations
