@@ -435,8 +435,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
         case PartialReadContent PRC:
         {
           list[str] totalStatement = [];
-          sourceAddresses = [];
-          isTrigger = false;
+          sourceAddresses = [];          
           visit(PRC)
           {
             case LogicExpression LE:
@@ -447,7 +446,6 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
             }
             case TriggerExpression TE:
             {
-              isTrigger = true;
               list[str] statements = [];
               <declaration, statements> = evaluateTrigger(TE, symbols);
               variableList += extractVariable(declaration);
