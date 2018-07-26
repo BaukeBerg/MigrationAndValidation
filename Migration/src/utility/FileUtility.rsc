@@ -8,7 +8,7 @@ import String;
 import utility::ListUtility;
 import utility::StringUtility;
 
-list[loc] enumerateDirFiles(str sampleSubDir) = EnumerateDirFiles(toLocation("<sampleDir><sampleSubDir>"));
+list[loc] enumerateDirFiles(str sampleSubDir) = enumerateDirFiles(toLocation("<sampleDir><sampleSubDir>"));
 list[loc] enumerateDirFiles(loc folderLoc)
 {
   list [loc] locationList = [];
