@@ -117,7 +117,11 @@ list[str] addedSymbols = [];
 PlcProgram generateCodesysExport(str inputFile)
 {
   Tree processedTree;  
-  startDuration();  
+  startDuration(); 
+  if(!endsWith(inputFile,".compiled"))
+  {
+    inputFile += ".compiled";
+  } 
   procFile = generatedFile("<inputFile>.PreProc"); 
   if(exists(procFile) && true == useCachedFile)
   {
