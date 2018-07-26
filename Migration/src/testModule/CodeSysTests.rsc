@@ -117,7 +117,7 @@ list[str] addedSymbols = [];
 PlcProgram generateCodesysExport(str inputFile)
 {
   Tree processedTree;  
-  startDuration();
+  startDuration();  
   procFile = generatedFile("<inputFile>.PreProc"); 
   if(exists(procFile) && true == useCachedFile)
   {
@@ -127,7 +127,8 @@ PlcProgram generateCodesysExport(str inputFile)
   else
   {
     debugPrint("Parsing input file...");
-    parsedData = parseCompiledFile(inputFile);    
+    parsedData = parseCompiledFile(inputFile);   
+    
     debugPrint("Adding system variables");
     symbols = addSystemVariables(symbols);
     debugPrint("Adding symbols");
@@ -140,7 +141,7 @@ PlcProgram generateCodesysExport(str inputFile)
   }
   str outputFile = "<stripFileExtension(inputFile)>.EXP";
   program = generateFile(outputFile, processedTree, symbols);
-  validateAndReport(program);  
+  validateAndReport(program, inputFile);  
   printDuration("Total runtime of the tool: ");
   return program;  
 }
