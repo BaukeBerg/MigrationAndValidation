@@ -1,6 +1,7 @@
 module CodeSysChecker
 
 import CodesysTypes;
+import DataTypes;
 import FileLocations;
 import IO;
 import List;
@@ -12,10 +13,21 @@ import utility::StringUtility;
 
 public bool printLists = false;
 
-public void validateAndReport(PlcProgram program) = validateAndReport("PC20_Cycle", program);
-public void validateAndReport(str reportName, PlcProgram program)
+public void validateAndReport(PlcProgram program) = validateAndReport(program, "");
+public void validateAndReport(PlcProgram program, str compiledFileName) = validateAndReport("PC20_Cycle", program, compiledFileName);
+public void validateAndReport(str reportName, PlcProgram program, str compiledFileName)
 {
-  int currentLine = 0;
+  warningList = [];
+  SourceRange fileRange = <0,-1>;
+  if(isEmpty(compiledFileName))
+  {
+    warningList += "No original file supplied, consider passing the .compiled file for additional checking!"; 
+  }
+  else
+  {
+    fileRange = extractSourceRange(compiledFile(compiledFileName));        
+  }
+  
   int coveredLines = 0;
   debugPrint("Amount of declarations: <size(program.declarations)>");
   debugPrint("Amount of source code lines: <size(program.programLines)>");
@@ -59,7 +71,7 @@ public void validateAndReport(str reportName, PlcProgram program)
   }
   bool firstLine = true;
   int startLine = 0;
-  warningList = [];
+  int currentLine = fileRange.firstLine-1;
   for(line <- program.programLines)
   {
     switch(line)
@@ -72,7 +84,7 @@ public void validateAndReport(str reportName, PlcProgram program)
         {
           if(firstLine)
           {
-            warningList += debugPrint("Missing first <startCount> lines of the program");
+            errorList += debugPrint("Missing first <startCount-currentLine> lines of the program");
           }
           else
           {           
@@ -88,18 +100,34 @@ public void validateAndReport(str reportName, PlcProgram program)
       }
     }    
   }
-  
+  if(currentLine != fileRange.lastLine)
+  {
+    if(currentLine < fileRange.lastLine)
+    {
+      errorList += handleError("Missing last <fileRange.lastLine-currentLine> lines fo the program");
+    }
+    else
+    {
+      errorList += handleError("Program counter exceeds input file size. Expected: <fileRange.lastLine>, Received: <currentLine>");
+    }   
+  }
   indentDepth = 0;
   maxIndentDepth = 0;
   reportWarnings = true;
   blankLines = 0; 
   commentedLines = 0;
+  ifCount = endIfCount = 0;
+  bool endIfFound = false;
+  int lastIf = 0;
   for(line <- [0..size(program.programLines)])
   {
     switch(program.programLines[line])
     {
-      case /IF /:
+      case /^\s*IF /:
       {
+        ifCount += 1;
+        lastIf = line;
+        endIfFound = false;
         indentDepth += 1;
         if(indentDepth > maxIndentDepth)
         {
@@ -127,12 +155,14 @@ public void validateAndReport(str reportName, PlcProgram program)
       
       case /END_IF;/:
       {
+        endIfCount += 1;
         indentDepth -= 1;
         if(0 > indentDepth)
         {
           errorList += handleError("Indent depth smaller than 0, code error at line <line>");
         }
         reportWarnings = true;
+        endIfFound = true;
       }
       
       case /UNKNOWN_IDENTIFIER/:
@@ -150,34 +180,17 @@ public void validateAndReport(str reportName, PlcProgram program)
     }
   }
   
-  bool endIfFound = false;
-  ifCount = endIfCount = 0;
-  for(line <- reverse(program.programLines))
+  if(!endIfFound)
   {
-      switch(line)
-      {
-      case /END_IF;/:
-      {
-        endIfFound = true;
-        endIfCount += 1;
-      }  
-      case /IF /:
-      {
-        ifCount += 1;
-        if(!endIfFound)
-        {
-          errorList += handleError("non-terminated IF-statement found at line <indexOf(program.programLines, line)>, program will not compile");          
-        }
-      }
-    }
-    
-  }
+    errorList += handleError("non-terminated IF-statement found at line <lastIf>, program will not compile");          
+  }  
+  
   if(ifCount != endIfCount)
   {
     errorList += handleError("not all if-statements are terminated <ifCount> if-statements vs <endIfCount> end_if statements");
   }
     
-  programSize = currentLine - startLine + 1;
+  programSize = fileRange.lastLine - fileRange.firstLine + 1;
   coverage = (0 < programSize) ? coveredLines * 100.0 / programSize : 0.00 ;
   fileSize = size(program.programLines);
   linesOfCode = fileSize-commentedLines-blankLines;
@@ -186,10 +199,13 @@ public void validateAndReport(str reportName, PlcProgram program)
   reportLines += debugPrint("-------------------- REPORT --------------------");
   reportLines += debugPrint("Report date time: <timeStamp()>");
   reportLines += debugPrint("Conversion duration: <formatDuration()>");
-  reportLines += debugPrint("Program complete: <yesOrNo(100.0 == coverage)>");
-  reportLines += debugPrint("------------------ STATISTICS ------------------");  
+  reportLines += debugPrint("Source file: <compiledFileName>");
+  reportLines += debugPrint("All instructions covered: <yesOrNo(100.0 == coverage)>");
+  reportLines += debugPrint("Conversion successful: <yesOrNo(isEmpty(errorList))>");
+  reportLines += debugPrint("------------------- DETAILS -------------------");  
   reportLines += debugPrint("Highest index of program counter: <currentLine>");
-  reportLines += debugPrint("Size of program : <programSize> lines");
+  reportLines += debugPrint("Size of program : <programSize> lines.");
+  reportLines += debugPrint("Program counter range: <fileRange.firstLine> to <fileRange.lastLine>");
   reportLines += debugPrint("Total file size: <fileSize>");
   reportLines += debugPrint("Amount of blank lines: <blankLines>");
   reportLines += debugPrint("Amount of commented lines: <commentedLines>");
@@ -214,4 +230,25 @@ public void validateAndReport(str reportName, PlcProgram program)
   writeToFile(generatedFile("<fileTimeStamp()>_<reportName>.txt"), reportLines);
 }
 
-str yesOrNo(bool valueToCheck) = valueToCheck ? "yes!" : "NO" ;
+str yesOrNo(bool valueToCheck) = valueToCheck ? "YES!" : "NO" ;
+
+SourceRange extractSourceRange(loc fileToCheck)
+{
+  content = readFileLines(fileToCheck);
+  return <firstSourceLine(content), firstSourceLine(reverse(content))>;  
+}
+
+int firstSourceLine(list[str] content)
+{
+  for(line <- content)
+  {
+    switch(line)
+    {
+      case /[0-9]{5}\s<sourceLine:[0-9]{5}>/:
+      {
+        return parseInt(sourceLine);        
+      }
+    }  
+  }
+  return -1;
+}
