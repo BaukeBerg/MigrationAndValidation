@@ -88,7 +88,7 @@ bool expectEqualFiles(list[&T] fileToScan, list[&T] contentToCompare)
 {
   if(false == expectEqual(fileToScan, contentToCompare))
   {
-    addToFile(outputFile("test/FailedFileCompares.txt"), joinList(contentToCompare));
+    addToFile(outputFile("test/FailedFileCompares.txt"), joinList(fileToScan-contentToCompare));
     return false;
   }
   return true;
