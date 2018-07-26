@@ -2,18 +2,18 @@ module FileLocations
 
 import String;
 
+// location definitions
 public str projectRoot = "project://Migration/";
 public str outputDir = "<projectRoot>output/";
 public str sampleDir = "<projectRoot>sampleFiles/";
 public str sourceDir = "<projectRoot>src/";
+public str outputFilePath = "<projectRoot>outputFiles/";
+public str testFilePath = "<projectRoot>testFiles/";
+public str compiledFilePath = "<projectRoot>compiledFiles/";
 
-
-// location definitions
-public str projectPath = "project://Migration/";
-public str outputFilePath = "<projectPath>outputFiles/";
-public str testFilePath = "<projectPath>testFiles/";
+// GeneratedPath
 public str generatedFilePath = "<sourceDir>generated/";
-public str compiledFilePath = "<projectPath>compiledFiles/";
+
 
 // directory calls
 public loc testDir = toLocation("<projectRoot>src/testModule/");
