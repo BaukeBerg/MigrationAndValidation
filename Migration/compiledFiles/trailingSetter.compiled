@@ -1,0 +1,40 @@
+07494                   
+07495 06513 17 00012.0    ANDNT DUMP_31
+07496 06514 18 00045.0    OR  ALARM29 !V 1.1 niet geopend
+07497 06515 13 02196      FTCHD STP49_0 !setpoint 49 eenheden
+07498 06516 13 02197      FTCHD STP49_1 !setpoint 49 tientallen
+07499 06517 13 02198      FTCHD STP49_2 !setpoint 49 honderdtallen
+07500 06518 13 02199      FTCHD STP49_3 !setpoint 49 duizendtallen
+07501 06519 14 01296      STRD  DSP49_0 !display 49 eenheden
+07502 06520 14 01297      STRD  DSP49_1 !display 49 tientallen
+07503 06521 14 01298      STRD  DSP49_2 !display 49 honderdtallen
+07504 06522 14 01299      STRD  DSP49_3 !display 49 duizendtallen
+07505 06523 08 00032.0    SET0  TIMER_49
+07506                   
+07507 06524 16 00141.3    AND V3_1
+07508 06525 17 00122.2    ANDNT V3_1_O  !eindschak.afsluiter V 3.1 geopend
+07509 06526 19 00141.3    ORNT  V3_1
+07510 06527 17 00122.3    ANDNT V3_1_C  !eindschak.afsluiter V 3.1 gesloten
+07511 06528 02 00012.1    EQL DUMP_32
+07512                   
+07513 06529 16 00511.1    AND S_1SEC  !triggerpuls 1,0 sec.
+07514 06530 16 00012.1    AND DUMP_32
+07515 06531 17 00032.1    ANDNT TIMER_50
+07516 06532 06 01300      CNTD  DSP50_0 !display 50 eenheden
+07517 06533 06 01301      CNTD  DSP50_1 !display 50 tientallen
+07518 06534 06 01302      CNTD  DSP50_2 !display 50 honderdtallen
+07519 06535 06 01303      CNTD  DSP50_3 !display 50 duizendtallen
+07520 06536 10 00032.1    STRB  TIMER_50
+07521                   
+07522 06537 17 00012.1    ANDNT DUMP_32
+07523 06538 18 00045.2    OR  ALARM31 !V 3.1 niet geopend
+07524 06539 13 02200      FTCHD STP50_0 !setpoint 50 eenheden
+07525 06540 13 02201      FTCHD STP50_1 !setpoint 50 tientallen
+07526 06541 13 02202      FTCHD STP50_2 !setpoint 50 honderdtallen
+07527 06542 13 02203      FTCHD STP50_3 !setpoint 50 duizendtallen
+07528 06543 14 01300      STRD  DSP50_0 !display 50 eenheden
+07529 06544 14 01301      STRD  DSP50_1 !display 50 tientallen
+07530 06545 14 01302      STRD  DSP50_2 !display 50 honderdtallen
+07531 06546 14 01303      STRD  DSP50_3 !display 50 duizendtallen
+07532 06547 08 00032.1    SET0  TIMER_50
+07533 
