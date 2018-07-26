@@ -398,8 +398,95 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     
     case ComposedWrite EL:
     {
-      programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines);
-      programLines += defaultFormat(EL);
+      programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines, openCondition);
+      openCondition = true;      
+      writeCondition = "";
+      writeTarget = "";
+      targetAddresses = [];
+      sourceAddresses = [];
+      list[str] triggerStatements = [];
+      programLines += "(* <EL> *)";
+      list[str] logicStatements = [];
+      visit(EL)
+      {
+        case PartialWriteContent PWC:
+        {
+          visit(PWC)
+          {
+            case LogicExpression LE:
+            {
+              writeCondition = debugPrint("Logic exp:", "IF <evaluateExpression(LE, symbols)> THEN <formatComment(LE, symbols)>");              
+            }
+            case AddressRange AR:
+            {
+              visit(AR)
+              {
+                case FiveDigits FD:
+                {
+                  targetAddresses += debugPrint("TargetAddress:", "<FD>");
+                }
+              }
+            }
+          }
+        }
+      }
+      visit(EL)
+      {
+        case PartialReadContent PRC:
+        {
+          list[str] totalStatement = [];
+          sourceAddresses = [];
+          isTrigger = false;
+          visit(PRC)
+          {
+            case LogicExpression LE:
+            {
+              debugPrint("before logic");
+              totalStatement = ["IF <evaluateExpression(LE, symbols)> THEN <formatComment(LE, symbols)>"];
+              debugPrint("after logic");
+            }
+            case TriggerExpression TE:
+            {
+              isTrigger = true;
+              list[str] statements = [];
+              <declaration, statements> = evaluateTrigger(TE, symbols);
+              variableList += extractVariable(declaration);
+              triggerStatements += statements + "  ";
+              totalStatement = ["IF <retrieveVariableName(declaration.address, symbols)> THEN (* <declaration.comment> *)"];
+                                            
+            }
+            case AddressRange AR:
+            {
+              visit(AR)
+              {
+                case FiveDigits FD:
+                {
+                  sourceAddresses += debugPrint("Added source item", "<FD>");
+                }
+              }
+            }
+          }
+          if(size(sourceAddresses) != size(targetAddresses))
+          {
+            handleError("Size of addresses do not match. Sources (<size(sourceAddresses)>): <sourceAddresses>, Targets (<size(targetAddresses)>): <targetAddresses>");
+          }
+          else
+          {
+            debugPrint("before total");debugPrint("before logic");
+            for(index <- [0..size(sourceAddresses)])
+            { 
+              totalStatement += debugPrint("Generating Assign: ", evaluateAssign(symbols, sourceAddresses[index], targetAddresses[index])[0]);              
+            }
+            debugPrint("after total");     
+          }          
+          totalStatement = closeIf(totalStatement);
+          logicStatements += totalStatement;          
+        }
+      }
+      programLines += debugPrint("Triggers", triggerStatements);
+      programLines += debugPrint("WriteCondition", writeCondition);
+      programLines += debugPrint("Logic", logicStatements);      
+      openCondition = true;
     }
         
     case QuickJumpOut EL:
