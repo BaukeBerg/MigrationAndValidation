@@ -167,7 +167,7 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
       
       case /UNKNOWN_IDENTIFIER/:
       {
-        warningList += debugPrint("Found a missing address at .EXP file line <line>, Program will not compile. Verify the symbolTable generator");
+        errorList += debugPrint("Found a missing address at .EXP file line <line>, Program will not compile. Verify the symbolTable generator");
       }
       case /unnamed_<wordAddress:[0-9]+>_<bitAddress:[0-3]>/:
       {
