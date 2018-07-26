@@ -384,13 +384,24 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
       programLines += defaultFormat(EL);
     }   
     
-    case TemporalStorage EL:
+    case PartialRead EL:
     {
       programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines);
       programLines += defaultFormat(EL);
     }
     
+    case PartialWrite EL:
+    {
+      programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines);
+      programLines += defaultFormat(EL);
+    }
     
+    case ComposedWrite EL:
+    {
+      programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines);
+      programLines += defaultFormat(EL);
+    }
+        
     case QuickJumpOut EL:
     {
       programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines);
@@ -424,7 +435,8 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
 
     case AssignBooleanExpression EL:
     {
-      programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines);
+      programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines, openCondition);
+      openCondition = false;
       programLines += "(* <EL> *)";
       bitString = "";
       logicString = "";

@@ -59,7 +59,9 @@ lexical ComposedCodeBlock = ReadValue
                            | ComposeValue
                            | IOJump
                            | ReadConstant
-                           | TemporalStorage
+                           | PartialRead
+                           | PartialWrite
+                           | ComposedWrite
                            ;
 
 lexical Error = "ERROR-PARSING-BLOCK";               
@@ -70,7 +72,11 @@ lexical QuickJumpOut = EcbPrefix "QuickJumpOut";
 lexical BlankAndNot = EcbPrefix "BlankAndNot";
 lexical DecrementCounter = EcbPrefix "DecrementCounter " AddressRange " =\> " BitAddress;
 lexical ComposeValue = EcbPrefix "ComposeValue" BitAddressRange " =\> " WordAddress;
-lexical TemporalStorage = EcbPrefix "TemporalStorage " AddressRange " by " TriggerExpression;       
+lexical PartialRead = EcbPrefix "PartialRead " PartialReadContent;
+lexical PartialReadContent = AddressRange " by " (TriggerExpression | LogicExpression);
+lexical PartialWrite = EcbPrefix "PartialWrite " PartialWriteContent;
+lexical PartialWriteContent = AddressRange " by " LogicExpression;
+lexical ComposedWrite = EcbPrefix "ComposedWrite " (PartialReadContent"|")+ " to " PartialWriteContent;       
                                   
 lexical ReadValue = EcbPrefix "ReadValue " AddressRange ;
 lexical WriteValue = EcbPrefix "WriteValue " AddressRange ;

@@ -339,22 +339,6 @@ Tree rewrite(Tree tree) = innermost visit(tree)
   /// AssignValue
   case (CodeBlock)`<CompiledInstruction *pre><ReadValue read><WriteValue write><CompiledInstruction *post>`:
   {
-    //visit(read)
-    //{
-    //  case SourceRange SR:
-    //  {
-    //    visit(SR)
-    //    {
-    //      case FiveDigits FD:
-    //      {
-    //        if(contains("<FD>", "106"))
-    //        {
-    //          insert((CodeBlock)`<CompiledInstruction* pre><AssignSetpoint assignSetpoint><CompiledInstruction *post>`);   
-    //        }
-    //      }
-    //    }
-    //  } 
-    //}
     assignValue = composeAssign(read, write);
     insert((CodeBlock)`<CompiledInstruction* pre><AssignValue assignValue><CompiledInstruction *post>`);  
   }
@@ -386,38 +370,145 @@ Tree rewrite(Tree tree) = innermost visit(tree)
     insert((CodeBlock)`<CompiledInstruction* pre><IfBlock ifBlock><CompiledInstruction *post>`);
   } 
   
-  /// Temporal Storage  
+  /// Start of Temporal Storage
+  case (CodeBlock)`<CompiledInstruction *pre><
+    IfBlock ifBlock><
+    ReadValue read><
+    CompiledInstruction* post>`:
+  {
+    logicExp = "";
+    readValue = "";
+    visit(ifBlock)
+    {
+      case LogicExpression LE:
+      {
+        logicExp = "<LE>";
+      }
+    }
+    visit(read)
+    {
+      case AddressRange AR:
+      {
+        readValue = "<AR>";
+      }
+    }
+      
+    if(isEmpty(readValue) || isEmpty(logicExp))
+    {
+      handleError("Invalid storage. read: <readValue> by Trigger: <logicExp>");
+    }   
+    partialRead = parse(#PartialRead, debugPrint("PartialRead:", "<composeEcbPrefix("Brown", composeSourceRange(ifBlock,read))>PartialRead <readValue> by <logicExp>"));
+    insert (CodeBlock)`<CompiledInstruction* pre><PartialRead partialRead><CompiledInstruction* post>`; 
+  }
+     
+  /// Partial Read
   case (CodeBlock)`<CompiledInstruction *pre><
     TriggerBlock trigger><
     JumpInstruction _><
     ReadValue read><
     CompiledInstruction* post>`:
+  {
+    triggerExp = "";
+    readValue = "";
+    visit(trigger)
     {
-      triggerExp = "";
-      readValue = "";
-      visit(trigger)
+      case TriggerExpression TE:
       {
-        case TriggerExpression TE:
-        {
-          triggerExp = "<TE>";
-        }
+        triggerExp = "<TE>";
       }
+    }
+    visit(read)
+    {
+      case AddressRange AR:
+      {
+        readValue = "<AR>";
+      }
+    }     
+      
+    if(isEmpty(readValue) || isEmpty(triggerExp))
+    {
+      handleError("Invalid storage. read: <readValue> by Trigger: <triggerExp>");
+    }
+    partialRead = parse(#PartialRead, debugPrint("PartialRead:", "<composeEcbPrefix("Brown", composeSourceRange(trigger,read))>PartialRead <readValue> by <triggerExp>"));
+    insert (CodeBlock)`<CompiledInstruction* pre><PartialRead partialRead><CompiledInstruction* post>`;
+  }
+    
+  /// Start of Temporal Storage
+  case (CodeBlock)`<CompiledInstruction *pre><
+    LogicCondition logic><
+    WriteValue write><
+    CompiledInstruction* post>`:
+  {
+    logicExp = "";
+    writeValue = "";
+    visit(logic)
+    {
+      case LogicExpression LE:
+      {
+        logicExp ="<LE>";
+      }
+    }
+    visit(write)
+    {
+      case AddressRange AR:
+      {
+        writeValue = "<AR>";
+      }
+    }
+    if(isEmpty(writeValue) || isEmpty(logicExp))
+    {
+      handleError("Invalid storage. read: <writeValue> by Trigger: <logicExp>");
+    }  
+    partialWrite = parse(#PartialWrite, debugPrint("PartialWrite:", "<composeEcbPrefix("Brown", composeSourceRange(logic,write))>PartialWrite <writeValue> by <logicExp>"));
+    insert (CodeBlock)`<CompiledInstruction* pre><PartialWrite partialWrite><CompiledInstruction* post>`;
+  } 
+  
+    
+    
+  case (CodeBlock)`<CompiledInstruction* pre><
+  PartialRead lastRead><
+  PartialWrite write><
+  CompiledInstruction* post>`:
+  {
+    // BackTrack for all combines reads
+    debugPrint("Examining ComposedWrite");
+    reads = "";
+    visit(lastRead)
+    {
+      case PartialReadContent PRC:
+      {
+        reads = "<PRC>|";
+      }
+    }
+    
+    partialWrite = "";
+    visit(write)
+    {
+      case PartialWriteContent PWC:
+      {
+        partialWrite = "<PWC>";
+      }
+    }        
+     
+    firstRead = lastRead;
+    while( (CodeBlock)`<CompiledInstruction* newPre><PartialRead read>` 
+      := (CodeBlock)`<CompiledInstruction* pre>`)
+    {
       visit(read)
       {
-        case AddressRange AR:
+        case PartialReadContent PRC:
         {
-          readValue = "<AR>";
+          reads = "<PRC>|<reads>";
         }
-      }      
-      debugPrint("Temporal storage hitted!");
-      if(isEmpty(readValue) || isEmpty(triggerExp))
-      {
-        handleError("Invalid storage. read: <readValue> by Trigger: <triggerExp>");
       }
-      temporalStorage = parse(#TemporalStorage, debugPrint("TemporalStorage:", "<composeEcbPrefix("Brown", composeSourceRange(trigger,read))>TemporalStorage <readValue> by <triggerExp>"));
-      insert (CodeBlock)`<CompiledInstruction* pre><TemporalStorage temporalStorage><CompiledInstruction* post>`;
-    } 
-  
+      firstRead = read;            
+      pre = newPre;      
+    }     
+    debugPrint("Total reads: <reads>");
+    composedWrite = parse(#ComposedWrite, debugPrint("ComposedWrite:", "<composeEcbPrefix("Brown", composeSourceRange(firstRead,write))>ComposedWrite <reads> to <partialWrite>"));
+    insert (CodeBlock)`<CompiledInstruction* pre><ComposedWrite composedWrite><CompiledInstruction* post>`;
+  }
+      
   
 };
 
@@ -513,10 +604,8 @@ str extractCondition(LogicCondition logic)
       debugPrint("-|<L>|-");
       return "<L>";
     }
-  }
-  error = "Invalid logic whilst evaluating expressin: <logic>";
-  handleError(error); 
-  return error;
+  }  
+  return handleError("Invalid logic whilst evaluating expressin: <logic>");
 }
 
 str formatLogic(list[LogicInstruction] statements)
