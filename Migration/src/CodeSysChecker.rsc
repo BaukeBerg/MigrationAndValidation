@@ -112,6 +112,7 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
     }   
   }
   indentDepth = 0;
+  atIndentCount = 0;
   maxIndentDepth = 0;
   reportWarnings = true;
   blankLines = 0; 
@@ -119,6 +120,7 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
   ifCount = endIfCount = 0;
   bool endIfFound = false;
   int lastIf = 0;
+  indentList = [];
   for(line <- [0..size(program.programLines)])
   {
     switch(program.programLines[line])
@@ -129,6 +131,7 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
         lastIf = line;
         endIfFound = false;
         indentDepth += 1;
+        indentList += "<indentDepth> @ <line>";
         if(indentDepth > maxIndentDepth)
         {
           maxIndentDepth = indentDepth;
@@ -157,12 +160,26 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
       {
         endIfCount += 1;
         indentDepth -= 1;
+        indentList += "<indentDepth> @ <line>";
         if(0 > indentDepth)
         {
           errorList += handleError("Indent depth smaller than 0, code error at line <line>");
         }
         reportWarnings = true;
         endIfFound = true;
+        if(0 == indentDepth)
+        {
+          atIndentCount = 0;
+        }
+        else
+        {
+          atIndentCount += 1;
+        }
+        if(5 <= atIndentCount)
+        {
+          warningList += debugPrint("Possible missing END_IF around line <line>");
+          indentDepth = 0; 
+        } 
       }
       
       case /UNKNOWN_IDENTIFIER/:
@@ -179,7 +196,7 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
       }
     }
   }
-  
+  writeToFile(generatedFile("indentList.txt"), indentList);
   if(!endIfFound)
   {
     errorList += handleError("non-terminated IF-statement found at line <lastIf>, program will not compile");          
