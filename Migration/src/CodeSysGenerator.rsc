@@ -663,10 +663,11 @@ str composeInteger(list[str] targets, SymbolTable symbols)
 Statements houseKeeping(&T item, list[int] startIfPositions, list[int] endIfPositions, Statements currentProgram) = houseKeeping(item, startIfPositions, endIfPositions, currentProgram, false);
 Statements houseKeeping(&T item, list[int] startIfPositions, list[int] endIfPositions, Statements currentProgram, bool terminateCondition)
 {
-  currentCount = debugPrint("Insert", programCount(item));  
-  if((currentCount in endIfPositions)
-   || (currentCount-1) in endIfPositions)  
+  currentCount = debugPrint("Insert", programCount(item)); 
+  ifStatements = listCount(endIfPositions, currentCount) + listCount(endIfPositions, currentCount-1);
+  for(_ <- [0..ifStatements])
   {
+    debugPrint("Adding <ifStatements> end-if statements");
     currentProgram = closeIf(currentProgram);
   }
   if(terminateCondition)
@@ -675,6 +676,8 @@ Statements houseKeeping(&T item, list[int] startIfPositions, list[int] endIfPosi
   }
   return currentProgram;
 }
+
+int listCount(list[int] listValues, int itemToCount) = sum([0] + [ 1 | item <- listValues, item == itemToCount]);
 
 /// Convenience function, since last is provided, first is expected
 int firstProgramCount(&T programItem) = programCount(programItem);
