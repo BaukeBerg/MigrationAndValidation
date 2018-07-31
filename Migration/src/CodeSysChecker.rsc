@@ -117,6 +117,7 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
   reportWarnings = true;
   blankLines = 0; 
   commentedLines = 0;
+  cosmeticLines = 0;
   ifCount = endIfCount = 0;
   bool endIfFound = false;
   int lastIf = 0;
@@ -125,13 +126,21 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
   {
     switch(program.programLines[line])
     {
+      case /^\s*\($/: 
+      {
+        cosmeticLines += 1;
+      }
+      case /^\s*\);$/: 
+      {
+        cosmeticLines += 1;
+      } 
       case /^\s*IF /:
       {
         ifCount += 1;
         lastIf = line;
         endIfFound = false;
         indentDepth += 1;
-        indentList += "<indentDepth> @ <line>";
+        indentList += "<indentDepth> @ <line> | <program.programLines[line]>";
         if(indentDepth > maxIndentDepth)
         {
           maxIndentDepth = indentDepth;
@@ -160,7 +169,7 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
       {
         endIfCount += 1;
         indentDepth -= 1;
-        indentList += "<indentDepth> @ <line>";
+        indentList += "<indentDepth> @ <line> | <program.programLines[line-1]>";
         if(0 > indentDepth)
         {
           errorList += handleError("Indent depth smaller than 0, code error at line <line>");
@@ -177,8 +186,7 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
         }
         if(5 <= atIndentCount)
         {
-          warningList += debugPrint("Possible missing END_IF around line <line>");
-          indentDepth = 0; 
+          warningList += debugPrint("Possible missing END_IF around line <line>");          
         } 
       }
       
@@ -196,6 +204,7 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
       }
     }
   }
+  cosmeticLines += endIfCount;
   writeToFile(generatedFile("indentList.txt"), indentList);
   if(!endIfFound)
   {
@@ -210,8 +219,8 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
   programSize = fileRange.lastLine - fileRange.firstLine + 1;
   coverage = (0 < programSize) ? coveredLines * 100.0 / programSize : 0.00 ;
   fileSize = size(program.programLines);
-  linesOfCode = fileSize-commentedLines-blankLines;
-  reduction =  (0 < programSize) ? 100.0 * (programSize - coveredLines) / programSize : 0.00 ;
+  linesOfCode = fileSize-commentedLines-blankLines-cosmeticLines;
+  reduction =  (0 < programSize) ? -100.0 * (linesOfCode - programSize) / programSize : 0.00 ;
   reportLines = [];
   reportLines += debugPrint("-------------------- REPORT --------------------");
   reportLines += debugPrint("Report date time: <timeStamp()>");
@@ -226,6 +235,7 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
   reportLines += debugPrint("Total file size: <fileSize>");
   reportLines += debugPrint("Amount of blank lines: <blankLines>");
   reportLines += debugPrint("Amount of commented lines: <commentedLines>");
+  reportLines += debugPrint("Amount of layout lines: <cosmeticLines>");
   reportLines += debugPrint("Total lines with instructions: <linesOfCode>");
   reportLines += debugPrint("Reduction of code size: <formatReal(reduction)>%");
   reportLines += debugPrint("Amount of if-statements: <ifCount>");
