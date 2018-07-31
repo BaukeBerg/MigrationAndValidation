@@ -358,6 +358,37 @@ Tree rewrite(Tree tree) = innermost visit(tree)
     boolExpression = composeBooleanExpression(condition, bits);
     insert((CodeBlock)`<CompiledInstruction* pre><AssignBooleanExpression boolExpression><CompiledInstruction *post>`);
   }
+  
+  /// Trigger + Assign
+  case (CodeBlock)`<CompiledInstruction* pre><
+    TriggerBlock trigger><
+    AssignBooleanExpression assign><
+    CompiledInstruction* post>`:
+    {
+      triggerExp = "";
+      visit(trigger)
+      {
+        case TriggereExpression TE:
+        {
+          triggerExpt = "<TE>";
+        }        
+      }
+      logicExp = "";
+      range = "" ;
+      visit(assign)      
+      {
+        case LogicExpression LE:
+        {
+          logicExp = "<LE>";
+        }
+        case BitAddressRange BAR:
+        {
+          range = "<BAR>";
+        }
+      }
+      triggeredAssignBoolean = parse(#TriggeredAssignBoolean, debugPrint("TriggeredAssignBoolean", "<composeEcbPrefix("Brown", composeSourceRange(trigger, assign))>TriggeredAssignBoolean <triggerExp> =\> <logicExp> to <range> "));
+      insert(CodeBlock)`<CompiledInstruction* pre><TriggeredAssignBoolean triggeredAssignBoolean><CompiledInstruction* post>`; 
+    }
     
   /// IfBlock => Condition with a JUMP 
   case (CodeBlock)`<CompiledInstruction *pre><
@@ -365,10 +396,23 @@ Tree rewrite(Tree tree) = innermost visit(tree)
     SourcePrefix prefix>30<WhiteSpace _><WordAddress size><NewLine _><
     CompiledInstruction *post>`:
   {
-    debugPrint("Found an IF-block");
     ifBlock = parse(#IfBlock, debugPrint("If Block:", "<composeEcbPrefix("Brown", composeSourceRange(logic, prefix))>IfBlock <logicExpression(logic)>size <trim("<size>")>"));
     insert((CodeBlock)`<CompiledInstruction* pre><IfBlock ifBlock><CompiledInstruction *post>`);
   } 
+  
+  /// Special patterns => Matched to specific implementations not matched by any of the generic parts
+ 
+  /// PartialTrigger
+  case (CodeBlock)`<CompiledInstruction* pre><
+    EventInstruction trigger><
+    AssignBit bitTarget><
+    CompiledInstruction* post>`:
+  {
+    result = bitAddress(debugPrint("Trigger: ",trigger));
+    target = bitAddress(debugPrint("Result: ", bitTarget));
+    partialTrigger = parse(#PartialTrigger, debugPrint("Partial trigger:", "<composeEcbPrefix("Brown", composeSourceRange(trigger, bitTarget))>PartialTrigger <result> and <target> "));
+    insert (CodeBlock)`<CompiledInstruction* pre><PartialTrigger partialTrigger><CompiledInstruction* post>`;
+  }
   
   /// Start of Temporal Storage
   case (CodeBlock)`<CompiledInstruction *pre><
