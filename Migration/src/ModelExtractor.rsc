@@ -100,6 +100,10 @@ GraphicalModel generateFigures(Tree parseTree, list[str] sourceLines)
     {
        sourceFigures += generateLine("OliveDrab", generateSuffix(E, sourceLines));
     }    
+    case AssignBit A:
+    {
+      sourceFigures += generateLine("Cyan", generateSuffix(A, sourceLines));
+    }
     case AssignInstruction A:
     {
       sourceFigures += generateLine("Cyan", generateSuffix(A, sourceLines));
