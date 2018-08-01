@@ -9,3 +9,14 @@
 06993 06099 06 01266      CNTD  DSP41_2 !display 41 honderdtallen
 06994 06100 06 01267      CNTD  DSP41_3 !display 41 duizendtallen
 06995 06101 10 00030.0    STRB  TIMER_41
+06996                   
+06997 06102 17 00037.2    ANDNT FASE_7  !fase 7
+06998 06103 13 02164      FTCHD STP41_0 !setpoint 41 eenheden
+06999 06104 13 02165      FTCHD STP41_1 !setpoint 41 tientallen
+07000 06105 13 02166      FTCHD STP41_2 !setpoint 41 honderdtallen
+07001 06106 13 02167      FTCHD STP41_3 !setpoint 41 duizendtallen
+07002 06107 14 01264      STRD  DSP41_0 !display 41 eenheden
+07003 06108 14 01265      STRD  DSP41_1 !display 41 tientallen
+07004 06109 14 01266      STRD  DSP41_2 !display 41 honderdtallen
+07005 06110 14 01267      STRD  DSP41_3 !display 41 duizendtallen
+07006 06111 08 00030.0    SET0  TIMER_41
