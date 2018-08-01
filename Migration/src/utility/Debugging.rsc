@@ -13,7 +13,7 @@ bool debuggingEnabled = true;
 int printIndex = 0;
 
 public list[str] Errors = [];
-str printFilter = "end-if";
+str printFilter = "";
 
 bool hasErrors() = 0 < size(Errors);
 

@@ -26,7 +26,8 @@ start syntax PC20_Compiled = CodeBlock ;
 syntax CodeBlock = CompiledInstruction*;
 
 syntax CompiledInstruction = empty:EmptyLine
-                           | ExecuteInstruction                           
+                           | ExecuteInstruction      
+                           | AssignBit                     
                            | ConditionInstruction                                                    
                            | SkipInstruction                            
                            | io:IOInstruction
@@ -47,6 +48,7 @@ lexical ComposedCodeBlock = ReadValue
                            | AndEqual
                            | LogicCondition
                            | TriggerBlock
+                           | TriggeredAssignBoolean
                            | BitTrigger
                            | AssignBooleanExpression
                            | IOSynchronization    
@@ -62,6 +64,7 @@ lexical ComposedCodeBlock = ReadValue
                            | PartialRead
                            | PartialWrite
                            | ComposedWrite
+                           | PartialTrigger
                            ;
 
 lexical Error = "ERROR-PARSING-BLOCK";               
@@ -72,11 +75,14 @@ lexical QuickJumpOut = EcbPrefix "QuickJumpOut";
 lexical BlankAndNot = EcbPrefix "BlankAndNot";
 lexical DecrementCounter = EcbPrefix "DecrementCounter " AddressRange " =\> " BitAddress;
 lexical ComposeValue = EcbPrefix "ComposeValue" BitAddressRange " =\> " WordAddress;
+
+// Special lexicals
 lexical PartialRead = EcbPrefix "PartialRead " PartialReadContent;
 lexical PartialReadContent = AddressRange " by " (TriggerExpression | LogicExpression);
 lexical PartialWrite = EcbPrefix "PartialWrite " PartialWriteContent;
 lexical PartialWriteContent = AddressRange " by " LogicExpression;
-lexical ComposedWrite = EcbPrefix "ComposedWrite " (PartialReadContent"|")+ " to " PartialWriteContent;       
+lexical ComposedWrite = EcbPrefix "ComposedWrite " (PartialReadContent"|")+ " to " PartialWriteContent;
+lexical PartialTrigger = EcbPrefix "PartialTrigger" TriggerTarget " and " TriggerResult;        
                                   
 lexical ReadValue = EcbPrefix "ReadValue " AddressRange ;
 lexical WriteValue = EcbPrefix "WriteValue " AddressRange ;
@@ -97,6 +103,7 @@ lexical LogicCondition = EcbPrefix "LogicCondition " LogicExpression;
 lexical OtherBlock = EcbPrefix Description;
 lexical NopBlock = EcbPrefix "NopBlock" ;
 lexical TriggerBlock = EcbPrefix "TriggerBlock " TriggerExpression;
+lexical TriggeredAssignBoolean = EcbPrefix "TriggeredAssignBoolean " TriggerExpression " =\> " LogicExpression "to " BitAddressRange ;
 lexical BitTrigger = EcbPrefix "BitTrigger" TriggerTarget " by " TriggerExpression ;
 lexical TriggerTarget = BitAddress ;
 lexical TriggerExpression = TriggerResult "=\> " LogicExpression ;
@@ -120,7 +127,7 @@ lexical AddressRange = FiveDigits | (FiveDigits ",")+ FiveDigits;
 lexical BitAddressRange = BitAddress+ !>> BitAddress;
 lexical Description = "--" [a-zA-Z0-9\ ]* !>> [a-zA-Z0-9\ ] "--"; // -- -- added to remove ambiguity
 
-lexical ExecuteInstruction =  assign:AssignInstruction
+lexical ExecuteInstruction =  assign:AssignInstruction                            
                             | FetchInstruction
                             | FetchConstantInstruction 
                             | StoreInstruction    
@@ -140,7 +147,7 @@ lexical EmptyLine = SourceLineNumber NewLine ;
 // These must all be present in the switch case                      
 lexical SkipInstruction = SourcePrefix "00" WhiteSpace NewLine;                        
 lexical EventInstruction = SourcePrefix "01" WhiteSpace BitAddress NewLine ;                        
-lexical AssignInstruction = AssignBit |SourcePrefix ( "03" | "08" | "09" ) WhiteSpace BitAddress NewLine ;
+lexical AssignInstruction = SourcePrefix ( "03" | "08" | "09" ) WhiteSpace BitAddress NewLine ;
 lexical AssignBit = SourcePrefix "02" WhiteSpace BitAddress NewLine;
 lexical StoreInstruction = StoreBit | StoreValue ;
 lexical StoreBit = SourcePrefix "10" WhiteSpace BitAddress NewLine;
@@ -155,7 +162,6 @@ lexical CalcInstruction = SourcePrefix ("20" | "21" | "22" | "23" ) WhiteSpace (
 lexical JumpInstruction = SourcePrefix ("24" | "25" | "29" | "30") WhiteSpace WordAddress NewLine;
 lexical IOInstruction = SourcePrefix ( "31" | "27" ) WhiteSpace WordAddress NewLine;
 lexical SingleInstruction = SourcePrefix "26" WhiteSpace NewLine ;
-
 
 lexical SourcePrefix = SourceLineNumber ProgramLineNumber ;
 
