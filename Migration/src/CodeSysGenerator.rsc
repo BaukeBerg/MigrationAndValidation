@@ -578,12 +578,13 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     
     case TriggeredTimer TT:
     {
-      addresses = [];
+      debugPrint("TriggeredTimer: ", TT);
+      addressList = [];
+      targetBit = "";
+      triggerName = ""; // R_TRIG instance name
       programLines = houseKeeping(TT, startIfPositions, endIfPositions, programLines, openCondition);
       openCondition = false;
-      programLines == ["  ", "(* <trim("<TT>")> *)"];
-      target = "" ;
-      triggerName = "";
+      programLines += ["  ", "(* <trim("<TT>")> *)"];
       visit(TT)
       {
         case TriggerExpression TE:
@@ -593,25 +594,29 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
           variableList += extractVariable(declaration);
           programLines += statements;
         }
+      
+    
         case CounterContent CC:
         {
           visit(CC)
           {
             case AddressRange AR:
             {
-              addresses = split(",", "<AR>");
+              addressList = split(",", "<AR>");
             }
-          
+        
             case BitAddress BA:
             {
-              target = "<BA>";
+              targetBit = "<BA>";
             }
           }
         }
       }
-      programLines += "IF <triggerName>.Q THEN";
-      programLines += generateTimer(addresses, target, symbols);
-      programLines += closeIf(programLines);            
+      debugPrint("Target: ", retrieveInfo(targetBit, symbols));
+      debugPrint("Addresses: ", addressList);
+      programLines += "IF <triggerName>.Q THEN";   
+      programLines += debugPrint("Timer statements: ", generateTimer(addressList, targetBit, symbols));      
+      programLines = closeIf(programLines);            
     }
     
     case PartialTrigger PT:
@@ -740,6 +745,7 @@ Statements generateTimer(list[str] addresses, str target, SymbolTable symbols)
 { 
   if(2 == size(addresses))
   {
+    debugPrint("Minutes Timer");
     ones = retrieveVariableName(addresses[0], symbols);
     tens = retrieveVariableName(addresses[1], symbols);
     return ["IF <ones> \> 0 THEN (* <retrieveComment("<ones>", symbols)> *)",
@@ -757,6 +763,7 @@ Statements generateTimer(list[str] addresses, str target, SymbolTable symbols)
   
   if(4 == size(addresses))
   {
+    debugPrint("Seconds timer");
     ones = retrieveVariableName(addresses[0], symbols);
     tens = retrieveVariableName(addresses[1], symbols);
     hundreds = retrieveVariableName(addresses[2], symbols);
@@ -784,7 +791,6 @@ Statements generateTimer(list[str] addresses, str target, SymbolTable symbols)
             "<retrieveVariableName("<target>", symbols)> := (0 = <ones>) AND (0 = <tens>) AND (0 = <hundreds>) AND (0 = <thousands>) ; (* <retrieveComment("<target>", symbols)> *)"                        
             ];            
   }
-  
   error = handleError("Invalid counter size: <size(addresses)>");
   for(i <- addresses)
   {

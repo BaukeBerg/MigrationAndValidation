@@ -72,8 +72,10 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
   bool firstLine = true;
   int startLine = 0;
   int currentLine = fileRange.firstLine-1;
+  int lineCount = size(program.declarations) + 4; // offset due to PROGRAM / VAR / END_VAR PROGRAM
   for(line <- program.programLines)
   {
+    lineCount += 1;
     switch(line)
     {
       case /<startSource:[0-9]{5}>-<endSource:[0-9]{5}> is <patternType:\w+>/:
@@ -84,11 +86,17 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
         {
           if(firstLine)
           {
-            errorList += debugPrint("Missing first <startCount-currentLine> lines of the program");
+            errorList += debugPrint("Missing program part at line <lineCount>, First <startCount-currentLine> lines of the program");
+          }
+          else if(currentLine >= startCount)
+          {
+            errorList += handleError("Failed pattern at line <lineCount>, count is reversing. Last: <currentLine> Current start-end: <startCount>-<endCount>");
+            errorList += handleError("Specific line: <line>");            
           }
           else
-          {           
-            errorList += handleError("Missing part of program between line <currentLine> and <startCount>");
+          {
+            errorList += handleError("Missing part of program at line <lineCount>, Programcount between <currentLine> and <startCount>");
+            errorList += handleError("Current line (<lineCount>): <line>");
           }          
         }
         currentLine = endCount;
