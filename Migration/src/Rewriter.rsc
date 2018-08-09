@@ -320,6 +320,27 @@ Tree rewrite(Tree tree) = innermost visit(tree)
   		insert((CodeBlock)`<CompiledInstruction* pre><LogicCondition logic><DecrementCounter decrementCounter><CompiledInstruction *post>`);  	
   	}
   
+  // TriggeredTimer
+  case (CodeBlock) `<CompiledInstruction* pre><
+    TriggerBlock triggerBlock><
+    SourcePrefix first>06 <WordAddress ones><NewLine _><
+    SourcePrefix _>06 <WordAddress tens><NewLine _><
+    SourcePrefix _>06 <WordAddress hundreds><NewLine _><
+    SourcePrefix _>06 <WordAddress thousands><NewLine _><
+    SourcePrefix last>10 <BitAddress target><NewLine _><
+    CompiledInstruction* post>`:
+  {
+    triggerExp = "";
+    visit(triggerBlock)
+    {
+      case TriggerExpression TE:
+      {
+        triggerExp = "<TE>";
+      }      
+    }
+    triggeredTimer = parse(#TriggeredTimer, debugPrint("TriggeredTimer", "<composeEcbPrefix("Lime", composeSourceRange(triggerBlock, last))>TriggeredTimer <triggerExp>counts <trim("<ones>")>,<trim("<tens>")>,<trim("<hundreds>")>,<trim("<thousands>")> =\> <trim("<target>")> "));
+    insert((CodeBlock)`<CompiledInstruction* pre><TriggeredTimer triggeredTimer><CompiledInstruction *post>`);
+  }
   /// Trigger
   case (CodeBlock) `<CompiledInstruction* pre><LogicCondition condition><EventInstruction trigger><CompiledInstruction* post>`:
   {
@@ -365,28 +386,34 @@ Tree rewrite(Tree tree) = innermost visit(tree)
     AssignBooleanExpression assign><
     CompiledInstruction* post>`:
     {
+      debugPrint("Trigger + Assign:", "<trigger>, <assign>");
       triggerExp = "";
+      
       visit(trigger)
       {
-        case TriggereExpression TE:
+        case TriggerExpression TE:
         {
-          triggerExpt = "<TE>";
+          debugPrint("Trigger: ", TE);
+          triggerExp = "<TE>";
         }        
       }
       logicExp = "";
-      range = "" ;
+      targetRange = "" ;
       visit(assign)      
       {
         case LogicExpression LE:
         {
+          debugPrint("Logic: ", LE);
           logicExp = "<LE>";
         }
         case BitAddressRange BAR:
         {
-          range = "<BAR>";
+          debugPrint("Range: ", BAR);
+          targetRange = "<BAR>";
         }
       }
-      triggeredAssignBoolean = parse(#TriggeredAssignBoolean, debugPrint("TriggeredAssignBoolean", "<composeEcbPrefix("Brown", composeSourceRange(trigger, assign))>TriggeredAssignBoolean <triggerExp> =\> <logicExp> to <range> "));
+      debugPrint("Data:", "<triggerExp>, <logicExp>, <targetRange>");
+      triggeredAssignBoolean = parse(#TriggeredAssignBoolean, debugPrint("TriggeredAssignBoolean", "<composeEcbPrefix("Brown", composeSourceRange(trigger, assign))>TriggeredAssignBoolean <triggerExp>=\> <logicExp>to <targetRange>"));
       insert(CodeBlock)`<CompiledInstruction* pre><TriggeredAssignBoolean triggeredAssignBoolean><CompiledInstruction* post>`; 
     }
     
