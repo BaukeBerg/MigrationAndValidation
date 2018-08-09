@@ -41,6 +41,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
   debugPrint("---------- Starting information extraction @ <formatDuration()> ----------");
   bool openCondition = false;
   includedLines = 0;
+  initLineCount = 0 ; // Amount of lines which are only executed once
   programLines = [];
   startIfPositions = [];
   endIfPositions = [];  
@@ -701,6 +702,21 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
       includedLines += extractSize(ECB);
       programLines += ["(* <ECB> *)", "; (* DoNothing *)", "  "];
     }
+    
+    case InitCall IC:
+    {
+      programLines = houseKeeping(ECB, startIfPositions, endIfPositions, programLines);
+      programLines += "(* <composeEcbPrefix("Lime", composeSourceRange(IC))>Call to init position: <trim("<AB>")> *)";
+      visit(IC)
+      {
+        case WordAddress WA:
+        {
+          initLineCount = firstInteger(WA);
+        }
+      }
+      
+      
+    }
   } 
   
   programLines = houseKeeping(actualProgramCount+1, startIfPositions, endIfPositions, programLines, openCondition);
@@ -708,7 +724,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
   debugPrint("If positions: <startIfPositions>");
   debugPrint("EndIf positions: <endIfPositions>");
   debugPrint("Total line amount included: <includedLines>");
-  return <variableList,programLines>;
+  return <variableList, programLines>;
 }
 
 str composeInteger(list[str] targets, SymbolTable symbols)
