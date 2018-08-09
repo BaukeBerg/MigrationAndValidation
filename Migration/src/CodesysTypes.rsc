@@ -2,7 +2,7 @@ module CodesysTypes
 
 import List;
 
-alias PlcProgram = tuple[Variables declarations, Statements programLines];
+alias PlcProgram = tuple[Variables declarations, Statements programLines, int initLineCount];
 alias Variables = list[str];
 alias Statements = list[str];
 
