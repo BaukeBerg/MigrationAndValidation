@@ -629,9 +629,13 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
       triggerExpression = parse(#TriggerExpression, debugPrint("TriggerExpression", "<result> =\> <lastLogic>"));
       <declaration, statements> = evaluateTrigger(triggerExpression, symbols);
       variableList += extractVariable(declaration);
-      programLines += statements + "  ";
       targetInfo = retrieveInfo(target, symbols);
-      programLines += "<targetInfo.name> := <declaration.name>.Q ; (* <declaration.comment> =\> <targetInfo.comment> *)";
+      
+      programLines += statements;
+      programLines[size(programLines)-3] = "  Q =\> <targetInfo.name> (* <declaration.comment> =\> <targetInfo.comment> *)";
+      programLines += "  ";
+      
+      
       
     } 
         
