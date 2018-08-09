@@ -27,7 +27,8 @@ syntax CodeBlock = CompiledInstruction*;
 
 syntax CompiledInstruction = empty:EmptyLine
                            | ExecuteInstruction      
-                           | AssignBit                     
+                           | AssignBit   
+                           | AssignBitInverted                  
                            | ConditionInstruction                                                    
                            | SkipInstruction                            
                            | io:IOInstruction
@@ -65,6 +66,7 @@ lexical ComposedCodeBlock = ReadValue
                            | PartialWrite
                            | ComposedWrite
                            | PartialTrigger
+                           | TriggeredTimer
                            ;
 
 lexical Error = "ERROR-PARSING-BLOCK";               
@@ -73,16 +75,21 @@ lexical Error = "ERROR-PARSING-BLOCK";
 // Will be added as a ; (* <Name> *) to the generated code
 lexical QuickJumpOut = EcbPrefix "QuickJumpOut";
 lexical BlankAndNot = EcbPrefix "BlankAndNot";
-lexical DecrementCounter = EcbPrefix "DecrementCounter " AddressRange " =\> " BitAddress;
-lexical ComposeValue = EcbPrefix "ComposeValue" BitAddressRange " =\> " WordAddress;
 
 // Special lexicals
-lexical PartialRead = EcbPrefix "PartialRead " PartialReadContent;
-lexical PartialReadContent = AddressRange " by " (TriggerExpression | LogicExpression);
-lexical PartialWrite = EcbPrefix "PartialWrite " PartialWriteContent;
-lexical PartialWriteContent = AddressRange " by " LogicExpression;
 lexical ComposedWrite = EcbPrefix "ComposedWrite " (PartialReadContent"|")+ " to " PartialWriteContent;
+lexical PartialRead = EcbPrefix "PartialRead " PartialReadContent;
+lexical PartialWrite = EcbPrefix "PartialWrite " PartialWriteContent;
+lexical PartialReadContent = AddressRange " by " (TriggerExpression | LogicExpression);
+lexical PartialWriteContent = AddressRange " by " LogicExpression;
+
 lexical PartialTrigger = EcbPrefix "PartialTrigger" TriggerTarget " and " TriggerResult;        
+lexical TriggeredAssignBoolean = EcbPrefix "TriggeredAssignBoolean " TriggerExpression "=\> " LogicExpression "to " BitAddressRange ;
+lexical TriggeredTimer = EcbPrefix "TriggeredTimer " TriggerExpression "counts " CounterContent ;
+
+lexical DecrementCounter = EcbPrefix "DecrementCounter " CounterContent ;
+lexical CounterContent = AddressRange " =\> " BitAddress;
+lexical ComposeValue = EcbPrefix "ComposeValue" BitAddressRange " =\> " WordAddress;
                                   
 lexical ReadValue = EcbPrefix "ReadValue " AddressRange ;
 lexical WriteValue = EcbPrefix "WriteValue " AddressRange ;
@@ -103,12 +110,11 @@ lexical LogicCondition = EcbPrefix "LogicCondition " LogicExpression;
 lexical OtherBlock = EcbPrefix Description;
 lexical NopBlock = EcbPrefix "NopBlock" ;
 lexical TriggerBlock = EcbPrefix "TriggerBlock " TriggerExpression;
-lexical TriggeredAssignBoolean = EcbPrefix "TriggeredAssignBoolean " TriggerExpression "=\> " LogicExpression "to " BitAddressRange ;
+
 lexical BitTrigger = EcbPrefix "BitTrigger" TriggerTarget " by " TriggerExpression ;
 lexical TriggerTarget = BitAddress ;
 lexical TriggerExpression = TriggerResult "=\> " LogicExpression ;
 lexical TriggerResult = BitAddress;
-
 
 lexical CompareStatement = (SourceRange | (SourceRange " to " TargetRange));
 lexical SourceRange = AddressRange;
@@ -147,8 +153,9 @@ lexical EmptyLine = SourceLineNumber NewLine ;
 // These must all be present in the switch case                      
 lexical SkipInstruction = SourcePrefix "00" WhiteSpace NewLine;                        
 lexical EventInstruction = SourcePrefix "01" WhiteSpace BitAddress NewLine ;                        
-lexical AssignInstruction = SourcePrefix ( "03" | "08" | "09" ) WhiteSpace BitAddress NewLine ;
+lexical AssignInstruction = SourcePrefix ( "08" | "09" ) WhiteSpace BitAddress NewLine ;
 lexical AssignBit = SourcePrefix "02" WhiteSpace BitAddress NewLine;
+lexical AssignBitInverted = SourcePrefix "03" WhiteSpace BitAddress NewLine;
 lexical StoreInstruction = StoreBit | StoreValue ;
 lexical StoreBit = SourcePrefix "10" WhiteSpace BitAddress NewLine;
 lexical StoreValue = SourcePrefix "14" WhiteSpace WordAddress NewLine;

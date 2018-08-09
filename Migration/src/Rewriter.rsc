@@ -320,6 +320,27 @@ Tree rewrite(Tree tree) = innermost visit(tree)
   		insert((CodeBlock)`<CompiledInstruction* pre><LogicCondition logic><DecrementCounter decrementCounter><CompiledInstruction *post>`);  	
   	}
   
+  // TriggeredTimer
+  case (CodeBlock) `<CompiledInstruction* pre><
+    TriggerBlock triggerBlock><
+    SourcePrefix first>06 <WordAddress ones><NewLine _><
+    SourcePrefix _>06 <WordAddress tens><NewLine _><
+    SourcePrefix _>06 <WordAddress hundreds><NewLine _><
+    SourcePrefix _>06 <WordAddress thousands><NewLine _><
+    SourcePrefix last>10 <BitAddress target><NewLine _><
+    CompiledInstruction* post>`:
+  {
+    triggerExp = "";
+    visit(triggerBlock)
+    {
+      case TriggerExpression TE:
+      {
+        triggerExp = "<TE>";
+      }      
+    }
+    triggeredTimer = parse(#TriggeredTimer, debugPrint("TriggeredTimer", "<composeEcbPrefix("Lime", composeSourceRange(triggerBlock, last))>TriggeredTimer <triggerExp>counts <trim("<ones>")>,<trim("<tens>")>,<trim("<hundreds>")>,<trim("<thousands>")> =\> <trim("<target>")> "));
+    insert((CodeBlock)`<CompiledInstruction* pre><TriggeredTimer triggeredTimer><CompiledInstruction *post>`);
+  }
   /// Trigger
   case (CodeBlock) `<CompiledInstruction* pre><LogicCondition condition><EventInstruction trigger><CompiledInstruction* post>`:
   {
