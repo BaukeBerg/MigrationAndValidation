@@ -174,61 +174,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
         }
       }
       includedLines += extractSize(DC);
-      if(2 == size(addresses))
-      {
-        ones = retrieveVariableName(addresses[0], symbols);
-        tens = retrieveVariableName(addresses[1], symbols);
-        programLines += ["IF <ones> \> 0 THEN (* <retrieveComment("<ones>", symbols)> *)",
-                        "  <ones> := <ones> - 1 ;",
-                        "ELSIF <tens> \> 0 THEN (* <retrieveComment("<tens>", symbols)> *)",
-                        "  <ones> := 9;",
-                        "  <tens> := <tens> - 1 ;",
-                        "ELSE (* Timer underflow, rolling over to maximum value *)",
-                        "  <ones> := 9;",
-                        "  <tens> := 9;",                        
-                        "END_IF;",
-                        "<retrieveVariableName("<target>", symbols)> := (0 = <ones>) AND (0 = <tens>) ; (* <retrieveComment("<target>", symbols)> *)"
-                        ];
-      }
-      else if(4 == size(addresses))
-      {
-        ones = retrieveVariableName(addresses[0], symbols);
-        tens = retrieveVariableName(addresses[1], symbols);
-        hundreds = retrieveVariableName(addresses[2], symbols);
-        thousands = retrieveVariableName(addresses[3], symbols);
-        programLines += ["IF <ones> \> 0 THEN (* <retrieveComment("<ones>", symbols)> *)",
-                        "  <ones> := <ones> - 1 ;",
-                        "ELSIF <tens> \> 0 THEN (* <retrieveComment("<tens>", symbols)> *)",
-                        "  <ones> := 9;",
-                        "  <tens> := <tens> - 1 ;",
-                        "ELSIF <hundreds> \> 0 THEN (* <retrieveComment("<hundreds>", symbols)> *)",
-                        "  <ones> := 9;",
-                        "  <tens> := 9;",
-                        "  <hundreds> := <hundreds> - 1 ;",
-                        "ELSIF <thousands> \> 0 THEN (* <retrieveComment("<thousands>", symbols)> *)",
-                        "  <ones> := 9;",
-                        "  <tens> := 9;",
-                        "  <hundreds> := 9;",
-                        "  <thousands> := <thousands> - 1 ;",
-                        "ELSE (* Timer underflow, rolling over to maximum value *)",
-                        "  <ones> := 9;",
-                        "  <tens> := 9;",
-                        "  <hundreds> := 9;",
-                        "  <thousands> := 9;",
-                        "END_IF;",
-                        "<retrieveVariableName("<target>", symbols)> := (0 = <ones>) AND (0 = <tens>) AND (0 = <hundreds>) AND (0 = <thousands>) ; (* <retrieveComment("<target>", symbols)> *)"                        
-                        ];
-               
-      }
-      else
-      {
-        handleError("Invalid counter size: <size(addresses)>");
-        for(i <- addresses)
-        {
-          handleError("Count address: <i>");
-        }
-      }
-        
+      programLines += generateTimer(addresses, target, symbols);  
     }
     
     case ComposeValue CV:
@@ -337,6 +283,15 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
       targetInfo = retrieveInfo(bitAddress(AB), symbols);      
       programLines += "(* <composeEcbPrefix("Lime", composeSourceRange(AB))>Bare EQL instruction: <trim("<AB>")> *)";
       programLines += "<targetInfo.name> := <evaluateExpression(lastLogic, symbols)> ; (* <targetInfo.comment> := <formatComment(lastLogic, symbols)> *)";
+    }
+    
+    case AssignBitInverted AB:
+    {
+      programLines = houseKeeping(AB, startIfPositions, endIfPositions, programLines, openCondition);
+      openCondition = false;
+      targetInfo = retrieveInfo(bitAddress(AB), symbols);      
+      programLines += "(* <composeEcbPrefix("Lime", composeSourceRange(AB))>Bare EQLNT instruction: <trim("<AB>")> *)";
+      programLines += "<targetInfo.name> := NOT (<evaluateExpression(lastLogic, symbols)>) ; (* <targetInfo.comment> := <formatComment(lastLogic, symbols)> *)";
     }
     
     case ExecuteInstruction EL:
@@ -621,6 +576,44 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
       }
     }
     
+    case TriggeredTimer TT:
+    {
+      addresses = [];
+      programLines = houseKeeping(TT, startIfPositions, endIfPositions, programLines, openCondition);
+      openCondition = false;
+      programLines == ["  ", "(* <trim("<TT>")> *)"];
+      target = "" ;
+      triggerName = "";
+      visit(TT)
+      {
+        case TriggerExpression TE:
+        {
+          <declaration, statements> = evaluateTrigger(TE, symbols);
+          triggerName = declaration.name;
+          variableList += extractVariable(declaration);
+          programLines += statements;
+        }
+        case CounterContent CC:
+        {
+          visit(CC)
+          {
+            case AddressRange AR:
+            {
+              addresses = split(",", "<AR>");
+            }
+          
+            case BitAddress BA:
+            {
+              target = "<BA>";
+            }
+          }
+        }
+      }
+      programLines += "IF <triggerName>.Q THEN";
+      programLines += generateTimer(addresses, target, symbols);
+      programLines += closeIf(programLines);            
+    }
+    
     case PartialTrigger PT:
     {
       programLines = houseKeeping(PT, startIfPositions, endIfPositions, programLines, openCondition);
@@ -648,9 +641,6 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
       programLines += statements;
       programLines[size(programLines)-3] = "  Q =\> <targetInfo.name> (* <declaration.comment> =\> <targetInfo.comment> *)";
       programLines += "  ";
-      
-      
-      
     } 
         
     case BitTrigger B:
@@ -744,6 +734,63 @@ Statements houseKeeping(&T item, list[int] startIfPositions, list[int] endIfPosi
   	return closeIf(currentProgram);
   }
   return currentProgram;
+}
+
+Statements generateTimer(list[str] addresses, str target, SymbolTable symbols)
+{ 
+  if(2 == size(addresses))
+  {
+    ones = retrieveVariableName(addresses[0], symbols);
+    tens = retrieveVariableName(addresses[1], symbols);
+    return ["IF <ones> \> 0 THEN (* <retrieveComment("<ones>", symbols)> *)",
+            "  <ones> := <ones> - 1 ;",
+            "ELSIF <tens> \> 0 THEN (* <retrieveComment("<tens>", symbols)> *)",
+            "  <ones> := 9;",
+            "  <tens> := <tens> - 1 ;",
+            "ELSE (* Timer underflow, rolling over to maximum value *)",
+            "  <ones> := 9;",
+            "  <tens> := 9;",                        
+            "END_IF;",
+            "<retrieveVariableName("<target>", symbols)> := (0 = <ones>) AND (0 = <tens>) ; (* <retrieveComment("<target>", symbols)> *)"
+            ];
+  }
+  
+  if(4 == size(addresses))
+  {
+    ones = retrieveVariableName(addresses[0], symbols);
+    tens = retrieveVariableName(addresses[1], symbols);
+    hundreds = retrieveVariableName(addresses[2], symbols);
+    thousands = retrieveVariableName(addresses[3], symbols);
+    return ["IF <ones> \> 0 THEN (* <retrieveComment("<ones>", symbols)> *)",
+            "  <ones> := <ones> - 1 ;",
+            "ELSIF <tens> \> 0 THEN (* <retrieveComment("<tens>", symbols)> *)",
+            "  <ones> := 9;",
+            "  <tens> := <tens> - 1 ;",
+            "ELSIF <hundreds> \> 0 THEN (* <retrieveComment("<hundreds>", symbols)> *)",
+            "  <ones> := 9;",
+            "  <tens> := 9;",
+            "  <hundreds> := <hundreds> - 1 ;",
+            "ELSIF <thousands> \> 0 THEN (* <retrieveComment("<thousands>", symbols)> *)",
+            "  <ones> := 9;",
+            "  <tens> := 9;",
+            "  <hundreds> := 9;",
+            "  <thousands> := <thousands> - 1 ;",
+            "ELSE (* Timer underflow, rolling over to maximum value *)",
+            "  <ones> := 9;",
+            "  <tens> := 9;",
+            "  <hundreds> := 9;",
+            "  <thousands> := 9;",
+            "END_IF;",
+            "<retrieveVariableName("<target>", symbols)> := (0 = <ones>) AND (0 = <tens>) AND (0 = <hundreds>) AND (0 = <thousands>) ; (* <retrieveComment("<target>", symbols)> *)"                        
+            ];            
+  }
+  
+  error = handleError("Invalid counter size: <size(addresses)>");
+  for(i <- addresses)
+  {
+    error += handleError("Count address <retrieveInfo(i)>");
+  }
+  return ["(* TIMER ISSUE: <error> *)", "UNKNOWN_IDENTIFIER"];  
 }
 
 int listCount(list[int] listValues, int itemToCount) = sum([0] + [ 1 | item <- listValues, item == itemToCount]);
