@@ -103,7 +103,7 @@ lexical LogicCondition = EcbPrefix "LogicCondition " LogicExpression;
 lexical OtherBlock = EcbPrefix Description;
 lexical NopBlock = EcbPrefix "NopBlock" ;
 lexical TriggerBlock = EcbPrefix "TriggerBlock " TriggerExpression;
-lexical TriggeredAssignBoolean = EcbPrefix "TriggeredAssignBoolean " TriggerExpression " =\> " LogicExpression "to " BitAddressRange ;
+lexical TriggeredAssignBoolean = EcbPrefix "TriggeredAssignBoolean " TriggerExpression "=\> " LogicExpression "to " BitAddressRange ;
 lexical BitTrigger = EcbPrefix "BitTrigger" TriggerTarget " by " TriggerExpression ;
 lexical TriggerTarget = BitAddress ;
 lexical TriggerExpression = TriggerResult "=\> " LogicExpression ;

@@ -594,15 +594,29 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     case TriggeredAssignBoolean TAE:
     {
       programLines = houseKeeping(TAE, startIfPositions, endIfPositions, programLines, openCondition);
-      programLines += "(* <TAE> *)";
+      programLines += ["  ", "(* <TAE> *)"];
       openCondition = false;
+      targetTrigger = "";
       visit(TAE)
       {
         case TriggerExpression TE:
         {
           <declaration, statements> = evaluateTrigger(TE, symbols);
+          targetTrigger = declaration.name;
           variableList += extractVariable(declaration);
           programLines += statements;  
+        }
+        
+        case BitAddressRange BAR:
+        {
+          visit(BAR)
+          {
+            case BitAddress BA:
+            {
+              targetInfo = retrieveInfo("<BA>", symbols);
+              programLines[size(programLines)-3] = "  Q =\> <targetInfo.name>, (* <targetInfo.comment> *) ";
+            } 
+          }
         }
       }
     }

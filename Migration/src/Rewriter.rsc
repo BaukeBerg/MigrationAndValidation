@@ -372,27 +372,27 @@ Tree rewrite(Tree tree) = innermost visit(tree)
       {
         case TriggerExpression TE:
         {
-          debugPrint("Trigger");
+          debugPrint("Trigger: ", TE);
           triggerExp = "<TE>";
         }        
       }
       logicExp = "";
-      addressRange = "" ;
+      targetRange = "" ;
       visit(assign)      
       {
         case LogicExpression LE:
         {
-          debugPrint("Logic");
+          debugPrint("Logic: ", LE);
           logicExp = "<LE>";
         }
         case BitAddressRange BAR:
         {
-          debugPrint("Range");
-          addressRange = "<BAR>";
+          debugPrint("Range: ", BAR);
+          targetRange = "<BAR>";
         }
       }
-      debugPrint("Data:", "<triggerExp>, <logicExp>, <addressRange>");
-      triggeredAssignBoolean = parse(#TriggeredAssignBoolean, debugPrint("TriggeredAssignBoolean", "<composeEcbPrefix("Brown", composeSourceRange(trigger, assign))>TriggeredAssignBoolean <triggerExp> =\> <logicExp> to <addressRange> "));
+      debugPrint("Data:", "<triggerExp>, <logicExp>, <targetRange>");
+      triggeredAssignBoolean = parse(#TriggeredAssignBoolean, debugPrint("TriggeredAssignBoolean", "<composeEcbPrefix("Brown", composeSourceRange(trigger, assign))>TriggeredAssignBoolean <triggerExp>=\> <logicExp>to <targetRange>"));
       insert(CodeBlock)`<CompiledInstruction* pre><TriggeredAssignBoolean triggeredAssignBoolean><CompiledInstruction* post>`; 
     }
     
