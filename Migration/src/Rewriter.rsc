@@ -441,6 +441,15 @@ Tree rewrite(Tree tree) = innermost visit(tree)
     insert (CodeBlock)`<CompiledInstruction* pre><PartialTrigger partialTrigger><CompiledInstruction* post>`;
   }
   
+  // Initial IO Sync
+  case (CodeBlock)`<CompiledInstruction* pre><
+    SourcePrefix prefix>25 <WordAddress address><NewLine _><    
+    CompiledInstruction* post>`:
+  {
+    initCall = parse(#InitCall, debugPrint("InitCall: ", "<composeEcbPrefix("Brown", composeSourceRange(prefix))>InitCall at <trim("<address>")>"));
+    insert (CodeBlock)`<CompiledInstruction* pre><InitCall initCall><CompiledInstruction* post>`;
+  }
+  
   /// Start of Temporal Storage
   case (CodeBlock)`<CompiledInstruction *pre><
     IfBlock ifBlock><
@@ -533,8 +542,6 @@ Tree rewrite(Tree tree) = innermost visit(tree)
     partialWrite = parse(#PartialWrite, debugPrint("PartialWrite:", "<composeEcbPrefix("Brown", composeSourceRange(logic,write))>PartialWrite <writeValue> by <logicExp>"));
     insert (CodeBlock)`<CompiledInstruction* pre><PartialWrite partialWrite><CompiledInstruction* post>`;
   } 
-  
-    
     
   case (CodeBlock)`<CompiledInstruction* pre><
   PartialRead lastRead><

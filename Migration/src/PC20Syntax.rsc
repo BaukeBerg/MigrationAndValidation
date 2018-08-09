@@ -92,7 +92,7 @@ lexical DecrementCounter = EcbPrefix "DecrementCounter " CounterContent ;
 lexical CounterContent = AddressRange " =\> " BitAddress;
 lexical ComposeValue = EcbPrefix "ComposeValue" BitAddressRange " =\> " WordAddress;
 
-lexical InitCall = SourcePrefix "25" WhiteSpace WordAddress NewLine;
+lexical InitCall = EcbPrefix "InitCall at " FiveDigits;
                                   
 lexical ReadValue = EcbPrefix "ReadValue " AddressRange ;
 lexical WriteValue = EcbPrefix "WriteValue " AddressRange ;
@@ -169,7 +169,7 @@ lexical CompareInstruction = SourcePrefix "15" WhiteSpace WordAddress NewLine ;
 lexical LogicInstruction = AndInstruction | SourcePrefix ( "17" | "18" | "19") WhiteSpace BitAddress NewLine;
 lexical AndInstruction = SourcePrefix "16" WhiteSpace BitAddress NewLine;                                   
 lexical CalcInstruction = SourcePrefix ("20" | "21" | "22" | "23" ) WhiteSpace (BitAddress | WordAddress) NewLine;
-lexical JumpInstruction = SourcePrefix ("24" | "29" | "30") WhiteSpace WordAddress NewLine;
+lexical JumpInstruction = SourcePrefix ("24" | "25" | "29" | "30") WhiteSpace WordAddress NewLine;
 lexical IOInstruction = SourcePrefix ( "31" | "27" ) WhiteSpace WordAddress NewLine;
 lexical SingleInstruction = SourcePrefix "26" WhiteSpace NewLine ;
 
