@@ -365,28 +365,34 @@ Tree rewrite(Tree tree) = innermost visit(tree)
     AssignBooleanExpression assign><
     CompiledInstruction* post>`:
     {
+      debugPrint("Trigger + Assign:", "<trigger>, <assign>");
       triggerExp = "";
+      
       visit(trigger)
       {
-        case TriggereExpression TE:
+        case TriggerExpression TE:
         {
-          triggerExpt = "<TE>";
+          debugPrint("Trigger");
+          triggerExp = "<TE>";
         }        
       }
       logicExp = "";
-      range = "" ;
+      addressRange = "" ;
       visit(assign)      
       {
         case LogicExpression LE:
         {
+          debugPrint("Logic");
           logicExp = "<LE>";
         }
         case BitAddressRange BAR:
         {
-          range = "<BAR>";
+          debugPrint("Range");
+          addressRange = "<BAR>";
         }
       }
-      triggeredAssignBoolean = parse(#TriggeredAssignBoolean, debugPrint("TriggeredAssignBoolean", "<composeEcbPrefix("Brown", composeSourceRange(trigger, assign))>TriggeredAssignBoolean <triggerExp> =\> <logicExp> to <range> "));
+      debugPrint("Data:", "<triggerExp>, <logicExp>, <addressRange>");
+      triggeredAssignBoolean = parse(#TriggeredAssignBoolean, debugPrint("TriggeredAssignBoolean", "<composeEcbPrefix("Brown", composeSourceRange(trigger, assign))>TriggeredAssignBoolean <triggerExp> =\> <logicExp> to <addressRange> "));
       insert(CodeBlock)`<CompiledInstruction* pre><TriggeredAssignBoolean triggeredAssignBoolean><CompiledInstruction* post>`; 
     }
     
