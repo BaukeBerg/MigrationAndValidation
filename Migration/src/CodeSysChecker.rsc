@@ -206,7 +206,7 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
   }
   cosmeticLines += endIfCount;
   writeToFile(generatedFile("indentList.txt"), indentList);
-  if(!endIfFound)
+  if(!endIfFound && 0 < ifCount)
   {
     errorList += handleError("non-terminated IF-statement found at line <lastIf>, program will not compile");          
   }  
