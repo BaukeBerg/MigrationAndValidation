@@ -43,7 +43,7 @@ PlcProgram generateFile(str outputPath, Tree plcModel, SymbolTable symbols)
 
 PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
 {
-  patternList = ();
+  patternMap = ();
   debugPrint("---------- Starting information extraction @ <formatDuration()> ----------");
   bool openCondition = false;
   includedLines = 0;
@@ -87,7 +87,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     {
       programLines += "(* <IC> *)";
       programLines += "(* Init call =\> Was extracted prior to generating programs *)";
-      patternList = updatePatterns("InitCall", patternList);
+      patternMap = updatePatterns("InitCall", patternMap);
     }
     case LogicExpression LE:
     {
@@ -104,7 +104,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
       programLines = houseKeeping(ECB, startIfPositions, endIfPositions, programLines);
       programLines += "(* <ECB> *)";
       programLines += "; (* ANDNT 0.1 NOP is a Blank Instruction *)";
-      patternList = updatePatterns("BlankAndNot", patternList);
+      patternMap = updatePatterns("BlankAndNot", patternMap);
       visit(ECB)
       {
         case SourceLineRange SR:
@@ -121,7 +121,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     {
       programLines = houseKeeping(CR, startIfPositions, endIfPositions, programLines);
       programLines += debugPrint("CR: ", "(* <CR> *)");
-      patternList = updatePatterns("CompareWithResult", patternList);
+      patternMap = updatePatterns("CompareWithResult", patternMap);
       sources = [];
       targets = [];
       resultValue = "";
@@ -171,7 +171,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     {
       programLines = houseKeeping(IB, startIfPositions, endIfPositions, programLines);
       programLines += "(* <IB> *)";
-      patternList = updatePatterns("IfBlock", patternList);
+      patternMap = updatePatterns("IfBlock", patternMap);
       visit(IB)
       {
         case LogicExpression LE:
@@ -195,7 +195,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     {
       programLines = houseKeeping(IO, startIfPositions, endIfPositions, programLines);
       programLines += "(* <DC> *)";
-      patternList = updatePatterns("DecrementCounter", patternList);
+      patternMap = updatePatterns("DecrementCounter", patternMap);
       addresses = [];
       str target = "";      
       visit(DC)
@@ -223,7 +223,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     {
       //programLines = houseKeeping(CV, startIfPositions, endIfPositions, programLines);
       programLines += "(* <CV> *) ";
-      patternList = updatePatterns("ComposeValue", patternList);
+      patternMap = updatePatterns("ComposeValue", patternMap);
       target = "";
       bitValues = [];
       visit(CV)
@@ -252,7 +252,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     {
       programLines = houseKeeping(CC, startIfPositions, endIfPositions, programLines);
       programLines += "(* <CC> *)" ;
-      patternList = updatePatterns("CompareConstant", patternList);
+      patternMap = updatePatterns("CompareConstant", patternMap);
       constantValue = compareAddress = <"", "">;
       visit(CC)
       {
@@ -280,7 +280,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     {
       programLines = houseKeeping(SB, startIfPositions, endIfPositions, programLines);
       programLines += "(* <SB> *)" ;
-      patternList = updatePatterns("ResetBit", patternList);
+      patternMap = updatePatterns("ResetBit", patternMap);
       visit(SB)
       {
         case BitAddress BA:
@@ -297,7 +297,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     {
       programLines = houseKeeping(SB, startIfPositions, endIfPositions, programLines);
       programLines += "(* <SB> *)" ;
-      patternList = updatePatterns("SetBit", patternList);
+      patternMap = updatePatterns("SetBit", patternMap);
       visit(SB)
       {
         case BitAddress BA:
@@ -312,21 +312,21 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     
     case IOSynchronization IO:
     {
-      patternList = updatePatterns("IOSynchronization", patternList);
+      patternMap = updatePatterns("IOSynchronization", patternMap);
       programLines = houseKeeping(IO, startIfPositions, endIfPositions, programLines);
       programLines += ["; (* <IO> *)", "(* IO Syncing is handled by the PLC automatically *)"];
     }
         
     case IOJump IO:
     {
-      patternList = updatePatterns("IOJump", patternList);
+      patternMap = updatePatterns("IOJump", patternMap);
       programLines = houseKeeping(IO, startIfPositions, endIfPositions, programLines);
       programLines += ["; (* <IO> *)", "(* IO Syncing is handled by the PLC automatically, so ingore the jump *)"];
     }
     
     case AssignBit AB:
     {
-      patternList = updatePatterns("AssignBit", patternList);
+      patternMap = updatePatterns("AssignBit", patternMap);
       programLines = houseKeeping(AB, startIfPositions, endIfPositions, programLines, openCondition);
       openCondition = false;
       targetInfo = retrieveInfo(bitAddress(AB), symbols);      
@@ -336,7 +336,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     
     case AssignBitInverted AB:
     {
-      patternList = updatePatterns("AssignBitInverted", patternList);
+      patternMap = updatePatterns("AssignBitInverted", patternMap);
       programLines = houseKeeping(AB, startIfPositions, endIfPositions, programLines, openCondition);
       openCondition = false;
       targetInfo = retrieveInfo(bitAddress(AB), symbols);      
@@ -346,28 +346,28 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     
     case ExecuteInstruction EL:
     {
-      patternList = updatePatterns("ExecuteInstruction", patternList);
+      patternMap = updatePatterns("ExecuteInstruction", patternMap);
       programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines);
       programLines += defaultFormat(EL);
     }
     
     case ConditionInstruction EL:
     {
-      patternList = updatePatterns("ConditionInstruction", patternList);  
+      patternMap = updatePatterns("ConditionInstruction", patternMap);  
       programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines);
       programLines += defaultFormat(EL);
     }
     
     case SkipInstruction EL:
     {
-      patternList = updatePatterns("SkipInstruction", patternList);
+      patternMap = updatePatterns("SkipInstruction", patternMap);
       programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines);
       programLines += defaultFormat(EL);
     }
     
     case IOInstruction EL:
     {
-      patternList = updatePatterns("IOInstruction", patternList);
+      patternMap = updatePatterns("IOInstruction", patternMap);
       programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines);
       programLines += "(* <composeEcbPrefix("Lime", composeSourceRange(EL))>Bare LSTIIO instructions are used to configure the communications: <trim("<EL>")> *)";
     }
@@ -423,7 +423,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     
     case ComposedWrite EL:
     {
-      patternList = updatePatterns("ComposedWrite", patternList);
+      patternMap = updatePatterns("ComposedWrite", patternMap);
       programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines, openCondition);
       openCondition = true;      
       writeCondition = "";
@@ -515,14 +515,14 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
         
     case QuickJumpOut EL:
     {
-      patternList = updatePatterns("QuickJumpOut", patternList);
+      patternMap = updatePatterns("QuickJumpOut", patternMap);
       programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines);
       programLines += ["(* <EL> *)", "(* Might be replaceable by a IF .. ELSIF .. ELSE or CASE *)"];
     }
     
     case AndEqual EL:      
     {
-      patternList = updatePatterns("AndEqual", patternList);
+      patternMap = updatePatterns("AndEqual", patternMap);
       programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines, openCondition);
       openCondition = false;
       debugPrint("Composing AndEqual");
@@ -548,7 +548,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
 
     case AssignBooleanExpression EL:
     {
-      patternList = updatePatterns("AssignBooleanExpression", patternList);
+      patternMap = updatePatterns("AssignBooleanExpression", patternMap);
       programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines, openCondition);
       openCondition = false;
       programLines += ["  ", "(* <EL> *)"];
@@ -583,7 +583,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
         
     case AssignConstant A:
     {
-      patternList = updatePatterns("AssignConstant", patternList);
+      patternMap = updatePatterns("AssignConstant", patternMap);
       programLines = houseKeeping(A, startIfPositions, endIfPositions, programLines);
       includedLines += extractSize(A);      
       programLines += extractStatements(A, symbols);
@@ -591,7 +591,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     
     case AssignValue A:
     {
-      patternList = updatePatterns("AssignValue", patternList);
+      patternMap = updatePatterns("AssignValue", patternMap);
       programLines = houseKeeping(A, startIfPositions, endIfPositions, programLines);
       actualProgramCount = lastProgramCount(A);
       includedLines += extractSize(A);
@@ -606,7 +606,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     
     case TriggeredAssignBoolean TAE:
     {
-      patternList = updatePatterns("TriggeredAssignBoolean", patternList);
+      patternMap = updatePatterns("TriggeredAssignBoolean", patternMap);
       programLines = houseKeeping(TAE, startIfPositions, endIfPositions, programLines, openCondition);
       programLines += ["  ", "(* <TAE> *)"];
       openCondition = false;
@@ -637,7 +637,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     
     case TriggeredTimer TT:
     {
-      patternList = updatePatterns("TriggeredTimer", patternList);
+      patternMap = updatePatterns("TriggeredTimer", patternMap);
       debugPrint("TriggeredTimer: ", TT);
       addressList = [];
       targetBit = "";
@@ -681,7 +681,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     
     case PartialTrigger PT:
     {
-      patternList = updatePatterns("PartialTrigger", patternList);
+      patternMap = updatePatterns("PartialTrigger", patternMap);
       programLines = houseKeeping(PT, startIfPositions, endIfPositions, programLines, openCondition);
       openCondition = false;
       programLines += ["  ", "(* <trim("<PT>")> *)"];
@@ -711,7 +711,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
         
     case BitTrigger B:
     {
-      patternList = updatePatterns("BitTrigger", patternList);
+      patternMap = updatePatterns("BitTrigger", patternMap);
       programLines = houseKeeping(B, startIfPositions, endIfPositions, programLines, openCondition);
       programLines += "(* <B> *)";
       openCondition = false;      
@@ -723,7 +723,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     
     case TriggerBlock EL:
     {
-      patternList = updatePatterns("TriggerBlock", patternList);
+      patternMap = updatePatterns("TriggerBlock", patternMap);
       programLines = houseKeeping(EL, startIfPositions, endIfPositions, programLines, openCondition);
       openCondition = false;      
       <declaration, statements> = evaluateTrigger(EL, symbols);
@@ -733,7 +733,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     
     case CompareValue CV:
     {
-      patternList = updatePatterns("CompareValue", patternList);
+      patternMap = updatePatterns("CompareValue", patternMap);
       programLines = houseKeeping(CV, startIfPositions, endIfPositions, programLines);
       actualProgramCount = programCount(CV);
       debugPrint("CompareValue");
@@ -743,7 +743,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     
     case LogicCondition ECB:
     {
-      patternList = updatePatterns("LogicCondition", patternList);
+      patternMap = updatePatterns("LogicCondition", patternMap);
       programLines = houseKeeping(ECB, startIfPositions, endIfPositions, programLines, openCondition);
       openCondition = false;
       actualProgramCount = programCount(ECB); 
@@ -761,7 +761,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     
     case NopBlock ECB:
     {
-      patternList = updatePatterns("NopBlock", patternList);
+      patternMap = updatePatterns("NopBlock", patternMap);
       programLines = houseKeeping(ECB, startIfPositions, endIfPositions, programLines);
       actualProgramCount = programCount(ECB);
       includedLines += extractSize(ECB);
@@ -775,21 +775,21 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
   debugPrint("If positions: <startIfPositions>");
   debugPrint("EndIf positions: <endIfPositions>");
   debugPrint("Total line amount included: <includedLines>");
-  printStats(patternList);
+  printStats(patternMap);
   return <variableList, programLines>;
 }
 
-PatternList updatePatterns(str patternName, PatternList actualList)
+patternMap updatePatterns(str patternName, patternMap actualMap)
 {
-  if(patternName in actualList)
+  if(patternName in actualMap)
   {
-    actualList[patternName] += 1;    
+    actualMap[patternName] += 1;    
   }
   else
   {
-    actualList[patternName] = 1;
+    actualMap[patternName] = 1;
   }
-  return actualList;
+  return actualMap;
 }
 
 str composeInteger(list[str] targets, SymbolTable symbols)
@@ -817,7 +817,7 @@ Statements houseKeeping(&T item, list[int] startIfPositions, list[int] endIfPosi
   }
   if(terminateCondition)
   {
-  	return closeIf(currentProgram);
+    return closeIf(currentProgram);
   }
   return currentProgram;
 }
@@ -1020,7 +1020,7 @@ SymbolTable addUndeclaredVariables(SymbolTable symbols, Tree parsedData)
 Symbol composeUnnamedDeclaration(str inputData, str dataType)
 {
   debugPrint("Generating declaration for <dataType> <inputData>");
-	addressName = replaceAll(trim("<clipAndStrip(inputData)>"), ".", "_");
+  addressName = replaceAll(trim("<clipAndStrip(inputData)>"), ".", "_");
   addressName = replaceAll(addressName, "=", "");    
   return <"unnamed_<trim(addressName)>", clipAndStrip("<inputData>"), "", dataType>;
 }
