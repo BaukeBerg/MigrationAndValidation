@@ -794,13 +794,15 @@ void printStats(PatternList patterns)
 {
   boxes = [];
   maxCount = 0 ;
+  patternList = [];
   for(pattern <- patterns)
   {
-    maxCount = max(patterns[pattern], maxCount);
-  }
-  for(pattern <- patterns)
-  { 
     count = patterns[pattern];
+    maxCount = max(patterns[pattern], maxCount);
+    patternList += [<count, pattern>];
+  }
+  for(<count, pattern> <- reverse(sort(patternList)))
+  { 
     scaling = (count * 1.00) / maxCount ;
     debugPrint("Pattern: ", "<pattern> : <count> =\> Scale: <scaling>");
     boxes += box(text("<pattern> (<count>)"), vshrink(scaling), fillColor("Lime"));
