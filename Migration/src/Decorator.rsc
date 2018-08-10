@@ -23,7 +23,6 @@ void printStats(PatternMap patterns)
 {
   boxes = [];
   maxCount = 0 ;
-  patternList = [];
   for(pattern <- patterns)
   {
     maxCount = max(patterns[pattern], maxCount);    
@@ -38,7 +37,7 @@ void printStats(PatternMap patterns)
   storePatterns(patterns);
 }
 
-void storePatterns(PatternList patterns) = writeToFile(generatedFile("patterns.plist"), [ "<pattern>,<patterns[pattern]>" | pattern <- patterns ]);
+void storePatterns(PatternMap patterns) = writeToFile(generatedFile("patterns.plist"), [ "<pattern>,<patterns[pattern]>" | pattern <- patterns ]);
 
 PatternMap readPatterns()
 {
