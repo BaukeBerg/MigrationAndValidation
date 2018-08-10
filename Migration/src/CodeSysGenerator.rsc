@@ -1,5 +1,7 @@
 module CodeSysGenerator
 
+import DataTypes;
+import Decorator;
 import EcbHandler;
 import FileLocations;
 import IO;
@@ -788,26 +790,6 @@ PatternList updatePatterns(str patternName, PatternList actualList)
     actualList[patternName] = 1;
   }
   return actualList;
-}
-
-void printStats(PatternList patterns)
-{
-  boxes = [];
-  maxCount = 0 ;
-  patternList = [];
-  for(pattern <- patterns)
-  {
-    count = patterns[pattern];
-    maxCount = max(patterns[pattern], maxCount);
-    patternList += [<count, pattern>];
-  }
-  for(<count, pattern> <- reverse(sort(patternList)))
-  { 
-    scaling = (count * 1.00) / maxCount ;
-    debugPrint("Pattern: ", "<pattern> : <count> =\> Scale: <scaling>");
-    boxes += box(text("<pattern> (<count>)"), vshrink(scaling), fillColor("Lime"));
-  }
-  render(hcat(boxes, std(bottom())));
 }
 
 str composeInteger(list[str] targets, SymbolTable symbols)
