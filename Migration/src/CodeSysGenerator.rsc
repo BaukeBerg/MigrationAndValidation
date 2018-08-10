@@ -1197,7 +1197,7 @@ Statements extractStatements(AssignValue A, SymbolTable symbols)
 
 Statements extractStatements(&T compare, SymbolTable symbols)
 {
-  debugPrint("Evaluation compare: --|<compare>|--");
+  debugPrint("Evaluating compare: --|<compare>|--");
   sourceAddresses = [];
   targetAddresses = [];  
   visit(compare)
