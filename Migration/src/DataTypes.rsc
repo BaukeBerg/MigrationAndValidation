@@ -2,7 +2,7 @@ module DataTypes
 
 import List;
 
-alias PatternMap = map[str patternName, int patternCount]; /// map of patterns vs count
+alias PatternMap = map[str patternName, int patternCount]; 
 alias PatternList = list[tuple[int patternCount, str patternName]]; /// (sorted) list of patterns
 
 PatternList toList(PatternMap patternMap)
@@ -14,8 +14,3 @@ PatternList toList(PatternMap patternMap)
   }
   return reverse(sort(patternList));
 }
-
-alias Model = list[LogicBlock];
-alias LogicBlock = tuple[SourceRange range, str name, list[Statement] conditions, list[Statement] actions];
-alias SourceRange = tuple[int firstLine, int lastLine];
-alias Statement = str;
