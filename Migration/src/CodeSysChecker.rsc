@@ -2,6 +2,7 @@ module CodeSysChecker
 
 import CodesysTypes;
 import DataTypes;
+import Decorator;
 import FileLocations;
 import IO;
 import List;
@@ -252,6 +253,15 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
   reportLines += debugPrint("Uncovered patterns: <uncoveredPatterns>, total <uncoveredPatternLines> lines");
   reportLines += debugPrint("Uncovered instructions: <uncoveredInsructionLines> lines");
   reportLines += debugPrint("Coverage: <formatReal(coverage,2)>%");
+  reportLines += debugPrint("------------------- PATTERNS -------------------");
+  patternList = toList(readPatterns());
+  reportLines += debugPrint("Different pattern types: <size(patternList)>");
+  reportLines += debugPrint("Total patterns found: <sum(patternList.patternCount)>");
+  reportLines += debugPrint("Pattern details:");
+  for(<count, pattern> <- patternList)
+  {
+    reportLines += debugPrint("<count> times pattern <pattern>");
+  }  
   reportLines += debugPrint("-------------------- ERRORS --------------------");
   for(error <- errorList)
   {
