@@ -122,25 +122,10 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
       programLines = houseKeeping(CR, startIfPositions, endIfPositions, programLines);
       programLines += debugPrint("CR: ", "(* <CR> *)");
       patternMap = updatePatterns("CompareWithResult", patternMap);
-      sources = [];
-      targets = [];
+      <sources, targets> = extractAddressRanges(CR);
       resultValue = "";
       visit(CR)
       {
-        case CompareStatement Compare:
-        {
-          visit(Compare)
-          {
-            case SourceRange SR:
-            {
-              sources = split(",", "<SR>");
-            } 
-            case TargetRange TR:
-            {
-              targets = split(",", "<TR>");
-            }           
-          }
-        } 
         case WordAddress WA:
         {
           resultValue = trim("<WA>");
@@ -1160,32 +1145,7 @@ Statements extractStatements(AssignConstant A, SymbolTable symbols)
 Statements extractStatements(AssignValue A, SymbolTable symbols)
 {
   statements = ["(* <A> *)"];
-  sourceAddresses = [];
-  targetAddresses = [];
-  visit(A)
-  {
-    case SourceRange SR:
-    {
-      debugPrint("Range: <SR>");
-      visit(SR)
-      {
-        case FiveDigits F:
-        {
-          sourceAddresses += "<stripLeading("<F>", "0")>";
-        }
-      }
-    }
-    case TargetRange TR:
-    {
-      visit(TR)
-      {
-        case FiveDigits F:
-        {
-          targetAddresses += "<stripLeading("<F>", "0")>";
-        }
-      }
-    }
-  }
+  <sourceAddresses, targetAddresses> = extractAddressRanges(A);
   for(index <- [0..size(sourceAddresses)])
   {
     debugPrint("Evaluating <index>");
@@ -1198,32 +1158,7 @@ Statements extractStatements(AssignValue A, SymbolTable symbols)
 Statements extractStatements(&T compare, SymbolTable symbols)
 {
   debugPrint("Evaluating compare: --|<compare>|--");
-  sourceAddresses = [];
-  targetAddresses = [];  
-  visit(compare)
-  {
-    case SourceRange SR:
-    {
-      debugPrint("Range: <SR>");
-      visit(SR)
-      {
-        case FiveDigits F:
-        {
-          sourceAddresses += "<stripLeading("<F>", "0")>";
-        }
-      }
-    }
-    case TargetRange TR:
-    {
-      visit(TR)
-      {
-        case FiveDigits F:
-        {
-          targetAddresses += "<stripLeading("<F>", "0")>";
-        }
-      }
-    }
-  }
+  <sourceAddresses, targetAddresses> = extractAddressRanges(compare);  
   Statements statements = [];
   str prefix = "";
   for(index <- [0..size(sourceAddresses)])
@@ -1236,6 +1171,37 @@ Statements extractStatements(&T compare, SymbolTable symbols)
   }  
   debugPrint("Returning result");
   return statements;
+}
+
+tuple[Statements, Statements] extractAddressRanges(&T itemToVisit)
+{
+  sourceAddresses = [];
+  targetAddresses = [];
+  visit(itemToVisit)
+  {
+    case SourceAddressRange SR:
+    {
+      debugPrint("Range: <SR>");
+      visit(SR)
+      {
+        case FiveDigits F:
+        {
+          sourceAddresses += "<stripLeading("<F>", "0")>";
+        }
+      }
+    }
+    case TargetAddressRange TR:
+    {
+      visit(TR)
+      {
+        case FiveDigits F:
+        {
+          targetAddresses += "<stripLeading("<F>", "0")>";
+        }
+      }
+    }
+  }
+  return <sourceAddresses, targetAddresses>;
 }
 
 str formatComment(LogicExpression logicExpression, SymbolTable symbols)
