@@ -779,7 +779,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
   return <variableList, programLines>;
 }
 
-patternMap updatePatterns(str patternName, patternMap actualMap)
+PatternMap updatePatterns(str patternName, PatternMap actualMap)
 {
   if(patternName in actualMap)
   {
