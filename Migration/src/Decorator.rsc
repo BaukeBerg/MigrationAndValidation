@@ -31,7 +31,7 @@ void printStats(PatternMap patterns)
   { 
     scaling = (count * 1.00) / maxCount ;
     debugPrint("Pattern: ", "<pattern> : <count> =\> Scale: <scaling>");
-    boxes += box(text("<pattern> (<count>)"), hshrink(scaling), vsize(20), fillColor("Lime"));
+    boxes += box(text(" <pattern> (<count>)"), hshrink(scaling), vsize(20), fillColor("Lime"));
   }
   render(vcat(boxes, std(left())));
   storePatterns(patterns);
