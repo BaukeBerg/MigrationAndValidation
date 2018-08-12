@@ -105,7 +105,11 @@ test bool testCompleteProgram() = testGenerating("DR_TOT_3.compiled");
 
 public bool useCachedFile = false ; ///< Flag bit which enables / disables the caching mechanism
 
-bool testGenerating(str inputFile) = (size(generateCodesysExport(inputFile).programLines) > 0) && (size(generateCodesysExport(inputFile).declarations) > 0);
+bool testGenerating(str inputFile)
+{
+  exportedFile = generateCodesysExport(inputFile);
+  return (size(exportedFile.programLines) > 0) && (size(exportedFile.declarations) > 0);
+}
 
 
 list[str] addedSymbols = [];
