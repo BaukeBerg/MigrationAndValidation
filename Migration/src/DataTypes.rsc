@@ -14,3 +14,5 @@ PatternList toList(PatternMap patternMap)
   }
   return reverse(sort(patternList));
 }
+
+alias SourceRange = tuple[int firstLine, int lastLine];
