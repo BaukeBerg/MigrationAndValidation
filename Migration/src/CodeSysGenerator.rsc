@@ -585,8 +585,22 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
           
     case TriggerBlock T:
     {
+      patternMap = updatePatterns("TriggerBlock", patternMap);
       programLines = houseKeeping(T, startIfPositions, endIfPositions, programLines);
-      programLines += defaultFormat(T);
+      openCondition = true;
+      programLines += ["  ", "(* <T> *)"];
+      visit(T)
+      {
+        case TriggerExpression TE:
+        {
+          <declaration, statements> = evaluateTrigger(TE, symbols);
+          targetTrigger = declaration.name;
+          variableList += extractVariable(declaration);
+          programLines += statements;
+          programLines += ["  ", "IF <declaration.name>.Q THEN (* <declaration.comment> *)"];         
+        }
+      }
+      
     }
     
     case TriggeredAssignBoolean TAE:

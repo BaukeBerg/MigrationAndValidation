@@ -1,0 +1,12 @@
+11211 09578 16 00360.0    AND BDR0B12 !startpuls wachttijd fase 7
+11212 09579 18 00361.3    OR  BDR0B19 !fasetimer fase 7 (einde fase 7)
+11213 09580 01 00363.1    TRIG  BDR0T09 !tr.puls laden wachttijd fase 7
+11214 09581 13 02148      FTCHD STP37_0 !setpoint 37 eenheden
+11215 09582 13 02149      FTCHD STP37_1 !setpoint 37 tientallen
+11216 09583 13 02150      FTCHD STP37_2 !setpoint 37 honderdtallen
+11217 09584 13 02151      FTCHD STP37_3 !setpoint 37 duizendtallen
+11218 09585 14 01248      STRD  DSP37_0 !display 37 eenheden
+11219 09586 14 01249      STRD  DSP37_1 !display 37 tientallen
+11220 09587 14 01250      STRD  DSP37_2 !display 37 honderdtallen
+11221 09588 14 01251      STRD  DSP37_3 !display 37 duizendtallen
+11222 09589 08 00360.2    SET0  BDR0B14 !einde 8 uur (wachttijd) fase 7
