@@ -4,3 +4,8 @@ module testModule::DataModule
 import Environment;
 
 public SymbolTable symbols = loadSymbols("DR_TOT_3.SYM");
+
+public void reloadSymbols()
+{
+  symbols = loadSymbols("DR_TOT_3.SYM");
+}
