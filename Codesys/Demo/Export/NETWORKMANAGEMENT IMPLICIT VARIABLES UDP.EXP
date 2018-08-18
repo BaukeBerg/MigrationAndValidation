@@ -1,0 +1,28 @@
+(* @NESTEDCOMMENTS := 'Yes' *)
+(* @GLOBAL_VARIABLE_LIST := 'Networkmanagement implicit Variables UDP' *)
+(* @PATH := '' *)
+(* @OBJECTFLAGS := '0, 8' *)
+(* @SYMFILEFLAGS := '2048' *)
+VAR_GLOBAL CONSTANT
+	USE_NWVARS_UDP : BOOL := FALSE;
+	MAX_NetVarItems_UDP	: INT := 0;
+	MAX_NetVarPDO_Rx_UDP	: INT := 0;
+	MAX_NetVarPDO_Tx_UDP	: INT := 0;
+	MAX_NetVarOD_UDP		: INT := 0;
+END_VAR
+VAR_GLOBAL
+	pNetVarItems_UDP		: ARRAY[0..MAX_NetVarItems_UDP] OF NetVarDataItem_UDP;
+	pNetVarPDO_Rx_UDP		: ARRAY[0..MAX_NetVarPDO_Rx_UDP] OF NetVarPDO_Rx_UDP;
+	pNetVarPDO_Tx_UDP		: ARRAY[0..MAX_NetVarPDO_Tx_UDP] OF NetVarPDO_Tx_UDP;
+	pNetVarOD_UDP			: ARRAY[0..MAX_NetVarOD_UDP] OF NetVarSDO_UDP;
+	pNetVarPDO_Rx_Diagnosis_UDP : ARRAY[0..MAX_NetVarPDO_Rx_UDP] OF NetVarUDPDiagStruct;
+	pNetVarPDO_Tx_Diagnosis_UDP : ARRAY[0..MAX_NetVarPDO_Tx_UDP] OF NetVarUDPDiagStruct;
+END_VAR
+
+(* @OBJECT_END := 'Networkmanagement implicit Variables UDP' *)
+(* @CONNECTIONS := Networkmanagement implicit Variables UDP
+FILENAME : ''
+FILETIME : 0
+EXPORT : 0
+NUMOFCONNECTIONS : 0
+*)

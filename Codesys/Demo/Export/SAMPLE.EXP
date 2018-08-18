@@ -1,0 +1,83 @@
+(* @PATH := '' *)
+
+VISUALISATION Sample _VISU_TYPES : 1,1
+_BG_BMP : ''
+_TEXT : 3
+_PAINTZOOM : 360
+
+_SIMPLE : 0
+_LINEWIDTH : 0
+_NOCOLORS : 1,1
+_POS : 49,41,365,151,207,96
+_COLORS : 12632256,0,65280,0,0
+_VARIABLES : '','','','','','','',''
+_THRESH : '','PC20_CYCLE.FASE_7','',''
+_DSP : '','Timer enabled',''
+_ZOOM : ''
+_INPUT : 0
+_TEXT : 5,4294967259,400,0,0,0,0,0
+_FONT : 'Arial'
+_EXEC : ''
+_TEXTVARIABLES : '','','','',''
+_COLORVARIABLES : '','','','','',''
+_ACCESSLEVELS : 2,2,2,2,2,2,2,2
+_OBJECT : 0,0
+_THRESH2 : '','','',''
+_INPUTTYPE : '','',''
+_HIDDENINPUT : 0
+_END_ELEM
+(* @TEXTSCALINGVARS := '_TEXTSCALINGVARS: $'$',$'$'' *)
+(* @EXTENDEDSIMPLESHAPE := '_SIMPLE: 0' *)
+(* @INPUTTAPFALSE := '_INPUTTAPFALSE: 0' *)
+
+_SIMPLE : 0
+_LINEWIDTH : 0
+_NOCOLORS : 1,1
+_POS : 49,170,365,280,207,225
+_COLORS : 12632256,0,65280,0,0
+_VARIABLES : '','','','','','','',''
+_THRESH : '','._CLOCK_1S','',''
+_DSP : '','1 Hz Pulse',''
+_ZOOM : ''
+_INPUT : 0
+_TEXT : 5,4294967259,400,0,1,0,0,0
+_FONT : 'Arial'
+_EXEC : ''
+_TEXTVARIABLES : '','','','',''
+_COLORVARIABLES : '','','','','',''
+_ACCESSLEVELS : 2,2,2,2,2,2,2,2
+_OBJECT : 0,0
+_THRESH2 : '','','',''
+_INPUTTYPE : '','',''
+_HIDDENINPUT : 0
+_END_ELEM
+(* @TEXTSCALINGVARS := '_TEXTSCALINGVARS: $'$',$'$'' *)
+(* @EXTENDEDSIMPLESHAPE := '_SIMPLE: 0' *)
+(* @INPUTTAPFALSE := '_INPUTTAPFALSE: 0' *)
+
+_SIMPLE : 0
+_LINEWIDTH : 0
+_NOCOLORS : 1,1
+_POS : 379,41,695,281,537,161
+_COLORS : 16777215,0,16777215,0,0
+_VARIABLES : '','','','','','','',''
+_THRESH : '','','',''
+_DSP : 'IO_Mapping.ActualCount','%i s.',''
+_ZOOM : ''
+_INPUT : 0
+_TEXT : 5,4294967232,400,0,2,0,0,0
+_FONT : 'Arial'
+_EXEC : ''
+_TEXTVARIABLES : '','','','',''
+_COLORVARIABLES : '','','','','',''
+_ACCESSLEVELS : 2,2,2,2,2,2,2,2
+_OBJECT : 0,0
+_THRESH2 : '','','',''
+_INPUTTYPE : '','',''
+_HIDDENINPUT : 0
+_END_ELEM
+(* @TEXTSCALINGVARS := '_TEXTSCALINGVARS: $'$',$'$'' *)
+(* @EXTENDEDSIMPLESHAPE := '_SIMPLE: 0' *)
+(* @INPUTTAPFALSE := '_INPUTTAPFALSE: 0' *)
+_KEYINFOLIST : 0
+END_VISUALISATION

@@ -1,0 +1,20 @@
+(* @NESTEDCOMMENTS := 'Yes' *)
+(* @GLOBAL_VARIABLE_LIST := 'ClockPulses' *)
+(* @PATH := '' *)
+(* @OBJECTFLAGS := '0, 8' *)
+(* @SYMFILEFLAGS := '2048' *)
+
+VAR_GLOBAL
+	_CLOCK_100MS AT %QX0.0: BOOL ;
+	_CLOCK_1S AT %QX0.1: BOOL ;
+	_CLOCK_10S AT %QX0.2: BOOL ;
+	_CLOCK_60S AT %QX0.3: BOOL ;
+END_VAR
+
+(* @OBJECT_END := 'ClockPulses' *)
+(* @CONNECTIONS := ClockPulses
+FILENAME : ''
+FILETIME : 0
+EXPORT : 0
+NUMOFCONNECTIONS : 0
+*)

@@ -1,0 +1,15 @@
+
+(* @NESTEDCOMMENTS := 'Yes' *)
+(* @PATH := '\/Functions' *)
+(* @OBJECTFLAGS := '0, 8' *)
+(* @SYMFILEFLAGS := '2048' *)
+FUNCTION WriteValue : BOOL
+VAR_INPUT
+	pValue : POINTER TO INT ; (**< Pointer to value to write *)
+	Value : INT ; (**< Value to store into the variable *)
+END_VAR
+VAR
+END_VAR
+(* @END_DECLARATION := '0' *)
+pValue ^ := Value;
+END_FUNCTION

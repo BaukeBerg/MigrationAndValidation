@@ -1,0 +1,34 @@
+
+(* @NESTEDCOMMENTS := 'Yes' *)
+(* @PATH := '' *)
+(* @OBJECTFLAGS := '0, 8' *)
+(* @SYMFILEFLAGS := '2048' *)
+PROGRAM IO_Mapping
+VAR
+	bSecondPulse AT %QX256.0 : BOOL ; (**< 50% Duty cycle second pulse *)
+	TriggerState AT %QX256.1 : BOOL ; (**< Trigger Condition *)
+	TimerResult AT %QX256.2 : BOOL ; (**< Timer Expiration *)
+	ActualCount AT %QW257 : INT ; (**< Actual count sent by modbus TCP *)
+	Cycles AT %QW258  : WORD ; (**< CycleCount *)
+	bEnableCount AT %IX256.0 : BOOL ; (**< Enable input received by the modbus TCP *)
+	bMinutePulse AT %QX256.3 : BOOL ; (**< 50% Duty cycle minute pulse *)
+	Trigger : R_TRIG ;
+END_VAR
+(* @END_DECLARATION := '0' *)
+WriteBit(ADR(PC20_CYCLE.FASE_7), bEnableCount );
+
+bSecondPulse := _CLOCK_1S ;
+bMinutePulse := _CLOCK_60S ;
+TriggerState := _CLOCK_1S AND PC20_CYCLE.FASE_7 AND NOT PC20_CYCLE.TIMER_41;
+TimerResult := PC20_CYCLE.TIMER_41;
+
+ActualCount := ComposeInt(PC20_CYCLE.DSP41_0, PC20_CYCLE.DSP41_1, PC20_CYCLE.DSP41_2, PC20_CYCLE.DSP41_3);
+
+WriteValue(ADR(PC20_CYCLE.STP41_1), 1);
+Trigger(CLK:= TriggerState, Q=> );
+WriteBit(ADR(PC20_CYCLE.S_1SEC), Trigger.Q);
+
+Cycles := Cycles + 1 ;
+
+
+END_PROGRAM

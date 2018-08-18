@@ -1,0 +1,17 @@
+
+(* @NESTEDCOMMENTS := 'Yes' *)
+(* @PATH := '\/Functions' *)
+(* @OBJECTFLAGS := '0, 8' *)
+(* @SYMFILEFLAGS := '2048' *)
+FUNCTION ComposeInt : INT
+VAR_INPUT
+	Ones : INT ;
+	Tens : INT ;
+	Hundreds : INT ;
+	Thousands : INT ;
+END_VAR
+VAR
+END_VAR
+(* @END_DECLARATION := '0' *)
+ComposeInt := (Thousands * 1000) + (Hundreds * 100) + (Tens * 10) + Ones;
+END_FUNCTION

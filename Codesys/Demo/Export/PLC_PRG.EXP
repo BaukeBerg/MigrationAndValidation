@@ -1,0 +1,14 @@
+
+(* @NESTEDCOMMENTS := 'Yes' *)
+(* @PATH := '' *)
+(* @OBJECTFLAGS := '0, 8' *)
+(* @SYMFILEFLAGS := '2048' *)
+PROGRAM PLC_PRG
+VAR
+END_VAR
+(* @END_DECLARATION := '0' *)
+ClockCycles();
+OptimizedTimer();
+PC20_CYCLE();
+IO_Mapping();
+END_PROGRAM

@@ -1,0 +1,15 @@
+
+(* @NESTEDCOMMENTS := 'Yes' *)
+(* @PATH := '\/Functions' *)
+(* @OBJECTFLAGS := '0, 8' *)
+(* @SYMFILEFLAGS := '2048' *)
+FUNCTION WriteBit : BOOL
+VAR_INPUT
+	pBit : POINTER TO BOOL ; (**< AddressValue of the target *)
+	bValue : BOOL ; (**< Value to equalize bit to *)
+END_VAR
+VAR
+END_VAR
+(* @END_DECLARATION := '0' *)
+pBit^ := bValue;
+END_FUNCTION

@@ -1,0 +1,26 @@
+
+(* @NESTEDCOMMENTS := 'Yes' *)
+(* @PATH := '\/Library' *)
+(* @OBJECTFLAGS := '0, 8' *)
+(* @SYMFILEFLAGS := '2048' *)
+FUNCTION_BLOCK TTimer
+VAR_INPUT
+	Condition : BOOL ; (**< Starts the timer *)
+	Setpoint : INT ; (**< Count to start *)
+END_VAR
+
+VAR_OUTPUT
+	RemainingCount : INT ;
+END_VAR
+(* @END_DECLARATION := '0' *)
+IF _CLOCK_1S AND Condition THEN
+	RemainingCount := RemainingCount -1 ;
+	IF(0 > RemainingCount) THEN
+		RemainingCount := 9999;
+	END_IF;
+END_IF;
+
+IF NOT Condition THEN
+	RemainingCount := Setpoint;
+END_IF;
+END_FUNCTION_BLOCK

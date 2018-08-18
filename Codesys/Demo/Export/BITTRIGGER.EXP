@@ -1,0 +1,26 @@
+
+(* @NESTEDCOMMENTS := 'Yes' *)
+(* @PATH := '\/Library' *)
+(* @OBJECTFLAGS := '0, 8' *)
+(* @SYMFILEFLAGS := '2048' *)
+FUNCTION_BLOCK BitTrigger
+VAR_INPUT
+	CLK : BOOL ; (**< Trigger condition of the Event *)
+END_VAR
+VAR_OUTPUT
+	CLK_OUT : BOOL ; (**< Internal state of the trigger *)
+	Q : BOOL ; (**< Single cycle high bit for the trigger *)
+END_VAR
+VAR
+	EventCount : DINT ; (**< Amount of events processed *)
+END_VAR
+(* @END_DECLARATION := '0' *)
+
+Q := CLK AND (NOT CLK_OUT) ; (* Create the trigger Flank *)
+CLK_OUT := CLK;							 (* Store the condition in the output variable *)
+
+(* Count the amount of events occurred *)
+IF Q THEN
+	EventCount := EventCount + 1;
+END_IF;
+END_FUNCTION_BLOCK

@@ -1,0 +1,30 @@
+
+(* @NESTEDCOMMENTS := 'Yes' *)
+(* @PATH := '' *)
+(* @OBJECTFLAGS := '0, 8' *)
+(* @SYMFILEFLAGS := '2048' *)
+PROGRAM ClockCycles
+VAR
+	trigger_50ms : TON ;
+	Counter : INT ;
+END_VAR
+(* @END_DECLARATION := '0' *)
+trigger_50ms(IN:= TRUE, PT:= T#45ms, Q=> , ET=> );
+IF(trigger_50ms.Q) THEN
+	trigger_50ms(IN:= FALSE);
+	Counter := Counter + 1;
+	_CLOCK_100MS := NOT _CLOCK_100MS;
+	IF Counter >= 600 THEN
+		Counter := 0;
+		_CLOCK_60S := NOT _CLOCK_60S;
+	END_IF;
+
+	IF 0 = Counter MOD 10 THEN
+		_CLOCK_1S := NOT _CLOCK_1S;
+	END_IF;
+
+	IF 0 = Counter MOD 100 THEN
+		_CLOCK_10S := NOT _CLOCK_10S;
+	END_IF;
+END_IF;
+END_PROGRAM
