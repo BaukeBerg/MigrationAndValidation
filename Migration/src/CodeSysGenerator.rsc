@@ -812,7 +812,7 @@ Statements houseKeeping(&T item, list[int] startIfPositions, list[int] endIfPosi
   for(_ <- [0..ifStatements])
   {
     debugPrint("Adding <ifStatements> end-if statements");
-    currentProgram = closeIf(currentProgram);
+    currentProgram = closeIf(currentProgram, "IF BLOCK (<size(ifStatements)>): <currentCount>");
   }
   if(terminateCondition)
   {
@@ -936,7 +936,8 @@ int programCount(&T programCountItem)
 str defaultFormat(&T statement) =  "; (* Unexpanded: <removeNewLines("<statement>")> *)";
 str removeNewLines(str inputString) = replaceAll(replaceAll(inputString, "\r", ""), "\n", "");
 
-Statements closeIf(Statements programLines)
+Statements closeIf(Statements programLines) = closeIf(programLines, "");
+Statements closeIf(Statements programLines, str suffix)
 {
   count = 1;
   if("  " == last(programLines))
@@ -965,7 +966,11 @@ Statements closeIf(Statements programLines)
   {
     programLines += ["  ; (* EMPTY_IF_GUARD *)"];
   }
-  programLines += ["END_IF;", "  "];
+  if(!isEmpty(suffix))
+  {
+    suffix = "  (* <suffix> *)";
+  }
+  programLines += ["END_IF; <suffix>", "  "];
   return programLines;  
 }
 
