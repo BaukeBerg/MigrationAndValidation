@@ -1,0 +1,13 @@
+11232                   
+11233 09598 16 00036.1    AND BDR0B02 !bedrijfsfase 2
+11234 09599 18 00036.3    OR  BDR0B04 !bedrijfsfase 4
+11235 09600 18 00037.1    OR  BDR0B06 !bedrijfsfase 6
+11236 09601 02 00360.3    EQL BDR0B15 !fase 2,4,6
+11237                   
+11238 09602 01 00363.2    TRIG  BDR0T10 !tr.puls begin fasen 2,4,6
+11239 09603 02 00361.0    EQL BDR0B16 !puls fasebegin fasen 2,4,6
+11240                   
+11241 09604 16 00360.2    AND BDR0B14 !einde 8 uur (wachttijd) fase 7
+11242 09605 16 00361.0    AND BDR0B16 !puls fasebegin fasen 2,4,6
+11243 09606 09 00037.2    SET1  FASE_7  !fase 7
+11244 09607 02 00361.2    EQL BDR0B18 !puls laden fasetimer fase 7
