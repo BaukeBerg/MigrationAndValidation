@@ -131,6 +131,8 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
   bool endIfFound = false;
   int lastIf = 0;
   indentList = [];
+  indentBelowZero = [];
+  missingEndIfs = [];
   for(line <- [0..size(program.programLines)])
   {
     switch(program.programLines[line])
@@ -181,7 +183,7 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
         indentList += "<indentDepth> @ <line> | <program.programLines[line-1]>";
         if(0 > indentDepth)
         {
-          errorList += handleError("Indent depth smaller than 0, code error at line <line>");
+          indentBelowZero += line;
         }
         reportWarnings = true;
         endIfFound = true;
@@ -195,7 +197,7 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
         }
         if(5 <= atIndentCount)
         {
-          warningList += debugPrint("Possible missing END_IF around line <line>");          
+          missingEndIfs += line;          
         } 
       }
       
@@ -224,6 +226,26 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
   {
     errorList += handleError("not all if-statements are terminated <ifCount> if-statements vs <endIfCount> end_if statements");
   }
+    
+  indentError = "";
+  for(belowZero <- indentBelowZero)
+  {
+    indentError += "<belowZero>, ";    
+  }  
+  if(!isEmpty(indentError))
+  {
+    errorList += "Indent below zero at line(s): <replaceLast(indentError, ", ", "")>";
+  }
+  
+  endIfError = "";
+  for(missing <- missingEndIfs)
+  {
+    endIfError += "<missing>, ";
+  }
+  if(!isEmpty(endIfError))
+  {
+    warningList += debugPrint("Possible missing END_IF around line(s): <replaceLast(endIfError, ", ", "")>");
+  }  
     
   programSize = fileRange.lastLine - fileRange.firstLine + 1;
   coverage = (0 < programSize) ? coveredLines * 100.0 / programSize : 0.00 ;
