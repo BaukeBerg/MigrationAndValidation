@@ -627,7 +627,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
             case BitAddress BA:
             {
               targetInfo = retrieveInfo("<BA>", symbols);
-              programLines[size(programLines)-3] = "  Q =\> <targetInfo.name>, (* <targetInfo.comment> *) ";
+              programLines[size(programLines)-2] = "  Q =\> <targetInfo.name>, (* <targetInfo.comment> *) ";
             } 
           }
         }
@@ -704,7 +704,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
       targetInfo = retrieveInfo(target, symbols);
       
       programLines += statements;
-      programLines[size(programLines)-3] = "  Q =\> <targetInfo.name> (* <declaration.comment> =\> <targetInfo.comment> *)";
+      programLines[size(programLines)-2] = "  Q =\> <targetInfo.name> (* <declaration.comment> =\> <targetInfo.comment> *)";
       programLines += "  ";
     } 
         
@@ -1060,16 +1060,16 @@ tuple[str, list[str]] evaluateTrigger(BitTrigger B, SymbolTable symbols)
       targetInfo = retrieveInfo("<TT>", symbols);      
     }
   }
-  statements[size(statements)-3] = "  Q =\> <targetInfo.name> (* <targetInfo.comment> *)" ;  
+  statements[size(statements)-2] = "  Q =\> <targetInfo.name> (* <targetInfo.comment> *)" ;  
   statements += "  ";    
   return <extractVariable(triggerInstance), statements>;
 }
 
 
-// Compose R_TRIG declaration for symbols, and composes the calls to the instance
+// Compose Declaration for symbols, and composes the calls to the instance
 tuple[Symbol declaration, list[str] statements] evaluateTrigger(TriggerExpression T, SymbolTable symbols)
 {
-  Symbol variableInfo = <"", "", "", "R_TRIG">;
+  Symbol variableInfo = <"", "", "", "BitTrigger">;
   statements = [];
   clkExp = "";
   tuple[str name, str comment] resultInfo = <"","">;
@@ -1092,9 +1092,9 @@ tuple[Symbol declaration, list[str] statements] evaluateTrigger(TriggerExpressio
   statements += triggerName;
   statements += "(";
   statements += "  CLK := <clkExp>";
+  statements += "  CLK_OUT =\> <resultInfo.name>, (* <resultInfo.comment> *)";
   statements += "  Q =\> ,";
-  statements += ");";
-  statements += "<resultInfo.name> := <triggerName>.CLK ; (* Store Condition: <resultInfo.comment> *)";
+  statements += ");";  
   return <variableInfo, statements>;
 }
 
