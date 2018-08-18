@@ -1268,9 +1268,12 @@ Statements evaluateAssign(SymbolTable symbols, str address, int constantValue)
 void generateProgram(str outputPath, PlcProgram program) = writeToFile(generatedFile(outputPath), generateOutput(program));
 list[str] generateOutput(PlcProgram program)
 {
-  totalFile = ["PROGRAM PC20_CYCLE", "VAR"];
+  // \@PATH \:= \'\/Generated\
+  totalFile = ["(* @PATH := \'\\/GENERATED_DO_NOT_MODIFY\' *)","PROGRAM PC20_CYCLE", "VAR"];
+  totalFile += "(* THIS FILE IS GENERATED. ANY MODIFICATIONS WILL BE LOST ON THE NEXT IMPORT CYCLE! *)";
   totalFile += program.declarations;
   totalFile += "END_VAR";
+  totalFile += "(* THIS FILE IS GENERATED. ANY MODIFICATIONS WILL BE LOST ON THE NEXT IMPORT CYCLE! *)";
   totalFile += program.programLines;
   totalFile += "END_PROGRAM";
   return totalFile;
