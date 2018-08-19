@@ -53,4 +53,4 @@ test bool retrieveVariableNameGeneratedSecond() = expectEqual("unnamed_1511", re
 
 test bool retrieveVariableNameGeneratedBitSecond() = expectEqual("unnamed_1511_1", retrieveVariableName("1511.1", symbols));
 
-test bool retrieveVariableNameCheckDifference() = expectUnEqual(retrieveVariableName("1510", symbols), retrieveVariableName("1511", symbols));
+test bool retrieveVariableNameCheckDifference() = expectNotEqual(retrieveVariableName("1510", symbols), retrieveVariableName("1511", symbols));
