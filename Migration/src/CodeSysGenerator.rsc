@@ -158,11 +158,12 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
       openCondition = false;
       programLines += "(* <IB> *)";
       patternMap = updatePatterns("IfBlock", patternMap);
+      ifExpression = "";
       visit(IB)
       {
         case LogicExpression LE:
         {
-          programLines += ["IF <evaluateExpression(LE, symbols)> THEN <formatComment(LE, symbols)>"];          
+          ifExpression = "IF <evaluateExpression(LE, symbols)> THEN <formatComment(LE, symbols)>";          
         }
         case SourceLineRange SR:
         {
@@ -175,6 +176,7 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
           debugPrint("Insert END_IF pos: <last(endIfPositions)>");
         }
       }      
+      programLines += ["(* START IF: (<last(startIfPositions)>-<last(endIfPositions)>) *)", ifExpression];      
       includedLines += extractSize(IB);
     }
        
@@ -818,7 +820,7 @@ Statements houseKeeping(&T item, list[int] startIfPositions, list[int] endIfPosi
   for(ifStart <- ifStarts)
   {
     debugPrint("Adding <size(ifStarts)> end-if statements");
-    currentProgram = closeIf(currentProgram, "IF BLOCK (<ifStart>-<currentCount>)");
+    currentProgram = closeIf(currentProgram, "STOP IF: (<ifStart>-<currentCount>)");
   }  
   return currentProgram;
 }
