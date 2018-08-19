@@ -186,7 +186,7 @@ lexical FiveDigits = [0-9][0-9][0-9][0-9][0-9] ;
 
 
 // This block defines the syntax for a labellist
-start syntax LabelList = LabelLocation+ ;
+start syntax LabelFile = LabelLocation+ ;
 
 lexical LabelLocation = ComposedLabel
                       | NewLine

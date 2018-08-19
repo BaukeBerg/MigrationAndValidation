@@ -33,7 +33,7 @@ LabelList extractLabelList(loc fileLocation)
   LabelList labels = [];
   labelString = extractLabelString(fileLocation);
   debugPrint("labelString = <labelString>", showLabelHandlerOutput);
-  visit(parseText(labelString, #start[LabelList]))
+  visit(parseText(labelString, #start[LabelFile]))
   {
     case ComposedLabel C:
     {

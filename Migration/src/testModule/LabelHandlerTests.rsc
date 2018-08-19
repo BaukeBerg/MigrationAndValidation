@@ -5,6 +5,7 @@ import FileLocations;
 import LabelHandler;
 import List;
 import Parser;
+import PC20Syntax;
 
 import utility::TestUtility;
 
@@ -29,7 +30,7 @@ bool compareLabels(LabelList labels)
 str expectedString = "L00004:4\r\nL00006:6\r\nL00008:8";
 
 test bool testExtractString() = expectEqual(expectedString, extractLabelString(testFile("simpleLabel.lbl")));
-test bool testParsing() = isUnAmbiguous(expectedString, #start[LabelList]);
+test bool testParsing() = isUnAmbiguous(expectedString, #start[LabelFile]);
 test bool testReading() = expectEqual(labels, smallLabels(), "Reading this file should yield this list");
 
 LabelList smallLabels() = extractLabelList(testFile("simpleLabel.lbl"));
