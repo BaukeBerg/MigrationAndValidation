@@ -133,6 +133,9 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
   indentList = [];
   indentBelowZero = [];
   missingEndIfs = [];
+  unknownBits = [];
+  unknownWords = [];
+  
   for(line <- [0..size(program.programLines)])
   {
     switch(program.programLines[line])
@@ -186,19 +189,7 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
           indentBelowZero += line;
         }
         reportWarnings = true;
-        endIfFound = true;
-        if(0 == indentDepth)
-        {
-          atIndentCount = 0;
-        }
-        else
-        {
-          atIndentCount += 1;
-        }
-        if(5 <= atIndentCount)
-        {
-          missingEndIfs += line;          
-        } 
+        endIfFound = true;             
       }
       
       case /UNKNOWN_IDENTIFIER/:
@@ -207,11 +198,11 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
       }
       case /unnamed_<wordAddress:[0-9]+>_<bitAddress:[0-3]>/:
       {
-        warningList += debugPrint("Found an unnamed bitaddress: <wordAddress>.<bitAddress> at .EXP file line <line>, consider manually declaring it in the .symbolTable file.");
+        unknownBits += "(<wordAddress>.<bitAddress> @ <line>)";        
       }
       case /unnamed_<wordAddress:[0-9]+>/:
       {
-        warningList += debugPrint("Found an unnamed address: <wordAddress> at .EXP file line <line>, consider manually declaring it in the .symbolTable file.");
+        unknownWords += "(<wordAddress> @ <line>)";        
       }
     }
   }
@@ -246,6 +237,32 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
   {
     warningList += debugPrint("Possible missing END_IF around line(s): <replaceLast(endIfError, ", ", "")>");
   }  
+  
+  
+  warningString = "";
+  for(unknownBit <- unknownBits)
+  { 
+    warningString += "<unknownBit>, ";
+  }
+  
+  if(!isEmpty(warningString))
+  {
+    warningList += "Found <size(unknownBits)> unknown bit addresses. consider manually declaring them. (address @ .EXP line): <replaceLast(warningString, ", ", "")>";
+  }  
+    
+  warningString = "";
+  for(unknown <- unknownWords)
+  {
+    warningString += "<unknown>, ";
+  }
+  
+  if(!isEmpty(warningString))
+  {
+    warningList += "Found <size(unknownWords)> unknown word addresses. consider manually declaring them. (address @ .EXP line): <replaceLast(warningString, ", ", "")>";
+  }    
+    
+  //warningList += debugPrint("Found an unnamed bitaddress: <wordAddress>.<bitAddress> at .EXP file line <line>, consider manually declaring it in the .symbolTable file.");
+  //warningList += debugPrint("Found an unnamed address: <wordAddress> at .EXP file line <line>, consider manually declaring it in the .symbolTable file.");    
     
   programSize = fileRange.lastLine - fileRange.firstLine + 1;
   coverage = (0 < programSize) ? coveredLines * 100.0 / programSize : 0.00 ;
@@ -258,7 +275,7 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
   reportLines += debugPrint("Conversion duration: <formatDuration()>");
   reportLines += debugPrint("Source file: <compiledFileName>");
   reportLines += debugPrint("All instructions covered: <yesOrNo(100.0 == coverage)>");
-  reportLines += debugPrint("Conversion successful: <yesOrNo(isEmpty(errorList))>");
+  reportLines += debugPrint("Conversion successfull: <yesOrNo(isEmpty(errorList))>");
   reportLines += debugPrint("------------------- DETAILS -------------------");  
   reportLines += debugPrint("Highest index of program counter: <currentLine>");
   reportLines += debugPrint("Size of program : <programSize> lines.");
@@ -269,13 +286,13 @@ public void validateAndReport(str reportName, PlcProgram program, str compiledFi
   reportLines += debugPrint("Amount of layout lines: <cosmeticLines>");
   reportLines += debugPrint("Total lines with instructions: <linesOfCode>");
   reportLines += debugPrint("Reduction of code size: <formatReal(reduction)>%");
-  reportLines += debugPrint("Amount of if-statements: <ifCount>");
+  reportLines += debugPrint("Amount of IF-statements: <ifCount>");
   reportLines += debugPrint("Maximum indent depth: <maxIndentDepth>");
   reportLines += debugPrint("Covered source range: <coveredLines> lines");
   reportLines += debugPrint("Uncovered patterns: <uncoveredPatterns>, total <uncoveredPatternLines> lines");
   reportLines += debugPrint("Uncovered instructions: <uncoveredInsructionLines> lines");
   reportLines += debugPrint("Coverage: <formatReal(coverage,2)>%");
-  reportLines += debugPrint("------------------- PATTERNS -------------------");
+  reportLines += debugPrint("------------------- PATTERNS ------------------");
   patternList = toList(readPatterns());
   reportLines += debugPrint("Different pattern types: <size(patternList)>");
   reportLines += debugPrint("Total patterns found: <sum(patternList.patternCount)>");
