@@ -154,7 +154,8 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
     }
     case IfBlock IB:
     {
-      programLines = houseKeeping(IB, startIfPositions, endIfPositions, programLines);
+      programLines = houseKeeping(IB, startIfPositions, endIfPositions, programLines, openCondition);
+      openCondition = false;
       programLines += "(* <IB> *)";
       patternMap = updatePatterns("IfBlock", patternMap);
       visit(IB)
@@ -169,8 +170,9 @@ PlcProgram extractInformation(Tree plcModel, SymbolTable symbols)
         }
         case JumpSize JS:
         {
-          endIfPositions += (parseInt(JS) + actualProgramCount); // Notify on what position the END_IF goes
-          debugPrint("Inserted END_IF pos: <last(endIfPositions)>");
+          startIfPositions += actualProgramCount;
+          endIfPositions += (parseInt(JS) + actualProgramCount); // Notify on what position the END_IF goes          
+          debugPrint("Insert END_IF pos: <last(endIfPositions)>");
         }
       }      
       includedLines += extractSize(IB);
@@ -808,16 +810,16 @@ Statements houseKeeping(&T item, list[int] startIfPositions, list[int] endIfPosi
 Statements houseKeeping(&T item, list[int] startIfPositions, list[int] endIfPositions, Statements currentProgram, bool terminateCondition)
 {
   currentCount = debugPrint("Insert", programCount(item)); 
-  ifStatements = listCount(endIfPositions, currentCount) + listCount(endIfPositions, currentCount-1);
-  for(_ <- [0..ifStatements])
-  {
-    debugPrint("Adding <ifStatements> end-if statements");
-    currentProgram = closeIf(currentProgram, "IF BLOCK (<size(ifStatements)>): <currentCount>");
-  }
   if(terminateCondition)
   {
-    return closeIf(currentProgram);
-  }
+    currentProgram = closeIf(currentProgram);
+  }  
+  ifStarts = listCount(startIfPositions, endIfPositions, currentCount) + listCount(startIfPositions, endIfPositions, currentCount-1);
+  for(ifStart <- ifStarts)
+  {
+    debugPrint("Adding <size(ifStarts)> end-if statements");
+    currentProgram = closeIf(currentProgram, "IF BLOCK (<ifStart>-<currentCount>)");
+  }  
   return currentProgram;
 }
 
@@ -879,7 +881,7 @@ Statements generateTimer(list[str] addresses, str target, SymbolTable symbols)
   return ["(* TIMER ISSUE: <error> *)", "UNKNOWN_IDENTIFIER"];  
 }
 
-int listCount(list[int] listValues, int itemToCount) = sum([0] + [ 1 | item <- listValues, item == itemToCount]);
+list[int] listCount(list[int] startValues, list[int] endValues, int itemToCount) = [startValues[indexOf(endValues, item)] | item <- endValues, item == itemToCount];
 
 /// Convenience function, since last is provided, first is expected
 int firstProgramCount(&T programItem) = programCount(programItem);
