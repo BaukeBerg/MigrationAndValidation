@@ -46,9 +46,16 @@ public void generateTestModule()
           debugPrint("Skipping test: <moduleName>::<testMethodName(line)>");
           continue;          
         }
-        str tryCatchFunction = createTryCatchHarness(moduleName, testMethodName(line));  
-        functionDefinitions += tryCatchFunction;
-        testCalls += testMethodName(tryCatchFunction);
+        try
+        {
+          str tryCatchFunction = createTryCatchHarness(moduleName, testMethodName(line));  
+          functionDefinitions += tryCatchFunction;
+          testCalls += testMethodName(tryCatchFunction);
+        }
+        catch:
+        {
+          debugPrint("Unable to generate test call. File: <moduleName>, Line: <line>");
+        }
       }
     }
   } 
