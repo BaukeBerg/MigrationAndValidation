@@ -8,6 +8,7 @@ import CodesysSyntax;
 import CodesysTypes;
 import FileLocations;
 import IO;
+import List;
 import ParseTree;
 import Parser;
 import ParserBase;
@@ -82,13 +83,20 @@ Symbol triggerSymbol = <"TRIGGER_510.1", "00123.0", "- BDR0B23", "R_TRIG">;
 test bool testTriggerGeneration() = testGenerating("trigger.compiled");
 test bool testTimerGeneration() = testGenerating("timer.compiled");
 
-test bool testSnippet(str snippetName)
+bool testSnippet(str snippetName)
 {
   testGenerating("<snippetName>.compiled");
   testLoc = testFile("<snippetName>.EXP");
   generatedLoc = generatedFile("<snippetName>.EXP");
+  
+  //generatedLines = readFileLines(generatedLoc);  
+  //targetLines = drop(indexOf(generatedLines, "END_VAR")+2, generatedLines);
+  //writeToFile(generatedFile("checkResult.EXP"), targetLines);
+  //generatedLoc = generatedFile("checkResult.EXP");
   return expectEqualFiles(testLoc, generatedLoc);
 }
+
+// SKIP
 
 // Small parts
 test bool testFirstOneHundred() = testGenerating("first100.compiled");
@@ -102,6 +110,8 @@ test bool testLastFiveThousand() = testGenerating("last5000.compiled");
 
 // Complete program
 test bool testCompleteProgram() = testGenerating("DR_TOT_3.compiled");
+
+// UNSKIP
 
 public bool useCachedFile = false ; ///< Flag bit which enables / disables the caching mechanism
 
@@ -156,7 +166,7 @@ PlcProgram generateCodesysExport(str inputFile)
 
 // Simple patterns 
 test bool testConvertingTrigger() = expectEqual("  TRIGGER_510_1 : R_TRIG ; (* 00123.0 - BDR0B23 *)", extractVariable(triggerSymbol), "Converting symbol with pre-filled in datatype should yield that type");
-test bool testRTrigGeneration() = expectEqual(readFileLines(testFile("triggerResult.exp")), extractInformation(preprocess(parseCompiledFile("trigger.compiled")), symbols).programLines, "Generating a trigger should yield exactly this result");
+test bool testRTrigGeneration() = testSnippet("trigger");
 
 // Symbol parsing
 test bool testParsingSymbols()
