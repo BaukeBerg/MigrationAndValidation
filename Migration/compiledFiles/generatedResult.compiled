@@ -1,0 +1,25 @@
+00475                   
+00476 00433 16 00000.1  L00433  AND 000.1
+00477 00434 13 00104      FTCHD DWS1_1  !eenheid DWS
+00478 00435 13 00105      FTCHD DWS1_2  !tiental DWS
+00479 00436 15 01505      COMP  1505  !constante 5
+00480 00437 15 01501      COMP  1501  !constante 1
+00481 00438 10 00003.1    STRB  RESULT  !F=C
+00482                   
+00483 00439 16 00003.1    AND RESULT  !F=C
+00484 00440 30 00013      JFRF  L00453
+00485                   
+00486 00441 16 00003.1    AND RESULT  !F=C
+00487 00442 16 00003.3    AND ENTER !triggerpuls enterdrukkn.
+00488 00443 13 00106      FTCHD SETP_0  !ingevoerde setpoint eenheden
+00489 00444 13 00107      FTCHD SETP_1  !ingevoerde setpoint tientallen
+00490 00445 13 00108      FTCHD SETP_2  !ingevoerde setpoint honderdtallen
+00491 00446 13 00109      FTCHD SETP_3  !ingevoerde setpoint duizendtallen
+00492 00447 14 02060      STRD  STP15_0 !setpoint 15 eenheden
+00493 00448 14 02061      STRD  STP15_1 !setpoint 15 tientallen
+00494 00449 14 02062      STRD  STP15_2 !setpoint 15 honderdtallen
+00495 00450 14 02063      STRD  STP15_3 !setpoint 15 duizendtallen
+00496                   
+00497 00451 17 00000.1    ANDNT 000.1
+00498 00452 00            NOP 1
+00499                   
