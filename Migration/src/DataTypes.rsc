@@ -16,3 +16,4 @@ PatternList toList(PatternMap patternMap)
 }
 
 alias SourceRange = tuple[int firstLine, int lastLine];
+alias Statement = str;
