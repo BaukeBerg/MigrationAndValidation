@@ -3,6 +3,7 @@ module testModule::TestGenerator
 import DateTime;
 import FileLocations;
 import IO;
+import List;
 import String;
 
 import utility::Debugging;
@@ -25,6 +26,7 @@ public void generateTestModule()
   list [str] testCalls = [];
   list[str] functionDefinitions = [];
   bool skipping = false;
+  skippedTests = 0;  
   for(testFile <- testFiles)
   { 
     skipping = false;
@@ -43,6 +45,7 @@ public void generateTestModule()
         moduleName = stripFileExtension(fileName(testFile));
         if(true == skipping)
         {
+          skippedTests += 1;
           debugPrint("Skipping test: <moduleName>::<testMethodName(line)>");
           continue;          
         }
@@ -61,6 +64,7 @@ public void generateTestModule()
   } 
   testCalls = padList("  if(false == ", testCalls, "){ result = false;}");
   createTestModule(fileNames + functionDefinitions, testCalls);
+  debugPrint("Test amount: <size(testCalls)>, skipped: <skippedTests>");
   removeReport();
 }
 
