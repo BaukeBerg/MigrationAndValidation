@@ -64,7 +64,7 @@ public void generateTestModule()
   } 
   testCalls = padList("  if(false == ", testCalls, "){ result = false;}");
   createTestModule(fileNames + functionDefinitions, testCalls);
-  debugPrint("Test amount: <size(testCalls)>, skipped: <skippedTests>");
+  debugPrint("Test amount: <size(testCalls)+skippedTests>, skipped: <skippedTests>");
   removeReport();
 }
 
