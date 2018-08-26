@@ -1,0 +1,1426 @@
+00001                   
+00002                   !De onderlinge communicatie binnen de messtraat geschiedt m.b.v. de RS20       !
+00003                   !interface kaart.De 5 machines t.w.: schaalpers                                !
+00004                   !                                    kaiserpers                                !
+00005                   !                                    meetmachine                               !
+00006                   !                                    uitstampunit+oven                         !
+00007                   !                                    brettenvuller                             !
+00008                   !zijn allemaal voorzien van een RS20 interface kaart.                          !
+00009                   !Centraal staat een PC20 opgesteld.                                            !
+00010                   !Voor de communicatie met de 5 machines is er in de centrale PC20 voor         !
+00011                   !elke machine ook een RS20 kaart aanwezig.                                     !
+00012                   !Communicatie tussen de plc's onderling gaat altijd via de centrale unit       !
+00013                   !
+00014                   !  hoek 40_350 gewijzigd (is nu 36-356) ivm opvoeren lijn en fout opzetten     !
+00015                   !          29-03-2001    C.de Vries/ H.Klaver    YP Engineering BV.
+00016                   
+00017                   !PLC1=Meetmachine                                                              !
+00018                   !PLC2=Centrale unit                                                            !
+00019                   !PLC3=Kaiser pers                                                              !
+00020                   !PLC4=Uitstamp unit                                                            !
+00021                   !PLC5=Schaalpers                                                               !
+00022                   !PLC6=Brettenvuller                                                            !
+00023                   
+00024                   
+00025                   !  *********************************************************************       !
+00026                   !  *                                                                   *       !
+00027                   !  *  communicatie tussen CENTRALE UNIT (PLC2) en de UITSTAMPUNIT      *       !
+00028                   !  *  (PLC4) via de RS20 interfacekaart.                               *       !
+00029                   !  *                                                                   *       !
+00030                   !  *********************************************************************       !
+00031                   
+00032                   !                           RS20  PLC2                      RS20  PLC4         !
+00033                   !                           __________                      __________         !
+00034                   
+00035                   !begin address               192.0                            128.0            !
+00036                   !                             |                                |               !
+00037                   !                             |     van PLC2 naar PLC4         |               !
+00038                   !                             | ---------------------------->> |               !
+00039                   !                             |                                |               !
+00040                   !                             |                                |               !
+00041                   !eind  address               223.3                            159.3            !
+00042                   
+00043                   
+00044                   
+00045                   !                           RS20  PLC2                      RS20  PLC4         !
+00046                   !                           __________                      __________         !
+00047                   
+00048                   !begin address               224.0                            160.0            !
+00049                   !                             |                                |               !
+00050                   !                             |     van PLC4 naar PLC2         |               !
+00051                   !                             | <<---------------------------- |               !
+00052                   !                             |                                |               !
+00053                   !                             |                                |               !
+00054                   !eind  address               255.3                            191.3            !
+00055                   
+00056                   
+00057 00000 00          NOP
+00058 00001 30 00006    JFRF 	PROGRAMMA
+00059 00002 00          NOP
+00060 00003 00          NOP
+00061 00004 00          NOP
+00062 00005 31 00255    LSTIO	255
+00063 00006 27 00003    END	3
+00064                   
+00065                   
+00066                   !********** SUBROUTINES **********!
+00067                   
+00068 00007 16 00000.1  PROGRAMMA	AND	CONSTANT_1
+00069 00008 25 00023    JSAT	ALGEMEEN
+00070                   
+00071 00009 17 00041.2  ANDNT	TEST
+00072 00010 25 00768    JSAT	SUBTEST
+00073                   
+00074 00011 16 00041.2  AND	TEST
+00075 00012 16 00041.1  AND	AUTOMATISCH
+00076 00013 25 00816    JSAT	SUBENKEL
+00077                   
+00078 00014 17 00041.1  ANDNT	AUTOMATISCH
+00079 00015 25 00841    JSAT	SUBAUTO
+00080                   
+00081 00016 19 00102.2  ORNT    VERSCHROTTEN_ZONDER_STAMPEN
+00082 00017 08 00121.0  SET0	M121_0
+00083                   
+00084 00018 31 00255    LSTIO	255
+00085 00019 27 00003    END	3
+00086 00020 00          NOP
+00087 00021 00          NOP
+00088 00022 00          NOP
+00089                   
+00090                   
+00091                   !********** TRIGGER SIGNALEN **********!
+00092                   
+00093 00023 17 00041.3  ALGEMEEN	ANDNT	HOOFDMOTOR_LANGZAAM
+00094 00024 01 00115.0  TRIG	115.0
+00095 00025 02 00115.1  EQL	PULSE_NOT_41_3
+00096                   
+00097 00026 17 00040.3  ANDNT	HOOFDMOTOR_NORMAAL
+00098 00027 01 00115.2  TRIG	115.2
+00099 00028 02 00115.3  EQL	PULSE_NOT_40_3
+00100                   
+00101 00029 16 00040.2  AND	STRAAT_1_EN_2
+00102 00030 01 00118.1  TRIG	M118_1_TRIG_40_2
+00103 00031 02 00118.2  EQL	M118_2_PULSE_40_2
+00104                   
+00105 00032 16 00041.3  AND	HOOFDMOTOR_LANGZAAM
+00106 00033 01 00116.1  TRIG	M116_1_TRIG_41_3
+00107 00034 02 00116.2  EQL	PULSE_41_3
+00108                   
+00109 00035 16 00040.3  AND	HOOFDMOTOR_NORMAAL
+00110 00036 01 00116.3  TRIG	M116_3_TRIG_40_3
+00111 00037 02 00117.0  EQL	PULSE_40_3
+00112                   
+00113 00038 16 00001.0  AND	CLOCK_100_MSEC
+00114 00039 01 00117.3  TRIG	M117_3_TRIG_0_1_SEC_CLOCK
+00115 00040 02 00118.0  EQL	M118_0_PULSE_0_1_SEC_CLOCK
+00116                   
+00117 00041 16 00244.1  AND	EINDE_CYCLUS_GEBIED
+00118 00042 01 00200.2  TRIG	M200_2_TRIG_E_CYCLUS_GEBIED
+00119 00043 02 00200.0  EQL	EINDE_CYCLUS_GEBIED_PULS
+00120                   
+00121 00044 17 00244.3  ANDNT	BUFFER_40_50_GRADEN
+00122 00045 01 00203.0  TRIG	203.0
+00123 00046 02 00203.1  EQL	203.1
+00124                   
+00125 00047 16 00241.0  AND	M90_GRADEN
+00126 00048 01 00204.0  TRIG	204.0
+00127 00049 02 00204.1  EQL	PULSE_241_0_ENCODER
+00128                   
+00129 00050 16 00096.2  AND	M86_2_PULSE_RESET_STORING
+00130 00051 01 00201.0  TRIG	201.0
+00131 00052 02 00201.1  EQL	201.1
+00132                   
+00133                   
+00134                   
+00135 00053 16 00019.1  AND	SAM_KLAAR_MET_OPZET
+00136 00054 01 00101.2  TRIG	M101_2_TRIG_5000_PULSEN
+00137 00055 02 00101.1  EQL    	PULSE_SAM_KLAAR_MET_OPZET
+00138                   
+00139 00056 17 00101.1  ANDNT	PULSE_SAM_KLAAR_MET_OPZET
+00140 00057 01 00126.1  TRIG	M126_1_TRIG_PULSE_19_1
+00141 00058 02 00126.2  EQL	M126_2_PULSE_VAN_PULSE_19_1
+00142                   
+00143 00059 16 00001.1  AND	1.1
+00144 00060 01 00108.2  TRIG	TRIG_1SEC
+00145 00061 02 00108.3  EQL	M108_3_PULSE_1_SEC
+00146                   
+00147                   
+00148                             !*********** timer voor vertraagd inschakelen *******!
+00149                   
+00150 00062 16 00010.2  AND     K2_KONTAKT
+00151 00063 16 00118.0  AND     M118_0_PULSE_0_1_SEC_CLOCK
+00152 00064 17 00119.2  ANDNT   TIMER_VERTRAAGD_INSCHAKELEN
+00153 00065 06 00234    CNTD    VERTRAAGD_INSCHAKELEN_TIMER_EENHEDEN
+00154 00066 10 00119.2  STRB    TIMER_VERTRAAGD_INSCHAKELEN
+00155                   
+00156 00067 17 00010.2  ANDNT    K2_KONTAKT
+00157 00068 12 00005    FTCHC    05
+00158 00069 14 00234    STRD     VERTRAAGD_INSCHAKELEN_TIMER_EENHEDEN
+00159 00070 08 00119.2  SET0     TIMER_VERTRAAGD_INSCHAKELEN
+00160                   
+00161                   
+00162                   !=============================================================================!
+00163                   !=============================================================================!
+00164                   !=======================		    ==================================!
+00165                   !======================= ENCODER OMZETTING  ==================================!
+00166                   !======================= VAN GRAY NAAR BCD  ==================================!
+00167                   !=======================                    ==================================!
+00168                   !=============================================================================!
+00169                   !=============================================================================!
+00170                   
+00171                   
+00172                   ! zet bit 2 en 3 van honderdtallen codegever signalen op vaste waarde 0 !
+00173                   
+00174 00071 16 00000.1  	AND	CONSTANT_1
+00175 00072 08 00018.2  	SET0	B18_2_encoder_not_be_used
+00176 00073 08 00018.3  	SET0	B18_3_encoder_not_be_used
+00177                   
+00178                   
+00179                   ! Gewenste hoekstand encoder vergelijken met encoder signalen !
+00180                   
+00181                   ! In verband met storingen is er voor gekozen om de encoder signalen in     !
+00182                   ! GRAY_code binnen te halen.                                                !
+00183                   ! In onderstaande programma wordt deze GRAY_code eerst omgezet naar de      !
+00184                   ! BINAIRE_code.                                                             !
+00185                   ! Vervolgens vindt een omzetting plaats van BINAIR naar OCTAAL.             !
+00186                   ! Als laatste actie wordt de OCTALE_code vertaalt naar de BCD_code          !
+00187                   ! De beschikbare BCD_code wordt nu vergeleken met de gewenste actie_punten  !
+00188                   ! in de cyclus.                                                             !
+00189                   ! Het resultaat van de vergelijking wordt in digit "D" gezet.               !
+00190                   ! De bits in digit "D" hebben nu de volgende betekenis:			    !
+00191                   
+00192                   !      D.0="1"   encoderwaarde =  gewenste waarde   (D=0001)                !
+00193                   !      D.1="1"   encoderwaarde <  gewenste waarde   (D=1010)                !
+00194                   !      D.2="1"   encoderwaarde >  gewenste waarde   (D=1100)                !
+00195                   !      D.3="1"   encoderwaarde <> gewenste waarde   (D=1010 of D=1100)      !
+00196                   
+00197                   
+00198                   !====================================!
+00199                   ! begin omzetting GRAY naar BCD      !
+00200                   !====================================!
+00201                   
+00202                   !************************!
+00203                   !* van Gray naar Binair *!
+00204                   !************************!
+00205                   
+00206                   !B9=G9!
+00207                   
+00208 00074 16 00018.1  AND	Gray_9
+00209 00075 02 00231.1  EQL     Binair_9
+00210                   
+00211                   !B8=B9*(notG8)+(notB9)*G8!
+00212                   
+00213 00076 16 00231.1  AND     Binair_9
+00214 00077 17 00018.0  ANDNT   Gray_8
+00215 00078 19 00231.1  ORNT    Binair_9
+00216 00079 16 00018.0  AND     Gray_8
+00217 00080 02 00231.0  EQL     Binair_8
+00218                   
+00219                   !B7=B8*(notG7)+(notB8)*G7!
+00220                   
+00221 00081 16 00231.0  AND     Binair_8
+00222 00082 17 00017.3  ANDNT   Gray_7
+00223 00083 19 00231.0  ORNT    Binair_8
+00224 00084 16 00017.3  AND     Gray_7
+00225 00085 02 00230.3  EQL     Binair_7
+00226                   
+00227                   !B6=B7*(notG6)+(notB7)*G6!
+00228                   
+00229 00086 16 00230.3  AND     Binair_7
+00230 00087 17 00017.2  ANDNT   Gray_6
+00231 00088 19 00230.3  ORNT    Binair_7
+00232 00089 16 00017.2  AND     Gray_6
+00233 00090 02 00230.2  EQL     Binair_6
+00234                   
+00235                   !B5=B6*(notG5)+(notB6)*G5!
+00236                   
+00237 00091 16 00230.2  AND     Binair_6
+00238 00092 17 00017.1  ANDNT   Gray_5
+00239 00093 19 00230.2  ORNT    Binair_6
+00240 00094 16 00017.1  AND     Gray_5
+00241 00095 02 00230.1  EQL     Binair_5
+00242                   
+00243                   !B4=B5*(notG4)+(notB5)*G4!
+00244                   
+00245 00096 16 00230.1  AND     Binair_5
+00246 00097 17 00017.0  ANDNT   Gray_4
+00247 00098 19 00230.1  ORNT    Binair_5
+00248 00099 16 00017.0  AND     Gray_4
+00249 00100 02 00230.0  EQL     Binair_4
+00250                   
+00251                   
+00252                   !B3=B4*(notG3)+(notB4)*G3!
+00253                   
+00254 00101 16 00230.0  AND     Binair_4
+00255 00102 17 00016.3  ANDNT   Gray_3
+00256 00103 19 00230.0  ORNT    Binair_4
+00257 00104 16 00016.3  AND     Gray_3
+00258 00105 02 00228.3  EQL     Binair_3
+00259                   
+00260                   !B2=B3*(notG2)+(notB3)*G2!
+00261                   
+00262 00106 16 00228.3  AND     Binair_3
+00263 00107 17 00016.2  ANDNT   Gray_2
+00264 00108 19 00228.3  ORNT    Binair_3
+00265 00109 16 00016.2  AND     Gray_2
+00266 00110 02 00228.2  EQL     Binair_2
+00267                   
+00268                   !B1=B2*(notG1)+(notB2)*G1!
+00269                   
+00270 00111 16 00228.2  AND     Binair_2
+00271 00112 17 00016.1  ANDNT   Gray_1
+00272 00113 19 00228.2  ORNT    Binair_2
+00273 00114 16 00016.1  AND     Gray_1
+00274 00115 02 00228.1  EQL     Binair_1
+00275                   
+00276                   !B0=B1*(notG0)+(notB1)*G0!
+00277                   
+00278 00116 16 00228.1  AND     Binair_1
+00279 00117 17 00016.0  ANDNT   Gray_0
+00280 00118 19 00228.1  ORNT    Binair_1
+00281 00119 16 00016.0  AND     Gray_0
+00282 00120 02 00228.0  EQL     Binair_0
+00283                   
+00284                   
+00285                   !*******************!
+00286                   !* Binair naar BCD *!
+00287                   !*******************!
+00288                   
+00289                   !Binair naar octaal(A2,A1,A0)!
+00290                   
+00291 00121 16 00000.1  AND	CONSTANT_1
+00292 00122 11 00228.3  FTCHB   Binair_3
+00293 00123 11 00230.0  FTCHB   Binair_4
+00294 00124 11 00230.1  FTCHB   Binair_5
+00295                   
+00296 00125 14 00229    STRD    Octaal_A1
+00297                   
+00298 00126 08 00228.3  SET0	Binair_3
+00299 00127 08 00230.0  SET0	Binair_4
+00300 00128 08 00230.1  SET0	Binair_5
+00301                   
+00302 00129 05 00231    SHFTR   Binair_C
+00303 00130 05 00230    SHFTR   Octaal_A2
+00304 00131 05 00230    SHFTR   Octaal_A2
+00305                   
+00306                   !Octaal naar BCD!
+00307                   !(8*A1)+A0!
+00308                   
+00309 00132 12 00008    FTCHC	8
+00310 00133 22 00229    MULT    Octaal_A1
+00311 00134 14 00225    STRD    BCD_output_A0
+00312 00135 20 00228    ADD	Octaal_A0
+00313                   
+00314 00136 14 00225    STRD    BCD_output_A0
+00315 00137 14 00226    STRD    BCD_output_A1
+00316                   
+00317                   !8*8*A2+{(8*A1)+A0}!
+00318                   
+00319 00138 12 00004    FTCHC   4
+00320 00139 12 00006    FTCHC   6
+00321 00140 22 00230    MULT    Octaal_A2
+00322 00141 14 00227    STRD    BCD_output_A2
+00323                   
+00324 00142 20 00225    ADD     BCD_output_A0
+00325 00143 20 00226    ADD     BCD_output_A1
+00326                   
+00327 00144 14 00225    STRD    BCD_output_A0
+00328 00145 14 00226    STRD    BCD_output_A1
+00329 00146 14 00227    STRD    BCD_output_A2
+00330                   
+00331                   !====================================!
+00332                   ! einde omzetting GRAY naar BCD      !
+00333                   !====================================!
+00334                   
+00335                   
+00336                   
+00337                   
+00338                   
+00339                   ! ***************************** !
+00340                   ! ********** ENCODER ********** !
+00341                   ! ***************************** !
+00342                   
+00343                   
+00344                   
+00345                   !=====================================================!
+00346                   ! HET AANTAL GRADEN WAT WORDT GEBRUIKT MOET EVEN ZIJN !
+00347                   !                                           ====      !
+00348                   !=====================================================!
+00349                   
+00350                   
+00351                   
+00352 00147 16 00119.2  	AND	TIMER_VERTRAAGD_INSCHAKELEN
+00353 00148 12 00006    	FTCHC	6
+00354 00149 12 00001    	FTCHC	1
+00355 00150 12 00000    	FTCHC	0
+00356 00151 25 00235    	JSAT	ENCODERSTAND
+00357 00152 10 00240.0  	STRB	M16_GRADEN
+00358                   
+00359 00153 12 00000    	FTCHC	0
+00360 00154 12 00003    	FTCHC	3
+00361 00155 12 00000    	FTCHC	0
+00362 00156 25 00235    	JSAT	ENCODERSTAND
+00363 00157 10 00240.1  	STRB	M30_GRADEN
+00364                   
+00365 00158 12 00006            FTCHC   6
+00366 00159 12 00003            FTCHC   3
+00367 00160 12 00000    	FTCHC	0
+00368 00161 25 00235    	JSAT	ENCODERSTAND
+00369 00162 10 00240.2  	STRB	M40_GRADEN
+00370                   
+00371 00163 12 00000    	FTCHC	0
+00372 00164 12 00005    	FTCHC	5
+00373 00165 12 00000    	FTCHC	0
+00374 00166 25 00235    	JSAT	ENCODERSTAND
+00375 00167 14 00260            STRD    260
+00376                   
+00377 00168 12 00000    	FTCHC	0
+00378 00169 12 00009    	FTCHC	9
+00379 00170 12 00000    	FTCHC	0
+00380 00171 25 00235    	JSAT	ENCODERSTAND
+00381 00172 10 00241.0  	STRB	M90_GRADEN
+00382                   
+00383 00173 12 00000          	FTCHC	0
+00384 00174 12 00001    	FTCHC	1
+00385 00175 12 00001    	FTCHC	1
+00386 00176 25 00235    	JSAT	ENCODERSTAND
+00387 00177 10 00241.1  	STRB	M110_GRADEN
+00388                   
+00389 00178 12 00000    	FTCHC	0
+00390 00179 12 00005    	FTCHC	5
+00391 00180 12 00001    	FTCHC	1
+00392 00181 25 00235    	JSAT	ENCODERSTAND
+00393 00182 10 00241.2  	STRB	M150_GRADEN
+00394                   
+00395 00183 12 00000    	FTCHC	0
+00396 00184 12 00007    	FTCHC	7
+00397 00185 12 00001    	FTCHC	1
+00398 00186 25 00235    	JSAT	ENCODERSTAND
+00399 00187 10 00241.3  	STRB	M170_GRADEN
+00400                   
+00401 00188 12 00000    	FTCHC	0
+00402 00189 12 00009    	FTCHC	9
+00403 00190 12 00001    	FTCHC	1
+00404 00191 25 00235    	JSAT	ENCODERSTAND
+00405 00192 10 00242.0  	STRB	M190_GRADEN
+00406                   
+00407 00193 12 00000    	FTCHC	0
+00408 00194 12 00000    	FTCHC	0
+00409 00195 12 00002    	FTCHC	2
+00410 00196 25 00235    	JSAT	ENCODERSTAND
+00411 00197 10 00242.1  	STRB	M200_GRADEN
+00412                   
+00413 00198 12 00005    	FTCHC	5
+00414 00199 12 00000    	FTCHC	0
+00415 00200 12 00002    	FTCHC	2
+00416 00201 25 00235    	JSAT	ENCODERSTAND
+00417 00202 10 00242.2  	STRB 	M205_GRADEN
+00418                   
+00419 00203 12 00000    	FTCHC	0
+00420 00204 12 00001    	FTCHC	1
+00421 00205 12 00002    	FTCHC	2
+00422 00206 25 00235    	JSAT	ENCODERSTAND
+00423 00207 10 00242.3  	STRB	M210_GRADEN
+00424                   
+00425 00208 12 00000    	FTCHC	0
+00426 00209 12 00003    	FTCHC	3
+00427 00210 12 00002    	FTCHC	2
+00428 00211 25 00235    	JSAT	ENCODERSTAND
+00429 00212 10 00243.0  	STRB	M230_GRADEN
+00430                   
+00431 00213 12 00006            FTCHC   6
+00432 00214 12 00005    	FTCHC	5
+00433 00215 12 00003    	FTCHC	3
+00434 00216 25 00235    	JSAT	ENCODERSTAND
+00435 00217 10 00243.1  	STRB	M350_GRADEN
+00436                   
+00437 00218 12 00000    	FTCHC	0
+00438 00219 12 00001    	FTCHC	1
+00439 00220 12 00003    	FTCHC	3
+00440 00221 25 00235    	JSAT	ENCODERSTAND
+00441 00222 10 00243.2  	STRB	M310_GRADEN
+00442                   
+00443 00223 12 00000            FTCHC	0
+00444 00224 12 00003    	FTCHC	3
+00445 00225 12 00003    	FTCHC	3
+00446 00226 25 00235    	JSAT	ENCODERSTAND
+00447 00227 10 00243.3  	STRB	M320_GRADEN
+00448                   
+00449 00228 12 00004            FTCHC	4
+00450 00229 12 00004    	FTCHC	4
+00451 00230 12 00003    	FTCHC	3
+00452 00231 25 00235    	JSAT	ENCODERSTAND
+00453 00232 10 00244.0  	STRB	M340_GRADEN
+00454                   
+00455 00233 17 00000.1  	ANDNT	CONSTANT_1
+00456 00234 30 00005    	JFRF	Vervolg
+00457                   
+00458 00235 15 00225    ENCODERSTAND	COMP	BCD_output_A0
+00459 00236 15 00226    	COMP	BCD_output_A1
+00460 00237 15 00227    	COMP	BCD_output_A2
+00461                   
+00462 00238 26          	RET
+00463                   
+00464 00239 16 00244.0  Vervolg	AND     M340_GRADEN
+00465 00240 09 00244.1  	SET1    EINDE_CYCLUS_GEBIED
+00466                   
+00467 00241 16 00240.0  	AND     M16_GRADEN
+00468 00242 08 00244.1  	SET0    EINDE_CYCLUS_GEBIED
+00469                   
+00470 00243 16 00241.2          AND    M150_GRADEN
+00471 00244 09 00244.2          SET1   BUFFER_150_310_GRADEN
+00472                   
+00473 00245 16 00243.2          AND    M310_GRADEN
+00474 00246 08 00244.2          SET0   BUFFER_150_310_GRADEN
+00475                   
+00476 00247 16 00240.2          AND    M40_GRADEN
+00477 00248 09 00244.3          SET1   BUFFER_40_50_GRADEN
+00478                   
+00479 00249 16 00260.1          AND    260.1
+00480 00250 08 00244.3          SET0   BUFFER_40_50_GRADEN
+00481                   
+00482 00251 16 00242.3         	AND    M210_GRADEN
+00483 00252 09 00250.2  	SET1   BUFFER_210_230_GRADEN
+00484                   
+00485 00253 16 00243.0  	AND    M230_GRADEN
+00486 00254 08 00250.2  	SET0   BUFFER_210_230_GRADEN
+00487                   
+00488 00255 16 00240.2  	AND    M40_GRADEN
+00489 00256 09 00250.3       	SET1   BUFFER_40_350_GRADEN
+00490                   
+00491 00257 16 00243.1  	AND    M350_GRADEN
+00492 00258 19 00041.2          ORNT   TEST
+00493 00259 08 00250.3  	SET0   BUFFER_40_350_GRADEN
+00494                   
+00495 00260 16 00243.3  	AND	M320_GRADEN
+00496 00261 09 00246.2  	SET1	246.2
+00497                   
+00498 00262 16 00240.0  	AND	M16_GRADEN
+00499 00263 08 00246.2  	SET0	246.2
+00500                   
+00501                   
+00502 00264 16 00008.1  	AND	OPZETWIEL_GOED
+00503 00265 02 00152.1  	EQL	M160_1_OPZET_SIGNAAL_PC4	! was 160.1
+00504                   
+00505 00266 17 00040.3  	ANDNT	HOOFDMOTOR_NORMAAL
+00506 00267 19 00041.3  	ORNT	HOOFDMOTOR_LANGZAAM
+00507 00268 02 00152.3  	EQL	M160_3_STARTPULS_UITSTAMP_UNIT	! was 160.3
+00508                   
+00509                   	
+00510                   	
+00511 00269 17 00106.2  	ANDNT	M106_2_MERKER_2_STORING_OVEN
+00512 00270 17 00107.1  	ANDNT	M107_1_STORING_MACHINE_VOORWAARDEN
+00513 00271 17 00107.2  	ANDNT	M107_2_STORING_TYDENS_CYCLUS
+00514 00272 16 00015.1  	AND	OVEN_KAST_DAG_NACHT_STAND
+00515 00273 16 00010.0  	AND	SCH_REMLICHTEN
+00516 00274 17 00041.1  	ANDNT	AUTOMATISCH
+00517 00275 16 00010.2  	AND	K2_KONTAKT
+00518 00276 17 00108.1  	ANDNT	M108_1_MERKER_LUCHTSTORING
+00519 00277 17 00200.1  	ANDNT	STOP_EINDE_CYCLUS
+00520 00278 02 00152.2  	EQL	NIET_AUTO_NIET_STRAAT_1	! was 160.2
+00521                   
+00522                   	
+00523                   
+00524 00279 17 00041.1  	ANDNT	AUTOMATISCH
+00525 00280 02 00152.0  	EQL	OPZET_FOUT_NAAR_PC2	! was 160.0
+00526                   
+00527 00281 16 00000.1          AND CONSTANT_1
+00528 00282 13 00004            FTCHD 4 !D148_ANI_MOTOR_VAN_PC2
+00529 00283 13 00000            FTCHD 0 !D149_ANI_MOTOR_VAN_PC2
+00530 00284 13 00000            FTCHD 0 !D150_ANI_MOTOR_VAN_PC2
+00531 00285 14 00130            STRD D130_ANO_NAAR_MOTOR
+00532 00286 14 00129            STRD D129_ANO_NAAR_MOTOR
+00533 00287 14 00128            STRD D128_ANO_NAAR_MOTOR
+00534                   
+00535                   
+00536                   !********** SIGNALEN NAAR PC2 **********!
+00537                   
+00538                   
+00539                   
+00540                   !********** SIGNALEN VAN PC2 **********!
+00541                   
+00542                   !OPZET SIGNAAL KOMT PAS ALS LUS PC4_BRANSON GROTER DAN NOMINAAL!
+00543                   
+00544 00288 16 00096.3  AND	M86_3_START_STOP_VOORWAARDEN_STRAAT
+00545 00289 16 00144.0  AND     M128_0_OPZET_SIGNAAL_OPZETWIEL	! was 128.0
+00546 00290 09 00118.3  SET1	MERKER_OPZET_STAND_AUTO
+00547                   
+00548 00291 16 00118.3  AND	MERKER_OPZET_STAND_AUTO
+00549 00292 16 00097.1  AND	M87_1_LUS_PC4_BRANSON_NOMINAAL
+00550 00293 02 00096.0  EQL	M86_0_OPZET_SIGNAAL_OPZETWIEL
+00551                   
+00552 00294 17 00096.3   ANDNT	M86_3_START_STOP_VOORWAARDEN_STRAAT
+00553 00295 19 00152.2   ORNT    NIET_AUTO_NIET_STRAAT_1	! was 160.2
+00554 00296 18 00101.1   OR PULSE_SAM_KLAAR_MET_OPZET
+00555 00297 08 00118.3   SET0    MERKER_OPZET_STAND_AUTO
+00556                   
+00557                   
+00558                   
+00559                   !VANAF NU NIET UITSTAMPEN!
+00560                   
+00561 00298 16 00144.1  AND     M128_1_SIGNAAL_STOP_UITSTAMPEN	! was 128.1
+00562 00299 02 00096.1  EQL	M86_1_SIGNAAL_STOP_UITSTAMPEN
+00563                   
+00564                   !RESET STORING PULSE!
+00565                   
+00566 00300 16 00144.2  AND     M128_2_PULSE_RESET_STORING	! was 128.2
+00567 00301 02 00096.2  EQL 	M86_2_PULSE_RESET_STORING
+00568                   
+00569                   ! START_STOP VOORWAARDEN STRAAT !
+00570                   
+00571 00302 16 00144.3  AND     M128_3_START_STOP_VOORWAARDEN_STRAAT	! was 128.3
+00572 00303 02 00096.3  EQL	M86_3_START_STOP_VOORWAARDEN_STRAAT
+00573                   
+00574                   !LUS BRANSON BUITEN GRENZEN!
+00575                   
+00576 00304 16 00145.0  AND     M129_0_LUS_PC4_BRANSON_BUITEN_GRENZEN	! was 129.0
+00577 00305 02 00097.0  EQL	M87_0_LUS_PC4_BRANSON_BUITEN_GRENZEN
+00578                   
+00579                   ! RESERVE !
+00580                   
+00581 00306 16 00145.1  AND     M129_1_LUS_PC4_BRANSON_NOMINAAL	! was 129.1
+00582 00307 02 00097.1  EQL	M87_1_LUS_PC4_BRANSON_NOMINAAL
+00583                   
+00584 00308 16 00145.2  AND     M129_2_LUS_PC4_BRANSON_TE_KORT	! was 129.2
+00585 00309 02 00097.2  EQL	M87_2_LUS_PC4_BRANSON_TE_KORT
+00586                   
+00587 00310 16 00145.3  AND     M129_3_LUS_PC4_BRANSON_TE_LANG	! was 129.3
+00588 00311 02 00097.3  EQL	M87_3_LUS_PC4_BRANSON_TE_LANG
+00589                   
+00590                   
+00591                   ! LUCHT STORING !
+00592                   
+00593 00312 16 00010.2  AND	K2_KONTAKT
+00594 00313 16 00118.0  AND	M118_0_PULSE_0_1_SEC_CLOCK
+00595 00314 17 00107.3  ANDNT	M107_3_OUTPUT_TIMER_LUCHTSTORING
+00596 00315 06 00110    CNTD	110
+00597 00316 10 00107.3  STRB	M107_3_OUTPUT_TIMER_LUCHTSTORING
+00598                   
+00599 00317 17 00010.2  ANDNT	K2_KONTAKT
+00600 00318 12 00006    FTCHC	6
+00601 00319 14 00110    STRD	110
+00602 00320 08 00107.3  SET0	M107_3_OUTPUT_TIMER_LUCHTSTORING
+00603                   
+00604 00321 16 00107.3  AND	M107_3_OUTPUT_TIMER_LUCHTSTORING
+00605 00322 17 00008.2  ANDNT	LUCHT_AANWEZIG
+00606 00323 09 00108.1  SET1	M108_1_MERKER_LUCHTSTORING
+00607                   
+00608                   
+00609                   !***************OPZET STROOK SAM300************!
+00610 00324 16 00116.2  AND     PULSE_41_3
+00611 00325 18 00117.0  OR      PULSE_40_3
+00612 00326 09 00245.0  SET1    MERKER_DRUKKNOPSIGLE_LINKS_RECHTS
+00613                   
+00614 00327 17 00008.1  ANDNT   OPZETWIEL_GOED
+00615 00328 08 00245.0  SET0    MERKER_DRUKKNOPSIGLE_LINKS_RECHTS
+00616                   
+00617 00329 17 00252.1  ANDNT   UITSTAMPEN_NIET_VERSCHROTEN
+00618 00330 16 00250.2  AND     BUFFER_210_230_GRADEN
+00619 00331 17 00102.2  ANDNT   VERSCHROTTEN_ZONDER_STAMPEN
+00620 00332 18 00102.2  OR      VERSCHROTTEN_ZONDER_STAMPEN
+00621 00333 17 00252.1  ANDNT   UITSTAMPEN_NIET_VERSCHROTEN
+00622 00334 02 00194.0  EQL     MERKER_194_0_UITSTAMPEN
+00623                   
+00624 00335 19 00041.1  ORNT    AUTOMATISCH
+00625 00336 16 00041.2  AND     TEST
+00626 00337 16 00096.0  AND     M86_0_OPZET_SIGNAAL_OPZETWIEL
+00627 00338 16 00194.0  AND     MERKER_194_0_UITSTAMPEN
+00628 00339 16 00019.1  AND     SAM_KLAAR_MET_OPZET
+00629 00340 17 00245.1  ANDNT   MERKER_OPZET_FOUT
+00630 00341 17 00205.0  ANDNT   START_SCHAAR_ACTIE
+00631 00342 17 00252.1  ANDNT   UITSTAMPEN_NIET_VERSCHROTEN
+00632                   
+00633 00343 18 00041.1  OR      AUTOMATISCH
+00634 00344 16 00041.2  AND     TEST
+00635 00345 16 00096.0  AND     M86_0_OPZET_SIGNAAL_OPZETWIEL
+00636 00346 16 00194.0  AND     MERKER_194_0_UITSTAMPEN
+00637 00347 16 00019.1  AND     SAM_KLAAR_MET_OPZET
+00638 00348 17 00245.1  ANDNT   MERKER_OPZET_FOUT
+00639 00349 17 00205.0  ANDNT   START_SCHAAR_ACTIE
+00640 00350 17 00252.1  ANDNT   UITSTAMPEN_NIET_VERSCHROTEN
+00641                   
+00642 00351 18 00041.1  OR      AUTOMATISCH
+00643 00352 16 00041.2  AND     TEST
+00644 00353 16 00194.0  AND     MERKER_194_0_UITSTAMPEN
+00645 00354 17 00245.1  ANDNT   MERKER_OPZET_FOUT
+00646 00355 16 00245.0  AND     MERKER_DRUKKNOPSIGLE_LINKS_RECHTS
+00647                   
+00648 00356 09 00020.2  SET1    INPUT1_SAM_START_210_GRADEN_CODEGEVER
+00649 00357 09 00252.1  SET1    UITSTAMPEN_NIET_VERSCHROTEN
+00650                   
+00651                   
+00652 00358 17 00019.1  ANDNT   SAM_KLAAR_MET_OPZET
+00653 00359 08 00020.2  SET0    INPUT1_SAM_START_210_GRADEN_CODEGEVER
+00654                   
+00655                   
+00656                   !*************CONTROLE OPZET*****************!
+00657                   
+00658 00360 17 00011.2  ANDNT      STROOK2_IN_POSITIE
+00659 00361 17 00011.3  ANDNT      STROOK_IN_POSITIE
+00660                   ! AND        OPZETWIEL_GOED
+00661 00362 02 00250.0  EQL        STROOK_OPZETWIEL_GOED
+00662                   
+00663 00363 16 00250.0  AND        STROOK_OPZETWIEL_GOED
+00664 00364 01 00245.2  TRIG       M245_2_TRIG_OOGJES
+00665 00365 02 00245.3  EQL        PULSE_OOGJES
+00666                   
+00667 00366 16 00245.3  AND        PULSE_OOGJES
+00668 00367 07 00248    CNTU       EENH_COUNTER_STROOKOPZET
+00669                   
+00670                   
+00671 00368 16 00000.1  AND        CONSTANT_1
+00672 00369 12 00005    FTCHC      5
+00673 00370 14 00249    STRD       COMPARE_STROOK_OPZET
+00674                   
+00675 00371 16 00019.1  AND        SAM_KLAAR_MET_OPZET
+00676 00372 18 00108.0  OR         TIMER_OUTPUT_CYCLUSTIJD_CYCLUSMOTOR
+00677 00373 13 00249    FTCHD      COMPARE_STROOK_OPZET
+00678 00374 15 00248    COMP       EENH_COUNTER_STROOKOPZET
+00679 00375 10 00246.0  STRB       STROOK_OPZET_TELLER
+00680                   
+00681 00376 17 00246.0  ANDNT      STROOK_OPZET_TELLER
+00682 00377 16 00244.1  AND        EINDE_CYCLUS_GEBIED
+00683 00378 17 00102.2  ANDNT      VERSCHROTTEN_ZONDER_STAMPEN
+00684 00379 19 00246.0  ORNT       STROOK_OPZET_TELLER
+00685 00380 16 00019.1  AND        SAM_KLAAR_MET_OPZET
+00686 00381 16 00102.2  AND        VERSCHROTTEN_ZONDER_STAMPEN
+00687 00382 09 00246.1  SET1       STROOK_OPZET_FOUT
+00688                   
+00689                   
+00690 00383 16 00020.2  AND        INPUT1_SAM_START_210_GRADEN_CODEGEVER
+00691 00384 09 00254.0  SET1       BUFFER_CONTROLE_OPZET
+00692                   
+00693 00385 16 00254.0  AND        BUFFER_CONTROLE_OPZET
+00694 00386 17 00250.1  ANDNT      TIMER_CONTROLE_OPZET
+00695 00387 16 00118.0  AND        M118_0_PULSE_0_1_SEC_CLOCK
+00696 00388 06 00251    CNTD       EENHEDEN_COUNTER_OPZET
+00697 00389 06 00193    CNTD       TIENTALLEN_COUNTER_OPZET
+00698 00390 10 00250.1  STRB       TIMER_CONTROLE_OPZET
+00699                   
+00700 00391 16 00101.1  AND        PULSE_SAM_KLAAR_MET_OPZET
+00701 00392 08 00254.0  SET0       BUFFER_CONTROLE_OPZET
+00702                   
+00703                   
+00704                   
+00705 00393 16 00020.2  AND        INPUT1_SAM_START_210_GRADEN_CODEGEVER
+00706 00394 12 00000    FTCHC      0
+00707 00395 14 00248    STRD       EENH_COUNTER_STROOKOPZET
+00708                   
+00709 00396 17 00254.0  ANDNT      BUFFER_CONTROLE_OPZET
+00710 00397 12 00002    FTCHC      2
+00711 00398 12 00001    FTCHC      1
+00712 00399 14 00251    STRD       EENHEDEN_COUNTER_OPZET
+00713 00400 14 00193    STRD       TIENTALLEN_COUNTER_OPZET
+00714                   
+00715                   
+00716                   
+00717 00401 16 00244.3  AND      BUFFER_40_50_GRADEN
+00718 00402 08 00250.0  SET0     STROOK_OPZETWIEL_GOED
+00719 00403 16 00020.2  AND      INPUT1_SAM_START_210_GRADEN_CODEGEVER
+00720 00404 09 00250.0  SET1     STROOK_OPZETWIEL_GOED
+00721 00405 00          NOP
+00722                   
+00723                   
+00724                   ! ********** STOP VOORWAARDEN ********** !
+00725                   
+00726                   ! STOP EINDE CYCLUS ALS OPZETWIEL NIET IN JUISTE POSITIE !
+00727                   ! STORING TYDENS DE CYCLUS!
+00728                   ! GEEN ALIVE              !
+00729 00406 17 00000.1  ANDNT   000.1
+00730 00407 16 00200.0  AND	EINDE_CYCLUS_GEBIED_PULS
+00731 00408 18 00204.2  OR	M204_2_PLAAT_NIET_IN_BOVENSTE_POSITIE
+00732 00409 18 00205.2  OR	SCHAAR_CYCLUS_TE_LANG
+00733 00410 19 00207.0  ORNT    M207_0_STROOK_GOED
+00734 00411 18 00394.2  OR  ST_GEENALIVE
+00735 00412 09 00107.2  SET1    M107_2_STORING_TYDENS_CYCLUS
+00736                   
+00737                   ! STORING T.G.V. NIET JUISTE STARTVOORWAARDEN MACHINE !
+00738                   
+00739 00413 19 00041.1  ORNT AUTOMATISCH
+00740 00414 17 00041.2  ANDNT TEST
+00741 00415 18 00041.1  OR	AUTOMATISCH
+00742 00416 17 00041.2  ANDNT TEST
+00743 00417 19 00015.1  ORNT	OVEN_KAST_DAG_NACHT_STAND
+00744 00418 19 00010.0  ORNT	SCH_REMLICHTEN
+00745 00419 18 00108.1  OR	M108_1_MERKER_LUCHTSTORING
+00746 00420 02 00107.1  EQL	M107_1_STORING_MACHINE_VOORWAARDEN
+00747                   
+00748 00421 17 00107.1  ANDNT M107_1_STORING_MACHINE_VOORWAARDEN       
+00749 00422 13 00000    FTCHD      0
+00750 00423 15 00155    COMP       STATUSSTORING2_PC2
+00751 00424 02 00153.2  EQL       lc_iRUNNINGCONDITIONS
+00752                   
+00753                   
+00754                   !***************** ALIVE MET CENTRALE BESTURING ***************************
+00755                   
+00756 00425 16 00147.3  AND     I_ALIVE_PC2
+00757 00426 01 00394.0  TRIG    TRIG_ALIVE
+00758 00427 12 00000    FTCHC   0
+00759 00428 12 00002    FTCHC   2
+00760 00429 14 00392    STRD    D0_ALIVETIJD
+00761 00430 14 00393    STRD    D1_ALIVETIJD
+00762 00431 08 00394.1  SET0    T_GEENALIVE
+00763                   
+00764 00432 16 00118.0  AND     M118_0_PULSE_0_1_SEC_CLOCK   !pulse clock CONSTANT_1 s
+00765 00433 17 00394.1  ANDNT   T_GEENALIVE
+00766 00434 06 00392    CNTD    D0_ALIVETIJD
+00767 00435 06 00393    CNTD    D1_ALIVETIJD
+00768 00436 10 00394.1  STRB    T_GEENALIVE
+00769                   
+00770 00437 16 00394.1  AND     T_GEENALIVE
+00771 00438 09 00394.2  SET1    ST_GEENALIVE
+00772                   
+00773                   ! Begin wijziging D.de Jong PRS12881 19-2-03 13:34
+00774                   ! ANDNT   HOOFDMOTOR_NORMAAL   !storing reset puls
+00775 00439 16 00152.3  AND M160_3_STARTPULS_UITSTAMP_UNIT	! was 160.3
+00776                   ! Einde wijziging D.de Jong PRS12881 19-2-03 13:34
+00777 00440 17 00394.1  ANDNT   T_GEENALIVE
+00778 00441 08 00394.2  SET0    ST_GEENALIVE
+00779                   
+00780 00442 16 00147.3  AND     I_ALIVE_PC2
+00781 00443 02 00153.1  EQL 	LC_iALIVE
+00782                   
+00783                   
+00784                   !***************** EINDE ALIVE MET CENTRALE BESTURING *********************
+00785                   
+00786                   
+00787                   
+00788                   
+00789                   !********** STOP EINDE CYCLUS **********!
+00790                   
+00791 00444 18 00203.2  OR      M203_2_MES_PLAAT_NIET_IN_ACHTERSTE_STAND
+00792 00445 18 00107.2  OR 	M107_2_STORING_TYDENS_CYCLUS
+00793 00446 16 00200.0  AND	EINDE_CYCLUS_GEBIED_PULS
+00794 00447 18 00106.2  OR	M106_2_MERKER_2_STORING_OVEN
+00795 00448 17 00041.1  ANDNT	AUTOMATISCH
+00796 00449 16 00200.0  AND	EINDE_CYCLUS_GEBIED_PULS
+00797 00450 18 00108.0  OR	TIMER_OUTPUT_CYCLUSTIJD_CYCLUSMOTOR
+00798 00451 18 00114.2  OR	M114_2_MERKER_KOELWATER_OVEN
+00799 00452 19 00207.0  ORNT    M207_0_STROOK_GOED
+00800 00453 18 00250.1  OR      TIMER_CONTROLE_OPZET
+00801 00454 16 00102.2  AND     VERSCHROTTEN_ZONDER_STAMPEN
+00802 00455 18 00250.1  OR      TIMER_CONTROLE_OPZET
+00803 00456 16 00200.0  AND     EINDE_CYCLUS_GEBIED_PULS
+00804 00457 17 00102.2  ANDNT   VERSCHROTTEN_ZONDER_STAMPEN
+00805 00458 09 00200.1  SET1	STOP_EINDE_CYCLUS
+00806                   
+00807 00459 16 00040.3  AND     HOOFDMOTOR_NORMAAL
+00808 00460 08 00246.1  SET0    STROOK_OPZET_FOUT
+00809                   
+00810                   
+00811                   
+00812                   !VOORWAARDEN RODE STATUSLAMP (STORINGS) UITSTAMPUNIT!
+00813                   
+00814 00461 18 00106.2  OR      M106_2_MERKER_2_STORING_OVEN
+00815 00462 18 00107.2  OR      M107_2_STORING_TYDENS_CYCLUS
+00816 00463 18 00107.1  OR	M107_1_STORING_MACHINE_VOORWAARDEN
+00817 00464 18 00108.0  OR      TIMER_OUTPUT_CYCLUSTIJD_CYCLUSMOTOR
+00818 00465 18 00200.1  OR      STOP_EINDE_CYCLUS
+00819 00466 02 00114.3  EQL     M114_3_MERKER_STORINGS_LAMP
+00820                   
+00821                   !********** INDICATIE UITSTAMPUNIT **********!
+00822                   
+00823                   !LED STROOK!
+00824                   
+00825 00467 16 00152.2  AND     NIET_AUTO_NIET_STRAAT_1	! was 160.2
+00826 00468 02 00034.0  EQL	LED_START_VOORWAARDEN
+00827                   
+00828 00469 16 00097.2  AND     M87_2_LUS_PC4_BRANSON_TE_KORT
+00829 00470 02 00022.3  EQL     LED_LUS_TE_KORT
+00830                   
+00831 00471 16 00097.3  AND     M87_3_LUS_PC4_BRANSON_TE_LANG
+00832 00472 02 00023.0  EQL     LED_LUS_TE_LANG
+00833                   
+00834 00473 16 00244.1  AND     EINDE_CYCLUS_GEBIED
+00835 00474 02 00023.1  EQL     LED_EINDE_CYCLUS
+00836                   
+00837 00475 16 00207.0  AND     M207_0_STROOK_GOED
+00838 00476 02 00023.2  EQL     LED_OPZET_GOED
+00839                   
+00840 00477 17 00207.0  ANDNT   M207_0_STROOK_GOED
+00841 00478 09 00023.3  SET1 	LED_OPZET_FOUT
+00842                   !EQL     LED_OPZET_FOUT
+00843                   
+00844                   ! LED LUCHTSTORING !
+00845                   
+00846 00479 16 00108.1  AND	M108_1_MERKER_LUCHTSTORING
+00847 00480 02 00034.1  EQL	LED_LUCHTSTORING
+00848                   
+00849                   
+00850                   
+00851                   
+00852                   !RODE STATUSLAMP (STORING) UITSTAMPUNIT!
+00853                   
+00854                   !LAMP MAG NIET BRANDEN ALS NOODRELAIS UIT IS   !
+00855                   !DIT I.V.M. HET CONTINUE AANBLIJVEN VAN DE OVEN!
+00856                   
+00857 00481 16 00097.1  AND	M87_1_LUS_PC4_BRANSON_NOMINAAL
+00858 00482 08 00117.1  SET0	MERKER_SNEL_KNIPPEREN_STORINGS_LAMP
+00859 00483 08 00117.2  SET0	MERKER_LANGZAAM_KNIPPEREN_STORINGS_LAMP
+00860                   
+00861 00484 16 00097.2  AND	M87_2_LUS_PC4_BRANSON_TE_KORT
+00862 00485 09 00117.2  SET1	MERKER_LANGZAAM_KNIPPEREN_STORINGS_LAMP
+00863                   
+00864 00486 16 00097.3  AND	M87_3_LUS_PC4_BRANSON_TE_LANG
+00865 00487 09 00117.1  SET1	MERKER_SNEL_KNIPPEREN_STORINGS_LAMP
+00866                   
+00867                   !   ***********************************************
+00868                   !   ***   AANSTURING STATUSLAMPEN ORANJE/ROOD   ***
+00869                   !   ***********************************************
+00870                   
+00871                   
+00872                   ! Timer 44 *    geen aan-/afvoer knipperen oranje lamp
+00873                   
+00874 00488 16 00221.0  	AND	221.0	!start timer  44
+00875 00489 16 00001.1          AND     1.1     !pulse clock 1 s
+00876 00490 17 00221.1  	ANDNT	221.1	!ready timer  44
+00877 00491 06 01087    	CNTD	1087	!unit timer 44
+00878 00492 06 01086    	CNTD	1086	!ten timer  44
+00879 00493 10 00221.1  	STRB	221.1	!ready timer  44
+00880                   
+00881 00494 17 00221.0  	ANDNT	221.0	!start timer  44
+00882 00495 12 00000    	FTCHC	0
+00883 00496 12 00003    	FTCHC	3
+00884 00497 14 01086    	STRD	1086	!ten timer  44
+00885 00498 14 01087    	STRD	1087	!unit timer 44
+00886 00499 08 00221.1  	SET0	221.1	!ready timer  44
+00887                   
+00888 00500 17 00144.3          ANDNT   M128_3_START_STOP_VOORWAARDEN_STRAAT   !start opzet vanuit wasmb
+00889 00501 17 00114.3          ANDNT   114.3   !merker storing
+00890 00502 02 00221.0          EQL     221.0   !start timer 44
+00891                   
+00892 00503 16 00114.3  	AND	114.3	!;MERKER STORING
+00893 00504 16 00010.2  	AND	010.2	!;RELAISKONTAKT K2
+00894 00505 02 00021.3          EQL     21.3    !;RODE STATUSLAMP STORING
+00895                   
+00896 00506 17 00021.3  	ANDNT	021.3	!;ALGEHELE STORINGSLAMP 5V UITSTAMPEN
+00897 00507 17 00041.1  	ANDNT	041.1	!;AUTOMATISCH
+00898 00508 17 00221.1          ANDNT   221.1   ! ready timer 44
+00899 00509 18 00221.1          OR      221.1   !ready timer 44
+00900 00510 16 00001.1          AND     001.1   !;CLOCK 1  SEC.
+00901 00511 02 00020.1          EQL     020.1   !;GELE WAARSCHUWINGSLAMP
+00902                   
+00903                   
+00904                   
+00905                   !******************** HARDINGS OVEN ********************!
+00906                   
+00907 00512 16 00013.0  AND    KET_WIEL
+00908 00513 16 00001.0  AND    CLOCK_100_MSEC
+00909 00514 01 00215.0  TRIG   215.0
+00910 00515 06 00216    CNTD   216
+00911 00516 06 00217    CNTD   217
+00912 00517 10 00215.1  STRB   215.1
+00913                   
+00914 00518 16 00215.1  AND    215.1
+00915 00519 08 00220.0  SET0   MERKER_TIMER_KET_WIEL
+00916                   
+00917 00520 19 00013.0  ORNT    KET_WIEL
+00918 00521 12 00009    FTCHC    9
+00919 00522 12 00004    FTCHC    4
+00920 00523 14 00216    STRD   216
+00921 00524 14 00217    STRD   217
+00922 00525 09 00220.0  SET1   MERKER_TIMER_KET_WIEL
+00923                   
+00924 00526 17 00013.0  ANDNT   KET_WIEL
+00925 00527 16 00001.0  AND    CLOCK_100_MSEC
+00926 00528 01 00215.2  TRIG   215.2
+00927 00529 06 00218    CNTD   218
+00928 00530 06 00219    CNTD   219
+00929 00531 10 00215.3  STRB   215.3
+00930                   
+00931 00532 16 00215.3  AND    215.3
+00932 00533 08 00220.1  SET0   MERKER_TIMER_KETTING_WIEL
+00933                   
+00934 00534 18 00013.0  OR      KET_WIEL
+00935 00535 12 00009    FTCHC    9
+00936 00536 12 00004    FTCHC    4
+00937 00537 14 00218    STRD   218
+00938 00538 14 00219    STRD   219
+00939 00539 09 00220.1  SET1   MERKER_TIMER_KETTING_WIEL
+00940                   
+00941                   !BEDIENING HOOFD RELAIS OVEN KAST!
+00942 00540 16 00012.3  AND	KOELWATER_OVEN_OP_TEMPERATUUR
+00943 00541 02 00006.0  EQL	OVEN_OPTO_KM10
+00944                   
+00945                   !STORINGLAMP OVENKAST!
+00946                   
+00947 00542 16 00106.2  AND	M106_2_MERKER_2_STORING_OVEN
+00948 00543 16 00015.1  AND	OVEN_KAST_DAG_NACHT_STAND
+00949 00544 18 00114.2  OR	M114_2_MERKER_KOELWATER_OVEN
+00950 00545 02 00006.1  EQL	STORINGSLAMP_OVEN
+00951                   
+00952                   
+00953                   
+00954                   !STORING OVEN!
+00955                   
+00956 00546 19 00012.0  ORNT	OVEN_ZONE_1a
+00957 00547 19 00012.1  ORNT	OVEN_ZONE_2a
+00958 00548 19 00012.2  ORNT	OVEN_ZONE_3a
+00959 00549 19 00014.0  ORNT	OVEN_ZONE_1b
+00960 00550 19 00014.1  ORNT	OVEN_ZONE_2b
+00961 00551 19 00014.2  ORNT	OVEN_ZONE_3b
+00962 00552 19 00014.3  ORNT	I14_3_BANDSNELHEID_TE_HOOG
+00963 00553 19 00015.0  ORNT	I15_0_BANDSNELHEID_TE_LAAG
+00964 00554 19 00220.0  ORNT   MERKER_TIMER_KET_WIEL
+00965 00555 19 00220.1  ORNT   MERKER_TIMER_KETTING_WIEL
+00966 00556 02 00106.1  EQL    M106_1_MERKER_1_STORING_OVEN
+00967                   
+00968 00557 16 00106.1  AND   M106_1_MERKER_1_STORING_OVEN                           !Merker voor storing resetten wanneer oven wordt overbrugd.
+00969 00558 17 00013.1  ANDNT OVERBRUGGEN_OVEN
+00970 00559 02 00106.1  EQL   M106_1_MERKER_1_STORING_OVEN
+00971                   
+00972 00560 16 00106.1  AND	M106_1_MERKER_1_STORING_OVEN
+00973 00561 16 00015.1  AND	OVEN_KAST_DAG_NACHT_STAND
+00974 00562 17 00013.1  ANDNT OVERBRUGGEN_OVEN
+00975 00563 09 00106.2  SET1  M106_2_MERKER_2_STORING_OVEN
+00976                   
+00977                   !STORING T.G.V. KOELWATER TEMP OVEN BUITEN BEREIK!
+00978                   
+00979 00564 17 00012.3  ANDNT	KOELWATER_OVEN_OP_TEMPERATUUR
+00980 00565 17 00013.1  ANDNT OVERBRUGGEN_OVEN
+00981 00566 09 00114.2  SET1	M114_2_MERKER_KOELWATER_OVEN
+00982                   
+00983                   !ZWAAILAMP T.G.V. STORINGOVENZONE!
+00984                   
+00985 00567 19 00012.0  ORNT  OVEN_ZONE_1a
+00986 00568 19 00012.1  ORNT  OVEN_ZONE_2a
+00987 00569 19 00012.2  ORNT  OVEN_ZONE_3a
+00988 00570 19 00014.0  ORNT  OVEN_ZONE_1b
+00989 00571 19 00014.1  ORNT  OVEN_ZONE_2b
+00990 00572 19 00014.2  ORNT  OVEN_ZONE_3b
+00991 00573 02 00102.3  EQL   M103_3_STORING_OVENZONE
+00992                   
+00993 00574 16 00102.3  AND   M103_3_STORING_OVENZONE
+00994 00575 16 00015.1  AND   OVEN_KAST_DAG_NACHT_STAND
+00995 00576 17 00013.1  ANDNT OVERBRUGGEN_OVEN
+00996 00577 02 00006.2  EQL   ZWAAILAMP_OVENZONE
+00997                   
+00998                   !********** FUNCTIES UITSTAMPUNIT **********!
+00999                   
+01000                   !CYCLUS MOTOR!
+01001                   
+01002                   !rem cyclusmotor!
+01003 00578 00          NOP
+01004 00579 16 00102.0  AND		START_BUFFER
+01005 00580 17 00121.0  ANDNT	M121_0                 !NOT verschrotten zonder stampen
+01006 00581 19 00010.0  ORNT  SCH_REMLICHTEN
+01007 00582 16 00010.1  AND   DR_REMLICHTEN
+01008 00583 18 00102.0  OR		START_BUFFER
+01009 00584 16 00121.0  AND		M121_0                 !verschrotten zonder stampen
+01010 00585 17 00041.2  ANDNT	TEST
+01011 00586 17 00244.1  ANDNT	EINDE_CYCLUS_GEBIED
+01012 00587 02 00004.0  EQL		REM_ELDUTRONIC
+01013                   
+01014                   !dt na rem cyclusmotor!
+01015                   
+01016 00588 16 00004.0  AND     REM_ELDUTRONIC
+01017 00589 16 00118.0  AND     M118_0_PULSE_0_1_SEC_CLOCK
+01018 00590 17 00100.0  ANDNT   DT_NA_REM_ELDUTRONIC
+01019 00591 06 00120    CNTD    120
+01020 00592 10 00100.0  STRB    DT_NA_REM_ELDUTRONIC
+01021                   
+01022 00593 17 00004.0  ANDNT   REM_ELDUTRONIC
+01023 00594 12 00002    FTCHC   2
+01024 00595 14 00120    STRD    120
+01025 00596 08 00100.0  SET0    DT_NA_REM_ELDUTRONIC
+01026                   
+01027                   !cyclusmotor aan!
+01028                   
+01029 00597 16 00100.0  AND     DT_NA_REM_ELDUTRONIC
+01030 00598 16 00010.0  AND     SCH_REMLICHTEN
+01031 00599 17 00121.0  ANDNT	  M121_0                  !NOT verschrotten zonder stampen
+01032 00600 18 00100.0  OR			DT_NA_REM_ELDUTRONIC
+01033 00601 16 00121.0  AND	    M121_0                  !verschrotten zonder stampen
+01034 00602 17 00041.2  ANDNT		TEST
+01035 00603 17 00244.1  ANDNT		EINDE_CYCLUS_GEBIED
+01036 00604 02 00026.3  EQL     RELAIS_A
+01037                   
+01038 00605 16 00026.3  AND     RELAIS_A
+01039 00606 02 00025.2  EQL     ELDUTRONIC_ENABLE       ! rvd prs 13343
+01040                   
+01041                            !CENTREERPENNEN en MAGNEETKOPPEN!
+01042                   
+01043 00607 16 00009.0  AND     AHTERSTE_STAND_SCHUIFPLAAT_30_220_GRADEN
+01044 00608 09 00022.0  SET1    KLEP_MAGNEET_KOPJES
+01045 00609 09 00022.1  SET1    KLEP_CENTREERPENNEN
+01046                   
+01047 00610 16 00009.1  AND     VOORSTE_STAND_SCHUIFPLAAT_310_330_GRADEN
+01048 00611 08 00022.0  SET0    KLEP_MAGNEET_KOPJES
+01049                   
+01050 00612 16 00244.2  AND     BUFFER_150_310_GRADEN
+01051 00613 08 00022.1  SET0    KLEP_CENTREERPENNEN
+01052                   
+01053                   
+01054                   
+01055                   !BANDMOTOR!
+01056                   
+01057                   
+01058 00614 16 00026.3  AND     RELAIS_A
+01059 00615 18 00000.1  OR	CONSTANT_1
+01060 00616 02 00004.1  EQL     BANDMOTOR_AFVOER_SCHROT
+01061                   
+01062                   
+01063                   
+01064                   !SCHAAR BEDIENING!
+01065                   
+01066 00617 16 00041.2  AND     TEST
+01067 00618 16 00101.1  AND	PULSE_SAM_KLAAR_MET_OPZET
+01068 00619 09 00205.0  SET1 	START_SCHAAR_ACTIE
+01069 00620 08 00206.1  SET0	MERKER_MET_ZONDER_STAMPUNIT
+01070                   
+01071 00621 16 00205.0  AND	START_SCHAAR_ACTIE
+01072 00622 16 00118.0  AND	M118_0_PULSE_0_1_SEC_CLOCK
+01073 00623 17 00206.0  ANDNT	TIMER_SCHAAR
+01074 00624 06 00212    CNTD	212
+01075 00625 10 00206.0  STRB	TIMER_SCHAAR
+01076                   
+01077 00626 17 00205.0  ANDNT	START_SCHAAR_ACTIE
+01078 00627 12 00001    FTCHC	01
+01079 00628 14 00212    STRD	212
+01080 00629 08 00205.1  SET0	MARKER_SCHAARACTIE
+01081                   
+01082 00630 16 00206.0  AND	TIMER_SCHAAR
+01083 00631 17 00205.1  ANDNT	MARKER_SCHAARACTIE
+01084 00632 16 00010.3  AND	SCHAAR_OPEN
+01085 00633 08 00206.3  SET0    M206_3
+01086 00634 08 00021.1  SET0	SCHROOTSCHAAR_OPEN
+01087 00635 09 00021.0  SET1	SCHROOTSCHAAR_DICHT
+01088                   
+01089 00636 16 00206.0  AND	TIMER_SCHAAR
+01090 00637 16 00011.0  AND	SCHAAR_DICHT
+01091 00638 17 00205.1  ANDNT	MARKER_SCHAARACTIE
+01092 00639 08 00021.0  SET0	SCHROOTSCHAAR_DICHT
+01093 00640 09 00021.1  SET1	SCHROOTSCHAAR_OPEN
+01094 00641 09 00205.1  SET1	MARKER_SCHAARACTIE
+01095                   
+01096 00642 16 00206.0  AND	TIMER_SCHAAR
+01097 00643 16 00205.1  AND	MARKER_SCHAARACTIE
+01098 00644 16 00010.3  AND	SCHAAR_OPEN
+01099 00645 08 00205.1  SET0	MARKER_SCHAARACTIE
+01100 00646 08 00206.0  SET0	TIMER_SCHAAR
+01101 00647 09 00206.1  SET1	MERKER_MET_ZONDER_STAMPUNIT
+01102 00648 08 00205.0  SET0	START_SCHAAR_ACTIE
+01103 00649 08 00252.1  SET0    UITSTAMPEN_NIET_VERSCHROTEN
+01104                   
+01105                   
+01106                   !TIMER SCHAAR CYCLUS BEWAKING!
+01107                   
+01108 00650 16 00206.0  AND	TIMER_SCHAAR
+01109 00651 16 00118.0  AND	M118_0_PULSE_0_1_SEC_CLOCK
+01110 00652 17 00205.2  ANDNT	SCHAAR_CYCLUS_TE_LANG
+01111 00653 06 00210    CNTD	210
+01112 00654 06 00211    CNTD	211
+01113 00655 10 00205.2  STRB	SCHAAR_CYCLUS_TE_LANG
+01114                   
+01115 00656 17 00206.0  ANDNT	TIMER_SCHAAR
+01116 00657 12 00000    FTCHC	0
+01117 00658 12 00001    FTCHC	1
+01118 00659 14 00210    STRD	210
+01119 00660 14 00211    STRD	211
+01120 00661 08 00205.2  SET0	SCHAAR_CYCLUS_TE_LANG
+01121                   
+01122 00662 17 00010.3  ANDNT	SCHAAR_OPEN
+01123 00663 09 00205.3  SET1	SCHAAR_NIET_OPEN_VOOR_OPZET
+01124                   
+01125                   
+01126                   !OPZET WIEL BEVEILIGING EN CONTROLE!
+01127                   
+01128                   !BOVEN PLAAT ACHTER CONTROLE!
+01129                   
+01130 00664 16 00244.3  AND	BUFFER_40_50_GRADEN
+01131 00665 17 00009.0  ANDNT	AHTERSTE_STAND_SCHUIFPLAAT_30_220_GRADEN
+01132 00666 09 00203.2  SET1	M203_2_MES_PLAAT_NIET_IN_ACHTERSTE_STAND
+01133                   
+01134                   !PENNEN BOVENSTE STAND!
+01135                   
+01136 00667 16 00204.1  AND	PULSE_241_0_ENCODER
+01137 00668 17 00009.3  ANDNT	PENNEN_IN_BOVENSTE_POSITIE
+01138 00669 09 00204.2  SET1	M204_2_PLAAT_NIET_IN_BOVENSTE_POSITIE
+01139                   
+01140                   !CONTROLE OPZET WIEL IN POSITIE EN STROOK GOED!
+01141                   
+01142                   
+01143 00670 17 00011.3  ANDNT   STROOK_IN_POSITIE
+01144 00671 17 00011.2  ANDNT   STROOK2_IN_POSITIE
+01145                   ! AND     OPZETWIEL_GOED
+01146 00672 18 00250.3  OR      BUFFER_40_350_GRADEN
+01147 00673 18 00102.2  OR      VERSCHROTTEN_ZONDER_STAMPEN
+01148 00674 02 00207.0  EQL	M207_0_STROOK_GOED
+01149                   
+01150 00675 17 00207.0  ANDNT M207_0_STROOK_GOED
+01151 00676 09 00195.0  SET1 M195_0_mem_strook_Fout
+01152                   
+01153 00677 17 00207.0  ANDNT M207_0_STROOK_GOED
+01154 00678 17 00008.1  ANDNT OPZETWIEL_GOED
+01155 00679 09 00195.1  SET1 M195_1_OpzetwielFout
+01156                   
+01157                   !OPZETTEN ZONDER CYCLUS MOTOR!
+01158                   
+01159 00680 17 00040.2  ANDNT    STRAAT_1_EN_2
+01160 00681 01 00121.1  TRIG    121.1
+01161 00682 09 00106.0  SET1    M106_0_MERKER_STRAAT1_STRAAT2
+01162                   
+01163 00683 16 00102.2  AND	VERSCHROTTEN_ZONDER_STAMPEN
+01164 00684 16 00200.0  AND	EINDE_CYCLUS_GEBIED_PULS
+01165 00685 16 00102.0  AND	START_BUFFER
+01166 00686 18 00102.2  OR	VERSCHROTTEN_ZONDER_STAMPEN
+01167 00687 17 00102.0  ANDNT	START_BUFFER
+01168 00688 09 00121.0  SET1	M121_0
+01169                   
+01170 00689 16 00118.2  AND     M118_2_PULSE_40_2
+01171 00690 08 00106.0  SET0    M106_0_MERKER_STRAAT1_STRAAT2
+01172                   
+01173 00691 16 00106.0  AND     M106_0_MERKER_STRAAT1_STRAAT2
+01174 00692 16 00244.1  AND	EINDE_CYCLUS_GEBIED
+01175 00693 18 00096.1  OR       M86_1_SIGNAAL_STOP_UITSTAMPEN
+01176 00694 16 00244.1  AND     EINDE_CYCLUS_GEBIED
+01177 00695 09 00102.2  SET1    VERSCHROTTEN_ZONDER_STAMPEN
+01178                   
+01179 00696 17 00106.0  ANDNT   M106_0_MERKER_STRAAT1_STRAAT2
+01180 00697 17 00096.1  ANDNT    M86_1_SIGNAAL_STOP_UITSTAMPEN
+01181 00698 16 00101.1  AND     PULSE_SAM_KLAAR_MET_OPZET
+01182 00699 08 00102.2  SET0    VERSCHROTTEN_ZONDER_STAMPEN
+01183                   
+01184 00700 16 00041.1  AND	AUTOMATISCH
+01185 00701 01 00124.0  TRIG	124.0
+01186 00702 02 00124.1  EQL	M124_1_PULSE_41_1
+01187                   
+01188 00703 16 00040.0  AND	STRAAT_1
+01189 00704 01 00124.2  TRIG	124.2
+01190 00705 02 00124.3  EQL	M124_3_PULSE_STRAAT1
+01191                   
+01192 00706 16 00041.2  AND	TEST
+01193 00707 17 00041.1  ANDNT	AUTOMATISCH
+01194 00708 19 00041.2  ORNT	TEST
+01195 00709 16 00041.1  AND	AUTOMATISCH
+01196 00710 01 00125.1  TRIG	125.1
+01197 00711 02 00125.2  EQL	M125_2_PULSE_STAND_TEST_OF_AUTO
+01198                   
+01199 00712 16 00124.1  AND	M124_1_PULSE_41_1
+01200 00713 18 00124.3  OR	M124_3_PULSE_STRAAT1
+01201 00714 18 00125.2  OR	M125_2_PULSE_STAND_TEST_OF_AUTO
+01202 00715 18 00118.2  OR	M118_2_PULSE_40_2
+01203 00716 02 00125.3  EQL	M125_3_RESET_PULSE_VAN_KEUZESCHAKELAAR
+01204                   
+01205 00717 17 00000.1  ANDNT	CONSTANT_1
+01206 00718 08 00102.0  SET0	START_BUFFER
+01207                   
+01208                   
+01209                   !*********** Error STATUS NAAR PC2************!
+01210                   ! STATUSSTORING2_PC2 wordt gebruikt voor status naar lusbesturing !
+01211                   
+01212                   ! AUTO !
+01213 00719 17 00041.1  ANDNT   AUTOMATISCH
+01214 00720 16 00041.2  AND     TEST
+01215 00721 02 00153.0  EQL     LC_iAUTOMATIC
+01216                   
+01217                   ! Reset errors
+01218                   !AND	CONSTANT_1
+01219 00722 16 00125.3  AND M125_3_RESET_PULSE_VAN_KEUZESCHAKELAAR
+01220 00723 12 00000    FTCHC   0
+01221 00724 12 00000    FTCHC   0
+01222 00725 14 00154    STRD    STATUSSTORING1_PC2
+01223 00726 14 00155    STRD    STATUSSTORING2_PC2
+01224                   
+01225 00727 16 00106.2  AND     M106_2_MERKER_2_STORING_OVEN
+01226 00728 12 00000    FTCHC   0
+01227 00729 12 00010    FTCHC   10
+01228 00730 14 00154    STRD    STATUSSTORING1_PC2
+01229 00731 14 00155    STRD    STATUSSTORING2_PC2
+01230                   
+01231 00732 17 00008.2  ANDNT   LUCHT_AANWEZIG
+01232 00733 12 00000    FTCHC   0
+01233 00734 12 00011    FTCHC   11
+01234 00735 14 00154    STRD    STATUSSTORING1_PC2
+01235 00736 14 00155    STRD    STATUSSTORING2_PC2
+01236                   
+01237 00737 17 00207.0  ANDNT   M207_0_STROOK_GOED
+01238 00738 12 00000    FTCHC   0
+01239 00739 12 00012    FTCHC   12
+01240 00740 14 00154    STRD    STATUSSTORING1_PC2
+01241 00741 14 00155    STRD    STATUSSTORING2_PC2
+01242                   
+01243 00742 16 00205.2  AND     SCHAAR_CYCLUS_TE_LANG
+01244 00743 12 00000    FTCHC   0
+01245 00744 12 00013    FTCHC   13
+01246 00745 14 00154    STRD    STATUSSTORING1_PC2
+01247 00746 14 00155    STRD    STATUSSTORING2_PC2
+01248                   
+01249 00747 16 00204.2  AND     M204_2_PLAAT_NIET_IN_BOVENSTE_POSITIE
+01250 00748 12 00000    FTCHC   0
+01251 00749 12 00014    FTCHC   14
+01252 00750 14 00154    STRD    STATUSSTORING1_PC2
+01253 00751 14 00155    STRD    STATUSSTORING2_PC2
+01254                   
+01255 00752 16 00108.0  AND     TIMER_OUTPUT_CYCLUSTIJD_CYCLUSMOTOR
+01256 00753 12 00000    FTCHC   0
+01257 00754 12 00015    FTCHC   15
+01258 00755 14 00154    STRD    STATUSSTORING1_PC2
+01259 00756 14 00155    STRD    STATUSSTORING2_PC2
+01260                   
+01261                   
+01262                   
+01263                   
+01264                   !***************CYCLUS TYD BEWAKING CYCLUSMOTOR********!
+01265 00757 16 00244.1  AND	EINDE_CYCLUS_GEBIED
+01266 00758 12 00009    FTCHC	9
+01267 00759 14 00109    STRD	CYCLUSMOTOR_CYCLUS_BEWAKING
+01268                   
+01269 00760 17 00244.1  ANDNT	EINDE_CYCLUS_GEBIED
+01270 00761 17 00108.0  ANDNT	TIMER_OUTPUT_CYCLUSTIJD_CYCLUSMOTOR
+01271 00762 16 00108.3  AND	M108_3_PULSE_1_SEC
+01272 00763 06 00109    CNTD	CYCLUSMOTOR_CYCLUS_BEWAKING
+01273 00764 10 00108.0  STRB	TIMER_OUTPUT_CYCLUSTIJD_CYCLUSMOTOR
+01274                   
+01275                   
+01276                   !SNEL_LANGZAAM LOPEN CYCLUS MOTOR!
+01277                   
+01278 00765 16 00144.0  AND     M128_0_OPZET_SIGNAAL_OPZETWIEL	! was 128.0
+01279 00766 02 00025.3  EQL	SNEL_LANGZAAM_CYCLUS_MOTOR
+01280                   
+01281 00767 26          RET
+01282                   
+01283                   
+01284 00768 17 00041.3  SUBTEST	ANDNT	HOOFDMOTOR_LANGZAAM
+01285 00769 19 00040.3  	ORNT	HOOFDMOTOR_NORMAAL
+01286 00770 02 00026.0  	EQL	RELAIS_D_TORNEN
+01287                   
+01288 00771 16 00000.1  	AND	CONSTANT_1
+01289 00772 03 00026.2  	EQLNT	RELAIS_B_AUTOMATISCH
+01290                   
+01291 00773 17 00041.2  	ANDNT	TEST
+01292 00774 16 00097.1  	AND	M87_1_LUS_PC4_BRANSON_NOMINAAL
+01293 00775 16 00115.1  	AND	PULSE_NOT_41_3
+01294 00776 19 00041.2  	ORNT	TEST
+01295 00777 16 00097.1  	AND	M87_1_LUS_PC4_BRANSON_NOMINAAL
+01296 00778 16 00115.3  	AND	PULSE_NOT_40_3
+01297 00779 09 00102.0  	SET1	START_BUFFER
+01298                   
+01299 00780 16 00116.2  AND	PULSE_41_3
+01300 00781 18 00117.0  OR	PULSE_40_3
+01301 00782 19 00040.2  ORNT	STRAAT_1_EN_2
+01302 00783 16 00101.1  AND	PULSE_SAM_KLAAR_MET_OPZET
+01303 00784 18 00200.0  OR	EINDE_CYCLUS_GEBIED_PULS
+01304 00785 18 00097.0  OR	M87_0_LUS_PC4_BRANSON_BUITEN_GRENZEN
+01305 00786 16 00200.0  AND	EINDE_CYCLUS_GEBIED_PULS
+01306 00787 18 00121.0  OR	M121_0
+01307 00788 19 00207.0  ORNT    M207_0_STROOK_GOED
+01308 00789 08 00102.0  SET0	START_BUFFER
+01309                   
+01310                   !STORING MERKERS!
+01311                   
+01312                   !AND	CONSTANT_1
+01313 00790 16 00125.3  AND M125_3_RESET_PULSE_VAN_KEUZESCHAKELAAR
+01314 00791 08 00203.2  SET0	M203_2_MES_PLAAT_NIET_IN_ACHTERSTE_STAND
+01315 00792 08 00204.2  SET0	M204_2_PLAAT_NIET_IN_BOVENSTE_POSITIE
+01316 00793 08 00200.1  SET0	STOP_EINDE_CYCLUS
+01317 00794 08 00205.3  SET0	SCHAAR_NIET_OPEN_VOOR_OPZET
+01318 00795 08 00205.2  SET0	SCHAAR_CYCLUS_TE_LANG
+01319 00796 08 00202.0  SET0	M202_0_MERKER_OPZETWIEL_IN_POS
+01320 00797 08 00107.1  SET0	M107_1_STORING_MACHINE_VOORWAARDEN
+01321 00798 08 00107.2  SET0    M107_2_STORING_TYDENS_CYCLUS
+01322 00799 08 00106.2  SET0	M106_2_MERKER_2_STORING_OVEN
+01323 00800 08 00108.0  SET0	TIMER_OUTPUT_CYCLUSTIJD_CYCLUSMOTOR
+01324 00801 08 00114.2  SET0	M114_2_MERKER_KOELWATER_OVEN
+01325 00802 08 00108.1  SET0	M108_1_MERKER_LUCHTSTORING
+01326 00803 08 00102.3  SET0	M103_3_STORING_OVENZONE
+01327 00804 08 00250.1  SET0    TIMER_CONTROLE_OPZET
+01328 00805 08 00252.1  SET0    UITSTAMPEN_NIET_VERSCHROTEN
+01329 00806 08 00023.3  SET0 	LED_OPZET_FOUT
+01330 00807 08 00195.0  SET0    M195_0_mem_strook_Fout
+01331 00808 08 00195.1  SET0	M195_1_OpzetwielFout
+01332                   
+01333                   !*************SINGLE STEP LINKS RECHTS OM****!
+01334                   
+01335 00809 16 00019.3  AND     DRUKNOP_SINGLE_STEP
+01336 00810 16 00019.3  AND     DRUKNOP_SINGLE_STEP
+01337 00811 02 00021.2  EQL     INPUT2_LINKS_RECHTS_KEUZESCHAKELAAR
+01338                   
+01339                   
+01340 00812 16 00019.3  AND     DRUKNOP_SINGLE_STEP
+01341 00813 16 00019.2  AND     KEUZESCHAKELAAR_SAM300_LINKS_RECHTS
+01342 00814 02 00020.0  EQL     INPUT3_DRUKKNOP_SINGLE_STEP
+01343                   
+01344                   
+01345                   
+01346 00815 26          RET
+01347                   
+01348                   
+01349                   !enkelslag cyclusmotor!
+01350                   
+01351 00816 16 00000.1  SUBENKEL	AND	CONSTANT_1
+01352 00817 02 00026.0  EQL	RELAIS_D_TORNEN
+01353 00818 03 00026.2  EQLNT	RELAIS_B_AUTOMATISCH
+01354                   
+01355                     !startbuffer!
+01356                   
+01357 00819 16 00115.3  AND     PULSE_NOT_40_3
+01358 00820 16 00097.1  AND	M87_1_LUS_PC4_BRANSON_NOMINAAL
+01359 00821 16 00244.1  AND     EINDE_CYCLUS_GEBIED
+01360 00822 16 00019.1  AND	SAM_KLAAR_MET_OPZET
+01361 00823 16 00040.2  AND     STRAAT_1_EN_2
+01362 00824 16 00207.0  AND     M207_0_STROOK_GOED
+01363 00825 18 00115.1  OR	PULSE_NOT_41_3
+01364 00826 16 00097.1  AND	M87_1_LUS_PC4_BRANSON_NOMINAAL
+01365 00827 16 00244.1  AND	EINDE_CYCLUS_GEBIED
+01366 00828 16 00019.1  AND	SAM_KLAAR_MET_OPZET
+01367 00829 16 00040.2  AND     STRAAT_1_EN_2
+01368 00830 16 00207.0  AND     M207_0_STROOK_GOED
+01369 00831 09 00102.0  SET1    START_BUFFER
+01370                   
+01371 00832 17 00040.2  ANDNT	STRAAT_1_EN_2
+01372 00833 16 00101.1  AND	PULSE_SAM_KLAAR_MET_OPZET
+01373 00834 18 00200.0  OR	EINDE_CYCLUS_GEBIED_PULS
+01374 00835 18 00200.1  OR	STOP_EINDE_CYCLUS
+01375 00836 18 00097.0  OR	M87_0_LUS_PC4_BRANSON_BUITEN_GRENZEN
+01376 00837 16 00200.0  AND     EINDE_CYCLUS_GEBIED_PULS
+01377 00838 18 00121.0  OR	M121_0
+01378 00839 08 00102.0  SET0    START_BUFFER
+01379                   
+01380                   
+01381                   
+01382                   
+01383 00840 26          RET
+01384                   
+01385                   
+01386                   
+01387                    !automatisch!
+01388                   
+01389 00841 16 00000.1  SUBAUTO	AND     CONSTANT_1
+01390 00842 03 00026.0  EQLNT   RELAIS_D_TORNEN
+01391 00843 02 00026.2  EQL	RELAIS_B_AUTOMATISCH
+01392                   
+01393 00844 16 00096.0  AND	M86_0_OPZET_SIGNAAL_OPZETWIEL
+01394 00845 16 00096.3  AND	M86_3_START_STOP_VOORWAARDEN_STRAAT
+01395 00846 17 00102.2  ANDNT   VERSCHROTTEN_ZONDER_STAMPEN
+01396 00847 09 00102.0  SET1	START_BUFFER
+01397                   
+01398 00848 17 00096.0  ANDNT	M86_0_OPZET_SIGNAAL_OPZETWIEL
+01399 00849 16 00200.0  AND     EINDE_CYCLUS_GEBIED_PULS
+01400 00850 19 00096.0  ORNT	M86_0_OPZET_SIGNAAL_OPZETWIEL
+01401 00851 16 00102.2  AND	VERSCHROTTEN_ZONDER_STAMPEN
+01402 00852 16 00126.2  AND	M126_2_PULSE_VAN_PULSE_19_1
+01403 00853 18 00200.1  OR	STOP_EINDE_CYCLUS
+01404 00854 19 00096.3  ORNT	M86_3_START_STOP_VOORWAARDEN_STRAAT
+01405 00855 16 00200.0  AND	EINDE_CYCLUS_GEBIED_PULS
+01406 00856 18 00097.0  OR	M87_0_LUS_PC4_BRANSON_BUITEN_GRENZEN
+01407 00857 16 00200.0  AND	EINDE_CYCLUS_GEBIED_PULS
+01408 00858 18 00107.1  OR	M107_1_STORING_MACHINE_VOORWAARDEN
+01409 00859 16 00200.0  AND	EINDE_CYCLUS_GEBIED_PULS
+01410 00860 08 00102.0  SET0    START_BUFFER
+01411                   
+01412                   
+01413                   
+01414 00861 26          RET
+01415                   
+Number of errors: 0
+Number of warnings (see as.err): 54
+
+
+
+
+
+SUBAUTO                         :  841  PROGRAMMA                       :    7  
+Vervolg                         :  239  ENCODERSTAND                    :  235  
+SUBENKEL                        :  816  SUBTEST                         :  768  
+ALGEMEEN                        :   23  
